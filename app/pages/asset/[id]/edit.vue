@@ -71,9 +71,9 @@
           <UFormField label="Sub Category" name="subCategoryId" required>
             <USelect
               v-model="form.subCategoryId"
-              :items="filteredSubCategoryOptions"
+              :items="subCategoryOptions"
               placeholder="Select sub category"
-              :disabled="!selectedCategoryId"
+              :disabled="!selectedCategoryId || isLoadingSubCategories"
               class="w-full"
             />
           </UFormField>
@@ -131,7 +131,6 @@ import { assetService } from '~/services/asset-service'
 import { categoryService } from '~/services/category-service'
 import { subCategoryService } from '~/services/sub-category-service'
 import type { AssetPayload } from '~/types/asset'
-import type { SubCategory } from '~/types/sub-category'
 
 definePageMeta({
   layout: 'dashboard'
@@ -147,31 +146,41 @@ const isLoadingAsset = ref(true)
 const fileInput = ref<HTMLInputElement | null>(null)
 const previewUrl = ref<string | null>(null)
 
-// Category & Sub Category filtering state
+// Category & Sub Category API state
 const selectedCategoryId = ref<number | undefined>(undefined)
 const categoryOptions = ref<{ label: string; value: number }[]>([])
-const allSubCategories = ref<SubCategory[]>([])
+const subCategoryOptions = ref<{ label: string; value: number }[]>([])
+const isLoadingSubCategories = ref(false)
+const lastFetchedCategoryId = ref<number | undefined>(undefined)
 
-const filteredSubCategoryOptions = computed(() => {
-  if (!selectedCategoryId.value) return []
-  return allSubCategories.value
-    .filter((s) => s.categoryId === Number(selectedCategoryId.value))
-    .map((s) => ({
-      label: s.name,
-      value: s.id,
-    }))
-})
-
-watch(selectedCategoryId, (newVal) => {
+watch(selectedCategoryId, async (newVal) => {
   if (!newVal) {
+    subCategoryOptions.value = []
     form.subCategoryId = undefined as unknown as number
+    lastFetchedCategoryId.value = undefined
     return
   }
-  const currentSub = allSubCategories.value.find((s) => s.id === form.subCategoryId)
-  if (currentSub && currentSub.categoryId === Number(newVal)) {
+  if (lastFetchedCategoryId.value === Number(newVal)) {
     return
   }
-  form.subCategoryId = undefined as unknown as number
+  isLoadingSubCategories.value = true
+  try {
+    const res = await subCategoryService.getAll(1, 999, '', Number(newVal))
+    if (res.success) {
+      subCategoryOptions.value = res.data.map((s) => ({
+        label: s.name,
+        value: s.id,
+      }))
+      lastFetchedCategoryId.value = Number(newVal)
+    }
+  } finally {
+    isLoadingSubCategories.value = false
+  }
+
+  // Reset selected sub-category if it is no longer valid in the newly fetched sub-categories list
+  if (form.subCategoryId && !subCategoryOptions.value.some((s) => s.value === form.subCategoryId)) {
+    form.subCategoryId = undefined as unknown as number
+  }
 })
 
 const schema = z.object({
@@ -203,19 +212,13 @@ const triggerFileInput = () => {
   fileInput.value?.click()
 }
 
-const fetchData = async () => {
-  const [catRes, subRes] = await Promise.all([
-    categoryService.getAll(1, 999),
-    subCategoryService.getAll(1, 999)
-  ])
+const fetchCategories = async () => {
+  const catRes = await categoryService.getAll(1, 999)
   if (catRes.success) {
     categoryOptions.value = catRes.data.map((c) => ({
       label: c.name,
       value: c.id,
     }))
-  }
-  if (subRes.success) {
-    allSubCategories.value = subRes.data
   }
 }
 
@@ -235,10 +238,26 @@ const fetchAssetDetails = async () => {
       form.model = asset.model ?? undefined
       form.image = asset.rawImage
       
-      // Load selectedCategoryId first, then subCategoryId
-      selectedCategoryId.value = asset.subCategory?.category?.id ?? undefined
-      form.subCategoryId = asset.subCategoryId
+      // Load selectedCategoryId first, and wait for the watcher to finish loading subcategories
+      const catId = asset.subCategory?.category?.id ?? undefined
+      if (catId) {
+        isLoadingSubCategories.value = true
+        try {
+          const res = await subCategoryService.getAll(1, 999, '', catId)
+          if (res.success) {
+            subCategoryOptions.value = res.data.map((s) => ({
+              label: s.name,
+              value: s.id,
+            }))
+            lastFetchedCategoryId.value = catId
+            selectedCategoryId.value = catId
+          }
+        } finally {
+          isLoadingSubCategories.value = false
+        }
+      }
       
+      form.subCategoryId = asset.subCategoryId
       previewUrl.value = asset.image
     } else {
       toast.add({
@@ -320,7 +339,7 @@ const handleSubmit = async () => {
 }
 
 onMounted(async () => {
-  await fetchData()
+  await fetchCategories()
   await fetchAssetDetails()
 })
 </script>
