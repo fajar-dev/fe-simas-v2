@@ -195,66 +195,62 @@ const getTypeLabel = (type: string) => {
   }
 }
 
-// Table columns definition with Time, URL, Message (category/type + message), and Reply (type + reply text)
+// Table columns: Message, Attachment, Reply (Matching style rules of User Profile / Category table cells)
 const columns: TableColumn<FeedbackItem>[] = [
-  {
-    accessorKey: 'timestamp',
-    header: 'Time',
-    cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-500 text-xs font-semibold' }, formatDate(row.original.timestamp))
-    }
-  },
-  {
-    accessorKey: 'url',
-    header: 'URL',
-    cell: ({ row }) => {
-      const url = row.original.url
-      if (!url) return '-'
-      return h(
-        'a',
-        {
-          href: url,
-          target: '_blank',
-          class: 'text-blue-500 hover:text-blue-600 underline truncate block max-w-[200px] text-xs font-medium'
-        },
-        url
-      )
-    }
-  },
   {
     accessorKey: 'message',
     header: 'Message',
     cell: ({ row }) => {
       const typeLabel = getTypeLabel(row.original.type)
-      const imgs = row.original.images
+      const message = row.original.message
+      const url = row.original.url
+      const dateStr = formatDate(row.original.timestamp)
       
       const children = [
-        // Category/Type label (plain text bold, no badge)
-        h('div', { class: 'text-xs font-bold text-neutral-500 uppercase tracking-wider' }, typeLabel),
-        // Message body
-        h('div', { class: 'text-sm text-neutral-800 font-medium whitespace-pre-wrap max-w-md mt-0.5' }, row.original.message)
+        // Category Label (lowercase bold text, no badge, matches subheadings style)
+        h('div', { class: 'text-[10px] font-bold text-neutral-400 uppercase tracking-wider' }, typeLabel),
+        // Message Body (matches name/main column font-medium style)
+        h('span', { class: 'font-medium text-neutral-900 block whitespace-pre-wrap max-w-md mt-0.5' }, message)
       ]
       
-      // Inline Screenshots inside Message cell
-      if (imgs && imgs.length > 0) {
-        children.push(
-          h('div', { class: 'flex gap-1.5 mt-2' },
-            imgs.map((img) => 
-              h('img', {
-                src: img,
-                alt: 'Screenshot',
-                class: 'w-10 h-7 object-cover rounded border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs',
-                onClick: (e: Event) => {
-                  e.stopPropagation()
-                  openLightbox(img)
-                }
-              })
-            )
-          )
-        )
-      }
+      // Footer info row: Time & URL (matches email sub-text style)
+      children.push(
+        h('div', { class: 'text-xs text-neutral-500 mt-1 flex flex-wrap items-center gap-1.5 font-normal' }, [
+          h('span', {}, dateStr),
+          url ? h('span', { class: 'text-neutral-300' }, '•') : null,
+          url ? h('a', {
+            href: url,
+            target: '_blank',
+            class: 'text-blue-500 hover:text-blue-600 underline truncate max-w-[200px]'
+          }, url) : null
+        ].filter(Boolean))
+      )
       
       return h('div', { class: 'flex flex-col py-1' }, children)
+    }
+  },
+  {
+    accessorKey: 'images',
+    header: 'Attachment',
+    cell: ({ row }) => {
+      const imgs = row.original.images
+      if (!imgs || !imgs.length) return h('span', { class: 'text-neutral-400 text-sm' }, '-')
+      
+      return h(
+        'div',
+        { class: 'flex gap-1.5 py-1' },
+        imgs.map((img) => 
+          h('img', {
+            src: img,
+            alt: 'Screenshot',
+            class: 'w-10 h-7 object-cover rounded border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs',
+            onClick: (e: Event) => {
+              e.stopPropagation()
+              openLightbox(img)
+            }
+          })
+        )
+      )
     }
   },
   {
@@ -262,13 +258,11 @@ const columns: TableColumn<FeedbackItem>[] = [
     header: 'Reply',
     cell: ({ row }) => {
       const reply = row.original.reply
-      if (!reply) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+      if (!reply) return h('span', { class: 'text-neutral-400 text-sm' }, '-')
       
       return h('div', { class: 'flex flex-col py-1' }, [
-        // Reply type/header
-        h('div', { class: 'text-xs font-bold text-neutral-500 uppercase tracking-wider' }, 'Admin Reply'),
-        // Reply body
-        h('div', { class: 'text-xs text-neutral-600 whitespace-pre-wrap max-w-sm mt-0.5 font-medium' }, reply)
+        h('div', { class: 'text-[10px] font-bold text-neutral-400 uppercase tracking-wider' }, 'Admin Response'),
+        h('span', { class: 'text-sm text-neutral-600 font-medium whitespace-pre-wrap max-w-sm mt-0.5' }, reply)
       ])
     }
   }
