@@ -1,4 +1,4 @@
-# 📚 Dokumentasi Project — Nuxt Boilerplate
+# 📚 Dokumentasi Project — SIMAS Frontend
 
 > **WAJIB DIBACA oleh AI Agent sebelum memulai pekerjaan apapun di project ini.**
 

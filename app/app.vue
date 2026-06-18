@@ -19,8 +19,8 @@ useHead({
   }
 })
 
-const title = 'Nuxt Boilerplate - Admin Dashboard'
-const description = 'Nuxt Boilerplate — Starter template admin dashboard'
+const title = 'SIMAS - Sistem Management Asset'
+const description = 'SIMAS — Sistem Management Asset Dashboard'
 
 useSeoMeta({
   title,

@@ -117,10 +117,10 @@ app/
 Saat diminta membuat fitur baru (contoh: `product`):
 
 1. `app/types/product.d.ts` — Interface `Product` + `ProductPayload`
-2. `app/services/product-service.ts` — Copy pattern dari `contact-service.ts`
-3. `app/components/product/AddModal.vue` — Copy pattern dari `contact/AddModal.vue`
-4. `app/components/product/UpdateModal.vue` — Copy pattern dari `contact/UpdateModal.vue`
-5. `app/pages/product/index.vue` — Copy pattern dari `contact/index.vue`
+2. `app/services/product-service.ts` — Copy pattern dari `user-service.ts`
+3. `app/components/product/AddModal.vue` — Copy pattern dari `user/AddModal.vue`
+4. `app/components/product/UpdateModal.vue` — Copy pattern dari `user/UpdateModal.vue`
+5. `app/pages/product/index.vue` — Copy pattern dari `user/index.vue`
 6. `app/composables/useNavigation.ts` — Tambah nav item baru
 7. `docs/changelog.md` — Catat perubahan
 8. Gunakan `DeleteModal` global (jangan buat baru)

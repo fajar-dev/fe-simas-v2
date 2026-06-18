@@ -34,10 +34,10 @@
       </div>
 
       <UForm id="update-user-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-3">
-        <UFormField label="Name" name="name">
+        <UFormField label="Name" name="name" required>
           <UInput v-model="form.name" placeholder="Enter full name" class="w-full" />
         </UFormField>
-        <UFormField label="Email" name="email">
+        <UFormField label="Email" name="email" required>
           <UInput v-model="form.email" type="email" placeholder="Enter email address" class="w-full" />
         </UFormField>
         <UFormField label="New Password (optional)" name="password">

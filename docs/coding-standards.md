@@ -85,7 +85,7 @@
 const data: any = response.data
 
 // ✅ BENAR
-const data: Contact[] = response.data
+const data: User[] = response.data
 ```
 
 ## 2. Naming Conventions
@@ -96,22 +96,22 @@ const data: Contact[] = response.data
 |------|-----------|--------|
 | Pages | `kebab-case.vue` | `forgot-password.vue` |
 | Components (global) | `PascalCase.vue` | `BrandLogo.vue`, `DeleteModal.vue` |
-| Components (feature) | `PascalCase.vue` di subfolder | `contact/AddModal.vue` |
+| Components (feature) | `PascalCase.vue` di subfolder | `user/AddModal.vue` |
 | Composables | `camelCase.ts` dengan prefix `use` | `useAuth.ts`, `useNavigation.ts` |
-| Services | `kebab-case.ts` dengan suffix `-service` | `auth-service.ts`, `contact-service.ts` |
-| Types | `kebab-case.d.ts` | `auth.d.ts`, `contact.d.ts` |
+| Services | `kebab-case.ts` dengan suffix `-service` | `auth-service.ts`, `user-service.ts` |
+| Types | `kebab-case.d.ts` | `auth.d.ts`, `user.d.ts` |
 | Middleware | `kebab-case.ts` | `auth.global.ts`, `guest.ts` |
 
 ### Variable & Function Naming
 
 | Tipe | Convention | Contoh |
 |------|-----------|--------|
-| Variables | `camelCase` | `isLoading`, `selectedContact` |
-| Functions | `camelCase` dengan prefix verb | `handleSubmit`, `fetchContacts` |
+| Variables | `camelCase` | `isLoading`, `selectedUser` |
+| Functions | `camelCase` dengan prefix verb | `handleSubmit`, `fetchUsers` |
 | Reactive state | `camelCase` | `const form = reactive({})` |
 | Ref | `camelCase` | `const isSubmitting = ref(false)` |
 | Constants | `UPPER_SNAKE_CASE` (di service) | `ACCESS_TOKEN_KEY` |
-| Interface/Type | `PascalCase` | `Contact`, `ContactPayload` |
+| Interface/Type | `PascalCase` | `User`, `UserPayload` |
 | Emits | `past-tense` verb | `created`, `updated`, `deleted` |
 
 ### Component Naming (Auto-import oleh Nuxt)

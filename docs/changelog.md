@@ -10,11 +10,11 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 
 ### 🎉 Initial Release
 
-- Nuxt Boilerplate — Starter template admin dashboard
+- SIMAS — Sistem Management Asset Dashboard
 - Nuxt 4, NuxtUI v4, Tailwind CSS v4, TypeScript, Zod, Axios
 - Authentication (email/password, Google OAuth, forgot/reset password)
 - User management CRUD
-- Contact CRUD
+- User CRUD
 - Profile configuration
 - Dashboard layout dengan collapsible sidebar
 - Auth layout dengan split-screen design

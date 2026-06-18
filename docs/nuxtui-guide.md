@@ -67,7 +67,7 @@ Digunakan di `app.vue` sebagai root wrapper aplikasi:
 
 <!-- Button with icon -->
 <UButton color="primary" variant="solid" icon="i-lucide-plus">
-  Add Contact
+  Add User
 </UButton>
 
 <!-- Soft variant -->
@@ -267,7 +267,7 @@ const schema = z.object({
 ```typescript
 import type { TableColumn } from '@nuxt/ui'
 
-const columns: TableColumn<Contact>[] = [
+const columns: TableColumn<User>[] = [
   {
     accessorKey: 'id',
     header: '#',
@@ -380,7 +380,7 @@ cell: ({ row }) => {
 | `i-lucide-ellipsis-vertical` | More actions |
 | `i-lucide-chevrons-up-down` | Expand/collapse |
 | `i-lucide-layout-dashboard` | Dashboard nav |
-| `i-lucide-users-round` | Contact/users nav |
+| `i-lucide-users-round` | User/users nav |
 
 ### 11. UTooltip
 
@@ -455,7 +455,7 @@ const toast = useToast()
 
 // Success toast
 toast.add({
-  title: 'Contact created successfully!',
+  title: 'User created successfully!',
   color: 'success',
   icon: 'i-lucide-circle-check'
 })

@@ -34,14 +34,14 @@
       </div>
 
       <UForm id="add-user-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-3">
-        <UFormField label="Name" name="name">
+        <UFormField label="Name" name="name" required>
           <UInput v-model="form.name" placeholder="Enter full name" class="w-full" />
         </UFormField>
-        <UFormField label="Email" name="email">
+        <UFormField label="Email" name="email" required>
           <UInput v-model="form.email" type="email" placeholder="Enter email address" class="w-full" />
         </UFormField>
         <UFormField label="Password" name="password">
-          <UInput v-model="form.password" type="password" placeholder="Enter password" class="w-full" />
+          <UInput v-model="form.password" type="password" placeholder="Enter password (optional)" class="w-full" />
         </UFormField>
         <UFormField label="Status" name="isActive">
           <div class="flex items-center gap-2">
@@ -84,7 +84,7 @@ const previewUrl = ref<string | null>(null)
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(6, 'Password must be at least 6 characters').optional().or(z.literal('')),
   isActive: z.boolean()
 })
 

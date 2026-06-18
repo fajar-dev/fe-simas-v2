@@ -25,15 +25,15 @@ Komponen yang digunakan di seluruh aplikasi. Auto-imported oleh Nuxt.
 
 Komponen spesifik untuk fitur tertentu. Dinamakan dengan prefix folder.
 
-**Contoh: `contact/`**
+**Contoh: `user/`**
 
-| Komponen | Fungsi | Props | Emits |
-|----------|--------|-------|-------|
-| `ContactAddModal` | Form tambah contact | `modelValue: boolean` (v-model) | `created` |
-| `ContactUpdateModal` | Form edit contact | `modelValue: boolean`, `contact: Contact \| null` | `updated` |
-| `ContactDeleteModal` | Konfirmasi hapus contact | `modelValue: boolean`, `contact: Contact \| null` | `deleted` |
+| Component | Fungsi | Props | Emit |
+|-----------|--------|-------|------|
+| `UserAddModal` | Form tambah user | `modelValue: boolean` (v-model) | `created` |
+| `UserUpdateModal` | Form edit user | `modelValue: boolean`, `user: User \| null` | `updated` |
+| `UserDeleteModal` | Konfirmasi hapus user | `modelValue: boolean`, `user: User \| null` | `deleted` |
 
-> **Auto-naming oleh Nuxt:** File `components/contact/AddModal.vue` otomatis jadi `<ContactAddModal />`.
+> **Auto-naming oleh Nuxt:** File `components/user/AddModal.vue` otomatis jadi `<UserAddModal />`.
 
 ## Aturan Wajib: Modal HARUS Jadi Component
 
@@ -313,7 +313,7 @@ Saat menambah fitur CRUD baru (misal: `product`):
    - Interface `ProductPayload` (payload create/update)
 
 2. **Service**: Buat `app/services/product-service.ts`
-   - Class `ProductService` mengikuti pattern `ContactService`
+   - Class `ProductService` mengikuti pattern `UserService`
    - Export singleton: `export const productService = new ProductService()`
 
 3. **Components**: Buat folder `app/components/product/`
@@ -322,7 +322,7 @@ Saat menambah fitur CRUD baru (misal: `product`):
    - Gunakan `DeleteModal` global (jangan buat baru)
 
 4. **Page**: Buat `app/pages/product/index.vue`
-   - Mengikuti pattern `contact/index.vue`
+   - Mengikuti pattern `user/index.vue`
 
 5. **Navigation**: Update `app/composables/useNavigation.ts`
    - Tambahkan nav item baru di `navGroups`

@@ -194,7 +194,7 @@ export interface FeaturePayload {
   // ... field yang dikirim ke API (tanpa id, timestamps)
 }
 
-// Pagination meta (sudah ada di contact.d.ts, bisa dipakai ulang)
+// Pagination meta (sudah ada di api.d.ts, bisa dipakai ulang)
 export interface PaginationMeta {
   total: number
   perPage: number
@@ -204,7 +204,7 @@ export interface PaginationMeta {
   to: number
 }
 
-// API Response wrapper (sudah ada di contact.d.ts & auth.d.ts)
+// API Response wrapper (sudah ada di api.d.ts)
 export interface ApiResponse<T = any> {
   success: boolean
   statusCode?: number
@@ -214,7 +214,7 @@ export interface ApiResponse<T = any> {
 }
 ```
 
-> **⚠️ TODO**: `ApiResponse` dan `PaginationMeta` saat ini didefinisikan di dua file (`auth.d.ts` dan `contact.d.ts`). Idealnya dipindahkan ke `app/types/api.d.ts` sebagai shared type.
+> **✅ DONE**: `ApiResponse` dan `PaginationMeta` sudah dipindahkan ke `app/types/api.d.ts` sebagai shared type.
 
 ## 5. Auth Service
 
@@ -276,7 +276,7 @@ const navGroups: NavGroup[] = [
     title: 'Dashboard',
     items: [
       { label: 'Dashboard', to: '/', icon: 'i-lucide-layout-dashboard' },
-      { label: 'Contact', to: '/contact', icon: 'i-lucide-users-round' },
+      { label: 'User', to: '/user', icon: 'i-lucide-users-round' },
       // Tambah di sini:
       { label: 'Product', to: '/product', icon: 'i-lucide-package' }
     ]
@@ -295,10 +295,9 @@ const navGroups: NavGroup[] = [
 
 ```typescript
 // Service — direct import
-import { contactService } from '~/services/contact-service'
+import { userService } from '~/services/user-service'
 
-// Types — type-only import
-import type { Contact, ContactPayload } from '~/types/contact'
+import type { User } from '~/types/user'
 
 // Composable — auto-imported oleh Nuxt (tidak perlu import)
 const { state } = useAuth()
@@ -314,7 +313,7 @@ import axios from 'axios'
 
 1. Buat file type: `app/types/<feature>.d.ts`
 2. Buat file service: `app/services/<feature>-service.ts`
-3. Ikuti pattern `ContactService` persis
+3. Ikuti pattern `UserService` persis
 4. Export singleton di akhir file
 5. Gunakan `handleServiceError` di setiap catch
 6. Type semua response dengan generic `ApiResponse<T>`
