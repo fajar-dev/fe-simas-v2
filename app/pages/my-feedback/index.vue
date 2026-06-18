@@ -27,16 +27,6 @@
             class="w-20" 
           />
         </div>
-
-        <UButton
-          color="primary"
-          variant="solid"
-          icon="i-lucide-plus"
-          class="w-full lg:w-auto justify-center"
-          @click="triggerFeedback"
-        >
-          Submit Feedback
-        </UButton>
       </div>
 
       <!-- Table -->
@@ -49,7 +39,7 @@
             th: 'bg-neutral-50 py-2.5', 
             td: 'text-neutral-900 py-3' 
           }"
-          class="border border-neutral-200 rounded-md min-w-[768px]" 
+          class="border border-neutral-200 rounded-md" 
         />
       </div>
 
@@ -63,40 +53,18 @@
     </section>
 
     <!-- Lightbox Modal -->
-    <UModal v-model:open="lightboxOpen" :ui="{ content: 'sm:max-w-4xl bg-transparent p-0 shadow-none border-none' }">
-      <template #content>
-        <div class="relative flex flex-col items-center justify-center p-2 select-none group max-h-screen">
-          <img 
-            :src="lightboxImage" 
-            alt="Full Screenshot" 
-            class="max-w-full max-h-[85vh] rounded-lg shadow-2xl object-contain border border-neutral-700 bg-black"
-          />
-          <UButton
-            icon="i-lucide-x"
-            color="neutral"
-            variant="solid"
-            class="absolute top-4 right-4 rounded-full bg-black/60 hover:bg-black/80 text-white"
-            @click="lightboxOpen = false"
-            aria-label="Close Preview"
-          />
-        </div>
-      </template>
-    </UModal>
+    <Lightbox />
   </div>
 </template>
 
 <script setup lang="ts">
-import { h, resolveComponent } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import { feedbackService } from '~/services/feedback-service'
 import type { FeedbackItem } from '~/services/feedback-service'
-import { useFeedback } from '~/composables/useFeedback'
 
 definePageMeta({
   layout: 'dashboard'
 })
-
-const { triggerFeedback } = useFeedback()
 
 // Table controls state
 const search = ref('')
@@ -107,13 +75,7 @@ const page = ref(1)
 const feedbacks = ref<FeedbackItem[]>([])
 const isLoading = ref(false)
 
-const lightboxOpen = ref(false)
-const lightboxImage = ref('')
-
-const openLightbox = (url: string) => {
-  lightboxImage.value = url
-  lightboxOpen.value = true
-}
+const { openLightbox } = useLightbox()
 
 const fetchFeedback = async () => {
   isLoading.value = true
@@ -127,8 +89,6 @@ const fetchFeedback = async () => {
         return timeB - timeA
       })
     }
-  } catch (error) {
-    console.error('Failed to load feedback:', error)
   } finally {
     isLoading.value = false
   }
@@ -166,33 +126,7 @@ const meta = computed(() => {
   return { total, from, to }
 })
 
-const formatDate = (timestamp: string) => {
-  const ts = Number(timestamp)
-  if (isNaN(ts)) return timestamp
-  
-  return new Date(ts).toLocaleString('en-US', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
 
-const getTypeLabel = (type: string) => {
-  switch (type?.toLowerCase()) {
-    case 'bug':
-    case 'issue':
-      return 'Issue'
-    case 'feature':
-    case 'suggestion':
-      return 'Suggestion'
-    case 'compliment':
-      return 'Compliment'
-    default:
-      return type || 'Other'
-  }
-}
 
 // Table columns: Time, URL, Message, Attachment, Reply (Matching style rules of User Profile / Category table cells)
 const columns: TableColumn<FeedbackItem>[] = [
@@ -201,34 +135,23 @@ const columns: TableColumn<FeedbackItem>[] = [
     header: 'Time',
     cell: ({ row }) => {
       const dateStr = formatDate(row.original.timestamp)
-      return h('span', { class: 'text-neutral-600 text-sm' }, dateStr)
+      return h('span', { class: 'font-medium text-neutral-600' }, dateStr)
     }
   },
   {
     accessorKey: 'url',
     header: 'URL',
     cell: ({ row }) => {
-      const url = row.original.url
-      if (!url) return h('span', { class: 'text-neutral-400 text-sm' }, '-')
-      return h('a', {
-        href: url,
-        target: '_blank',
-        class: 'text-blue-500 hover:text-blue-600 underline truncate block max-w-[200px] text-sm'
-      }, url)
+      return h('span', { class: 'font-medium text-neutral-900' }, row.original.url)
     }
   },
   {
     accessorKey: 'message',
     header: 'Message',
     cell: ({ row }) => {
-      const typeLabel = getTypeLabel(row.original.type)
-      const message = row.original.message
-      
       return h('div', { class: 'flex flex-col py-1' }, [
-        // Category Label (lowercase bold text, no badge, matches subheadings style)
-        h('div', { class: 'text-[10px] font-bold text-neutral-400 uppercase tracking-wider' }, typeLabel),
-        // Message Body (matches name/main column font-medium style)
-        h('span', { class: 'font-medium text-neutral-900 block whitespace-pre-wrap max-w-md mt-0.5' }, message)
+        h('div', { class: 'text-md font-semibold text-primary-900' }, row.original.category),
+        h('span', { class: 'text-neutral-600 whitespace-pre-wrap' }, row.original.message)
       ])
     }
   },
@@ -241,12 +164,12 @@ const columns: TableColumn<FeedbackItem>[] = [
       
       return h(
         'div',
-        { class: 'flex gap-1.5 py-1' },
+        { class: 'flex flex-wrap gap-1.5 py-1 max-w-[200px]' },
         imgs.map((img) => 
           h('img', {
             src: img,
             alt: 'Screenshot',
-            class: 'w-10 h-7 object-cover rounded border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs',
+            class: 'w-16 h-10 object-cover rounded border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0',
             onClick: (e: Event) => {
               e.stopPropagation()
               openLightbox(img)
@@ -260,12 +183,9 @@ const columns: TableColumn<FeedbackItem>[] = [
     accessorKey: 'reply',
     header: 'Reply',
     cell: ({ row }) => {
-      const reply = row.original.reply
-      if (!reply) return h('span', { class: 'text-neutral-400 text-sm' }, '-')
-      
       return h('div', { class: 'flex flex-col py-1' }, [
-        h('div', { class: 'text-[10px] font-bold text-neutral-400 uppercase tracking-wider' }, 'Admin Response'),
-        h('span', { class: 'text-sm text-neutral-600 font-medium whitespace-pre-wrap max-w-sm mt-0.5' }, reply)
+        h('div', { class: 'text-md font-semibold text-primary-900' }, row.original.type || '-'),
+        h('span', { class: 'text-neutral-600 whitespace-pre-wrap' }, row.original.reply || '-')
       ])
     }
   }

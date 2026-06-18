@@ -10,6 +10,7 @@ export interface FeedbackItem {
   url: string
   message: string
   type: string
+  category: string
   reply?: string | null
 }
 
