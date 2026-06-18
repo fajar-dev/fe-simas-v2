@@ -88,7 +88,6 @@ definePageMeta({
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
-const UBadge = resolveComponent('UBadge')
 
 // State
 const search = ref('')
@@ -155,24 +154,20 @@ const columns: TableColumn<Location>[] = [
     }
   },
   {
-    accessorKey: 'description',
-    header: 'Description',
-    cell: ({ row }) => {
-      const desc = row.original.description
-      return h('span', { class: 'text-neutral-600' }, desc || '-')
-    }
-  },
-  {
     id: 'branch',
     header: 'Branch',
     cell: ({ row }) => {
       const branch = row.original.branch
       if (!branch) return '-'
-      return h(
-        UBadge,
-        { color: 'primary', variant: 'subtle' },
-        () => `[${branch.code}] ${branch.name}`
-      )
+      return h('span', { class: 'font-medium text-neutral-900' }, `[${branch.code}] ${branch.name}`)
+    }
+  },
+  {
+    accessorKey: 'description',
+    header: 'Description',
+    cell: ({ row }) => {
+      const desc = row.original.description
+      return h('span', { class: 'text-neutral-600' }, desc || '-')
     }
   },
   {

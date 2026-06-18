@@ -25,28 +25,26 @@
     <div v-else class="max-w-2xl bg-white border border-neutral-200 rounded-lg p-6 shadow-sm">
       <!-- Image Upload Section -->
       <div class="flex flex-col items-center justify-center pb-4 space-y-2 border-b border-neutral-100 mb-6">
-        <div class="relative group cursor-pointer" @click="triggerFileInput">
-          <div class="w-48 h-32 rounded-lg overflow-hidden border-2 border-neutral-200 hover:border-primary/50 transition-colors duration-200 flex items-center justify-center bg-neutral-50 relative">
-            <img v-if="previewUrl" :src="previewUrl" class="w-full h-full object-cover" />
-            <div v-else class="flex flex-col items-center justify-center text-neutral-400">
-              <UIcon name="i-lucide-image" class="w-10 h-10" />
-              <span class="text-xs mt-1">Upload Asset Image</span>
-            </div>
-            
-            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <UIcon name="i-lucide-camera" class="w-6 h-6 text-white" />
-            </div>
-
-            <div v-if="isUploading" class="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <UIcon name="i-lucide-loader-2" class="w-6 h-6 text-white animate-spin" />
-            </div>
-          </div>
+        <div v-if="previewUrl" class="relative">
+          <img :src="previewUrl" class="w-48 h-32 rounded-lg object-cover border-2 border-neutral-200" />
+          <UButton
+            icon="i-lucide-x"
+            color="error"
+            variant="solid"
+            size="xs"
+            class="absolute -top-1 -right-1 rounded-full"
+            @click="removeImage"
+          />
         </div>
-        <div class="flex gap-2">
-          <UButton size="xs" color="neutral" variant="outline" @click="triggerFileInput" icon="i-lucide-upload">Choose Image</UButton>
-          <UButton v-if="previewUrl || form.image" size="xs" color="error" variant="outline" @click="removeImage" icon="i-lucide-trash">Remove</UButton>
-        </div>
-        <input type="file" ref="fileInput" class="hidden" accept="image/*" @change="onFileChange" />
+        <UFileUpload
+          v-else
+          accept="image/*"
+          icon="i-lucide-image"
+          label="Choose an image"
+          description="PNG, JPG up to 2MB"
+          :loading="isUploading"
+          @change="onFileChange"
+        />
       </div>
 
       <UForm id="edit-asset-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
@@ -170,7 +168,7 @@ const toast = useToast()
 const isSubmitting = ref(false)
 const isUploading = ref(false)
 const isLoadingAsset = ref(true)
-const fileInput = ref<HTMLInputElement | null>(null)
+
 const previewUrl = ref<string | null>(null)
 const showAddCategory = ref(false)
 const showAddSubCategory = ref(false)
@@ -249,9 +247,7 @@ const form = reactive<AssetPayload>({
   subCategoryId: undefined as unknown as number,
 })
 
-const triggerFileInput = () => {
-  fileInput.value?.click()
-}
+
 
 const fetchCategories = async () => {
   const catRes = await categoryService.getAll(1, 999)
@@ -356,9 +352,6 @@ const onFileChange = async (e: Event) => {
 const removeImage = () => {
   form.image = null
   previewUrl.value = null
-  if (fileInput.value) {
-    fileInput.value.value = ''
-  }
 }
 
 const handleSubmit = async () => {

@@ -7,11 +7,10 @@ export interface Asset {
   description: string | null
   price: number | null
   purchaseDate: string | null
+  age: string | null
   brand: string | null
   model: string | null
   image: string | null
-  rawImage: string | null
-  subCategoryId: number
   subCategory: {
     id: number
     name: string

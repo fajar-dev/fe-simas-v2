@@ -2,7 +2,7 @@
   <!-- Tab Content: Password -->
   <div class="p-6 space-y-6">
     <UForm :schema="passwordSchema" :state="formPassword" @submit="handlePasswordSubmit" class="space-y-4">
-      <UFormField v-if="authState.user?.hasPassword" name="oldPassword">
+      <UFormField v-if="authState.user?.hasPassword" name="oldPassword" required>
         <template #label>
           <div class="flex flex-col gap-0.5">
             <span class="font-medium text-sm text-neutral-900">Current Password</span>
@@ -11,10 +11,10 @@
         </template>
         <UInput v-model="formPassword.oldPassword" type="password" placeholder="Enter current password" class="w-full" />
       </UFormField>
-      <UFormField label="New Password" name="newPassword">
+      <UFormField label="New Password" name="newPassword" required>
         <UInput v-model="formPassword.newPassword" type="password" placeholder="Minimum 6 characters" class="w-full" />
       </UFormField>
-      <UFormField label="Confirm New Password" name="confirmPassword">
+      <UFormField label="Confirm New Password" name="confirmPassword" required>
         <UInput v-model="formPassword.confirmPassword" type="password" placeholder="Confirm new password" class="w-full" />
       </UFormField>
       

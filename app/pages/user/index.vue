@@ -10,7 +10,7 @@
     <section class="space-y-5">
       <!-- Controls -->
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+        <div class="flex flex-row items-center gap-2">
           <!-- Search -->
           <UInput 
             v-model="search" 

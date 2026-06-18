@@ -88,7 +88,6 @@ definePageMeta({
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
-const UBadge = resolveComponent('UBadge')
 
 // State
 const search = ref('')
@@ -155,24 +154,20 @@ const columns: TableColumn<SubCategory>[] = [
     }
   },
   {
-    accessorKey: 'description',
-    header: 'Description',
-    cell: ({ row }) => {
-      const desc = row.original.description
-      return h('span', { class: 'text-neutral-600' }, desc || '-')
-    }
-  },
-  {
     id: 'category',
     header: 'Category',
     cell: ({ row }) => {
       const cat = row.original.category
       if (!cat) return '-'
-      return h(
-        UBadge,
-        { color: 'primary', variant: 'subtle' },
-        () => cat.name
-      )
+      return h('span', { class: 'font-medium text-neutral-900' }, cat.name)
+    }
+  },
+  {
+    accessorKey: 'description',
+    header: 'Description',
+    cell: ({ row }) => {
+      const desc = row.original.description
+      return h('span', { class: 'text-neutral-600' }, desc || '-')
     }
   },
   {

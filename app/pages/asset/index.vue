@@ -208,7 +208,13 @@ const columns: TableColumn<Asset>[] = [
     accessorKey: 'purchaseDate',
     header: 'Purchase Date',
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600' }, row.original.purchaseDate || '-')
+      const date = row.original.purchaseDate
+      const age = row.original.age
+      if (!date) return h('span', { class: 'text-neutral-600' }, '-')
+      return h('div', { class: 'flex flex-col min-w-0' }, [
+        age ? h('span', { class: 'font-medium text-neutral-900' }, age) : null,
+        h('span', { class: 'text-xs text-neutral-500' }, date)
+      ])
     }
   },
   {
