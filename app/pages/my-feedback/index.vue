@@ -4,18 +4,7 @@
     <Header
       title="Feedback History"
       description="View and track your submitted feedback and responses"
-    >
-      <template #actions>
-        <UButton
-          color="primary"
-          variant="solid"
-          icon="i-lucide-plus"
-          @click="triggerFeedback"
-        >
-          Submit Feedback
-        </UButton>
-      </template>
-    </Header>
+    />
 
     <section class="space-y-5">
       <!-- Controls -->
@@ -38,6 +27,16 @@
             class="w-20" 
           />
         </div>
+
+        <UButton
+          color="primary"
+          variant="solid"
+          icon="i-lucide-plus"
+          class="w-full lg:w-auto justify-center"
+          @click="triggerFeedback"
+        >
+          Submit Feedback
+        </UButton>
       </div>
 
       <!-- Table -->
@@ -48,16 +47,16 @@
           :loading="isLoading"
           :ui="{ 
             th: 'bg-neutral-50 py-2.5', 
-            td: 'text-neutral-900 py-3 align-middle' 
+            td: 'text-neutral-900 py-3' 
           }"
-          class="border border-neutral-200 rounded-md bg-white" 
+          class="border border-neutral-200 rounded-md min-w-[768px]" 
         />
       </div>
 
       <!-- Pagination -->
       <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
         <span class="text-sm text-neutral-500">
-          Showing {{ meta.from }} to {{ meta.to }} of {{ meta.total }} results
+          Showing {{ meta.from || 0 }} to {{ meta.to || 0 }} of {{ meta.total }} results
         </span>
         <UPagination v-model:page="page" size="md" :total="meta.total" :items-per-page="perPage" />
       </div>
@@ -87,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, h, resolveComponent, watch } from 'vue'
+import { h, resolveComponent } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import { feedbackService } from '~/services/feedback-service'
 import type { FeedbackItem } from '~/services/feedback-service'
@@ -195,38 +194,42 @@ const getTypeLabel = (type: string) => {
   }
 }
 
-// Table columns: Message, Attachment, Reply (Matching style rules of User Profile / Category table cells)
+// Table columns: Time, URL, Message, Attachment, Reply (Matching style rules of User Profile / Category table cells)
 const columns: TableColumn<FeedbackItem>[] = [
+  {
+    accessorKey: 'timestamp',
+    header: 'Time',
+    cell: ({ row }) => {
+      const dateStr = formatDate(row.original.timestamp)
+      return h('span', { class: 'text-neutral-600 text-sm' }, dateStr)
+    }
+  },
+  {
+    accessorKey: 'url',
+    header: 'URL',
+    cell: ({ row }) => {
+      const url = row.original.url
+      if (!url) return h('span', { class: 'text-neutral-400 text-sm' }, '-')
+      return h('a', {
+        href: url,
+        target: '_blank',
+        class: 'text-blue-500 hover:text-blue-600 underline truncate block max-w-[200px] text-sm'
+      }, url)
+    }
+  },
   {
     accessorKey: 'message',
     header: 'Message',
     cell: ({ row }) => {
       const typeLabel = getTypeLabel(row.original.type)
       const message = row.original.message
-      const url = row.original.url
-      const dateStr = formatDate(row.original.timestamp)
       
-      const children = [
+      return h('div', { class: 'flex flex-col py-1' }, [
         // Category Label (lowercase bold text, no badge, matches subheadings style)
         h('div', { class: 'text-[10px] font-bold text-neutral-400 uppercase tracking-wider' }, typeLabel),
         // Message Body (matches name/main column font-medium style)
         h('span', { class: 'font-medium text-neutral-900 block whitespace-pre-wrap max-w-md mt-0.5' }, message)
-      ]
-      
-      // Footer info row: Time & URL (matches email sub-text style)
-      children.push(
-        h('div', { class: 'text-xs text-neutral-500 mt-1 flex flex-wrap items-center gap-1.5 font-normal' }, [
-          h('span', {}, dateStr),
-          url ? h('span', { class: 'text-neutral-300' }, '•') : null,
-          url ? h('a', {
-            href: url,
-            target: '_blank',
-            class: 'text-blue-500 hover:text-blue-600 underline truncate max-w-[200px]'
-          }, url) : null
-        ].filter(Boolean))
-      )
-      
-      return h('div', { class: 'flex flex-col py-1' }, children)
+      ])
     }
   },
   {
