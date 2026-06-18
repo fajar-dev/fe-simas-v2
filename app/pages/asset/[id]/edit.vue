@@ -61,17 +61,21 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UFormField label="Category" required>
-            <USelect
-              v-model="selectedCategoryId"
+            <USelectMenu
+              v-model="selectedCategory"
               :items="categoryOptions"
+              searchable
+              searchable-placeholder="Search category..."
               placeholder="Select category"
               class="w-full"
             />
           </UFormField>
           <UFormField label="Sub Category" name="subCategoryId" required>
-            <USelect
-              v-model="form.subCategoryId"
+            <USelectMenu
+              v-model="selectedSubCategory"
               :items="subCategoryOptions"
+              searchable
+              searchable-placeholder="Search sub category..."
               placeholder="Select sub category"
               :disabled="!selectedCategoryId || isLoadingSubCategories"
               class="w-full"
@@ -152,6 +156,20 @@ const categoryOptions = ref<{ label: string; value: number }[]>([])
 const subCategoryOptions = ref<{ label: string; value: number }[]>([])
 const isLoadingSubCategories = ref(false)
 const lastFetchedCategoryId = ref<number | undefined>(undefined)
+
+const selectedCategory = computed({
+  get: () => categoryOptions.value.find((c) => c.value === selectedCategoryId.value),
+  set: (val) => {
+    selectedCategoryId.value = val?.value
+  }
+})
+
+const selectedSubCategory = computed({
+  get: () => subCategoryOptions.value.find((s) => s.value === form.subCategoryId),
+  set: (val) => {
+    form.subCategoryId = val?.value as unknown as number
+  }
+})
 
 watch(selectedCategoryId, async (newVal) => {
   if (!newVal) {

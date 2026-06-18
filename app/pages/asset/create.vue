@@ -5,7 +5,7 @@
       description="Create a new asset record"
     />
 
-    <div class="max-w-2xl bg-white border border-neutral-200 rounded-lg p-6 shadow-sm">
+    <div class="max-w-2xl bg-white border border-neutral-200 rounded-lg p-6">
       <!-- Image Upload Section -->
       <div class="flex flex-col items-center justify-center pb-4 space-y-2 border-b border-neutral-100 mb-6">
         <div class="relative group cursor-pointer" @click="triggerFileInput">
@@ -44,17 +44,21 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UFormField label="Category" required>
-            <USelect
-              v-model="selectedCategoryId"
+            <USelectMenu
+              v-model="selectedCategory"
               :items="categoryOptions"
+              searchable
+              searchable-placeholder="Search category..."
               placeholder="Select category"
               class="w-full"
             />
           </UFormField>
           <UFormField label="Sub Category" name="subCategoryId" required>
-            <USelect
-              v-model="form.subCategoryId"
+            <USelectMenu
+              v-model="selectedSubCategory"
               :items="subCategoryOptions"
+              searchable
+              searchable-placeholder="Search sub category..."
               placeholder="Select sub category"
               :disabled="!selectedCategoryId || isLoadingSubCategories"
               class="w-full"
@@ -129,6 +133,20 @@ const selectedCategoryId = ref<number | undefined>(undefined)
 const categoryOptions = ref<{ label: string; value: number }[]>([])
 const subCategoryOptions = ref<{ label: string; value: number }[]>([])
 const isLoadingSubCategories = ref(false)
+
+const selectedCategory = computed({
+  get: () => categoryOptions.value.find((c) => c.value === selectedCategoryId.value),
+  set: (val) => {
+    selectedCategoryId.value = val?.value
+  }
+})
+
+const selectedSubCategory = computed({
+  get: () => subCategoryOptions.value.find((s) => s.value === form.subCategoryId),
+  set: (val) => {
+    form.subCategoryId = val?.value as unknown as number
+  }
+})
 
 watch(selectedCategoryId, async (newVal) => {
   if (!newVal) {
