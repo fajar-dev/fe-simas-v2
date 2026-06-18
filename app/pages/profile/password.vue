@@ -33,7 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
 import { z } from 'zod'
 import type { UpdatePasswordPayload } from '~/types/profile'
 

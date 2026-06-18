@@ -1,5 +1,5 @@
 <template>
-  <UPopover v-bind="popoverProps">
+  <UPopover v-model:open="popoverOpen" v-bind="popoverProps">
     <!-- Trigger: use slot or default avatar -->
     <slot>
       <UAvatar
@@ -38,8 +38,19 @@
             icon="i-lucide-user"
             class="w-full justify-start"
             to="/profile"
+            @click="popoverOpen = false"
           >
             Profile
+          </UButton>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            icon="i-lucide-message-square"
+            class="w-full justify-start"
+            to="/feedback"
+            @click="popoverOpen = false"
+          >
+            My Feedback
           </UButton>
           <UButton
             color="error"
@@ -59,6 +70,7 @@
 <script setup lang="ts">
 const { state: authState, service: authService } = useAuth()
 const toast = useToast()
+const popoverOpen = ref(false)
 
 interface Props {
   popoverProps?: Record<string, any>

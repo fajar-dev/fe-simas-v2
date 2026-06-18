@@ -105,7 +105,7 @@
           color="primary"
           variant="ghost"
           icon="i-lucide-history"
-          to="/my-feedback"
+          to="/feedback"
           @click="open = false"
         />
         <div class="flex gap-2">
@@ -131,7 +131,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue'
 import { z } from 'zod'
 import { useFeedback } from '~/composables/useFeedback'
 import { feedbackService } from '~/services/feedback-service'

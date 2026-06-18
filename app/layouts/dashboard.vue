@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen w-full font-sans text-neutral-900 overflow-hidden">
+  <div class="flex h-screen w-full font-sans text-neutral-900 overflow-hidden bg-white">
     
     <!-- 1. Sidebar Left (Desktop) -->
     <div class="hidden lg:block h-full">

@@ -52,7 +52,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, onMounted } from 'vue'
 import { z } from 'zod'
 import { userService } from '~/services/user-service'
 import type { UpdateProfilePayload } from '~/types/profile'

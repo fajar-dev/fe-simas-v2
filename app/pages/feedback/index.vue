@@ -9,7 +9,7 @@
     <section class="space-y-5">
       <!-- Controls -->
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+        <div class="flex flex-row items-center gap-2">
           <!-- Search -->
           <UInput 
             v-model="search" 
@@ -133,6 +133,7 @@ const columns: TableColumn<FeedbackItem>[] = [
   {
     accessorKey: 'timestamp',
     header: 'Time',
+    meta: { class: { td: 'w-[140px]' } },
     cell: ({ row }) => {
       const dateStr = formatDate(row.original.timestamp)
       return h('span', { class: 'font-medium text-neutral-600' }, dateStr)
@@ -141,13 +142,15 @@ const columns: TableColumn<FeedbackItem>[] = [
   {
     accessorKey: 'url',
     header: 'URL',
+    meta: { class: { td: 'w-[180px] max-w-[180px]' } },
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, row.original.url)
+      return h('span', { class: 'font-medium text-neutral-900 truncate block', title: row.original.url }, row.original.url)
     }
   },
   {
     accessorKey: 'message',
     header: 'Message',
+    meta: { class: { td: 'min-w-[300px]' } },
     cell: ({ row }) => {
       return h('div', { class: 'flex flex-col py-1' }, [
         h('div', { class: 'text-md font-semibold text-primary-900' }, row.original.category),
@@ -158,13 +161,14 @@ const columns: TableColumn<FeedbackItem>[] = [
   {
     accessorKey: 'images',
     header: 'Attachment',
+    meta: { class: { td: 'w-[150px]' } },
     cell: ({ row }) => {
       const imgs = row.original.images
       if (!imgs || !imgs.length) return h('span', { class: 'text-neutral-400 text-sm' }, '-')
       
       return h(
         'div',
-        { class: 'flex flex-wrap gap-1.5 py-1 max-w-[200px]' },
+        { class: 'flex flex-wrap gap-1.5 py-1' },
         imgs.map((img) => 
           h('img', {
             src: img,
@@ -182,6 +186,7 @@ const columns: TableColumn<FeedbackItem>[] = [
   {
     accessorKey: 'reply',
     header: 'Reply',
+    meta: { class: { td: 'min-w-[250px]' } },
     cell: ({ row }) => {
       return h('div', { class: 'flex flex-col py-1' }, [
         h('div', { class: 'text-md font-semibold text-primary-900' }, row.original.type || '-'),

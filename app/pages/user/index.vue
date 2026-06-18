@@ -77,7 +77,6 @@
 </template>
 
 <script setup lang="ts">
-import { h, resolveComponent } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { userService } from '~/services/user-service'
