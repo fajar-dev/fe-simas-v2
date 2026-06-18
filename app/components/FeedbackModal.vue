@@ -182,9 +182,23 @@ const onSubmit = async () => {
         color: 'success',
         icon: 'i-lucide-circle-check'
       })
+      open.value = false
+    } else {
+      toast.add({
+        title: 'Failed to submit feedback',
+        description: response.message || 'Please try again.',
+        color: 'error',
+        icon: 'i-lucide-circle-x'
+      })
     }
-    open.value = false
-    navigateTo('/my-feedback')
+  } catch (error) {
+    console.error('Error submitting feedback:', error)
+    toast.add({
+      title: 'An error occurred',
+      description: 'Could not connect to the server.',
+      color: 'error',
+      icon: 'i-lucide-circle-x'
+    })
   } finally {
     saving.value = false
   }
