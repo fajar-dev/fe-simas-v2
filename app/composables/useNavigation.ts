@@ -30,6 +30,11 @@ export const useNavigation = () => {
           icon: 'i-lucide-box'
         },
         {
+          label: 'Employees',
+          to: '/employee',
+          icon: 'i-lucide-users'
+        },
+        {
           label: 'Users',
           to: '/user',
           icon: 'i-lucide-user'
