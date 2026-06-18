@@ -5,7 +5,7 @@
       <UAvatar
         :src="authState.user?.photo"
         :alt="authState.user?.name"
-        size="sm"
+        size="lg"
         class="cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all"
       />
     </slot>
