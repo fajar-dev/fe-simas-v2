@@ -61,25 +61,45 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UFormField label="Category" required>
-            <USelectMenu
-              v-model="selectedCategory"
-              :items="categoryOptions"
-              searchable
-              searchable-placeholder="Search category..."
-              placeholder="Select category"
-              class="w-full"
-            />
+            <div class="flex items-center gap-2">
+              <USelectMenu
+                v-model="selectedCategory"
+                :items="categoryOptions"
+                searchable
+                searchable-placeholder="Search category..."
+                placeholder="Select category"
+                class="w-full"
+              />
+              <UButton
+                icon="i-lucide-plus"
+                color="primary"
+                variant="soft"
+                size="sm"
+                square
+                @click="showAddCategory = true"
+              />
+            </div>
           </UFormField>
           <UFormField label="Sub Category" name="subCategoryId" required>
-            <USelectMenu
-              v-model="selectedSubCategory"
-              :items="subCategoryOptions"
-              searchable
-              searchable-placeholder="Search sub category..."
-              placeholder="Select sub category"
-              :disabled="!selectedCategoryId || isLoadingSubCategories"
-              class="w-full"
-            />
+            <div class="flex items-center gap-2">
+              <USelectMenu
+                v-model="selectedSubCategory"
+                :items="subCategoryOptions"
+                searchable
+                searchable-placeholder="Search sub category..."
+                placeholder="Select sub category"
+                :disabled="!selectedCategoryId || isLoadingSubCategories"
+                class="w-full"
+              />
+              <UButton
+                icon="i-lucide-plus"
+                color="primary"
+                variant="soft"
+                size="sm"
+                square
+                @click="showAddSubCategory = true"
+              />
+            </div>
           </UFormField>
         </div>
 
@@ -123,6 +143,11 @@
         </div>
       </UForm>
     </div>
+
+    <!-- Add Category Modal -->
+    <CategoryAddModal v-model="showAddCategory" @created="onCategoryCreated" />
+    <!-- Add Sub Category Modal -->
+    <SubCategoryAddModal v-model="showAddSubCategory" @created="onSubCategoryCreated" />
   </div>
 </template>
 
@@ -147,6 +172,8 @@ const isUploading = ref(false)
 const isLoadingAsset = ref(true)
 const fileInput = ref<HTMLInputElement | null>(null)
 const previewUrl = ref<string | null>(null)
+const showAddCategory = ref(false)
+const showAddSubCategory = ref(false)
 
 // Category & Sub Category API state
 const selectedCategoryId = ref<number | undefined>(undefined)
@@ -181,7 +208,7 @@ watch(selectedCategoryId, async (newVal) => {
   }
   isLoadingSubCategories.value = true
   try {
-    const res = await subCategoryService.getAll(1, 999, '', Number(newVal))
+    const res = await subCategoryService.getByCategoryId(Number(newVal))
     if (res.success) {
       subCategoryOptions.value = res.data.map((s) => ({
         label: s.name,
@@ -256,7 +283,7 @@ const fetchAssetDetails = async () => {
       if (catId) {
         isLoadingSubCategories.value = true
         try {
-          const res = await subCategoryService.getAll(1, 999, '', catId)
+          const res = await subCategoryService.getByCategoryId(catId)
           if (res.success) {
             subCategoryOptions.value = res.data.map((s) => ({
               label: s.name,
@@ -348,6 +375,32 @@ const handleSubmit = async () => {
     }
   } finally {
     isSubmitting.value = false
+  }
+}
+
+const onCategoryCreated = async () => {
+  await fetchCategories()
+  // Auto-select the last created category (most recent)
+  const last = categoryOptions.value[categoryOptions.value.length - 1]
+  if (last) {
+    selectedCategoryId.value = last.value
+  }
+}
+
+const onSubCategoryCreated = async () => {
+  if (selectedCategoryId.value) {
+    const res = await subCategoryService.getByCategoryId(Number(selectedCategoryId.value))
+    if (res.success) {
+      subCategoryOptions.value = res.data.map((s) => ({
+        label: s.name,
+        value: s.id,
+      }))
+      // Auto-select the last created sub-category
+      const last = subCategoryOptions.value[subCategoryOptions.value.length - 1]
+      if (last) {
+        form.subCategoryId = last.value
+      }
+    }
   }
 }
 

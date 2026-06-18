@@ -12,9 +12,11 @@
     <template #body>
       <UForm id="add-sub-category-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-3">
         <UFormField label="Category" name="categoryId" required>
-          <USelect
-            v-model="form.categoryId"
+          <USelectMenu
+            v-model="selectedCategory"
             :items="categoryOptions"
+            searchable
+            searchable-placeholder="Search category..."
             placeholder="Select category"
             class="w-full"
           />
@@ -55,6 +57,13 @@ const toast = useToast()
 const isSubmitting = ref(false)
 
 const categoryOptions = ref<{ label: string; value: number }[]>([])
+
+const selectedCategory = computed({
+  get: () => categoryOptions.value.find((c) => c.value === form.categoryId),
+  set: (val) => {
+    form.categoryId = val?.value as unknown as number
+  }
+})
 
 const schema = z.object({
   categoryId: z.number().int().positive('Category is required'),

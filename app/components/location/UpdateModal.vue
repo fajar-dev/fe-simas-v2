@@ -12,9 +12,11 @@
     <template #body>
       <UForm id="update-location-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-3">
         <UFormField label="Branch" name="branchId" required>
-          <USelect
-            v-model="form.branchId"
+          <USelectMenu
+            v-model="selectedBranch"
             :items="branchOptions"
+            searchable
+            searchable-placeholder="Search branch..."
             placeholder="Select branch"
             class="w-full"
           />
@@ -60,6 +62,13 @@ const toast = useToast()
 const isSubmitting = ref(false)
 
 const branchOptions = ref<{ label: string; value: number }[]>([])
+
+const selectedBranch = computed({
+  get: () => branchOptions.value.find((b) => b.value === form.branchId),
+  set: (val) => {
+    form.branchId = val?.value as unknown as number
+  }
+})
 
 const schema = z.object({
   branchId: z.number().int().positive('Branch is required'),

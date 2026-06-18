@@ -25,6 +25,18 @@ export class SubCategoryService {
         }
     }
 
+    async getByCategoryId(categoryId: number): Promise<ApiResponse<SubCategory[]>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<SubCategory[]>>(
+                `/sub-category/by-category/${categoryId}`,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
     async getById(id: number): Promise<ApiResponse<SubCategory>> {
         try {
             const response = await apiService.client.get<ApiResponse<SubCategory>>(

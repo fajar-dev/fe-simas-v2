@@ -144,52 +144,42 @@ watch(search, () => {
   }, 300)
 })
 
-// Format currency
-const formatCurrency = (value: number | null) => {
-  if (value === null || value === undefined) return '-'
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(value)
-}
 
 // Table columns
 const columns: TableColumn<Asset>[] = [
   {
-    accessorKey: 'image',
-    header: 'Image',
+    id: 'asset',
+    header: 'Asset',
     cell: ({ row }) => {
       const img = row.original.image
-      if (!img) {
-        return h('div', { class: 'w-12 h-12 bg-neutral-100 rounded-md flex items-center justify-center border border-neutral-200' }, [
-          h('span', { class: 'text-neutral-400 text-xs' }, 'No Image')
-        ])
-      }
-      return h('img', {
-        src: img,
-        alt: row.original.name,
-        class: 'w-12 h-12 object-cover rounded-md border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs',
-        onClick: (e: Event) => {
-          e.stopPropagation()
-          openLightbox(img)
-        }
-      })
+      const imageEl = img
+        ? h('img', {
+            src: img,
+            alt: row.original.name,
+            class: 'w-10 h-10 object-cover rounded-md border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0',
+            onClick: (e: Event) => {
+              e.stopPropagation()
+              openLightbox(img)
+            }
+          })
+        : h('div', { class: 'w-10 h-10 bg-neutral-100 rounded-md flex items-center justify-center border border-neutral-200 shrink-0' }, [
+            h('span', { class: 'text-neutral-400 text-[10px]' }, 'N/A')
+          ])
+
+      const textEl = h('div', { class: 'flex flex-col min-w-0' }, [
+        h('span', { class: 'font-medium text-neutral-900 truncate' }, row.original.name),
+        h('span', { class: 'text-xs text-neutral-500' }, row.original.code)
+      ])
+
+      return h('div', { class: 'flex items-center gap-3' }, [imageEl, textEl])
     }
   },
   {
-    accessorKey: 'code',
-    header: 'Code',
+    id: 'category',
+    header: 'Category',
     cell: ({ row }) => {
-      return h('span', { class: 'font-mono font-medium text-neutral-900' }, row.original.code)
-    }
-  },
-  {
-    accessorKey: 'name',
-    header: 'Name',
-    cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, row.original.name)
+      const cat = row.original.subCategory?.category
+      return h('span', { class: 'text-neutral-600' }, cat?.name || '-')
     }
   },
   {
@@ -197,12 +187,7 @@ const columns: TableColumn<Asset>[] = [
     header: 'Sub Category',
     cell: ({ row }) => {
       const sub = row.original.subCategory
-      if (!sub) return '-'
-      return h(
-        UBadge,
-        { color: 'neutral', variant: 'subtle' },
-        () => sub.name
-      )
+      return h('span', { class: 'text-neutral-600' }, sub?.name || '-')
     }
   },
   {
@@ -216,7 +201,7 @@ const columns: TableColumn<Asset>[] = [
     accessorKey: 'price',
     header: 'Price',
     cell: ({ row }) => {
-      return h('span', { class: 'font-semibold text-primary-700' }, formatCurrency(row.original.price))
+      return h('span', { class: 'text-neutral-600' }, formatCurrency(row.original.price))
     }
   },
   {

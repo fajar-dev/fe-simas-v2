@@ -14,3 +14,13 @@ export const formatDate = (timestamp: string) => {
     minute: '2-digit'
   })
 }
+
+export const formatCurrency = (value: number | null | undefined) => {
+  if (value === null || value === undefined) return '-'
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(value)
+}
