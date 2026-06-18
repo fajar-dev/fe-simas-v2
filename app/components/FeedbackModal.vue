@@ -6,7 +6,7 @@
     :ui="{
       content: 'sm:max-w-md',
       overlay: 'bg-black/40',
-      footer: 'justify-end'
+      footer: 'justify-between'
     }"
   >
     <template #body>
@@ -22,14 +22,16 @@
         </div>
       </div>
 
+      <!-- Form matching the layout of other modals -->
       <UForm
+        id="feedback-form"
         :schema="schema"
         :state="state"
         class="space-y-4 w-full"
         @submit="onSubmit"
       >
-        <!-- Nuxt UI Radio Group -->
-        <UFormField name="type">
+        <!-- Type Field -->
+        <UFormField label="Type" name="type" required>
           <URadioGroup
             v-model="state.type"
             indicator="end"
@@ -40,8 +42,8 @@
           />
         </UFormField>
 
-        <!-- Nuxt UI Textarea -->
-        <UFormField name="description">
+        <!-- Description Field -->
+        <UFormField label="Description" name="description" required>
           <UTextarea
             v-model="state.description"
             :placeholder="placeholderText"
@@ -50,8 +52,8 @@
           />
         </UFormField>
 
-        <!-- Nuxt UI File Upload -->
-        <UFormField name="images">
+        <!-- Screenshots Field -->
+        <UFormField label="Screenshots" name="images" required>
           <UFileUpload
             v-model="state.images"
             layout="grid"
@@ -89,38 +91,41 @@
         </UFormField>
 
         <!-- Tagline -->
-        <div class="text-center text-sm text-neutral-500 py-1">
+        <div class="text-center text-sm text-neutral-500 pt-2 border-t border-neutral-100">
           <span>{{ t('modal.feedback.tagline') }}</span>
         </div>
-
-        <!-- Actions -->
-        <div class="flex justify-between items-center w-full">
-          <UButton
-            :label="t('modal.feedback.history')"
-            color="primary"
-            variant="ghost"
-            icon="i-lucide-history"
-            to="/my-feedback"
-            @click="emit('update:open', false)"
-          />
-          <div class="flex justify-end gap-2">
-            <UButton
-              :label="t('modal.feedback.cancel')"
-              color="neutral"
-              variant="subtle"
-              :disabled="saving"
-              @click="emit('update:open', false)"
-            />
-            <UButton
-              :label="t('modal.feedback.send')"
-              color="primary"
-              variant="solid"
-              type="submit"
-              :loading="saving"
-            />
-          </div>
-        </div>
       </UForm>
+    </template>
+
+    <template #footer>
+      <!-- Action Buttons matching style of other modals -->
+      <div class="flex justify-between items-center w-full">
+        <UButton
+          :label="t('modal.feedback.history')"
+          color="primary"
+          variant="ghost"
+          icon="i-lucide-history"
+          to="/my-feedback"
+          @click="open = false"
+        />
+        <div class="flex gap-2">
+          <UButton
+            :label="t('modal.feedback.cancel')"
+            color="neutral"
+            variant="outline"
+            :disabled="saving"
+            @click="open = false"
+          />
+          <UButton
+            :label="t('modal.feedback.send')"
+            color="primary"
+            variant="solid"
+            type="submit"
+            form="feedback-form"
+            :loading="saving"
+          />
+        </div>
+      </div>
     </template>
   </UModal>
 </template>
@@ -132,9 +137,6 @@ import { useFeedback } from '~/composables/useFeedback'
 import { feedbackService } from '~/services/feedback-service'
 
 const open = defineModel<boolean>('open', { default: false })
-const emit = defineEmits<{
-  (e: 'update:open', value: boolean): void
-}>()
 
 const { screenshotFile, currentUrl } = useFeedback()
 
