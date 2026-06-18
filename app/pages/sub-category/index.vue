@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <Header
-      title="User Management"
-      description="Manage system users and their profiles"
+      title="Sub Category Management"
+      description="Manage asset sub categories"
     >
     </Header>
 
@@ -17,7 +17,7 @@
             icon="i-lucide-search" 
             size="md" 
             variant="outline" 
-            placeholder="Search name or email..." 
+            placeholder="Search sub category..." 
             class="w-full sm:w-64" 
           />
 
@@ -32,11 +32,11 @@
         <UButton
           color="primary"
           variant="solid"
-          icon="i-lucide-user-plus"
+          icon="i-lucide-plus"
           class="w-full lg:w-auto justify-center"
           @click="showAddModal = true"
         >
-          Add User
+          Add Sub Category
         </UButton>
       </div>
 
@@ -50,7 +50,7 @@
             th: 'bg-neutral-50 py-2.5', 
             td: 'text-neutral-900 py-3' 
           }"
-          class="border border-neutral-200 rounded-md min-w-[768px]" 
+          class="border border-neutral-200 rounded-md" 
         />
       </div>
 
@@ -64,12 +64,12 @@
     </section>
 
     <!-- Modals -->
-    <UserAddModal v-model="showAddModal" @created="fetchUsers" />
-    <UserUpdateModal v-model="showUpdateModal" :user="selectedUser" @updated="fetchUsers" />
+    <SubCategoryAddModal v-model="showAddModal" @created="fetchSubCategories" />
+    <SubCategoryUpdateModal v-model="showUpdateModal" :sub-category="selectedSubCategory" @updated="fetchSubCategories" />
     <DeleteModal 
       v-model="showDeleteModal" 
-      title="Delete User" 
-      :item-name="selectedUser?.name" 
+      title="Delete Sub Category" 
+      :item-name="selectedSubCategory?.name" 
       :loading="isDeleting"
       @confirm="handleDelete" 
     />
@@ -80,8 +80,8 @@
 import { h, resolveComponent } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
-import { userService } from '~/services/user-service'
-import type { User } from '~/types/user'
+import { subCategoryService } from '~/services/sub-category-service'
+import type { SubCategory } from '~/types/sub-category'
 
 definePageMeta({
   layout: 'dashboard'
@@ -89,7 +89,6 @@ definePageMeta({
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
-const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')
 
 // State
@@ -97,9 +96,9 @@ const search = ref('')
 const limitOptions = ref([10, 25, 50, 100])
 const perPage = ref(10)
 const page = ref(1)
-const data = ref<User[]>([])
+const data = ref<SubCategory[]>([])
 const isLoading = ref(false)
-const selectedUser = ref<User | null>(null)
+const selectedSubCategory = ref<SubCategory | null>(null)
 
 // Modal states
 const showAddModal = ref(false)
@@ -114,11 +113,11 @@ const meta = reactive({
   to: 0
 })
 
-// Fetch users from API
-const fetchUsers = async () => {
+// Fetch sub categories from API
+const fetchSubCategories = async () => {
   isLoading.value = true
   try {
-    const response = await userService.getAll(page.value, perPage.value, search.value)
+    const response = await subCategoryService.getAll(page.value, perPage.value, search.value)
     if (response.success) {
       data.value = response.data
       if (response.meta) {
@@ -134,7 +133,7 @@ const fetchUsers = async () => {
 
 // Watch for page and perPage changes
 watch([page, perPage], () => {
-  fetchUsers()
+  fetchSubCategories()
 })
 
 // Watch search with debounce
@@ -143,45 +142,37 @@ watch(search, () => {
   clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => {
     page.value = 1
-    fetchUsers()
+    fetchSubCategories()
   }, 300)
 })
 
 // Table columns
-const columns: TableColumn<User>[] = [
+const columns: TableColumn<SubCategory>[] = [
   {
     accessorKey: 'name',
-    header: 'User Profile',
+    header: 'Name',
     cell: ({ row }) => {
-      const name = row.original.name
-      const email = row.original.email
-      const photo = row.original.photo
-      return h('div', { class: 'flex items-center gap-3' }, [
-        h(UAvatar, { 
-          src: photo || undefined, 
-          alt: name, 
-          size: 'lg',
-          class: 'bg-primary-50 text-primary-700'
-        }),
-        h('div', { class: 'flex flex-col' }, [
-          h('span', { class: 'font-medium text-neutral-900' }, name),
-          h('span', { class: 'text-xs text-neutral-500' }, email)
-        ])
-      ])
+      return h('span', { class: 'font-medium text-neutral-900' }, row.original.name)
     }
   },
   {
-    accessorKey: 'isActive',
-    header: 'Status',
+    accessorKey: 'description',
+    header: 'Description',
     cell: ({ row }) => {
-      const isActive = row.original.isActive
+      const desc = row.original.description
+      return h('span', { class: 'text-neutral-600' }, desc || '-')
+    }
+  },
+  {
+    id: 'category',
+    header: 'Category',
+    cell: ({ row }) => {
+      const cat = row.original.category
+      if (!cat) return '-'
       return h(
         UBadge,
-        {
-          color: isActive ? 'primary' : 'error',
-          variant: 'subtle',
-        },
-        () => (isActive ? 'Active' : 'Inactive')
+        { color: 'primary', variant: 'subtle' },
+        () => cat.name
       )
     }
   },
@@ -216,22 +207,22 @@ const columns: TableColumn<User>[] = [
   }
 ]
 
-function getRowItems(row: Row<User>) {
+function getRowItems(row: Row<SubCategory>) {
   return [
     {
-      label: 'Edit User',
+      label: 'Edit Sub Category',
       icon: 'i-lucide-edit',
       onSelect() {
-        selectedUser.value = row.original
+        selectedSubCategory.value = row.original
         showUpdateModal.value = true
       }
     },
     {
-      label: 'Delete User',
-      color: 'error',
+      label: 'Delete Sub Category',
+      color: 'error' as const,
       icon: 'i-lucide-trash',
       onSelect() {
-        selectedUser.value = row.original
+        selectedSubCategory.value = row.original
         showDeleteModal.value = true
       }
     }
@@ -241,19 +232,19 @@ function getRowItems(row: Row<User>) {
 // Handle delete
 const toast = useToast()
 const handleDelete = async () => {
-  if (!selectedUser.value) return
+  if (!selectedSubCategory.value) return
   isDeleting.value = true
   try {
-    const response = await userService.delete(selectedUser.value.id)
+    const response = await subCategoryService.delete(selectedSubCategory.value.id)
     if (response.success) {
       toast.add({
-        title: 'User deleted successfully!',
+        title: 'Sub category deleted successfully!',
         color: 'success',
         icon: 'i-lucide-circle-check'
       })
     }
     showDeleteModal.value = false
-    fetchUsers()
+    fetchSubCategories()
   } finally {
     isDeleting.value = false
   }
@@ -261,6 +252,6 @@ const handleDelete = async () => {
 
 // Initial fetch
 onMounted(() => {
-  fetchUsers()
+  fetchSubCategories()
 })
 </script>

@@ -163,19 +163,6 @@ const columns: TableColumn<Category>[] = [
     }
   },
   {
-    accessorKey: 'createdAt',
-    header: 'Created',
-    cell: ({ row }) => {
-      const val = row.getValue('createdAt') as string
-      if (!val) return '-'
-      return new Date(val).toLocaleString('en-US', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      })
-    }
-  },
-  {
     id: 'actions',
     header: 'Action',
     meta: {
