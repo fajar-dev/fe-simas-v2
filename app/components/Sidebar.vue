@@ -99,7 +99,33 @@
             :disabled="!isCollapsed"
             :content="{ align: 'center', side: 'right', sideOffset: 8 }"
           >
+            <!-- Switch between button for feedback action and NuxtLink for regular page routes -->
+            <button
+              v-if="item.to === '/feedback'"
+              type="button"
+              class="flex items-center transition-colors group cursor-pointer text-left w-full focus:outline-none"
+              :class="[
+                isCollapsed ? 'w-10 h-10 mx-auto justify-center rounded-md' : 'w-full gap-3 px-3 py-2 text-sm rounded-md font-medium',
+                isFeedbackActive(item)
+                  ? 'bg-primary text-white'
+                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+              ]"
+              @click="handleBottomItemClick(item)"
+            >
+              <UIcon
+                :name="item.icon"
+                class="w-5 h-5 shrink-0 transition-colors"
+                :class="[
+                  isFeedbackActive(item)
+                    ? 'text-white'
+                    : 'text-neutral-600 group-hover:text-neutral-900'
+                ]"
+              />
+              <span v-if="!isCollapsed" class="truncate">{{ item.label }}</span>
+            </button>
+            
             <NuxtLink
+              v-else
               :to="item.to"
               class="flex items-center transition-colors group"
               :class="[
@@ -108,7 +134,6 @@
                   ? 'bg-primary text-white'
                   : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
               ]"
-              @click.prevent="handleBottomItemClick(item)"
             >
               <UIcon
                 :name="item.icon"

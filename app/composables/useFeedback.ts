@@ -1,24 +1,26 @@
 import { ref } from 'vue'
 
-export const useFeedback = () => {
-  const isOpen = useState('feedback-modal-open', () => false)
-  const isCapturing = useState('feedback-capturing', () => false)
-  const screenshotFile = useState<File | null>('feedback-screenshot', () => null)
-  const currentUrl = useState('feedback-url', () => '')
+const isOpen = ref(false)
+const isCapturing = ref(false)
+const screenshotFile = ref<File | null>(null)
+const currentUrl = ref('')
 
+export const useFeedback = () => {
   const triggerFeedback = async () => {
     isCapturing.value = true
     currentUrl.value = window.location.href
+    screenshotFile.value = null // reset first
     
-    // Give the UI a microsecond to render the loader/blur overlay before taking the screenshot
-    await new Promise((resolve) => setTimeout(resolve, 150))
+    // Give the UI a moment to show the loader spinner
+    await new Promise((resolve) => setTimeout(resolve, 200))
     
     try {
       const { domToBlob } = await import('modern-screenshot')
-      const blob = await domToBlob(document.body, {
+      const targetElement = document.getElementById('__nuxt') || document.body
+      
+      const blob = await domToBlob(targetElement, {
         filter: (node) => {
           if (node instanceof HTMLElement) {
-            // Exclude the feedback loader itself, any Nuxt UI tooltips/toasters that might be open, or elements marked as excluded
             if (
               node.id === 'feedback-loader' || 
               node.classList.contains('feedback-exclude') ||
@@ -33,8 +35,6 @@ export const useFeedback = () => {
       
       if (blob) {
         screenshotFile.value = new File([blob], `screenshot_${Date.now()}.png`, { type: 'image/png' })
-      } else {
-        screenshotFile.value = null
       }
     } catch (error) {
       console.error('Failed to capture screenshot:', error)

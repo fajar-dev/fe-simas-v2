@@ -46,7 +46,7 @@
         <UFormField label="Description" name="description" required>
           <UTextarea
             v-model="state.description"
-            :placeholder="placeholderText"
+            placeholder="Please describe your feedback..."
             class="w-full"
             :rows="4"
           />
@@ -91,7 +91,7 @@
         </UFormField>
 
         <!-- Tagline -->
-        <div class="text-center text-sm text-neutral-500 pt-2 border-t border-neutral-100">
+        <div class="text-center text-sm text-neutral-500 pt-2">
           <span>- Feedback is a gift -</span>
         </div>
       </UForm>
@@ -159,14 +159,6 @@ const items = [
   { value: 'compliment', label: 'Compliment' }
 ]
 
-// Dynamic placeholder based on selected feedback type
-const placeholderText = computed(() => {
-  if (state.type === 'issue') return 'Please describe your problem...'
-  if (state.type === 'suggestion') return 'Please describe your suggestion...'
-  if (state.type === 'compliment') return 'Please describe your compliment...'
-  return 'Please describe your problem...'
-})
-
 const canAddMoreImages = computed(() => {
   return (state.images?.length || 0) < 5
 })
@@ -190,24 +182,9 @@ const onSubmit = async () => {
         color: 'success',
         icon: 'i-lucide-circle-check'
       })
-      open.value = false
-      navigateTo('/my-feedback')
-    } else {
-      toast.add({
-        title: 'Failed to submit feedback',
-        description: response.message || 'Please try again.',
-        color: 'error',
-        icon: 'i-lucide-circle-x'
-      })
     }
-  } catch (error) {
-    console.error('Error submitting feedback:', error)
-    toast.add({
-      title: 'An error occurred',
-      description: 'Could not connect to the server.',
-      color: 'error',
-      icon: 'i-lucide-circle-x'
-    })
+    open.value = false
+    navigateTo('/my-feedback')
   } finally {
     saving.value = false
   }
