@@ -27,6 +27,22 @@
 
       <!-- Navigation Menus -->
       <nav class="space-y-4">
+        <div :class="[isCollapsed ? 'flex justify-center' : '']">
+          <UTooltip
+            text="Search Asset"
+            :disabled="!isCollapsed"
+            :content="{ align: 'center', side: 'right', sideOffset: 8 }"
+          >
+            <UButton
+              :label="isCollapsed ? undefined : 'Search Asset'"
+              color="primary"
+              :square="isCollapsed"
+              :class="[isCollapsed ? '' : 'w-full']"
+              icon="i-lucide-scan"
+              variant="subtle"
+            />
+          </UTooltip>
+        </div>
         <div v-for="group in navGroups" :key="group.title" class="space-y-1">
           <!-- Group Title -->
           <h3
