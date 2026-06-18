@@ -29,16 +29,6 @@ export const useNavigation = () => {
           to: '/asset',
           icon: 'i-lucide-box'
         },
-        {
-          label: 'Employees',
-          to: '/employee',
-          icon: 'i-lucide-users'
-        },
-        {
-          label: 'Users',
-          to: '/user',
-          icon: 'i-lucide-user'
-        }
       ]
     },
     {
@@ -63,6 +53,16 @@ export const useNavigation = () => {
           label: 'Location',
           to: '/location',
           icon: 'i-lucide-map-pin'
+        },
+        {
+          label: 'Employees',
+          to: '/employee',
+          icon: 'i-lucide-users'
+        },
+        {
+          label: 'Users',
+          to: '/user',
+          icon: 'i-lucide-user'
         }
       ]
     }

@@ -2,22 +2,22 @@
   <div class="space-y-6">
     <!-- Header -->
     <Header
-      title="Employee Management"
-      description="Manage employee"
+      title="Asset Management"
+      description="Manage and track company assets"
     >
     </Header>
 
     <section class="space-y-5">
       <!-- Controls -->
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+        <div class="flex flex-row items-center gap-2">
           <!-- Search -->
           <UInput 
             v-model="search" 
             icon="i-lucide-search" 
             size="md" 
             variant="outline" 
-            placeholder="Search name or employee ID..." 
+            placeholder="Search assets..." 
             class="w-full sm:w-64" 
           />
 
@@ -32,11 +32,11 @@
         <UButton
           color="primary"
           variant="solid"
-          icon="i-lucide-user-plus"
+          icon="i-lucide-plus"
           class="w-full lg:w-auto justify-center"
-          @click="showAddModal = true"
+          to="/asset/create"
         >
-          Add Employee
+          Add Asset
         </UButton>
       </div>
 
@@ -50,7 +50,7 @@
             th: 'bg-neutral-50 py-2.5', 
             td: 'text-neutral-900 py-3' 
           }"
-          class="border border-neutral-200 rounded-md min-w-[768px]" 
+          class="border border-neutral-200 rounded-md min-w-[960px]" 
         />
       </div>
 
@@ -63,24 +63,25 @@
       </div>
     </section>
 
-    <!-- Modals -->
-    <EmployeeAddModal v-model="showAddModal" @created="fetchEmployees" />
-    <EmployeeUpdateModal v-model="showUpdateModal" :employee="selectedEmployee" @updated="fetchEmployees" />
+    <!-- Delete Modal -->
     <DeleteModal 
       v-model="showDeleteModal" 
-      title="Delete Employee" 
-      :item-name="selectedEmployee?.name" 
+      title="Delete Asset" 
+      :item-name="selectedAsset?.name" 
       :loading="isDeleting"
       @confirm="handleDelete" 
     />
+
+    <!-- Lightbox Modal -->
+    <Lightbox />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
-import { employeeService } from '~/services/employee-service'
-import type { Employee } from '~/types/employee'
+import { assetService } from '~/services/asset-service'
+import type { Asset } from '~/types/asset'
 
 definePageMeta({
   layout: 'dashboard'
@@ -88,20 +89,16 @@ definePageMeta({
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
-const UAvatar = resolveComponent('UAvatar')
+const UBadge = resolveComponent('UBadge')
 
 // State
 const search = ref('')
 const limitOptions = ref([10, 25, 50, 100])
 const perPage = ref(10)
 const page = ref(1)
-const data = ref<Employee[]>([])
+const data = ref<Asset[]>([])
 const isLoading = ref(false)
-const selectedEmployee = ref<Employee | null>(null)
-
-// Modal states
-const showAddModal = ref(false)
-const showUpdateModal = ref(false)
+const selectedAsset = ref<Asset | null>(null)
 const showDeleteModal = ref(false)
 const isDeleting = ref(false)
 
@@ -112,11 +109,13 @@ const meta = reactive({
   to: 0
 })
 
-// Fetch employees from API
-const fetchEmployees = async () => {
+const { openLightbox } = useLightbox()
+
+// Fetch assets from API
+const fetchAssets = async () => {
   isLoading.value = true
   try {
-    const response = await employeeService.getAll(page.value, perPage.value, search.value)
+    const response = await assetService.getAll(page.value, perPage.value, search.value)
     if (response.success) {
       data.value = response.data
       if (response.meta) {
@@ -132,7 +131,7 @@ const fetchEmployees = async () => {
 
 // Watch for page and perPage changes
 watch([page, perPage], () => {
-  fetchEmployees()
+  fetchAssets()
 })
 
 // Watch search with debounce
@@ -141,52 +140,90 @@ watch(search, () => {
   clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => {
     page.value = 1
-    fetchEmployees()
+    fetchAssets()
   }, 300)
 })
 
+// Format currency
+const formatCurrency = (value: number | null) => {
+  if (value === null || value === undefined) return '-'
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(value)
+}
+
 // Table columns
-const columns: TableColumn<Employee>[] = [
+const columns: TableColumn<Asset>[] = [
+  {
+    accessorKey: 'image',
+    header: 'Image',
+    cell: ({ row }) => {
+      const img = row.original.image
+      if (!img) {
+        return h('div', { class: 'w-12 h-12 bg-neutral-100 rounded-md flex items-center justify-center border border-neutral-200' }, [
+          h('span', { class: 'text-neutral-400 text-xs' }, 'No Image')
+        ])
+      }
+      return h('img', {
+        src: img,
+        alt: row.original.name,
+        class: 'w-12 h-12 object-cover rounded-md border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs',
+        onClick: (e: Event) => {
+          e.stopPropagation()
+          openLightbox(img)
+        }
+      })
+    }
+  },
+  {
+    accessorKey: 'code',
+    header: 'Code',
+    cell: ({ row }) => {
+      return h('span', { class: 'font-mono font-medium text-neutral-900' }, row.original.code)
+    }
+  },
   {
     accessorKey: 'name',
-    header: 'Employee',
+    header: 'Name',
     cell: ({ row }) => {
-      const name = row.original.name
-      const employeeId = row.original.employeeId
-      const photo = row.original.photo
-      return h('div', { class: 'flex items-center gap-3' }, [
-        h(UAvatar, { 
-          src: photo || undefined, 
-          alt: name, 
-          size: 'lg',
-          class: 'bg-primary-50 text-primary-700'
-        }),
-        h('div', { class: 'flex flex-col' }, [
-          h('span', { class: 'font-medium text-neutral-900' }, name),
-          h('span', { class: 'text-xs text-neutral-500' }, employeeId)
-        ])
-      ])
+      return h('span', { class: 'font-medium text-neutral-900' }, row.original.name)
     }
   },
   {
-    accessorKey: 'jobPosition',
-    header: 'Job Position',
+    id: 'subCategory',
+    header: 'Sub Category',
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium' }, row.original.jobPosition)
+      const sub = row.original.subCategory
+      if (!sub) return '-'
+      return h(
+        UBadge,
+        { color: 'neutral', variant: 'subtle' },
+        () => sub.name
+      )
     }
   },
   {
-    accessorKey: 'email',
-    header: 'Email',
+    accessorKey: 'brand',
+    header: 'Brand',
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600' }, row.original.email)
+      return h('span', { class: 'text-neutral-600' }, row.original.brand || '-')
     }
   },
   {
-    accessorKey: 'phone',
-    header: 'Phone',
+    accessorKey: 'price',
+    header: 'Price',
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600' }, row.original.phone)
+      return h('span', { class: 'font-semibold text-primary-700' }, formatCurrency(row.original.price))
+    }
+  },
+  {
+    accessorKey: 'purchaseDate',
+    header: 'Purchase Date',
+    cell: ({ row }) => {
+      return h('span', { class: 'text-neutral-600' }, row.original.purchaseDate || '-')
     }
   },
   {
@@ -220,22 +257,21 @@ const columns: TableColumn<Employee>[] = [
   }
 ]
 
-function getRowItems(row: Row<Employee>) {
+function getRowItems(row: Row<Asset>) {
   return [
     {
-      label: 'Edit Employee',
+      label: 'Edit Asset',
       icon: 'i-lucide-edit',
       onSelect() {
-        selectedEmployee.value = row.original
-        showUpdateModal.value = true
+        navigateTo(`/asset/${row.original.id}/edit`)
       }
     },
     {
-      label: 'Delete Employee',
-      color: 'error',
+      label: 'Delete Asset',
+      color: 'error' as const,
       icon: 'i-lucide-trash',
       onSelect() {
-        selectedEmployee.value = row.original
+        selectedAsset.value = row.original
         showDeleteModal.value = true
       }
     }
@@ -245,19 +281,19 @@ function getRowItems(row: Row<Employee>) {
 // Handle delete
 const toast = useToast()
 const handleDelete = async () => {
-  if (!selectedEmployee.value) return
+  if (!selectedAsset.value) return
   isDeleting.value = true
   try {
-    const response = await employeeService.delete(selectedEmployee.value.id)
+    const response = await assetService.delete(selectedAsset.value.id)
     if (response.success) {
       toast.add({
-        title: 'Employee deleted successfully!',
+        title: 'Asset deleted successfully!',
         color: 'success',
         icon: 'i-lucide-circle-check'
       })
     }
     showDeleteModal.value = false
-    fetchEmployees()
+    fetchAssets()
   } finally {
     isDeleting.value = false
   }
@@ -265,6 +301,6 @@ const handleDelete = async () => {
 
 // Initial fetch
 onMounted(() => {
-  fetchEmployees()
+  fetchAssets()
 })
 </script>
