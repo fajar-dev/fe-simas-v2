@@ -1,8 +1,8 @@
 <template>
   <UModal
     v-model:open="open"
-    title="Feedback"
-    description="Submit new feedback with screenshots"
+    title="Report an Issue"
+    description="Please provide detailed information about the issue."
     :ui="{
       content: 'sm:max-w-md',
       overlay: 'bg-black/40',
@@ -101,7 +101,7 @@
       <!-- Action Buttons matching style of other modals -->
       <div class="flex justify-between items-center w-full">
         <UButton
-          label="Feedback History"
+          label="History"
           color="primary"
           variant="ghost"
           icon="i-lucide-history"
@@ -183,22 +183,7 @@ const onSubmit = async () => {
         icon: 'i-lucide-circle-check'
       })
       open.value = false
-    } else {
-      toast.add({
-        title: 'Failed to submit feedback',
-        description: response.message || 'Please try again.',
-        color: 'error',
-        icon: 'i-lucide-circle-x'
-      })
-    }
-  } catch (error) {
-    console.error('Error submitting feedback:', error)
-    toast.add({
-      title: 'An error occurred',
-      description: 'Could not connect to the server.',
-      color: 'error',
-      icon: 'i-lucide-circle-x'
-    })
+    } 
   } finally {
     saving.value = false
   }
