@@ -108,20 +108,25 @@
                 isCollapsed ? 'w-10 h-10 mx-auto justify-center rounded-md' : 'w-full gap-3 px-3 py-2 text-sm rounded-md font-medium',
                 isFeedbackActive(item)
                   ? 'bg-primary text-white'
-                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900',
+                isCapturing ? 'opacity-60 cursor-not-allowed' : ''
               ]"
+              :disabled="isCapturing"
               @click="handleBottomItemClick(item)"
             >
               <UIcon
-                :name="item.icon"
+                :name="isCapturing ? 'i-lucide-loader-2' : item.icon"
                 class="w-5 h-5 shrink-0 transition-colors"
                 :class="[
+                  isCapturing ? 'animate-spin' : '',
                   isFeedbackActive(item)
                     ? 'text-white'
                     : 'text-neutral-600 group-hover:text-neutral-900'
                 ]"
               />
-              <span v-if="!isCollapsed" class="truncate">{{ item.label }}</span>
+              <span v-if="!isCollapsed" class="truncate">
+                {{ isCapturing ? 'Capturing...' : item.label }}
+              </span>
             </button>
             
             <NuxtLink
@@ -206,7 +211,7 @@ const route = useRoute()
 const { state: authState } = useAuth()
 const { isCollapsed, navGroups, bottomNavItems, isItemActive } = useNavigation()
 
-const { triggerFeedback } = useFeedback()
+const { triggerFeedback, isCapturing } = useFeedback()
 
 const handleBottomItemClick = (item: NavItem) => {
   if (item.to === '/feedback') {
