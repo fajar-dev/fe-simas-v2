@@ -60,17 +60,30 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <UFormField label="Sub Category" name="subCategoryId" required>
+          <UFormField label="Category" required>
             <USelect
-              v-model="form.subCategoryId"
-              :items="subCategoryOptions"
-              placeholder="Select sub category"
+              v-model="selectedCategoryId"
+              :items="categoryOptions"
+              placeholder="Select category"
               class="w-full"
             />
           </UFormField>
+          <UFormField label="Sub Category" name="subCategoryId" required>
+            <USelect
+              v-model="form.subCategoryId"
+              :items="filteredSubCategoryOptions"
+              placeholder="Select sub category"
+              :disabled="!selectedCategoryId"
+              class="w-full"
+            />
+          </UFormField>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UFormField label="Purchase Date" name="purchaseDate">
             <UInput v-model="form.purchaseDate" type="date" class="w-full" />
           </UFormField>
+          <span class="hidden md:inline-block"></span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -115,8 +128,10 @@
 import { z } from 'zod'
 import { useRoute } from 'vue-router'
 import { assetService } from '~/services/asset-service'
+import { categoryService } from '~/services/category-service'
 import { subCategoryService } from '~/services/sub-category-service'
 import type { AssetPayload } from '~/types/asset'
+import type { SubCategory } from '~/types/sub-category'
 
 definePageMeta({
   layout: 'dashboard'
@@ -131,7 +146,33 @@ const isUploading = ref(false)
 const isLoadingAsset = ref(true)
 const fileInput = ref<HTMLInputElement | null>(null)
 const previewUrl = ref<string | null>(null)
-const subCategoryOptions = ref<{ label: string; value: number }[]>([])
+
+// Category & Sub Category filtering state
+const selectedCategoryId = ref<number | undefined>(undefined)
+const categoryOptions = ref<{ label: string; value: number }[]>([])
+const allSubCategories = ref<SubCategory[]>([])
+
+const filteredSubCategoryOptions = computed(() => {
+  if (!selectedCategoryId.value) return []
+  return allSubCategories.value
+    .filter((s) => s.categoryId === Number(selectedCategoryId.value))
+    .map((s) => ({
+      label: s.name,
+      value: s.id,
+    }))
+})
+
+watch(selectedCategoryId, (newVal) => {
+  if (!newVal) {
+    form.subCategoryId = undefined as unknown as number
+    return
+  }
+  const currentSub = allSubCategories.value.find((s) => s.id === form.subCategoryId)
+  if (currentSub && currentSub.categoryId === Number(newVal)) {
+    return
+  }
+  form.subCategoryId = undefined as unknown as number
+})
 
 const schema = z.object({
   code: z.string().min(1, 'Code is required'),
@@ -162,13 +203,19 @@ const triggerFileInput = () => {
   fileInput.value?.click()
 }
 
-const fetchSubCategories = async () => {
-  const response = await subCategoryService.getAll(1, 999)
-  if (response.success) {
-    subCategoryOptions.value = response.data.map((s) => ({
-      label: s.name,
-      value: s.id,
+const fetchData = async () => {
+  const [catRes, subRes] = await Promise.all([
+    categoryService.getAll(1, 999),
+    subCategoryService.getAll(1, 999)
+  ])
+  if (catRes.success) {
+    categoryOptions.value = catRes.data.map((c) => ({
+      label: c.name,
+      value: c.id,
     }))
+  }
+  if (subRes.success) {
+    allSubCategories.value = subRes.data
   }
 }
 
@@ -187,7 +234,11 @@ const fetchAssetDetails = async () => {
       form.brand = asset.brand ?? undefined
       form.model = asset.model ?? undefined
       form.image = asset.rawImage
+      
+      // Load selectedCategoryId first, then subCategoryId
+      selectedCategoryId.value = asset.subCategory?.category?.id ?? undefined
       form.subCategoryId = asset.subCategoryId
+      
       previewUrl.value = asset.image
     } else {
       toast.add({
@@ -269,7 +320,7 @@ const handleSubmit = async () => {
 }
 
 onMounted(async () => {
-  await fetchSubCategories()
+  await fetchData()
   await fetchAssetDetails()
 })
 </script>
