@@ -100,12 +100,10 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <UFormField label="Modal (Capital/Cost)" name="modal">
-            <UInput v-model="form.modal" type="number" placeholder="Cost price" class="w-full" />
-          </UFormField>
           <UFormField label="Price" name="price">
             <UInput v-model="form.price" type="number" placeholder="Asset value" class="w-full" />
           </UFormField>
+          <span class="hidden md:inline-block"></span>
         </div>
 
         <UFormField label="Description" name="description">
@@ -207,7 +205,6 @@ const schema = z.object({
   subCategoryId: z.number().int().positive('Sub category is required'),
   brand: z.string().optional().nullable().or(z.literal('')),
   model: z.string().optional().nullable().or(z.literal('')),
-  modal: z.preprocess((val) => (val === '' || val === null || val === undefined) ? null : Number(val), z.number().int().nullable().optional()),
   price: z.preprocess((val) => (val === '' || val === null || val === undefined) ? null : Number(val), z.number().int().nullable().optional()),
   purchaseDate: z.string().optional().nullable().or(z.literal('')),
   description: z.string().optional().nullable().or(z.literal('')),
@@ -217,7 +214,6 @@ const form = reactive<AssetPayload>({
   code: '',
   name: '',
   description: '',
-  modal: undefined,
   price: undefined,
   purchaseDate: '',
   brand: '',
@@ -249,7 +245,6 @@ const fetchAssetDetails = async () => {
       form.code = asset.code
       form.name = asset.name
       form.description = asset.description ?? undefined
-      form.modal = asset.modal ?? undefined
       form.price = asset.price ?? undefined
       form.purchaseDate = asset.purchaseDate ?? undefined
       form.brand = asset.brand ?? undefined

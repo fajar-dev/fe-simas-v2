@@ -5,7 +5,6 @@ export interface Asset {
   code: string
   name: string
   description: string | null
-  modal: number | null
   price: number | null
   purchaseDate: string | null
   brand: string | null
@@ -29,7 +28,6 @@ export interface AssetPayload {
   code: string
   name: string
   description?: string
-  modal?: number
   price?: number
   purchaseDate?: string
   brand?: string
