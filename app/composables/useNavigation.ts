@@ -58,13 +58,7 @@ export const useNavigation = () => {
     }
   ]
 
-  const bottomNavItems: NavItem[] = [
-    {
-      label: 'Feedback',
-      to: '/feedback',
-      icon: 'i-lucide-message-square-warning'
-    }
-  ]
+  const bottomNavItems: NavItem[] = []
 
   const isItemActive = (item: NavItem) => {
     if (item.to === '/') {

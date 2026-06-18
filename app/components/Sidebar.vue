@@ -99,43 +99,12 @@
             :disabled="!isCollapsed"
             :content="{ align: 'center', side: 'right', sideOffset: 8 }"
           >
-            <!-- Switch between button for feedback action and NuxtLink for regular page routes -->
-            <button
-              v-if="item.to === '/feedback'"
-              type="button"
-              class="flex items-center transition-colors group cursor-pointer text-left w-full focus:outline-none"
-              :class="[
-                isCollapsed ? 'w-10 h-10 mx-auto justify-center rounded-md' : 'w-full gap-3 px-3 py-2 text-sm rounded-md font-medium',
-                isFeedbackActive(item)
-                  ? 'bg-primary text-white'
-                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900',
-                isCapturing ? 'opacity-60 cursor-not-allowed' : ''
-              ]"
-              :disabled="isCapturing"
-              @click="handleBottomItemClick(item)"
-            >
-              <UIcon
-                :name="isCapturing ? 'i-lucide-loader-2' : item.icon"
-                class="w-5 h-5 shrink-0 transition-colors"
-                :class="[
-                  isCapturing ? 'animate-spin' : '',
-                  isFeedbackActive(item)
-                    ? 'text-white'
-                    : 'text-neutral-600 group-hover:text-neutral-900'
-                ]"
-              />
-              <span v-if="!isCollapsed" class="truncate">
-                {{ isCapturing ? 'Capturing...' : item.label }}
-              </span>
-            </button>
-            
             <NuxtLink
-              v-else
               :to="item.to"
               class="flex items-center transition-colors group"
               :class="[
                 isCollapsed ? 'w-10 h-10 mx-auto justify-center rounded-md' : 'w-full gap-3 px-3 py-2 text-sm rounded-md font-medium',
-                isFeedbackActive(item)
+                isItemActive(item)
                   ? 'bg-primary text-white'
                   : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
               ]"
@@ -144,7 +113,7 @@
                 :name="item.icon"
                 class="w-5 h-5 shrink-0 transition-colors"
                 :class="[
-                  isFeedbackActive(item)
+                  isItemActive(item)
                     ? 'text-white'
                     : 'text-neutral-600 group-hover:text-neutral-900'
                 ]"
@@ -153,6 +122,41 @@
             </NuxtLink>
           </UTooltip>
         </template>
+
+        <!-- Static Feedback Button -->
+        <UTooltip
+          text="Feedback"
+          :disabled="!isCollapsed"
+          :content="{ align: 'center', side: 'right', sideOffset: 8 }"
+        >
+          <button
+            type="button"
+            class="flex items-center transition-colors group cursor-pointer text-left w-full focus:outline-none"
+            :class="[
+              isCollapsed ? 'w-10 h-10 mx-auto justify-center rounded-md' : 'w-full gap-3 px-3 py-2 text-sm rounded-md font-medium',
+              route.path === '/my-feedback'
+                ? 'bg-primary text-white'
+                : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900',
+              isCapturing ? 'opacity-60 cursor-not-allowed' : ''
+            ]"
+            :disabled="isCapturing"
+            @click="triggerFeedback()"
+          >
+            <UIcon
+              :name="isCapturing ? 'i-lucide-loader-2' : 'i-lucide-message-square-warning'"
+              class="w-5 h-5 shrink-0 transition-colors"
+              :class="[
+                isCapturing ? 'animate-spin' : '',
+                route.path === '/my-feedback'
+                  ? 'text-white'
+                  : 'text-neutral-600 group-hover:text-neutral-900'
+              ]"
+            />
+            <span v-if="!isCollapsed" class="truncate">
+              {{ isCapturing ? 'Capturing...' : 'Feedback' }}
+            </span>
+          </button>
+        </UTooltip>
       </div>
 
       <!-- User Profile with Popover -->
@@ -205,26 +209,10 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { useFeedback } from '~/composables/useFeedback'
-import type { NavItem } from '~/composables/useNavigation'
 
 const route = useRoute()
 const { state: authState } = useAuth()
 const { isCollapsed, navGroups, bottomNavItems, isItemActive } = useNavigation()
 
 const { triggerFeedback, isCapturing } = useFeedback()
-
-const handleBottomItemClick = (item: NavItem) => {
-  if (item.to === '/feedback') {
-    triggerFeedback()
-  } else {
-    navigateTo(item.to)
-  }
-}
-
-const isFeedbackActive = (item: NavItem) => {
-  if (item.to === '/feedback') {
-    return route.path === '/my-feedback'
-  }
-  return isItemActive(item)
-}
 </script>
