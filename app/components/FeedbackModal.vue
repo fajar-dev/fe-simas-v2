@@ -13,7 +13,7 @@
       <!-- Top Note -->
       <div class="mb-4 space-y-1">
         <p class="text-sm text-neutral-600 leading-relaxed">
-          {{ t('modal.feedback.note') }}
+          We are improving the information system so it works well for everyone. Thank you for your feedback.
         </p>
         <div>
           <span class="text-blue-500 font-medium underline text-sm break-all">
@@ -63,7 +63,7 @@
           >
             <template #actions="{ open: openFileSelect }">
               <UButton
-                :label="t('modal.feedback.selectImages')"
+                label="Select Images"
                 icon="i-lucide-upload"
                 color="neutral"
                 variant="outline"
@@ -75,11 +75,11 @@
             <template #files-top="{ open: openFileSelect, files }">
               <div v-if="files?.length" class="mb-2 flex items-center justify-between">
                 <p class="font-bold text-sm">
-                  {{ t('modal.feedback.screenshot') }} ({{ files.length }})
+                  Screenshot ({{ files.length }})
                 </p>
                 <UButton
                   icon="i-lucide-plus"
-                  :label="t('modal.feedback.addMore')"
+                  label="Add more"
                   color="neutral"
                   variant="outline"
                   :disabled="!canAddMoreImages"
@@ -92,7 +92,7 @@
 
         <!-- Tagline -->
         <div class="text-center text-sm text-neutral-500 pt-2 border-t border-neutral-100">
-          <span>{{ t('modal.feedback.tagline') }}</span>
+          <span>- Feedback is a gift -</span>
         </div>
       </UForm>
     </template>
@@ -101,7 +101,7 @@
       <!-- Action Buttons matching style of other modals -->
       <div class="flex justify-between items-center w-full">
         <UButton
-          :label="t('modal.feedback.history')"
+          label="Feedback History"
           color="primary"
           variant="ghost"
           icon="i-lucide-history"
@@ -110,14 +110,14 @@
         />
         <div class="flex gap-2">
           <UButton
-            :label="t('modal.feedback.cancel')"
+            label="Cancel"
             color="neutral"
             variant="outline"
             :disabled="saving"
             @click="open = false"
           />
           <UButton
-            :label="t('modal.feedback.send')"
+            label="Send Feedback"
             color="primary"
             variant="solid"
             type="submit"
@@ -158,19 +158,6 @@ const items = [
   { value: 'suggestion', label: 'Suggestion' },
   { value: 'compliment', label: 'Compliment' }
 ]
-
-const translations: Record<string, string> = {
-  'modal.feedback.note': 'We are improving the information system so it works well for everyone. Thank you for your feedback.',
-  'modal.feedback.selectImages': 'Select Images',
-  'modal.feedback.screenshot': 'Screenshot',
-  'modal.feedback.addMore': 'Add more',
-  'modal.feedback.tagline': '- Feedback is a gift -',
-  'modal.feedback.history': 'Feedback History',
-  'modal.feedback.cancel': 'Cancel',
-  'modal.feedback.send': 'Send Feedback'
-}
-
-const t = (key: string) => translations[key] || key
 
 // Dynamic placeholder based on selected feedback type
 const placeholderText = computed(() => {
