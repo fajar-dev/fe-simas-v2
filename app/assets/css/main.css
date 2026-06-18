@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: 'Geist', sans-serif;
+
+  --color-green-50: #EDFCF3;
+  --color-green-100: #D1FAE0;
+  --color-green-200: #A1F7C0;
+  --color-green-300: #5FF797;
+  --color-green-400: #06F95F;
+  --color-green-500: #009838;
+  --color-green-600: #00802F;
+  --color-green-700: #006625;
+  --color-green-800: #004D1C;
+  --color-green-900: #003815;
+  --color-green-950: #00240D;
+
+  --color-yellow-50: #FBF1E6;
+  --color-yellow-100: #F7E3CD;
+  --color-yellow-200: #EFC89B;
+  --color-yellow-300: #E8AD69;
+  --color-yellow-400: #E09237;
+  --color-yellow-500: #D97706;
+  --color-yellow-600: #B66405;
+  --color-yellow-700: #915004;
+  --color-yellow-800: #6C3B03;
+  --color-yellow-900: #502C02;
+  --color-yellow-950: #341C01;
+
+  --color-red-50: #FDF2F4;
+  --color-red-100: #FCD5D5;
+  --color-red-200: #F7A1A1;
+  --color-red-300: #F75F5F;
+  --color-red-400: #F90606;
+  --color-red-500: #B91C1C;
+  --color-red-600: #9B1818;
+  --color-red-700: #7C1313;
+  --color-red-800: #5C0E0E;
+  --color-red-900: #440A0A;
+  --color-red-950: #2C0707;
+}
