@@ -46,6 +46,18 @@ export class AssetService {
         }
     }
 
+    async checkCode(code: string): Promise<ApiResponse<{ exists: boolean }>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<{ exists: boolean }>>(
+                `/asset/check-code?code=${encodeURIComponent(code)}`,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
     async update(id: number, payload: AssetPayload): Promise<ApiResponse<Asset>> {
         try {
             const response = await apiService.client.put<ApiResponse<Asset>>(

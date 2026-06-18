@@ -24,3 +24,16 @@ export const formatCurrency = (value: number | null | undefined) => {
     maximumFractionDigits: 0
   }).format(value)
 }
+
+export const formatIndonesianNumber = (value: number | null | undefined): string => {
+  if (value === null || value === undefined || isNaN(value)) return ''
+  return new Intl.NumberFormat('id-ID').format(value)
+}
+
+export const parseIndonesianNumber = (value: string): number | undefined => {
+  const clean = value.replace(/\./g, '').replace(/[^0-9]/g, '')
+  if (!clean) return undefined
+  const parsed = parseInt(clean, 10)
+  return isNaN(parsed) ? undefined : parsed
+}
+

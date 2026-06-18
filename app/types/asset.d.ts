@@ -1,5 +1,11 @@
 import type { ApiResponse } from './api'
 
+export interface AssetLabel {
+  id?: number
+  key: string
+  value: string
+}
+
 export interface Asset {
   id: number
   code: string
@@ -21,6 +27,7 @@ export interface Asset {
   } | null
   createdAt: string
   updatedAt: string
+  labels: AssetLabel[]
 }
 
 export interface AssetPayload {
@@ -33,5 +40,5 @@ export interface AssetPayload {
   model?: string
   image?: string | null
   subCategoryId: number
+  labels?: AssetLabel[]
 }
-

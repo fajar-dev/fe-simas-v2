@@ -103,7 +103,16 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UFormField label="Purchase Date" name="purchaseDate">
-            <UInput v-model="form.purchaseDate" type="date" class="w-full" />
+            <UInputDate v-model="purchaseDateVal" class="w-full">
+              <template #trailing>
+                <UPopover>
+                  <UButton icon="i-lucide-calendar" color="neutral" variant="ghost" size="sm" square />
+                  <template #content>
+                    <UCalendar v-model="purchaseDateVal" />
+                  </template>
+                </UPopover>
+              </template>
+            </UInputDate>
           </UFormField>
           <span class="hidden md:inline-block"></span>
         </div>
@@ -119,7 +128,11 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UFormField label="Price" name="price">
-            <UInput v-model="form.price" type="number" placeholder="Asset value" class="w-full" />
+            <UInput v-model="priceDisplay" placeholder="Asset value" class="w-full">
+              <template #leading>
+                <span class="text-neutral-500 text-sm">Rp</span>
+              </template>
+            </UInput>
           </UFormField>
           <span class="hidden md:inline-block"></span>
         </div>
@@ -127,6 +140,39 @@
         <UFormField label="Description" name="description">
           <UTextarea v-model="form.description" placeholder="Description of the asset..." class="w-full" :rows="3" />
         </UFormField>
+
+        <!-- Labels Section -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-sm font-medium text-neutral-700">Labels</label>
+            <UButton
+              icon="i-lucide-plus"
+              color="primary"
+              variant="soft"
+              size="xs"
+              @click="addLabel"
+            >
+              Add Label
+            </UButton>
+          </div>
+          <div v-if="labels.length === 0" class="text-sm text-neutral-400 py-3 text-center border border-dashed border-neutral-200 rounded-lg">
+            No labels added
+          </div>
+          <div v-else class="space-y-2">
+            <div v-for="(label, index) in labels" :key="index" class="flex items-center gap-2">
+              <UInput v-model="label.key" placeholder="Key" class="w-full" />
+              <UInput v-model="label.value" placeholder="Value" class="w-full" />
+              <UButton
+                icon="i-lucide-trash"
+                color="error"
+                variant="ghost"
+                size="sm"
+                square
+                @click="removeLabel(index)"
+              />
+            </div>
+          </div>
+        </div>
 
         <div class="flex justify-end gap-2 pt-4 border-t border-neutral-100">
           <UButton label="Cancel" to="/asset" color="neutral" variant="outline" />
@@ -151,11 +197,12 @@
 
 <script setup lang="ts">
 import { z } from 'zod'
+import { parseDate } from '@internationalized/date'
 import { useRoute } from 'vue-router'
 import { assetService } from '~/services/asset-service'
 import { categoryService } from '~/services/category-service'
 import { subCategoryService } from '~/services/sub-category-service'
-import type { AssetPayload } from '~/types/asset'
+import type { AssetPayload, AssetLabel } from '~/types/asset'
 
 definePageMeta({
   layout: 'dashboard'
@@ -172,6 +219,17 @@ const isLoadingAsset = ref(true)
 const previewUrl = ref<string | null>(null)
 const showAddCategory = ref(false)
 const showAddSubCategory = ref(false)
+
+// Labels
+const labels = ref<AssetLabel[]>([])
+
+const addLabel = () => {
+  labels.value.push({ key: '', value: '' })
+}
+
+const removeLabel = (index: number) => {
+  labels.value.splice(index, 1)
+}
 
 // Category & Sub Category API state
 const selectedCategoryId = ref<number | undefined>(undefined)
@@ -247,7 +305,26 @@ const form = reactive<AssetPayload>({
   subCategoryId: undefined as unknown as number,
 })
 
+const purchaseDateVal = computed({
+  get: () => {
+    if (!form.purchaseDate) return undefined
+    try {
+      return parseDate(form.purchaseDate)
+    } catch {
+      return undefined
+    }
+  },
+  set: (val) => {
+    form.purchaseDate = val ? val.toString() : ''
+  }
+})
 
+const priceDisplay = computed({
+  get: () => formatIndonesianNumber(form.price),
+  set: (val) => {
+    form.price = parseIndonesianNumber(val) as any
+  }
+})
 
 const fetchCategories = async () => {
   const catRes = await categoryService.getAll(1, 999)
@@ -272,7 +349,7 @@ const fetchAssetDetails = async () => {
       form.purchaseDate = asset.purchaseDate ?? undefined
       form.brand = asset.brand ?? undefined
       form.model = asset.model ?? undefined
-      form.image = asset.rawImage
+      form.image = asset.image
       
       // Load selectedCategoryId first, and wait for the watcher to finish loading subcategories
       const catId = asset.subCategory?.category?.id ?? undefined
@@ -293,8 +370,9 @@ const fetchAssetDetails = async () => {
         }
       }
       
-      form.subCategoryId = asset.subCategoryId
+      form.subCategoryId = asset.subCategory?.id as number
       previewUrl.value = asset.image
+      labels.value = (asset.labels || []).map(l => ({ key: l.key, value: l.value }))
     } else {
       toast.add({
         title: 'Failed to load asset details',
@@ -357,7 +435,11 @@ const removeImage = () => {
 const handleSubmit = async () => {
   isSubmitting.value = true
   try {
-    const response = await assetService.update(assetId, form)
+    const payload = {
+      ...form,
+      labels: labels.value.filter(l => l.key.trim() && l.value.trim()).map(l => ({ key: l.key.trim(), value: l.value.trim() })),
+    }
+    const response = await assetService.update(assetId, payload)
     if (response.success) {
       toast.add({
         title: 'Asset updated successfully!',
