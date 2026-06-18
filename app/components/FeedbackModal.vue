@@ -52,8 +52,8 @@
           />
         </UFormField>
 
-        <!-- Screenshots Field -->
-        <UFormField label="Screenshots" name="images" required>
+        <!-- Attachment Field -->
+        <UFormField label="Attachment" name="images" required>
           <UFileUpload
             v-model="state.images"
             layout="grid"
@@ -75,7 +75,7 @@
             <template #files-top="{ open: openFileSelect, files }">
               <div v-if="files?.length" class="mb-2 flex items-center justify-between">
                 <p class="font-bold text-sm">
-                  Screenshot ({{ files.length }})
+                  Attachment ({{ files.length }}/3)
                 </p>
                 <UButton
                   icon="i-lucide-plus"
@@ -89,11 +89,6 @@
             </template>
           </UFileUpload>
         </UFormField>
-
-        <!-- Tagline -->
-        <div class="text-center text-sm text-neutral-500 pt-2">
-          <span>- Feedback is a gift -</span>
-        </div>
       </UForm>
     </template>
 
@@ -142,7 +137,7 @@ const { screenshotFile, currentUrl } = useFeedback()
 const schema = z.object({
   type: z.string().min(1, 'Type is required'),
   description: z.string().min(1, 'Description is required'),
-  images: z.array(z.any()).min(1, 'At least 1 image is required').max(5, 'Maximum 5 images allowed')
+  images: z.array(z.any()).min(1, 'At least 1 image is required').max(3, 'Maximum 3 images allowed')
 })
 
 const state = reactive({
@@ -159,7 +154,7 @@ const items = [
 ]
 
 const canAddMoreImages = computed(() => {
-  return (state.images?.length || 0) < 5
+  return (state.images?.length || 0) < 3
 })
 
 const saving = ref(false)
