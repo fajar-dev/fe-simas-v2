@@ -87,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, h, resolveComponent } from 'vue'
+import { ref, reactive, computed, onMounted, h, resolveComponent, watch } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import { feedbackService } from '~/services/feedback-service'
 import type { FeedbackItem } from '~/services/feedback-service'
@@ -180,19 +180,6 @@ const formatDate = (timestamp: string) => {
   })
 }
 
-const getTypeColor = (type: string) => {
-  switch (type?.toLowerCase()) {
-    case 'bug':
-    case 'issue':
-      return 'error'
-    case 'feature':
-    case 'suggestion':
-      return 'success'
-    default:
-      return 'neutral'
-  }
-}
-
 const getTypeLabel = (type: string) => {
   switch (type?.toLowerCase()) {
     case 'bug':
@@ -208,34 +195,18 @@ const getTypeLabel = (type: string) => {
   }
 }
 
-// Table columns definition matching design standard of other tables
+// Table columns definition with Time, URL, Message (category/type + message), and Reply (type + reply text)
 const columns: TableColumn<FeedbackItem>[] = [
   {
-    accessorKey: 'type',
-    header: 'Type',
+    accessorKey: 'timestamp',
+    header: 'Time',
     cell: ({ row }) => {
-      const type = row.original.type
-      return h(
-        resolveComponent('UBadge'),
-        {
-          color: getTypeColor(type),
-          variant: 'soft',
-          class: 'capitalize font-semibold'
-        },
-        () => getTypeLabel(type)
-      )
-    }
-  },
-  {
-    accessorKey: 'message',
-    header: 'Message',
-    cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-900 font-medium block max-w-xs truncate md:max-w-md' }, row.original.message)
+      return h('span', { class: 'text-neutral-500 text-xs font-semibold' }, formatDate(row.original.timestamp))
     }
   },
   {
     accessorKey: 'url',
-    header: 'Page URL',
+    header: 'URL',
     cell: ({ row }) => {
       const url = row.original.url
       if (!url) return '-'
@@ -244,51 +215,61 @@ const columns: TableColumn<FeedbackItem>[] = [
         {
           href: url,
           target: '_blank',
-          class: 'text-blue-500 hover:text-blue-600 underline truncate block max-w-[180px] text-xs font-medium'
+          class: 'text-blue-500 hover:text-blue-600 underline truncate block max-w-[200px] text-xs font-medium'
         },
         url
       )
     }
   },
   {
-    accessorKey: 'images',
-    header: 'Screenshots',
+    accessorKey: 'message',
+    header: 'Message',
     cell: ({ row }) => {
+      const typeLabel = getTypeLabel(row.original.type)
       const imgs = row.original.images
-      if (!imgs || !imgs.length) return '-'
       
-      return h(
-        'div',
-        { class: 'flex gap-1.5' },
-        imgs.map((img) => 
-          h('img', {
-            src: img,
-            alt: 'Screenshot',
-            class: 'w-10 h-7 object-cover rounded border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs',
-            onClick: () => openLightbox(img)
-          })
+      const children = [
+        // Category/Type label (plain text bold, no badge)
+        h('div', { class: 'text-xs font-bold text-neutral-500 uppercase tracking-wider' }, typeLabel),
+        // Message body
+        h('div', { class: 'text-sm text-neutral-800 font-medium whitespace-pre-wrap max-w-md mt-0.5' }, row.original.message)
+      ]
+      
+      // Inline Screenshots inside Message cell
+      if (imgs && imgs.length > 0) {
+        children.push(
+          h('div', { class: 'flex gap-1.5 mt-2' },
+            imgs.map((img) => 
+              h('img', {
+                src: img,
+                alt: 'Screenshot',
+                class: 'w-10 h-7 object-cover rounded border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs',
+                onClick: (e: Event) => {
+                  e.stopPropagation()
+                  openLightbox(img)
+                }
+              })
+            )
+          )
         )
-      )
+      }
+      
+      return h('div', { class: 'flex flex-col py-1' }, children)
     }
   },
   {
     accessorKey: 'reply',
-    header: 'Admin Reply',
+    header: 'Reply',
     cell: ({ row }) => {
       const reply = row.original.reply
-      if (!reply) return h('span', { class: 'text-neutral-400' }, '-')
-      return h(
-        'div',
-        { class: 'p-2 bg-primary/5 border border-primary/10 rounded text-xs text-neutral-700 max-w-xs whitespace-pre-wrap' },
-        reply
-      )
-    }
-  },
-  {
-    accessorKey: 'timestamp',
-    header: 'Date',
-    cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-500 text-xs' }, formatDate(row.original.timestamp))
+      if (!reply) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+      
+      return h('div', { class: 'flex flex-col py-1' }, [
+        // Reply type/header
+        h('div', { class: 'text-xs font-bold text-neutral-500 uppercase tracking-wider' }, 'Admin Reply'),
+        // Reply body
+        h('div', { class: 'text-xs text-neutral-600 whitespace-pre-wrap max-w-sm mt-0.5 font-medium' }, reply)
+      ])
     }
   }
 ]
