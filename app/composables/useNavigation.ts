@@ -55,6 +55,11 @@ export const useNavigation = () => {
           icon: 'i-lucide-list'
         },
         {
+          label: 'Branch',
+          to: '/branch',
+          icon: 'i-lucide-git-branch'
+        },
+        {
           label: 'Location',
           to: '/location',
           icon: 'i-lucide-map-pin'
