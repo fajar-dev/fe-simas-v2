@@ -104,16 +104,17 @@
               class="flex items-center transition-colors group"
               :class="[
                 isCollapsed ? 'w-10 h-10 mx-auto justify-center rounded-md' : 'w-full gap-3 px-3 py-2 text-sm rounded-md font-medium',
-                isItemActive(item)
+                isFeedbackActive(item)
                   ? 'bg-primary text-white'
                   : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
               ]"
+              @click.prevent="handleBottomItemClick(item)"
             >
               <UIcon
                 :name="item.icon"
                 class="w-5 h-5 shrink-0 transition-colors"
                 :class="[
-                  isItemActive(item)
+                  isFeedbackActive(item)
                     ? 'text-white'
                     : 'text-neutral-600 group-hover:text-neutral-900'
                 ]"
@@ -172,6 +173,28 @@
 </template>
 
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
+import { useFeedback } from '~/composables/useFeedback'
+import type { NavItem } from '~/composables/useNavigation'
+
+const route = useRoute()
 const { state: authState } = useAuth()
 const { isCollapsed, navGroups, bottomNavItems, isItemActive } = useNavigation()
+
+const { triggerFeedback } = useFeedback()
+
+const handleBottomItemClick = (item: NavItem) => {
+  if (item.to === '/feedback') {
+    triggerFeedback()
+  } else {
+    navigateTo(item.to)
+  }
+}
+
+const isFeedbackActive = (item: NavItem) => {
+  if (item.to === '/feedback') {
+    return route.path === '/my-feedback'
+  }
+  return isItemActive(item)
+}
 </script>

@@ -57,7 +57,7 @@ const isSubmitting = ref(false)
 const categoryOptions = ref<{ label: string; value: number }[]>([])
 
 const schema = z.object({
-  categoryId: z.number({ required_error: 'Category is required' }).int().positive('Category is required'),
+  categoryId: z.number().int().positive('Category is required'),
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional().or(z.literal('')),
 })

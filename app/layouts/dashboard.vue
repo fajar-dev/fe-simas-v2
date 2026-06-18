@@ -60,14 +60,37 @@
         <slot />
       </main>
     </div>
+
+    <!-- Feedback Feature Global Components -->
+    <FeedbackModal v-model:open="isFeedbackOpen" />
+
+    <!-- Screenshot Capturing Loading Overlay -->
+    <div 
+      v-if="isCapturing"
+      id="feedback-loader"
+      class="fixed inset-0 z-55 flex flex-col items-center justify-center bg-black/60 backdrop-blur-xs select-none"
+    >
+      <div class="bg-white px-8 py-6 rounded-2xl shadow-xl flex flex-col items-center space-y-4">
+        <UIcon name="i-lucide-camera" class="w-10 h-10 text-primary animate-pulse" />
+        <div class="flex items-center space-x-2">
+          <UIcon name="i-lucide-loader-2" class="w-4 h-4 animate-spin text-neutral-500" />
+          <span class="text-sm font-semibold text-neutral-700">Capturing screenshot...</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
+import { useFeedback } from '~/composables/useFeedback'
 
 const route = useRoute()
 const isMobileMenuOpen = useState('isMobileMenuOpen', () => false)
+
+// Feedback Global State
+const { isOpen: isFeedbackOpen, isCapturing } = useFeedback()
 
 // Close mobile sidebar when switching pages
 watch(() => route.path, () => {
