@@ -17,6 +17,11 @@ export interface AssetLocation {
     id: number
     name: string
     description: string | null
+    branch?: {
+      id: number
+      code: string
+      name: string
+    }
   } | null
   createdBy: {
     id: number

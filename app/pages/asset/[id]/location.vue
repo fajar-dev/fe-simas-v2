@@ -113,7 +113,16 @@ const columns: TableColumn<AssetLocation>[] = [
     accessorKey: 'location',
     header: sortHeader('Location', 'location'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-900 font-medium' }, row.original.location?.name || '-')
+      const location = row.original.location
+      if (!location) {
+        return h('span', { class: 'text-neutral-900 font-medium' }, '-')
+      }
+      const locName = location.name
+      const branchName = location.branch?.name
+      return h('div', { class: 'flex flex-col min-w-0' }, [
+        h('span', { class: 'text-neutral-900 font-semibold' }, locName),
+        branchName ? h('span', { class: 'text-xs text-neutral-500' }, branchName) : null
+      ])
     }
   },
   {

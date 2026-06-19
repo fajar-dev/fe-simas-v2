@@ -134,7 +134,7 @@ const columns: TableColumn<AssetMaintenance>[] = [
   },
   {
     accessorKey: 'note',
-    header: 'Notes',
+    header: sortHeader('Notes', 'note'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600 truncate max-w-md block' }, row.original.note || '-')
     }
@@ -185,7 +185,7 @@ const columns: TableColumn<AssetMaintenance>[] = [
   },
   {
     accessorKey: 'createdBy',
-    header: 'Created By',
+    header: sortHeader('Created By', 'createdBy'),
     cell: ({ row }) => {
       const creator = row.original.createdBy
       if (creator) {
