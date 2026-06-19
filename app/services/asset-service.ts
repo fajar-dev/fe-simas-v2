@@ -46,10 +46,12 @@ export class AssetService {
         }
     }
 
-    async checkCode(code: string): Promise<ApiResponse<{ exists: boolean }>> {
+    async checkCode(code: string, excludeId?: number): Promise<ApiResponse<{ exists: boolean }>> {
         try {
+            let url = `/asset/check-code?code=${encodeURIComponent(code)}`
+            if (excludeId) url += `&excludeId=${excludeId}`
             const response = await apiService.client.get<ApiResponse<{ exists: boolean }>>(
-                `/asset/check-code?code=${encodeURIComponent(code)}`,
+                url,
                 this.authHeaders
             )
             return response.data
