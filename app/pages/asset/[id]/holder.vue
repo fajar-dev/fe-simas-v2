@@ -268,13 +268,13 @@ const columns: TableColumn<AssetHolder>[] = [
       
       if (creator) {
         elements.push(h('div', { class: 'flex items-center gap-1.5' }, [
-          h('span', { class: 'text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide' }, 'Assigned:'),
+          h('span', { class: 'text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide' }, 'Assign By:'),
           h('span', { class: 'text-neutral-700 dark:text-neutral-300 text-xs font-medium' }, creator.name)
         ]))
       }
       if (returner) {
         elements.push(h('div', { class: 'flex items-center gap-1.5 mt-1' }, [
-          h('span', { class: 'text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide' }, 'Returned:'),
+          h('span', { class: 'text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide' }, 'Return By:'),
           h('span', { class: 'text-neutral-700 dark:text-neutral-300 text-xs font-medium' }, returner.name)
         ]))
       }
