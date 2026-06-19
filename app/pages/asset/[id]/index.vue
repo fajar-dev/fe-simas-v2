@@ -74,7 +74,7 @@
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider block mb-1">Price</span>
-              <div class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+              <div class="text-sm text-neutral-900 dark:text-white font-medium">
                 {{ formatCurrency(asset.price) }}
               </div>
             </div>
