@@ -16,6 +16,7 @@
       >
         <template #actions>
           <UButton
+            class="w-full lg:w-auto justify-center"
             color="primary"
             variant="solid"
             icon="i-lucide-map-pin"
