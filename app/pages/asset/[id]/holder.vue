@@ -154,12 +154,11 @@ const columns: TableColumn<AssetHolder>[] = [
         h(UAvatar, {
           src: employee.photo || undefined,
           alt: employee.name,
-          size: 'xs',
           class: 'bg-primary-50 text-primary-700'
         }),
         h('div', { class: 'flex flex-col' }, [
           h('span', { class: 'text-neutral-900 font-semibold text-sm' }, employee.name),
-          h('span', { class: 'text-neutral-500 text-xs font-mono' }, employee.employeeId)
+          h('span', { class: 'text-neutral-500 text-xs' }, employee.employeeId)
         ])
       ])
     }

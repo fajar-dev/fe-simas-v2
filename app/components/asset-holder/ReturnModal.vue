@@ -20,7 +20,7 @@
         <div class="min-w-0 flex-1">
           <p class="text-xs text-neutral-500 font-medium">Currently Held By</p>
           <p class="text-sm font-semibold text-neutral-950 truncate">{{ activeHolder.employee?.name }}</p>
-          <p class="text-xs text-neutral-500 font-mono">Assigned on {{ activeHolder.assignedDate }}</p>
+          <p class="text-xs text-neutral-500">Assigned on {{ activeHolder.assignedDate }}</p>
         </div>
       </div>
 
