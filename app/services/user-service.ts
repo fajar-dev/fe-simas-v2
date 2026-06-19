@@ -9,12 +9,14 @@ export class UserService {
         return { headers: { Authorization: `Bearer ${useAuth().state.token}` } }
     }
 
-    async getAll(page = 1, perPage = 10, q = '', isActive = ''): Promise<ApiResponse<User[]>> {
+    async getAll(page = 1, perPage = 10, q = '', isActive = '', sortBy = '', order = ''): Promise<ApiResponse<User[]>> {
         try {
-            let url = `/user?page=${page}&perPage=${perPage}&q=${q}`
+            let url = `/user?page=${page}&limit=${perPage}&q=${q}`
             if (isActive !== '') {
                 url += `&isActive=${isActive}`
             }
+            if (sortBy) url += `&sortBy=${sortBy}`
+            if (order) url += `&order=${order}`
             const response = await apiService.client.get<ApiResponse<User[]>>(
                 url,
                 this.authHeaders

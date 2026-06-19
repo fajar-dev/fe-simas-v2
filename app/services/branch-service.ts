@@ -9,10 +9,13 @@ export class BranchService {
         return { headers: { Authorization: `Bearer ${useAuth().state.token}` } }
     }
 
-    async getAll(page = 1, perPage = 10, q = ''): Promise<ApiResponse<Branch[]>> {
+    async getAll(page = 1, perPage = 10, q = '', sortBy = '', order = ''): Promise<ApiResponse<Branch[]>> {
         try {
+            let url = `/branch?page=${page}&limit=${perPage}&q=${q}`
+            if (sortBy) url += `&sortBy=${sortBy}`
+            if (order) url += `&order=${order}`
             const response = await apiService.client.get<ApiResponse<Branch[]>>(
-                `/branch?page=${page}&limit=${perPage}&q=${q}`,
+                url,
                 this.authHeaders
             )
             return response.data

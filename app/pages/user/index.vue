@@ -98,6 +98,18 @@ const perPage = ref(10)
 const page = ref(1)
 const data = ref<User[]>([])
 const isLoading = ref(false)
+const sortBy = ref('')
+const order = ref<'ASC' | 'DESC'>('DESC')
+
+const toggleSort = (column: string) => {
+  if (sortBy.value === column) {
+    order.value = order.value === 'ASC' ? 'DESC' : 'ASC'
+  } else {
+    sortBy.value = column
+    order.value = 'ASC'
+  }
+}
+
 const selectedUser = ref<User | null>(null)
 
 // Modal states
@@ -117,7 +129,7 @@ const meta = reactive({
 const fetchUsers = async () => {
   isLoading.value = true
   try {
-    const response = await userService.getAll(page.value, perPage.value, search.value)
+    const response = await userService.getAll(page.value, perPage.value, search.value, '', sortBy.value, order.value)
     if (response.success) {
       data.value = response.data
       if (response.meta) {
@@ -131,8 +143,8 @@ const fetchUsers = async () => {
   }
 }
 
-// Watch for page and perPage changes
-watch([page, perPage], () => {
+// Watch for page, perPage, and sort changes
+watch([page, perPage, sortBy, order], () => {
   fetchUsers()
 })
 
@@ -146,11 +158,31 @@ watch(search, () => {
   }, 300)
 })
 
+const UIcon = resolveComponent('UIcon')
+
+const sortHeader = (label: string, column: string) => {
+  return () => {
+    const isActive = sortBy.value === column
+    const upColor = isActive && order.value === 'ASC' ? 'text-primary' : 'text-neutral-300'
+    const downColor = isActive && order.value === 'DESC' ? 'text-primary' : 'text-neutral-300'
+    return h('div', {
+      class: 'flex items-center gap-1 cursor-pointer select-none hover:text-primary transition-colors',
+      onClick: () => toggleSort(column)
+    }, [
+      h('span', label),
+      h('div', { class: 'flex flex-col -space-y-1.5' }, [
+        h(UIcon, { name: 'i-lucide-chevron-up', class: `w-3 h-3 ${upColor}` }),
+        h(UIcon, { name: 'i-lucide-chevron-down', class: `w-3 h-3 ${downColor}` }),
+      ])
+    ])
+  }
+}
+
 // Table columns
 const columns: TableColumn<User>[] = [
   {
     accessorKey: 'name',
-    header: 'User Profile',
+    header: sortHeader('User Profile', 'name'),
     cell: ({ row }) => {
       const name = row.original.name
       const email = row.original.email
@@ -171,7 +203,7 @@ const columns: TableColumn<User>[] = [
   },
   {
     accessorKey: 'isActive',
-    header: 'Status',
+    header: sortHeader('Status', 'isActive'),
     cell: ({ row }) => {
       const isActive = row.original.isActive
       return h(

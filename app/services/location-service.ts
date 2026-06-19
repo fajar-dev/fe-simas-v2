@@ -9,10 +9,13 @@ export class LocationService {
         return { headers: { Authorization: `Bearer ${useAuth().state.token}` } }
     }
 
-    async getAll(page = 1, perPage = 10, q = ''): Promise<ApiResponse<Location[]>> {
+    async getAll(page = 1, perPage = 10, q = '', sortBy = '', order = ''): Promise<ApiResponse<Location[]>> {
         try {
+            let url = `/location?page=${page}&limit=${perPage}&q=${q}`
+            if (sortBy) url += `&sortBy=${sortBy}`
+            if (order) url += `&order=${order}`
             const response = await apiService.client.get<ApiResponse<Location[]>>(
-                `/location?page=${page}&limit=${perPage}&q=${q}`,
+                url,
                 this.authHeaders
             )
             return response.data

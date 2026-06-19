@@ -9,12 +9,14 @@ export class SubCategoryService {
         return { headers: { Authorization: `Bearer ${useAuth().state.token}` } }
     }
 
-    async getAll(page = 1, perPage = 10, q = '', categoryId?: number): Promise<ApiResponse<SubCategory[]>> {
+    async getAll(page = 1, perPage = 10, q = '', categoryId?: number, sortBy = '', order = ''): Promise<ApiResponse<SubCategory[]>> {
         try {
             let url = `/sub-category?page=${page}&limit=${perPage}&q=${q}`
             if (categoryId !== undefined) {
                 url += `&categoryId=${categoryId}`
             }
+            if (sortBy) url += `&sortBy=${sortBy}`
+            if (order) url += `&order=${order}`
             const response = await apiService.client.get<ApiResponse<SubCategory[]>>(
                 url,
                 this.authHeaders

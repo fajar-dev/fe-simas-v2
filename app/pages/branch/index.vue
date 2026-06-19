@@ -96,6 +96,18 @@ const perPage = ref(10)
 const page = ref(1)
 const data = ref<Branch[]>([])
 const isLoading = ref(false)
+const sortBy = ref('')
+const order = ref<'ASC' | 'DESC'>('DESC')
+
+const toggleSort = (column: string) => {
+  if (sortBy.value === column) {
+    order.value = order.value === 'ASC' ? 'DESC' : 'ASC'
+  } else {
+    sortBy.value = column
+    order.value = 'ASC'
+  }
+}
+
 const selectedBranch = ref<Branch | null>(null)
 
 // Modal states
@@ -115,7 +127,7 @@ const meta = reactive({
 const fetchBranches = async () => {
   isLoading.value = true
   try {
-    const response = await branchService.getAll(page.value, perPage.value, search.value)
+    const response = await branchService.getAll(page.value, perPage.value, search.value, sortBy.value, order.value)
     if (response.success) {
       data.value = response.data
       if (response.meta) {
@@ -129,8 +141,8 @@ const fetchBranches = async () => {
   }
 }
 
-// Watch for page and perPage changes
-watch([page, perPage], () => {
+// Watch for page, perPage, and sort changes
+watch([page, perPage, sortBy, order], () => {
   fetchBranches()
 })
 
@@ -144,25 +156,45 @@ watch(search, () => {
   }, 300)
 })
 
+const UIcon = resolveComponent('UIcon')
+
+const sortHeader = (label: string, column: string) => {
+  return () => {
+    const isActive = sortBy.value === column
+    const upColor = isActive && order.value === 'ASC' ? 'text-primary' : 'text-neutral-300'
+    const downColor = isActive && order.value === 'DESC' ? 'text-primary' : 'text-neutral-300'
+    return h('div', {
+      class: 'flex items-center gap-1 cursor-pointer select-none hover:text-primary transition-colors',
+      onClick: () => toggleSort(column)
+    }, [
+      h('span', label),
+      h('div', { class: 'flex flex-col -space-y-1.5' }, [
+        h(UIcon, { name: 'i-lucide-chevron-up', class: `w-3 h-3 ${upColor}` }),
+        h(UIcon, { name: 'i-lucide-chevron-down', class: `w-3 h-3 ${downColor}` }),
+      ])
+    ])
+  }
+}
+
 // Table columns
 const columns: TableColumn<Branch>[] = [
   {
     accessorKey: 'code',
-    header: 'Code',
+    header: sortHeader('Code', 'code'),
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, row.original.code)
     }
   },
   {
     accessorKey: 'name',
-    header: 'Name',
+    header: sortHeader('Name', 'name'),
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, row.original.name)
     }
   },
   {
     accessorKey: 'description',
-    header: 'Description',
+    header: sortHeader('Description', 'description'),
     cell: ({ row }) => {
       const desc = row.original.description
       return h('span', { class: 'text-neutral-600' }, desc || '-')

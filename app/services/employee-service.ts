@@ -9,10 +9,13 @@ export class EmployeeService {
         return { headers: { Authorization: `Bearer ${useAuth().state.token}` } }
     }
 
-    async getAll(page = 1, perPage = 10, q = ''): Promise<ApiResponse<Employee[]>> {
+    async getAll(page = 1, perPage = 10, q = '', sortBy = '', order = ''): Promise<ApiResponse<Employee[]>> {
         try {
+            let url = `/employee?page=${page}&limit=${perPage}&q=${q}`
+            if (sortBy) url += `&sortBy=${sortBy}`
+            if (order) url += `&order=${order}`
             const response = await apiService.client.get<ApiResponse<Employee[]>>(
-                `/employee?page=${page}&limit=${perPage}&q=${q}`,
+                url,
                 this.authHeaders
             )
             return response.data
