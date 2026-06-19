@@ -1,15 +1,6 @@
 <template>
   <AssetDetailWrapper v-slot="{ asset, isLoading }">
-    <UCard class="w-full">
-      <template #header>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <UIcon name="i-lucide-wrench" class="w-5 h-5 text-neutral-500" />
-            <h3 class="text-sm font-semibold text-neutral-900">Maintenance Logs</h3>
-          </div>
-        </div>
-      </template>
-
+    <div class="space-y-4">
       <DataTable
         v-model:search="search"
         v-model:page="page"
@@ -59,7 +50,7 @@
         :loading="isDeleting"
         @confirm="handleDelete" 
       />
-    </UCard>
+    </div>
   </AssetDetailWrapper>
 </template>
 
