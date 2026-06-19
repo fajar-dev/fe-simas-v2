@@ -177,8 +177,8 @@ const handleSubmit = async () => {
   }
 }
 
-watch(open, async (val) => {
-  if (val) {
+watch([open, () => props.maintenance], async ([isOpen, currentMaintenance]) => {
+  if (isOpen && currentMaintenance) {
     if (props.lockAssetId) {
       form.assetId = props.lockAssetId
     } else {
@@ -186,5 +186,5 @@ watch(open, async (val) => {
     }
     populateForm()
   }
-})
+}, { immediate: true })
 </script>

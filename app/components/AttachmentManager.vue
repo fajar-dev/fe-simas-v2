@@ -38,6 +38,10 @@ const selectedFiles = ref<any[]>([])
 
 // Sync props.modelValue to selectedFiles
 watch(() => props.modelValue, (newVal) => {
+  if (!newVal) {
+    selectedFiles.value = []
+    return
+  }
   const currentIds = selectedFiles.value.map(f => f.id).filter(Boolean)
   const incomingIds = newVal.map(a => a.id)
   
