@@ -128,7 +128,13 @@ const columns: TableColumn<Asset>[] = [
           ])
 
       const textEl = h('div', { class: 'flex flex-col min-w-0' }, [
-        h('span', { class: 'font-medium text-neutral-900 truncate' }, row.original.name),
+        h('span', { 
+          class: 'font-semibold cursor-pointer hover:underline truncate',
+          onClick: (e: Event) => {
+            e.stopPropagation()
+            navigateTo(`/asset/${row.original.id}`)
+          }
+        }, row.original.name),
         h('span', { class: 'text-xs text-neutral-500' }, row.original.code)
       ])
 

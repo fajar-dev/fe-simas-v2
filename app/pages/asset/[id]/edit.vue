@@ -27,7 +27,7 @@
 
     <UCard v-else class="w-full">
       <div class="w-full mb-4">
-        <UButton label="Back" to="/asset" size="sm" color="neutral" icon="i-lucide-arrow-left" variant="soft" />
+        <UButton label="Back" to="/asset" color="neutral" icon="i-lucide-arrow-left" variant="link" />
       </div>
       <UForm id="edit-asset-form" :schema="schema" :state="form" @submit="handleSubmit">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
