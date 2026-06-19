@@ -126,7 +126,7 @@ const columns: TableColumn<Asset>[] = [
             }
           })
         : h('div', { class: 'w-10 h-10 bg-neutral-100 rounded-md flex items-center justify-center border border-neutral-200 shrink-0' }, [
-            h('span', { class: 'text-neutral-400 text-[10px]' }, 'N/A')
+            h('span', { class: 'text-neutral-400 text-xs' }, 'N/A')
           ])
 
       const textEl = h('div', { class: 'flex flex-col min-w-0' }, [

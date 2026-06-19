@@ -48,66 +48,66 @@
           <div class="grid grid-cols-12 gap-x-8 gap-y-6">
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Code</span>
-              <div class="text-sm text-neutral-900 font-mono font-medium">
+              <div class="text-sm text-neutral-900 font-mono font-medium truncate" :title="asset.code">
                 {{ asset.code }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Name</span>
-              <div class="text-sm text-neutral-900 font-medium">
+              <div class="text-sm text-neutral-900 font-medium truncate" :title="asset.name">
                 {{ asset.name }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Category</span>
-              <div class="text-sm text-neutral-900 font-medium">
+              <div class="text-sm text-neutral-900 font-medium truncate" :title="asset.subCategory?.category?.name || '-'">
                 {{ asset.subCategory?.category?.name || '-' }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Sub Category</span>
-              <div class="text-sm text-neutral-900 font-medium">
+              <div class="text-sm text-neutral-900 font-medium truncate" :title="asset.subCategory?.name || '-'">
                 {{ asset.subCategory?.name || '-' }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Price</span>
-              <div class="text-sm text-neutral-900 font-medium">
+              <div class="text-sm text-neutral-900 font-medium truncate" :title="formatCurrency(asset.price)">
                 {{ formatCurrency(asset.price) }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Purchase Date</span>
-              <div class="text-sm text-neutral-900 font-medium flex items-center gap-2">
-                <span>{{ asset.purchaseDate || '-' }}</span>
-                <span v-if="asset.age" class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium">{{ asset.age }}</span>
+              <div class="text-sm text-neutral-900 font-medium flex items-center gap-2 min-w-0">
+                <span class="truncate" :title="asset.purchaseDate || '-'">{{ asset.purchaseDate || '-' }}</span>
+                <span v-if="asset.age" class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium shrink-0">{{ asset.age }}</span>
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Brand</span>
-              <div class="text-sm text-neutral-900 font-medium">
+              <div class="text-sm text-neutral-900 font-medium truncate" :title="asset.brand || '-'">
                 {{ asset.brand || '-' }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Model</span>
-              <div class="text-sm text-neutral-900 font-medium">
+              <div class="text-sm text-neutral-900 font-medium truncate" :title="asset.model || '-'">
                 {{ asset.model || '-' }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Last Location</span>
-              <div class="text-sm text-neutral-900 font-medium flex items-center gap-1.5 flex-wrap">
-                <span>{{ asset.lastLocation?.location ? asset.lastLocation.location.name : '-' }}</span>
-                <span v-slot:default v-if="asset.lastLocation?.location?.branch" class="text-xs text-neutral-500 bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 rounded-full font-medium">
+              <div class="text-sm text-neutral-900 font-medium flex items-center gap-1.5 flex-wrap min-w-0">
+                <span class="truncate" :title="asset.lastLocation?.location ? asset.lastLocation.location.name : '-'">{{ asset.lastLocation?.location ? asset.lastLocation.location.name : '-' }}</span>
+                <span v-if="asset.lastLocation?.location?.branch" class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium shrink-0" :title="asset.lastLocation.location.branch.name">
                   {{ asset.lastLocation.location.branch.name }}
                 </span>
               </div>
@@ -116,14 +116,16 @@
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Active Holder</span>
               <div class="text-sm text-neutral-900 font-medium">
-                <div v-if="asset.activeHolder?.employee" class="flex items-center gap-2">
+                <div v-if="asset.activeHolder?.employee" class="flex items-center gap-2 min-w-0">
                   <UAvatar
                     :src="asset.activeHolder.employee.photo || undefined"
                     :alt="asset.activeHolder.employee.name"
-                    size="xs"
-                    class="bg-primary-50 text-primary-700"
+                    class="bg-primary-50 text-primary-700 shrink-0"
                   />
-                  <span>{{ asset.activeHolder.employee.name }}</span>
+                  <div class="flex flex-col min-w-0">
+                    <span class="text-sm text-neutral-900 leading-tight block truncate" :title="asset.activeHolder.employee.name">{{ asset.activeHolder.employee.name }}</span>
+                    <span class="text-xs text-neutral-500 leading-tight block truncate" :title="asset.activeHolder.employee.employeeId">{{ asset.activeHolder.employee.employeeId }}</span>
+                  </div>
                 </div>
                 <span v-else>-</span>
               </div>
@@ -131,8 +133,8 @@
 
             <!-- Custom Specs / Labels inline in the grid -->
             <div v-for="label in asset.labels" :key="label.id || label.key" class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ label.key }}</span>
-              <div class="text-sm text-neutral-900 font-medium">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1 truncate" :title="label.key">{{ label.key }}</span>
+              <div class="text-sm text-neutral-900 font-medium truncate" :title="label.value">
                 {{ label.value }}
               </div>
             </div>
