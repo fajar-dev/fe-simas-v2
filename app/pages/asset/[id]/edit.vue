@@ -2,10 +2,19 @@
   <div class="space-y-6">
     <Header title="Edit Asset" description="Update asset details below" />
 
-    <div v-if="isLoadingAsset" class="bg-white border border-neutral-200 rounded-lg p-6 shadow-sm flex flex-col items-center justify-center min-h-[300px]">
-      <UIcon name="i-lucide-loader-2" class="w-10 h-10 text-primary animate-spin" />
-      <span class="text-neutral-500 text-sm mt-2">Loading asset details...</span>
-    </div>
+    <UCard v-if="isLoadingAsset" class="w-full">
+      <div class="w-full mb-4">
+        <USkeleton class="h-8 w-20" />
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
+        <div v-for="i in 3" :key="i" class="space-y-4">
+          <div v-for="j in 4" :key="j" class="space-y-2">
+            <USkeleton class="h-4 w-1/4" />
+            <USkeleton class="h-10 w-full" />
+          </div>
+        </div>
+      </div>
+    </UCard>
 
     <UCard v-else class="w-full">
       <div class="w-full mb-4">
