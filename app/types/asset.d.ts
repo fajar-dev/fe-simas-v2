@@ -28,6 +28,30 @@ export interface Asset {
   createdAt: string
   updatedAt: string
   labels: AssetLabel[]
+  activeHolder?: {
+    id: number
+    employeeId: number
+    assignedDate: string
+    employee: {
+      id: number
+      name: string
+      employeeId: string
+      jobPosition: string
+      photo: string | null
+    } | null
+  } | null
+  lastLocation?: {
+    id: number
+    date: string
+    location: {
+      id: number
+      name: string
+      branch: {
+        id: number
+        name: string
+      } | null
+    } | null
+  } | null
 }
 
 export interface AssetPayload {

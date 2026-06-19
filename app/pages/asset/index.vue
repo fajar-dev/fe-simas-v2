@@ -18,7 +18,7 @@
       :to="meta.to"
       :total="meta.total"
       search-placeholder="Search assets..."
-      table-class="min-w-[960px]"
+      table-class="min-w-[1200px]"
     >
       <template #actions>
         <UButton
@@ -60,6 +60,8 @@ definePageMeta({
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 const NuxtImg = resolveComponent('NuxtImg')
+const UBadge = resolveComponent('UBadge')
+const UAvatar = resolveComponent('UAvatar')
 
 // State
 const data = ref<Asset[]>([])
@@ -169,6 +171,41 @@ const columns: TableColumn<Asset>[] = [
     header: sortHeader('Model', 'model'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.model || '-')
+    }
+  },
+  {
+    id: 'lastLocation',
+    header: 'Location',
+    cell: ({ row }) => {
+      const lastLoc = row.original.lastLocation
+      if (!lastLoc || !lastLoc.location) return h('span', { class: 'text-neutral-500 italic' }, '-')
+      const locName = lastLoc.location.name
+      const branchName = lastLoc.location.branch?.name
+      return h('div', { class: 'flex flex-col min-w-0' }, [
+        h('span', { class: 'text-neutral-900 font-semibold' }, locName),
+        branchName ? h('span', { class: 'text-xs text-neutral-500' }, branchName) : null
+      ])
+    }
+  },
+  {
+    id: 'activeHolder',
+    header: 'Holder',
+    cell: ({ row }) => {
+      const holder = row.original.activeHolder
+      if (!holder || !holder.employee) return h('span', { class: 'text-neutral-500 italic' }, '-')
+      const emp = holder.employee
+      return h('div', { class: 'flex items-center gap-2 min-w-0' }, [
+        h(UAvatar, {
+          src: emp.photo || undefined,
+          alt: emp.name,
+          size: 'xs',
+          class: 'bg-primary-50 text-primary-700'
+        }),
+        h('div', { class: 'flex flex-col min-w-0' }, [
+          h('span', { class: 'text-neutral-900 font-semibold truncate' }, emp.name),
+          h('span', { class: 'text-xs text-neutral-500' }, emp.employeeId)
+        ])
+      ])
     }
   },
   {
