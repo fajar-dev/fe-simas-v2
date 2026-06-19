@@ -7,8 +7,17 @@
         <USkeleton class="h-8 w-20" />
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
-        <div v-for="i in 3" :key="i" class="space-y-4">
-          <div v-for="j in 4" :key="j" class="space-y-2">
+        <!-- Column 1: Asset Image Skeleton -->
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <USkeleton class="h-4 w-1/4" />
+            <USkeleton class="w-full aspect-square rounded-lg" />
+          </div>
+        </div>
+
+        <!-- Column 2 & 3: Fields Skeleton -->
+        <div v-for="i in 2" :key="i" class="space-y-4">
+          <div v-for="j in 5" :key="j" class="space-y-2">
             <USkeleton class="h-4 w-1/4" />
             <USkeleton class="h-10 w-full" />
           </div>
@@ -27,11 +36,11 @@
           <div class="space-y-4">
             <div>
               <label class="text-sm font-medium text-neutral-700 mb-1.5 block">Asset Image</label>
-              <div v-if="previewUrl" class="relative inline-block w-full">
-                <img :src="previewUrl" class="w-full h-40 rounded-lg object-cover border border-neutral-200" />
+              <div v-if="previewUrl" class="relative inline-block w-full aspect-square">
+                <img :src="previewUrl" class="w-full h-full rounded-lg object-cover border border-neutral-200" />
                 <UButton icon="i-lucide-x" color="error" variant="solid" size="xs" class="absolute top-1 right-1 rounded-full" @click="removeImage(form)" />
               </div>
-              <div v-else class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-neutral-200 rounded-lg cursor-pointer hover:border-primary transition-colors" @click="triggerFileInput">
+              <div v-else class="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-neutral-200 rounded-lg cursor-pointer hover:border-primary transition-colors" @click="triggerFileInput">
                 <UIcon name="i-lucide-upload" class="w-8 h-8 text-neutral-400 mb-2" />
                 <span class="text-sm text-neutral-500">Drop your image here</span>
                 <span class="text-xs text-neutral-400 mt-1">PNG, JPG up to 2MB</span>
@@ -41,7 +50,10 @@
               </div>
               <input ref="fileInput" type="file" class="hidden" accept="image/*" @change="onFileChange($event, form)" />
             </div>
+          </div>
 
+          <!-- ═══ Column 2: Details ═══ -->
+          <div class="space-y-4">
             <UFormField label="Code" name="code" required>
               <div class="relative w-full">
                 <UInput v-model="form.code" placeholder="e.g. AST-001" class="w-full" />
@@ -58,9 +70,27 @@
             <UFormField label="Name" name="name" required>
               <UInput v-model="form.name" placeholder="Asset name" class="w-full" />
             </UFormField>
+
+            <UFormField label="Category" required>
+              <div class="flex items-center gap-2">
+                <USelectMenu v-model="selectedCategory" :items="categoryOptions" searchable searchable-placeholder="Search category..." placeholder="Select category" class="w-full" />
+                <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="showAddCategory = true" />
+              </div>
+            </UFormField>
+
+            <UFormField label="Sub Category" name="subCategoryId" required>
+              <div class="flex items-center gap-2">
+                <USelectMenu v-model="selectedSubCategory" :items="subCategoryOptions" searchable searchable-placeholder="Search sub category..." placeholder="Select sub category" :disabled="!selectedCategoryId || isLoadingSubCategories" class="w-full" />
+                <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="showAddSubCategory = true" />
+              </div>
+            </UFormField>
+
+            <UFormField label="Description" name="description">
+              <UTextarea v-model="form.description" placeholder="Asset description (optional)" class="w-full" :rows="3" />
+            </UFormField>
           </div>
 
-          <!-- ═══ Column 2: Details ═══ -->
+          <!-- ═══ Column 3: Classification ═══ -->
           <div class="space-y-4">
             <UFormField label="Price" name="price">
               <UInput v-model="priceDisplay" placeholder="0" class="w-full">
@@ -89,27 +119,6 @@
 
             <UFormField label="Model" name="model">
               <UInput v-model="form.model" placeholder="Model (optional)" class="w-full" />
-            </UFormField>
-
-            <UFormField label="Description" name="description">
-              <UTextarea v-model="form.description" placeholder="Asset description (optional)" class="w-full" :rows="3" />
-            </UFormField>
-          </div>
-
-          <!-- ═══ Column 3: Classification ═══ -->
-          <div class="space-y-4">
-            <UFormField label="Category" required>
-              <div class="flex items-center gap-2">
-                <USelectMenu v-model="selectedCategory" :items="categoryOptions" searchable searchable-placeholder="Search category..." placeholder="Select category" class="w-full" />
-                <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="showAddCategory = true" />
-              </div>
-            </UFormField>
-
-            <UFormField label="Sub Category" name="subCategoryId" required>
-              <div class="flex items-center gap-2">
-                <USelectMenu v-model="selectedSubCategory" :items="subCategoryOptions" searchable searchable-placeholder="Search sub category..." placeholder="Select sub category" :disabled="!selectedCategoryId || isLoadingSubCategories" class="w-full" />
-                <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="showAddSubCategory = true" />
-              </div>
             </UFormField>
 
             <!-- Labels -->
