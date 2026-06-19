@@ -179,7 +179,7 @@ const columns: TableColumn<Asset>[] = [
     header: 'Category',
     cell: ({ row }) => {
       const cat = row.original.subCategory?.category
-      return h('span', { class: 'text-neutral-600' }, cat?.name || '-')
+      return h('span', { class: 'text-neutral-900' }, cat?.name || '-')
     }
   },
   {
@@ -187,7 +187,7 @@ const columns: TableColumn<Asset>[] = [
     header: 'Sub Category',
     cell: ({ row }) => {
       const sub = row.original.subCategory
-      return h('span', { class: 'text-neutral-600' }, sub?.name || '-')
+      return h('span', { class: 'text-neutral-900' }, sub?.name || '-')
     }
   },
   {
@@ -195,6 +195,13 @@ const columns: TableColumn<Asset>[] = [
     header: 'Brand',
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.brand || '-')
+    }
+  },
+  {
+    accessorKey: 'model',
+    header: 'Model',
+    cell: ({ row }) => {
+      return h('span', { class: 'text-neutral-600' }, row.original.model || '-')
     }
   },
   {
