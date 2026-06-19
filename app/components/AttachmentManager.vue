@@ -24,6 +24,23 @@ import { ref, watch } from "vue"
 import { attachmentService } from "~/services/attachment-service"
 import type { Attachment } from "~/types/attachment"
 
+// Patch URL.createObjectURL globally to return custom url property if present on mapped File objects
+if (typeof window !== 'undefined' && window.URL) {
+  const original = window.URL.createObjectURL
+  // @ts-ignore
+  if (!original.__patched) {
+    const patched = function (obj: any) {
+      if (obj && typeof obj === 'object' && 'url' in obj && obj.url) {
+        return obj.url
+      }
+      return original(obj)
+    }
+    // @ts-ignore
+    patched.__patched = true
+    window.URL.createObjectURL = patched
+  }
+}
+
 const props = defineProps<{
   modelValue: Attachment[]
 }>()
@@ -46,14 +63,14 @@ watch(() => props.modelValue, (newVal) => {
   const incomingIds = newVal.map(a => a.id)
   
   if (JSON.stringify(currentIds) !== JSON.stringify(incomingIds)) {
-    selectedFiles.value = newVal.map(att => ({
-      id: att.id,
-      name: att.originalName,
-      size: att.size,
-      type: att.mimeType,
-      url: att.url,
-      isUploaded: true
-    }))
+    selectedFiles.value = newVal.map(att => {
+      const file = new File([], att.originalName, { type: att.mimeType })
+      Object.defineProperty(file, 'id', { value: att.id, writable: true, enumerable: true, configurable: true })
+      Object.defineProperty(file, 'isUploaded', { value: true, writable: true, enumerable: true, configurable: true })
+      Object.defineProperty(file, 'url', { value: att.url, writable: true, enumerable: true, configurable: true })
+      Object.defineProperty(file, 'size', { value: att.size, writable: true, enumerable: true, configurable: true })
+      return file
+    })
   }
 }, { immediate: true, deep: true })
 

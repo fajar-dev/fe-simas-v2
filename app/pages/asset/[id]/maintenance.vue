@@ -16,6 +16,7 @@
       >
         <template #actions>
           <UButton
+            class="w-full lg:w-auto justify-center"
             color="primary"
             variant="solid"
             icon="i-lucide-plus"
@@ -69,6 +70,7 @@ const assetId = Number(route.params.id)
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 const UBadge = resolveComponent('UBadge')
+const UAvatar = resolveComponent('UAvatar')
 
 // State
 const data = ref<AssetMaintenance[]>([])
@@ -182,6 +184,26 @@ const columns: TableColumn<AssetMaintenance>[] = [
     }
   },
   {
+    accessorKey: 'createdBy',
+    header: 'Created By',
+    cell: ({ row }) => {
+      const creator = row.original.createdBy
+      if (creator) {
+        return h('div', { class: 'flex items-center gap-2' }, [
+          h(UAvatar, {
+            src: creator.photo || undefined,
+            alt: creator.name,
+            size: 'xs',
+            class: 'bg-primary-50 text-primary-700'
+          }),
+          h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
+        ])
+      } else {
+        return h('span', { class: 'text-neutral-500 italic text-sm' }, 'System')
+      }
+    }
+  },
+  {
     id: 'actions',
     header: 'Action',
     meta: {
@@ -207,7 +229,7 @@ const columns: TableColumn<AssetMaintenance>[] = [
           })
       )
     }
-  }
+  },
 ]
 
 function getRowItems(row: Row<AssetMaintenance>) {

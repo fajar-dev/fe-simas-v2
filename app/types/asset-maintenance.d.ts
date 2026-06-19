@@ -12,6 +12,11 @@ export interface AssetMaintenance {
     name: string
     code: string
   } | null
+  createdBy: {
+    id: number
+    name: string
+    photo: string | null
+  } | null
   attachments: Attachment[]
 }
 

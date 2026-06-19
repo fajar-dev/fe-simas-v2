@@ -26,7 +26,9 @@
     <UCard v-else-if="asset" class="w-full">
       <div class="w-full mb-4 flex items-center justify-between">
         <UButton label="Back" to="/asset" color="neutral" icon="i-lucide-arrow-left" variant="link" />
-        <UButton label="Edit Asset" :to="`/asset/${asset.id}/edit`" color="primary" icon="i-lucide-edit" />
+        <UButton :to="`/asset/${asset.id}/edit`" color="primary" icon="i-lucide-edit">
+          <span class="hidden sm:inline">Edit Asset</span>
+        </UButton>
       </div>
 
       <!-- Grid: Image on Left, Content Grid on Right -->
@@ -112,7 +114,7 @@
             <!-- Description (Full width of the 12-column content grid) -->
             <div class="col-span-12 pt-4 border-t border-neutral-100">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Description</span>
-              <div class="text-sm text-neutral-700 whitespace-pre-line leading-relaxed">
+              <div class="text-sm text-neutral-700">
                 {{ asset.description || '-' }}
               </div>
             </div>
