@@ -33,6 +33,8 @@ definePageMeta({
   layout: 'dashboard'
 })
 
+const NuxtImg = resolveComponent('NuxtImg')
+
 // Table controls state
 const search = ref('')
 const perPage = ref(10)
@@ -136,7 +138,7 @@ const columns: TableColumn<FeedbackItem>[] = [
         'div',
         { class: 'flex flex-wrap gap-1.5 py-1' },
         imgs.map((img) => 
-          h('img', {
+          h(NuxtImg, {
             src: img,
             alt: 'Screenshot',
             class: 'w-16 h-10 object-cover rounded border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0',

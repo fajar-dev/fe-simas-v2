@@ -11,7 +11,7 @@
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 cursor-zoom-out"
         @click.self="closeLightbox"
       >
-        <img 
+        <NuxtImg 
           :src="lightboxImage" 
           alt="Full Screenshot" 
           class="max-w-[90vw] max-h-[90vh] rounded-lg shadow-2xl object-contain cursor-default"

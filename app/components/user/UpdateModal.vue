@@ -14,7 +14,7 @@
       <div class="flex items-center gap-5 pb-4">
         <div class="relative group cursor-pointer shrink-0" @click="triggerFileInput">
           <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-neutral-200 hover:border-primary/50 transition-colors duration-200 flex items-center justify-center bg-neutral-50 relative">
-            <img v-if="previewUrl" :src="previewUrl" class="w-full h-full object-cover" />
+            <NuxtImg v-if="previewUrl" :src="previewUrl" class="w-full h-full object-cover" />
             <UIcon v-else name="i-lucide-user" class="w-10 h-10 text-neutral-400" />
             <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <UIcon name="i-lucide-camera" class="w-5 h-5 text-white" />

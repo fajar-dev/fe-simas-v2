@@ -14,7 +14,7 @@
             <div>
               <label class="text-sm font-medium text-neutral-700 mb-1.5 block">Asset Image</label>
               <div v-if="previewUrl" class="relative inline-block w-full aspect-square">
-                <img :src="previewUrl" class="w-full h-full rounded-lg object-cover border border-neutral-200" />
+                <NuxtImg :src="previewUrl" class="w-full h-full rounded-lg object-cover border border-neutral-200" />
                 <UButton icon="i-lucide-x" color="error" variant="solid" size="xs" class="absolute top-1 right-1 rounded-full" @click="removeImage(form)" />
               </div>
               <div v-else class="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-neutral-200 rounded-lg cursor-pointer hover:border-primary transition-colors" @click="triggerFileInput">

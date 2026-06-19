@@ -59,7 +59,7 @@ definePageMeta({
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
-const UBadge = resolveComponent('UBadge')
+const NuxtImg = resolveComponent('NuxtImg')
 
 // State
 const data = ref<Asset[]>([])
@@ -114,7 +114,7 @@ const columns: TableColumn<Asset>[] = [
     cell: ({ row }) => {
       const img = row.original.image
       const imageEl = img
-        ? h('img', {
+        ? h(NuxtImg, {
             src: img,
             alt: row.original.name,
             class: 'w-10 h-10 object-cover rounded-md border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0',
