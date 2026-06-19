@@ -4,7 +4,7 @@
       <UFileUpload
         v-model="selectedFiles"
         multiple
-        label="Choose files"
+        label="Choose or drop files"
         description="Select any documents, images, or PDFs"
         class="w-full"
         @update:model-value="handleFilesUpdate"

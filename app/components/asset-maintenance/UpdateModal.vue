@@ -26,7 +26,16 @@
 
         <!-- Date Field -->
         <UFormField label="Date" name="date" required>
-          <UInput type="date" v-model="form.date" class="w-full" />
+          <UInputDate v-model="dateVal" class="w-full">
+            <template #trailing>
+              <UPopover>
+                <UButton icon="i-lucide-calendar" color="neutral" variant="ghost" size="sm" square />
+                <template #content>
+                  <UCalendar v-model="dateVal" />
+                </template>
+              </UPopover>
+            </template>
+          </UInputDate>
         </UFormField>
 
         <!-- Note Field -->
@@ -59,6 +68,7 @@
 
 <script setup lang="ts">
 import { z } from 'zod'
+import { parseDate } from '@internationalized/date'
 import { assetMaintenanceService } from '~/services/asset-maintenance-service'
 import { assetService } from '~/services/asset-service'
 import type { AssetMaintenance, AssetMaintenancePayload } from '~/types/asset-maintenance'
@@ -91,6 +101,16 @@ const form = reactive<AssetMaintenancePayload>({
   date: '',
   note: '',
   attachmentIds: [],
+})
+
+const dateVal = computed({
+  get: () => {
+    if (!form.date) return undefined
+    try { return parseDate(form.date) } catch { return undefined }
+  },
+  set: (val) => {
+    form.date = val ? val.toString() : ''
+  }
 })
 
 // Sync selectedAsset with form.assetId
