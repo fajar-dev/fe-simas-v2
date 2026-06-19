@@ -186,8 +186,8 @@ const columns: TableColumn<AssetHolder>[] = [
     }
   },
   {
-    id: 'notes',
-    header: 'Notes',
+    accessorKey: 'notes',
+    header: sortHeader('Notes', 'notes'),
     cell: ({ row }) => {
       const notes = [
         row.original.assignNote ? `Assign: ${row.original.assignNote}` : null,
@@ -241,7 +241,7 @@ const columns: TableColumn<AssetHolder>[] = [
   },
   {
     accessorKey: 'createdBy',
-    header: 'Assign By',
+    header: sortHeader('Assign By', 'createdBy'),
     cell: ({ row }) => {
       const creator = row.original.createdBy
       if (creator) {
@@ -261,7 +261,7 @@ const columns: TableColumn<AssetHolder>[] = [
   },
   {
     accessorKey: 'returnedBy',
-    header: 'Return By',
+    header: sortHeader('Return By', 'returnedBy'),
     cell: ({ row }) => {
       const returner = row.original.returnedBy
       if (returner) {

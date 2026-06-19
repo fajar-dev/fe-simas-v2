@@ -10,19 +10,18 @@
     }"
   >
     <template #body>
-      <div v-if="activeHolder" class="mb-4 p-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg flex items-center gap-3">
-        <UAvatar
-          :src="activeHolder.employee?.photo || undefined"
-          :alt="activeHolder.employee?.name"
-          size="sm"
-          class="bg-primary-50 text-primary-700"
-        />
-        <div class="min-w-0 flex-1">
-          <p class="text-xs text-neutral-500 font-medium">Currently Held By</p>
-          <p class="text-sm font-semibold text-neutral-950 truncate">{{ activeHolder.employee?.name }}</p>
-          <p class="text-xs text-neutral-500">Assigned on {{ activeHolder.assignedDate }}</p>
-        </div>
-      </div>
+      <UAlert
+        v-if="activeHolder"
+        :avatar="{
+          src: activeHolder.employee?.photo || undefined,
+          alt: activeHolder.employee?.name,
+        }"
+        :title="activeHolder.employee?.name"
+        :description="activeHolder.employee?.employeeId"
+        color="neutral"
+        variant="subtle"
+        class="mb-4"
+      />
 
       <UForm id="return-asset-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
         <!-- Returned Date Field -->
