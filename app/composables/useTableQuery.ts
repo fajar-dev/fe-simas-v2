@@ -1,4 +1,5 @@
-import { ref, watch, h, resolveComponent } from 'vue'
+import { ref, watch, h } from 'vue'
+import { UIcon } from '#components'
 
 export function useTableQuery(onQueryChange: () => void, defaultSortBy: string = '', defaultOrder: 'ASC' | 'DESC' = 'DESC') {
   const search = ref('')
@@ -31,8 +32,6 @@ export function useTableQuery(onQueryChange: () => void, defaultSortBy: string =
       onQueryChange()
     }, 300)
   })
-
-  const UIcon = resolveComponent('UIcon')
 
   const sortHeader = (label: string, column: string) => {
     return () => {
