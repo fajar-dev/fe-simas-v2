@@ -7,28 +7,20 @@
     >
     </Header>
 
-    <section class="space-y-5">
-      <!-- Controls -->
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div class="flex flex-row items-center gap-2">
-          <!-- Search -->
-          <UInput 
-            v-model="search" 
-            icon="i-lucide-search" 
-            size="md" 
-            variant="outline" 
-            placeholder="Search assets..." 
-            class="w-full sm:w-64" 
-          />
-
-          <!-- Items per page -->
-          <USelect 
-            v-model="perPage" 
-            :items="limitOptions" 
-            class="w-20" 
-          />
-        </div>
-
+    <DataTable
+      v-model:search="search"
+      v-model:page="page"
+      v-model:perPage="perPage"
+      :data="data"
+      :columns="columns"
+      :loading="isLoading"
+      :from="meta.from"
+      :to="meta.to"
+      :total="meta.total"
+      search-placeholder="Search assets..."
+      table-class="min-w-[960px]"
+    >
+      <template #actions>
         <UButton
           color="primary"
           variant="solid"
@@ -38,30 +30,8 @@
         >
           Add Asset
         </UButton>
-      </div>
-
-      <!-- Table -->
-      <div class="overflow-x-auto">
-        <UTable 
-          :data="data" 
-          :columns="columns"
-          :loading="isLoading"
-          :ui="{ 
-            th: 'bg-neutral-50 py-2.5', 
-            td: 'text-neutral-900 py-3' 
-          }"
-          class="border border-neutral-200 rounded-md min-w-[960px]" 
-        />
-      </div>
-
-      <!-- Pagination -->
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-        <span class="text-sm text-neutral-500">
-          Showing {{ meta.from || 0 }} to {{ meta.to || 0 }} of {{ meta.total }} results
-        </span>
-        <UPagination v-model:page="page" size="md" :total="meta.total" :items-per-page="perPage" />
-      </div>
-    </section>
+      </template>
+    </DataTable>
 
     <!-- Delete Modal -->
     <DeleteModal 
@@ -92,23 +62,17 @@ const UDropdownMenu = resolveComponent('UDropdownMenu')
 const UBadge = resolveComponent('UBadge')
 
 // State
-const search = ref('')
-const limitOptions = ref([10, 25, 50, 100])
-const perPage = ref(10)
-const page = ref(1)
 const data = ref<Asset[]>([])
 const isLoading = ref(false)
-const sortBy = ref('')
-const order = ref<'ASC' | 'DESC'>('DESC')
 
-const toggleSort = (column: string) => {
-  if (sortBy.value === column) {
-    order.value = order.value === 'ASC' ? 'DESC' : 'ASC'
-  } else {
-    sortBy.value = column
-    order.value = 'ASC'
-  }
-}
+const {
+  search,
+  page,
+  perPage,
+  sortBy,
+  order,
+  sortHeader
+} = useTableQuery(() => fetchAssets())
 const selectedAsset = ref<Asset | null>(null)
 const showDeleteModal = ref(false)
 const isDeleting = ref(false)
@@ -140,41 +104,7 @@ const fetchAssets = async () => {
   }
 }
 
-// Watch for page, perPage, sort changes
-watch([page, perPage, sortBy, order], () => {
-  fetchAssets()
-})
 
-// Watch search with debounce
-let searchTimeout: ReturnType<typeof setTimeout>
-watch(search, () => {
-  clearTimeout(searchTimeout)
-  searchTimeout = setTimeout(() => {
-    page.value = 1
-    fetchAssets()
-  }, 300)
-})
-
-
-const UIcon = resolveComponent('UIcon')
-
-const sortHeader = (label: string, column: string) => {
-  return () => {
-    const isActive = sortBy.value === column
-    const upColor = isActive && order.value === 'ASC' ? 'text-primary' : 'text-neutral-300'
-    const downColor = isActive && order.value === 'DESC' ? 'text-primary' : 'text-neutral-300'
-    return h('div', {
-      class: 'flex items-center gap-1 cursor-pointer select-none hover:text-primary transition-colors',
-      onClick: () => toggleSort(column)
-    }, [
-      h('span', label),
-      h('div', { class: 'flex flex-col -space-y-1.5' }, [
-        h(UIcon, { name: 'i-lucide-chevron-up', class: `w-3 h-3 ${upColor}` }),
-        h(UIcon, { name: 'i-lucide-chevron-down', class: `w-3 h-3 ${downColor}` }),
-      ])
-    ])
-  }
-}
 
 // Table columns
 const columns: TableColumn<Asset>[] = [

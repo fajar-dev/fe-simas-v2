@@ -6,51 +6,18 @@
       description="View and track your submitted feedback and responses"
     />
 
-    <section class="space-y-5">
-      <!-- Controls -->
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div class="flex flex-row items-center gap-2">
-          <!-- Search -->
-          <UInput 
-            v-model="search" 
-            icon="i-lucide-search" 
-            size="md" 
-            variant="outline" 
-            placeholder="Search feedback..." 
-            class="w-full sm:w-64" 
-          />
-
-          <!-- Items per page -->
-          <USelect 
-            v-model="perPage" 
-            :items="limitOptions" 
-            class="w-20" 
-          />
-        </div>
-      </div>
-
-      <!-- Table -->
-      <div class="overflow-x-auto">
-        <UTable 
-          :data="paginatedData" 
-          :columns="columns"
-          :loading="isLoading"
-          :ui="{ 
-            th: 'bg-neutral-50 py-2.5', 
-            td: 'text-neutral-900 py-3' 
-          }"
-          class="border border-neutral-200 rounded-md" 
-        />
-      </div>
-
-      <!-- Pagination -->
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-        <span class="text-sm text-neutral-500">
-          Showing {{ meta.from || 0 }} to {{ meta.to || 0 }} of {{ meta.total }} results
-        </span>
-        <UPagination v-model:page="page" size="md" :total="meta.total" :items-per-page="perPage" />
-      </div>
-    </section>
+    <DataTable
+      v-model:search="search"
+      v-model:page="page"
+      v-model:perPage="perPage"
+      :data="paginatedData"
+      :columns="columns"
+      :loading="isLoading"
+      :from="meta.from"
+      :to="meta.to"
+      :total="meta.total"
+      search-placeholder="Search feedback..."
+    />
 
     <!-- Lightbox Modal -->
     <Lightbox />
@@ -68,7 +35,6 @@ definePageMeta({
 
 // Table controls state
 const search = ref('')
-const limitOptions = ref([10, 25, 50, 100])
 const perPage = ref(10)
 const page = ref(1)
 
