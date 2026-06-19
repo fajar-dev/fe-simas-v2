@@ -172,17 +172,9 @@ const columns: TableColumn<AssetHolder>[] = [
   },
   {
     accessorKey: 'returnedDate',
-    header: sortHeader('Status / Return Date', 'returnedDate'),
+    header: sortHeader('Return Date', 'returnedDate'),
     cell: ({ row }) => {
-      const returnedDate = row.original.returnedDate
-      if (!returnedDate) {
-        return h(UBadge, {
-          color: 'success',
-          variant: 'subtle',
-          label: 'Active'
-        })
-      }
-      return h('span', { class: 'text-neutral-900 font-medium' }, returnedDate)
+      return h('span', { class: 'text-neutral-900 font-medium' }, row.original.returnedDate || '-')
     }
   },
   {
