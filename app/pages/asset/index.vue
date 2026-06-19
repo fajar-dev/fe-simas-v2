@@ -98,6 +98,17 @@ const perPage = ref(10)
 const page = ref(1)
 const data = ref<Asset[]>([])
 const isLoading = ref(false)
+const sortBy = ref('')
+const order = ref<'ASC' | 'DESC'>('DESC')
+
+const toggleSort = (column: string) => {
+  if (sortBy.value === column) {
+    order.value = order.value === 'ASC' ? 'DESC' : 'ASC'
+  } else {
+    sortBy.value = column
+    order.value = 'ASC'
+  }
+}
 const selectedAsset = ref<Asset | null>(null)
 const showDeleteModal = ref(false)
 const isDeleting = ref(false)
@@ -115,7 +126,7 @@ const { openLightbox } = useLightbox()
 const fetchAssets = async () => {
   isLoading.value = true
   try {
-    const response = await assetService.getAll(page.value, perPage.value, search.value)
+    const response = await assetService.getAll(page.value, perPage.value, search.value, sortBy.value, order.value)
     if (response.success) {
       data.value = response.data
       if (response.meta) {
@@ -129,8 +140,8 @@ const fetchAssets = async () => {
   }
 }
 
-// Watch for page and perPage changes
-watch([page, perPage], () => {
+// Watch for page, perPage, sort changes
+watch([page, perPage, sortBy, order], () => {
   fetchAssets()
 })
 
@@ -145,11 +156,31 @@ watch(search, () => {
 })
 
 
+const UIcon = resolveComponent('UIcon')
+
+const sortHeader = (label: string, column: string) => {
+  return () => {
+    const isActive = sortBy.value === column
+    const upColor = isActive && order.value === 'ASC' ? 'text-primary' : 'text-neutral-300'
+    const downColor = isActive && order.value === 'DESC' ? 'text-primary' : 'text-neutral-300'
+    return h('div', {
+      class: 'flex items-center gap-1 cursor-pointer select-none hover:text-primary transition-colors',
+      onClick: () => toggleSort(column)
+    }, [
+      h('span', label),
+      h('div', { class: 'flex flex-col -space-y-1.5' }, [
+        h(UIcon, { name: 'i-lucide-chevron-up', class: `w-3 h-3 ${upColor}` }),
+        h(UIcon, { name: 'i-lucide-chevron-down', class: `w-3 h-3 ${downColor}` }),
+      ])
+    ])
+  }
+}
+
 // Table columns
 const columns: TableColumn<Asset>[] = [
   {
     id: 'asset',
-    header: 'Asset',
+    header: sortHeader('Asset', 'name'),
     cell: ({ row }) => {
       const img = row.original.image
       const imageEl = img
@@ -176,7 +207,7 @@ const columns: TableColumn<Asset>[] = [
   },
   {
     id: 'category',
-    header: 'Category',
+    header: sortHeader('Category', 'category'),
     cell: ({ row }) => {
       const cat = row.original.subCategory?.category
       return h('span', { class: 'text-neutral-900' }, cat?.name || '-')
@@ -184,7 +215,7 @@ const columns: TableColumn<Asset>[] = [
   },
   {
     id: 'subCategory',
-    header: 'Sub Category',
+    header: sortHeader('Sub Category', 'subCategory'),
     cell: ({ row }) => {
       const sub = row.original.subCategory
       return h('span', { class: 'text-neutral-900' }, sub?.name || '-')
@@ -192,28 +223,28 @@ const columns: TableColumn<Asset>[] = [
   },
   {
     accessorKey: 'brand',
-    header: 'Brand',
+    header: sortHeader('Brand', 'brand'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.brand || '-')
     }
   },
   {
     accessorKey: 'model',
-    header: 'Model',
+    header: sortHeader('Model', 'model'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.model || '-')
     }
   },
   {
     accessorKey: 'price',
-    header: 'Price',
+    header: sortHeader('Price', 'price'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, formatCurrency(row.original.price))
     }
   },
   {
     accessorKey: 'purchaseDate',
-    header: 'Purchase Date',
+    header: sortHeader('Purchase Date', 'purchaseDate'),
     cell: ({ row }) => {
       const date = row.original.purchaseDate
       const age = row.original.age
