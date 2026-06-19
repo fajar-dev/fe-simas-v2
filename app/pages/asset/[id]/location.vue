@@ -50,6 +50,7 @@ const assetId = Number(route.params.id)
 
 const UButton = resolveComponent('UButton')
 const UAvatar = resolveComponent('UAvatar')
+const UBadge = resolveComponent('UBadge')
 
 // State
 const data = ref<AssetLocation[]>([])
@@ -116,14 +117,58 @@ const columns: TableColumn<AssetLocation>[] = [
   },
   {
     accessorKey: 'note',
-    header: 'Notes',
+    header: sortHeader('Notes', 'note'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600 truncate max-w-md block' }, row.original.note || '-')
     }
   },
   {
+    id: 'attachments',
+    header: 'Attachments',
+    cell: ({ row }) => {
+      const attachments = row.original.attachments || []
+      if (attachments.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+
+      const getAttachmentTheme = (mimeType: string) => {
+        if (!mimeType) return { icon: 'i-lucide-file', color: 'neutral' as const }
+        const type = mimeType.toLowerCase()
+        if (type.startsWith('image/')) return { icon: 'i-lucide-image', color: 'success' as const }
+        if (type.includes('pdf')) return { icon: 'i-lucide-file-text', color: 'error' as const }
+        if (type.includes('word') || type.includes('officedocument') || type.includes('excel') || type.includes('sheet') || type.includes('powerpoint') || type.includes('presentation')) return { icon: 'i-lucide-file-text', color: 'primary' as const }
+        if (type.includes('zip') || type.includes('rar') || type.includes('compressed') || type.includes('tar') || type.includes('gzip')) return { icon: 'i-lucide-archive', color: 'warning' as const }
+        return { icon: 'i-lucide-file', color: 'neutral' as const }
+      }
+
+      // Render clickable mini badges for each attachment
+      return h(
+        'div',
+        { class: 'flex flex-wrap gap-2 max-w-sm' },
+        attachments.map(att => {
+          const theme = getAttachmentTheme(att.mimeType)
+          return h(
+            'a',
+            {
+              href: att.url,
+              target: '_blank',
+              class: 'cursor-pointer inline-block max-w-[160px]'
+            },
+            [
+              h(UBadge, {
+                color: theme.color,
+                variant: 'subtle',
+                icon: theme.icon,
+                label: att.originalName,
+                class: 'max-w-full truncate'
+              })
+            ]
+          )
+        })
+      )
+    }
+  },
+  {
     accessorKey: 'createdBy',
-    header: 'Created By',
+    header: sortHeader('Created By', 'createdBy'),
     cell: ({ row }) => {
       const creator = row.original.createdBy
       if (creator) {
@@ -142,4 +187,8 @@ const columns: TableColumn<AssetLocation>[] = [
     }
   }
 ]
+
+onMounted(() => {
+  fetchLocations()
+})
 </script>

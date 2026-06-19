@@ -1,3 +1,5 @@
+import type { Attachment } from "./attachment"
+
 export interface AssetLocation {
   id: number
   assetId: number
@@ -21,6 +23,7 @@ export interface AssetLocation {
     name: string
     photo: string | null
   } | null
+  attachments: Attachment[]
 }
 
 export interface AssetLocationPayload {
@@ -28,4 +31,5 @@ export interface AssetLocationPayload {
   locationId: number
   date: string
   note?: string
+  attachmentIds?: number[]
 }

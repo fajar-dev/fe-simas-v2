@@ -90,7 +90,7 @@ const meta = reactive({
 const fetchLocations = async () => {
   isLoading.value = true
   try {
-    const response = await locationService.getAll(page.value, perPage.value, search.value, sortBy.value, order.value)
+    const response = await locationService.getAll(page.value, perPage.value, search.value, undefined, sortBy.value, order.value)
     if (response.success) {
       data.value = response.data
       if (response.meta) {

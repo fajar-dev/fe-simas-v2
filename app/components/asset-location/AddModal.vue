@@ -69,6 +69,12 @@
         <UFormField label="Note / Reason" name="note">
           <UTextarea v-model="form.note" placeholder="Enter relocation reasons or details (optional)" class="w-full" :rows="3" />
         </UFormField>
+
+        <!-- Attachment Manager -->
+        <AttachmentManager
+          v-model="uploadedAttachments"
+          @change="onAttachmentsChanged"
+        />
       </UForm>
     </template>
     <template #footer>
@@ -94,6 +100,7 @@ import { assetLocationService } from '~/services/asset-location-service'
 import { branchService } from '~/services/branch-service'
 import { locationService } from '~/services/location-service'
 import { assetService } from '~/services/asset-service'
+import type { Attachment } from '~/types/attachment'
 
 const open = defineModel<boolean>({ default: false })
 const props = defineProps<{
@@ -111,21 +118,12 @@ const isLoadingLocations = ref(false)
 
 const assetOptions = ref<{ label: string; value: number }[]>([])
 const branchOptions = ref<{ label: string; value: number }[]>([])
-const allLocations = ref<any[]>([])
+const filteredLocationOptions = ref<{ label: string; value: number }[]>([])
 
 const selectedAsset = ref<{ label: string; value: number } | undefined>(undefined)
 const selectedBranch = ref<{ label: string; value: number } | undefined>(undefined)
 const selectedLocation = ref<{ label: string; value: number } | undefined>(undefined)
-
-const filteredLocationOptions = computed(() => {
-  if (!selectedBranch.value) return []
-  return allLocations.value
-    .filter(l => l.branchId === selectedBranch.value?.value)
-    .map(l => ({
-      label: l.name,
-      value: l.id
-    }))
-})
+const uploadedAttachments = ref<Attachment[]>([])
 
 const schema = z.object({
   assetId: z.number(),
@@ -141,6 +139,7 @@ const form = reactive({
   locationId: undefined as unknown as number,
   date: new Date().toISOString().split('T')[0] || '', // Default to today
   note: '',
+  attachmentIds: [] as number[],
 })
 
 const dateVal = computed({
@@ -157,19 +156,42 @@ const dateVal = computed({
 watch(selectedAsset, (val) => {
   if (val) form.assetId = val.value
 })
-watch(selectedBranch, (val) => {
+
+const loadLocationsForBranch = async (branchId: number) => {
+  isLoadingLocations.value = true
+  try {
+    const res = await locationService.getByBranchId(branchId)
+    if (res.success && res.data) {
+      filteredLocationOptions.value = res.data.map(l => ({
+        label: l.name,
+        value: l.id
+      }))
+    }
+  } finally {
+    isLoadingLocations.value = false
+  }
+}
+
+watch(selectedBranch, async (val) => {
   if (val) {
     form.branchId = val.value
+    await loadLocationsForBranch(val.value)
   } else {
     form.branchId = undefined as unknown as number
+    filteredLocationOptions.value = []
   }
   // Reset location when branch changes
   selectedLocation.value = undefined
   form.locationId = undefined as unknown as number
 })
+
 watch(selectedLocation, (val) => {
   if (val) form.locationId = val.value
 })
+
+const onAttachmentsChanged = (ids: number[]) => {
+  form.attachmentIds = ids
+}
 
 const loadAssets = async () => {
   isLoadingAssets.value = true
@@ -201,27 +223,18 @@ const loadBranches = async () => {
   }
 }
 
-const loadLocations = async () => {
-  isLoadingLocations.value = true
-  try {
-    const res = await locationService.getAll(1, 200)
-    if (res.success && res.data) {
-      allLocations.value = res.data
-    }
-  } finally {
-    isLoadingLocations.value = false
-  }
-}
-
 const resetForm = () => {
   form.assetId = props.lockAssetId ? props.lockAssetId : (undefined as unknown as number)
   form.branchId = undefined as unknown as number
   form.locationId = undefined as unknown as number
   form.date = new Date().toISOString().split('T')[0] || ''
   form.note = ''
+  form.attachmentIds = []
   selectedAsset.value = undefined
   selectedBranch.value = undefined
   selectedLocation.value = undefined
+  filteredLocationOptions.value = []
+  uploadedAttachments.value = []
 }
 
 const handleSubmit = async () => {
@@ -232,6 +245,7 @@ const handleSubmit = async () => {
       locationId: form.locationId,
       date: form.date,
       note: form.note,
+      attachmentIds: form.attachmentIds,
     })
     if (response.success) {
       toast.add({
@@ -252,7 +266,6 @@ watch(open, (val) => {
   if (val) {
     resetForm()
     loadBranches()
-    loadLocations()
     if (props.lockAssetId) {
       form.assetId = props.lockAssetId
     } else {

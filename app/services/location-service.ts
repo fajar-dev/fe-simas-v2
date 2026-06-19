@@ -9,13 +9,28 @@ export class LocationService {
         return { headers: { Authorization: `Bearer ${useAuth().state.token}` } }
     }
 
-    async getAll(page = 1, perPage = 10, q = '', sortBy = '', order = ''): Promise<ApiResponse<Location[]>> {
+    async getAll(page = 1, perPage = 10, q = '', branchId?: number, sortBy = '', order = ''): Promise<ApiResponse<Location[]>> {
         try {
             let url = `/location?page=${page}&limit=${perPage}&q=${q}`
+            if (branchId !== undefined) {
+                url += `&branchId=${branchId}`
+            }
             if (sortBy) url += `&sortBy=${sortBy}`
             if (order) url += `&order=${order}`
             const response = await apiService.client.get<ApiResponse<Location[]>>(
                 url,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
+    async getByBranchId(branchId: number): Promise<ApiResponse<Location[]>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<Location[]>>(
+                `/location/by-branch/${branchId}`,
                 this.authHeaders
             )
             return response.data
