@@ -175,7 +175,7 @@ const columns: TableColumn<Asset>[] = [
   },
   {
     id: 'lastLocation',
-    header: 'Location',
+    header: 'Last Location',
     cell: ({ row }) => {
       const lastLoc = row.original.lastLocation
       if (!lastLoc || !lastLoc.location) return h('span', { class: 'text-neutral-500 italic' }, '-')
@@ -189,7 +189,7 @@ const columns: TableColumn<Asset>[] = [
   },
   {
     id: 'activeHolder',
-    header: 'Holder',
+    header: 'Active Holder',
     cell: ({ row }) => {
       const holder = row.original.activeHolder
       if (!holder || !holder.employee) return h('span', { class: 'text-neutral-500 italic' }, '-')
@@ -198,7 +198,6 @@ const columns: TableColumn<Asset>[] = [
         h(UAvatar, {
           src: emp.photo || undefined,
           alt: emp.name,
-          size: 'xs',
           class: 'bg-primary-50 text-primary-700'
         }),
         h('div', { class: 'flex flex-col min-w-0' }, [
