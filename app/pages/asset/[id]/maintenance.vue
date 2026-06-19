@@ -27,14 +27,14 @@
       </DataTable>
 
       <!-- Add Modal -->
-      <AddModal
+      <AssetMaintenanceAddModal
         v-model="showAddModal"
         :lock-asset-id="assetId"
         @created="fetchMaintenances"
       />
 
       <!-- Update Modal -->
-      <UpdateModal
+      <AssetMaintenanceUpdateModal
         v-model="showUpdateModal"
         :maintenance="selectedMaintenance"
         :lock-asset-id="assetId"
@@ -58,9 +58,6 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { assetMaintenanceService } from '~/services/asset-maintenance-service'
 import type { AssetMaintenance } from '~/types/asset-maintenance'
-import AddModal from '~/components/asset-maintenance/AddModal.vue'
-import UpdateModal from '~/components/asset-maintenance/UpdateModal.vue'
-import DeleteModal from '~/components/DeleteModal.vue'
 
 definePageMeta({
   layout: 'dashboard'
