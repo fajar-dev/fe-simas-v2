@@ -29,6 +29,11 @@ export const useNavigation = () => {
           to: '/asset',
           icon: 'i-lucide-box'
         },
+        {
+          label: 'Asset Maintenance',
+          to: '/asset-maintenance',
+          icon: 'i-lucide-wrench'
+        },
       ]
     },
     {

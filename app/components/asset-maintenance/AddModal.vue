@@ -1,0 +1,149 @@
+<template>
+  <UModal 
+    title="Add Asset Maintenance"
+    description="Fill in the details to record a new asset maintenance event."
+    v-model:open="open" 
+    :ui="{ 
+      content: 'sm:max-w-md', 
+      overlay: 'bg-black/40',
+      footer: 'justify-end'
+    }"
+  >
+    <template #body>
+      <UForm id="add-maintenance-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
+        <!-- Asset Field -->
+        <UFormField label="Asset" name="assetId" required>
+          <USelectMenu
+            v-model="selectedAsset"
+            :items="assetOptions"
+            searchable
+            searchable-placeholder="Search assets..."
+            placeholder="Select asset"
+            :loading="isLoadingAssets"
+            class="w-full"
+          />
+        </UFormField>
+
+        <!-- Date Field -->
+        <UFormField label="Date" name="date" required>
+          <UInput type="date" v-model="form.date" class="w-full" />
+        </UFormField>
+
+        <!-- Note Field -->
+        <UFormField label="Note" name="note">
+          <UTextarea v-model="form.note" placeholder="Enter maintenance details / notes (optional)" class="w-full" :rows="3" />
+        </UFormField>
+
+        <!-- Reusable Attachment Manager -->
+        <AttachmentManager
+          v-model="uploadedAttachments"
+          @change="onAttachmentsChanged"
+        />
+      </UForm>
+    </template>
+    <template #footer>
+      <div class="flex justify-end items-center gap-2 w-full">
+        <UButton label="Cancel" @click="open = false" color="neutral" variant="outline" />
+        <UButton
+          type="submit"
+          form="add-maintenance-form"
+          color="primary"
+          :loading="isSubmitting"
+        >
+          Save Maintenance
+        </UButton>
+      </div>
+    </template>
+  </UModal>
+</template>
+
+<script setup lang="ts">
+import { z } from 'zod'
+import { assetMaintenanceService } from '~/services/asset-maintenance-service'
+import { assetService } from '~/services/asset-service'
+import type { AssetMaintenancePayload } from '~/types/asset-maintenance'
+import type { Attachment } from '~/types/attachment'
+
+const open = defineModel<boolean>({ default: false })
+const emit = defineEmits<{ created: [] }>()
+const toast = useToast()
+
+// State
+const isSubmitting = ref(false)
+const isLoadingAssets = ref(false)
+const assetOptions = ref<{ label: string; value: number }[]>([])
+const selectedAsset = ref<{ label: string; value: number } | undefined>(undefined)
+const uploadedAttachments = ref<Attachment[]>([])
+
+const schema = z.object({
+  assetId: z.number(),
+  date: z.string().min(1, 'Date is required'),
+  note: z.string().optional().or(z.literal('')),
+})
+
+const form = reactive<AssetMaintenancePayload>({
+  assetId: undefined as unknown as number,
+  date: new Date().toISOString().split('T')[0] || '', // Default to today
+  note: '',
+  attachmentIds: [],
+})
+
+// Sync selectedAsset with form.assetId
+watch(selectedAsset, (val) => {
+  if (val) form.assetId = val.value
+})
+
+const onAttachmentsChanged = (ids: number[]) => {
+  form.attachmentIds = ids
+}
+
+const loadAssets = async () => {
+  isLoadingAssets.value = true
+  try {
+    const res = await assetService.getAll(1, 200)
+    if (res.success && res.data) {
+      assetOptions.value = res.data.map(a => ({
+        label: `${a.code} - ${a.name}`,
+        value: a.id
+      }))
+    }
+  } finally {
+    isLoadingAssets.value = false
+  }
+}
+
+const resetForm = () => {
+  form.assetId = undefined as unknown as number
+  form.date = new Date().toISOString().split('T')[0] || ''
+  form.note = ''
+  form.attachmentIds = []
+  selectedAsset.value = undefined
+  uploadedAttachments.value = []
+}
+
+const handleSubmit = async () => {
+  isSubmitting.value = true
+  try {
+    const response = await assetMaintenanceService.create(form)
+    if (response.success) {
+      toast.add({
+        title: 'Asset maintenance recorded successfully!',
+        color: 'success',
+        icon: 'i-lucide-circle-check'
+      })
+      emit('created')
+      open.value = false
+      resetForm()
+    }
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+watch(open, (val) => {
+  if (val) {
+    resetForm()
+    loadAssets()
+  }
+})
+</script>
