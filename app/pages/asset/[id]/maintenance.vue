@@ -148,13 +148,13 @@ const columns: TableColumn<AssetMaintenance>[] = [
       if (attachments.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
 
       const getAttachmentTheme = (mimeType: string) => {
-        if (!mimeType) return { icon: 'i-lucide-file', badgeClass: 'bg-neutral-50 hover:bg-neutral-100/80 text-neutral-700 border-neutral-200/60 dark:bg-neutral-900/50 dark:hover:bg-neutral-800/80 dark:text-neutral-300 dark:border-neutral-800' }
+        if (!mimeType) return { icon: 'i-lucide-file', badgeClass: 'bg-neutral-50 text-neutral-700 border-neutral-200/60 dark:bg-neutral-900/50 dark:text-neutral-300 dark:border-neutral-800' }
         const type = mimeType.toLowerCase()
-        if (type.startsWith('image/')) return { icon: 'i-lucide-image', badgeClass: 'bg-emerald-50 hover:bg-emerald-100/80 text-emerald-700 border-emerald-200/50 dark:bg-emerald-950/20 dark:hover:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-900/40' }
-        if (type.includes('pdf')) return { icon: 'i-lucide-file-text', badgeClass: 'bg-rose-50 hover:bg-rose-100/80 text-rose-700 border-rose-200/50 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 dark:border-rose-900/40' }
-        if (type.includes('word') || type.includes('officedocument') || type.includes('excel') || type.includes('sheet') || type.includes('powerpoint') || type.includes('presentation')) return { icon: 'i-lucide-file-text', badgeClass: 'bg-blue-50 hover:bg-blue-100/80 text-blue-700 border-blue-200/50 dark:bg-blue-950/20 dark:hover:bg-blue-900/30 dark:text-blue-400 dark:border-blue-900/40' }
-        if (type.includes('zip') || type.includes('rar') || type.includes('compressed') || type.includes('tar') || type.includes('gzip')) return { icon: 'i-lucide-archive', badgeClass: 'bg-amber-50 hover:bg-amber-100/80 text-amber-700 border-amber-200/50 dark:bg-amber-950/20 dark:hover:bg-amber-900/30 dark:text-amber-400 dark:border-amber-900/40' }
-        return { icon: 'i-lucide-file', badgeClass: 'bg-neutral-50 hover:bg-neutral-100/80 text-neutral-700 border-neutral-200/60 dark:bg-neutral-900/50 dark:hover:bg-neutral-800/80 dark:text-neutral-300 dark:border-neutral-800' }
+        if (type.startsWith('image/')) return { icon: 'i-lucide-image', badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/40' }
+        if (type.includes('pdf')) return { icon: 'i-lucide-file-text', badgeClass: 'bg-rose-50 text-rose-700 border-rose-200/50 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900/40' }
+        if (type.includes('word') || type.includes('officedocument') || type.includes('excel') || type.includes('sheet') || type.includes('powerpoint') || type.includes('presentation')) return { icon: 'i-lucide-file-text', badgeClass: 'bg-blue-50 text-blue-700 border-blue-200/50 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900/40' }
+        if (type.includes('zip') || type.includes('rar') || type.includes('compressed') || type.includes('tar') || type.includes('gzip')) return { icon: 'i-lucide-archive', badgeClass: 'bg-amber-50 text-amber-700 border-amber-200/50 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/40' }
+        return { icon: 'i-lucide-file', badgeClass: 'bg-neutral-50 text-neutral-700 border-neutral-200/60 dark:bg-neutral-900/50 dark:text-neutral-300 dark:border-neutral-800' }
       }
 
       // Render clickable mini badges for each attachment
@@ -168,12 +168,12 @@ const columns: TableColumn<AssetMaintenance>[] = [
             {
               href: att.url,
               target: '_blank',
-              class: `inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium transition-all duration-200 border shadow-xs transform hover:-translate-y-0.5 max-w-[160px] cursor-pointer ${theme.badgeClass}`
+              class: `inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium border max-w-[160px] cursor-pointer ${theme.badgeClass}`
             },
             [
               h(UIcon, { name: theme.icon, class: 'w-3.5 h-3.5 shrink-0 opacity-85' }),
               h('span', { class: 'truncate flex-1' }, att.originalName),
-              h(UIcon, { name: 'i-lucide-download', class: 'w-3 h-3 shrink-0 opacity-50 hover:opacity-100 transition-opacity' })
+              h(UIcon, { name: 'i-lucide-download', class: 'w-3 h-3 shrink-0 opacity-50' })
             ]
           )
         })
