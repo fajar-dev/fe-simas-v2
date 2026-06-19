@@ -1,4 +1,3 @@
-import { ref, watch, h } from 'vue'
 import { UIcon } from '#components'
 
 export function useTableQuery(onQueryChange: () => void, defaultSortBy: string = '', defaultOrder: 'ASC' | 'DESC' = 'DESC') {

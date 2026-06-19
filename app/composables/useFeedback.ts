@@ -1,5 +1,3 @@
-import { ref } from 'vue'
-
 const isOpen = ref(false)
 const isCapturing = ref(false)
 const screenshotFile = ref<File | null>(null)

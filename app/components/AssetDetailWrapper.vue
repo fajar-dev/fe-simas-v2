@@ -137,44 +137,18 @@
 
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
-import { assetService } from '~/services/asset-service'
 import type { Asset } from '~/types/asset'
 
 const route = useRoute()
-const router = useRouter()
 const assetId = Number(route.params.id)
 
-const asset = ref<Asset | null>(null)
-const isLoading = ref(true)
-const { openLightbox } = useLightbox()
-
-// Fetch asset details directly inside the component
-const loadData = async () => {
-  isLoading.value = true
-  try {
-    const response = await assetService.getById(assetId)
-    if (response.success) {
-      asset.value = response.data
-    } else {
-      router.push('/asset')
-    }
-  } catch (error) {
-    router.push('/asset')
-  } finally {
-    isLoading.value = false
-  }
+// Inject state from the parent page ([id].vue) to prevent reloading on tab changes
+const { asset, isLoading } = inject('assetState') as {
+  asset: Ref<Asset | null>
+  isLoading: Ref<boolean>
 }
 
-onMounted(() => {
-  loadData()
-})
-
-// Watch route id changes to reload
-watch(() => route.params.id, (newId) => {
-  if (newId) {
-    loadData()
-  }
-})
+const { openLightbox } = useLightbox()
 
 const items = computed(() => [
   {
