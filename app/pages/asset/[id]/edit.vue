@@ -8,11 +8,31 @@
     </div>
 
     <UCard v-else class="w-full">
+      <div class="w-full mb-4">
+        <UButton label="Back" to="/asset" size="sm" color="neutral" icon="i-lucide-arrow-left" variant="soft" />
+      </div>
       <UForm id="edit-asset-form" :schema="schema" :state="form" @submit="handleSubmit">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
 
           <!-- ═══ Column 1: Identity ═══ -->
           <div class="space-y-4">
+            <div>
+              <label class="text-sm font-medium text-neutral-700 mb-1.5 block">Asset Image</label>
+              <div v-if="previewUrl" class="relative inline-block w-full">
+                <img :src="previewUrl" class="w-full h-40 rounded-lg object-cover border border-neutral-200" />
+                <UButton icon="i-lucide-x" color="error" variant="solid" size="xs" class="absolute top-1 right-1 rounded-full" @click="removeImage(form)" />
+              </div>
+              <div v-else class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-neutral-200 rounded-lg cursor-pointer hover:border-primary transition-colors" @click="triggerFileInput">
+                <UIcon name="i-lucide-upload" class="w-8 h-8 text-neutral-400 mb-2" />
+                <span class="text-sm text-neutral-500">Drop your image here</span>
+                <span class="text-xs text-neutral-400 mt-1">PNG, JPG up to 2MB</span>
+              </div>
+              <div v-if="isUploading" class="mt-2 flex items-center gap-2 text-sm text-neutral-500">
+                <UIcon name="i-lucide-loader-2" class="w-4 h-4 animate-spin" /> Uploading...
+              </div>
+              <input ref="fileInput" type="file" class="hidden" accept="image/*" @change="onFileChange($event, form)" />
+            </div>
+
             <UFormField label="Code" name="code" required>
               <div class="relative w-full">
                 <UInput v-model="form.code" placeholder="e.g. AST-001" class="w-full" />
@@ -28,18 +48,6 @@
 
             <UFormField label="Name" name="name" required>
               <UInput v-model="form.name" placeholder="Asset name" class="w-full" />
-            </UFormField>
-
-            <UFormField label="Description" name="description">
-              <UTextarea v-model="form.description" placeholder="Asset description (optional)" class="w-full" :rows="3" />
-            </UFormField>
-
-            <UFormField label="Brand" name="brand">
-              <UInput v-model="form.brand" placeholder="Brand (optional)" class="w-full" />
-            </UFormField>
-
-            <UFormField label="Model" name="model">
-              <UInput v-model="form.model" placeholder="Model (optional)" class="w-full" />
             </UFormField>
           </div>
 
@@ -66,59 +74,31 @@
               </UInputDate>
             </UFormField>
 
-            <div>
-              <label class="text-sm font-medium text-neutral-700 mb-1.5 block">Asset Image</label>
-              <div v-if="previewUrl" class="relative inline-block w-full">
-                <img :src="previewUrl" class="w-full h-40 rounded-lg object-cover border border-neutral-200" />
-                <UButton
-                  icon="i-lucide-x"
-                  color="error"
-                  variant="solid"
-                  size="xs"
-                  class="absolute top-1 right-1 rounded-full"
-                  @click="removeImage"
-                />
-              </div>
-              <UFileUpload
-                v-else
-                accept="image/*"
-                icon="i-lucide-upload"
-                label="Drop your image here"
-                description="PNG, JPG up to 2MB"
-                :loading="isUploading"
-                class="w-full"
-                @change="onFileChange"
-              />
-            </div>
+            <UFormField label="Brand" name="brand">
+              <UInput v-model="form.brand" placeholder="Brand (optional)" class="w-full" />
+            </UFormField>
+
+            <UFormField label="Model" name="model">
+              <UInput v-model="form.model" placeholder="Model (optional)" class="w-full" />
+            </UFormField>
+
+            <UFormField label="Description" name="description">
+              <UTextarea v-model="form.description" placeholder="Asset description (optional)" class="w-full" :rows="3" />
+            </UFormField>
           </div>
 
           <!-- ═══ Column 3: Classification ═══ -->
           <div class="space-y-4">
             <UFormField label="Category" required>
               <div class="flex items-center gap-2">
-                <USelectMenu
-                  v-model="selectedCategory"
-                  :items="categoryOptions"
-                  searchable
-                  searchable-placeholder="Search category..."
-                  placeholder="Select category"
-                  class="w-full"
-                />
+                <USelectMenu v-model="selectedCategory" :items="categoryOptions" searchable searchable-placeholder="Search category..." placeholder="Select category" class="w-full" />
                 <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="showAddCategory = true" />
               </div>
             </UFormField>
 
             <UFormField label="Sub Category" name="subCategoryId" required>
               <div class="flex items-center gap-2">
-                <USelectMenu
-                  v-model="selectedSubCategory"
-                  :items="subCategoryOptions"
-                  searchable
-                  searchable-placeholder="Search sub category..."
-                  placeholder="Select sub category"
-                  :disabled="!selectedCategoryId || isLoadingSubCategories"
-                  class="w-full"
-                />
+                <USelectMenu v-model="selectedSubCategory" :items="subCategoryOptions" searchable searchable-placeholder="Search sub category..." placeholder="Select sub category" :disabled="!selectedCategoryId || isLoadingSubCategories" class="w-full" />
                 <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="showAddSubCategory = true" />
               </div>
             </UFormField>
@@ -127,9 +107,7 @@
             <div>
               <div class="flex items-center justify-between mb-1.5">
                 <label class="text-sm font-medium text-neutral-700">Labels</label>
-                <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addLabel">
-                  Add
-                </UButton>
+                <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addLabel">Add</UButton>
               </div>
               <div v-if="labels.length === 0" class="text-sm text-neutral-400 py-3 text-center border border-dashed border-neutral-200 rounded-lg">
                 No labels added yet
@@ -147,13 +125,7 @@
 
         <!-- Footer Actions -->
         <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-neutral-100">
-          <UButton label="Cancel" to="/asset" color="neutral" variant="outline" />
-          <UButton
-            type="submit"
-            color="primary"
-            :loading="isSubmitting"
-            :disabled="isUploading || codeStatus === 'exists'"
-          >
+          <UButton type="submit" color="primary" :loading="isSubmitting" :disabled="isUploading || codeStatus === 'exists'">
             Save Changes
           </UButton>
         </div>
@@ -161,36 +133,33 @@
     </UCard>
 
     <CategoryAddModal v-model="showAddCategory" @created="onCategoryCreated" />
-    <SubCategoryAddModal v-model="showAddSubCategory" @created="onSubCategoryCreated" />
+    <SubCategoryAddModal v-model="showAddSubCategory" @created="() => onSubCategoryCreated(form)" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { z } from 'zod'
-import { parseDate } from '@internationalized/date'
-import { useRoute } from 'vue-router'
 import { assetService } from '~/services/asset-service'
-import { categoryService } from '~/services/category-service'
-import { subCategoryService } from '~/services/sub-category-service'
-import type { AssetPayload, AssetLabel } from '~/types/asset'
+import { assetSchema } from '~/composables/useAssetForm'
+import type { AssetPayload } from '~/types/asset'
 
 definePageMeta({ layout: 'dashboard' })
 
-// ── State ───────────────────────────────────────────────────────────────────
 const route = useRoute()
 const assetId = Number(route.params.id)
-const toast = useToast()
-const isSubmitting = ref(false)
-const isUploading = ref(false)
-const isLoadingAsset = ref(true)
-const previewUrl = ref<string | null>(null)
-const showAddCategory = ref(false)
-const showAddSubCategory = ref(false)
 
-// ── Labels ──────────────────────────────────────────────────────────────────
-const labels = ref<AssetLabel[]>([])
-const addLabel = () => { labels.value.push({ key: '', value: '' }) }
-const removeLabel = (index: number) => { labels.value.splice(index, 1) }
+const {
+  toast, isUploading, previewUrl,
+  labels, addLabel, removeLabel, getFilteredLabels,
+  selectedCategoryId, categoryOptions, subCategoryOptions, isLoadingSubCategories,
+  lastFetchedCategoryId, showAddCategory, showAddSubCategory,
+  fetchCategories, fetchSubCategories, onCategoryCreated, onSubCategoryCreated,
+  fileInput, triggerFileInput, onFileChange, removeImage,
+  makePurchaseDateComputed, makePriceDisplayComputed,
+} = useAssetForm()
+
+// ── State ───────────────────────────────────────────────────────────────────
+const isSubmitting = ref(false)
+const isLoadingAsset = ref(true)
 
 // ── Code Validation ─────────────────────────────────────────────────────────
 type CodeStatus = 'checking' | 'available' | 'exists' | null
@@ -201,9 +170,7 @@ let codeTimer: ReturnType<typeof setTimeout> | null = null
 const validateCode = (code: string) => {
   if (codeTimer) clearTimeout(codeTimer)
   const trimmed = code?.trim()
-  if (!trimmed) { codeStatus.value = null; return }
-  // If code is same as original, no need to check
-  if (trimmed === originalCode.value) { codeStatus.value = null; return }
+  if (!trimmed || trimmed === originalCode.value) { codeStatus.value = null; return }
   codeStatus.value = 'checking'
   codeTimer = setTimeout(async () => {
     const res = await assetService.checkCode(trimmed, assetId)
@@ -213,14 +180,27 @@ const validateCode = (code: string) => {
   }, 500)
 }
 
+// ── Schema & Form ───────────────────────────────────────────────────────────
+const schema = assetSchema.pick({ code: true, name: true, subCategoryId: true, brand: true, model: true, price: true, purchaseDate: true, description: true })
 
-// ── Category & Sub Category ─────────────────────────────────────────────────
-const selectedCategoryId = ref<number | undefined>(undefined)
-const categoryOptions = ref<{ label: string; value: number }[]>([])
-const subCategoryOptions = ref<{ label: string; value: number }[]>([])
-const isLoadingSubCategories = ref(false)
-const lastFetchedCategoryId = ref<number | undefined>(undefined)
+const form = reactive<AssetPayload>({
+  code: '',
+  name: '',
+  description: '',
+  price: undefined,
+  purchaseDate: '',
+  brand: '',
+  model: '',
+  image: null,
+  subCategoryId: undefined as unknown as number,
+})
 
+watch(() => form.code, (newCode) => validateCode(newCode))
+
+const purchaseDateVal = makePurchaseDateComputed(form)
+const priceDisplay = makePriceDisplayComputed(form)
+
+// ── Category Select ─────────────────────────────────────────────────────────
 const selectedCategory = computed({
   get: () => categoryOptions.value.find((c) => c.value === selectedCategoryId.value),
   set: (val) => { selectedCategoryId.value = val?.value }
@@ -239,71 +219,13 @@ watch(selectedCategoryId, async (newVal) => {
     return
   }
   if (lastFetchedCategoryId.value === Number(newVal)) return
-  isLoadingSubCategories.value = true
-  try {
-    const res = await subCategoryService.getByCategoryId(Number(newVal))
-    if (res.success) {
-      subCategoryOptions.value = res.data.map((s) => ({ label: s.name, value: s.id }))
-      lastFetchedCategoryId.value = Number(newVal)
-    }
-  } finally {
-    isLoadingSubCategories.value = false
-  }
+  await fetchSubCategories(Number(newVal))
   if (form.subCategoryId && !subCategoryOptions.value.some((s) => s.value === form.subCategoryId)) {
     form.subCategoryId = undefined as unknown as number
   }
 })
 
-// ── Schema & Form ───────────────────────────────────────────────────────────
-const schema = z.object({
-  code: z.string().min(1, 'Code is required'),
-  name: z.string().min(1, 'Name is required'),
-  subCategoryId: z.number().int().positive('Sub category is required'),
-  brand: z.string().optional().nullable().or(z.literal('')),
-  model: z.string().optional().nullable().or(z.literal('')),
-  price: z.preprocess(
-    (val) => (val === '' || val === null || val === undefined) ? null : Number(val),
-    z.number().int().nullable().optional()
-  ),
-  purchaseDate: z.string().optional().nullable().or(z.literal('')),
-  description: z.string().optional().nullable().or(z.literal('')),
-})
-
-const form = reactive<AssetPayload>({
-  code: '',
-  name: '',
-  description: '',
-  price: undefined,
-  purchaseDate: '',
-  brand: '',
-  model: '',
-  image: null,
-  subCategoryId: undefined as unknown as number,
-})
-
-watch(() => form.code, (newCode) => validateCode(newCode))
-
-const purchaseDateVal = computed({
-  get: () => {
-    if (!form.purchaseDate) return undefined
-    try { return parseDate(form.purchaseDate) } catch { return undefined }
-  },
-  set: (val) => { form.purchaseDate = val ? val.toString() : '' }
-})
-
-const priceDisplay = computed({
-  get: () => formatIndonesianNumber(form.price),
-  set: (val) => { form.price = parseIndonesianNumber(val) as any }
-})
-
 // ── Data Fetching ───────────────────────────────────────────────────────────
-const fetchCategories = async () => {
-  const res = await categoryService.getAll(1, 999)
-  if (res.success) {
-    categoryOptions.value = res.data.map((c) => ({ label: c.name, value: c.id }))
-  }
-}
-
 const fetchAssetDetails = async () => {
   isLoadingAsset.value = true
   try {
@@ -320,19 +242,10 @@ const fetchAssetDetails = async () => {
       form.model = asset.model ?? undefined
       form.image = asset.image
 
-      const catId = asset.subCategory?.category?.id ?? undefined
+      const catId = asset.subCategory?.category?.id
       if (catId) {
-        isLoadingSubCategories.value = true
-        try {
-          const res = await subCategoryService.getByCategoryId(catId)
-          if (res.success) {
-            subCategoryOptions.value = res.data.map((s) => ({ label: s.name, value: s.id }))
-            lastFetchedCategoryId.value = catId
-            selectedCategoryId.value = catId
-          }
-        } finally {
-          isLoadingSubCategories.value = false
-        }
+        await fetchSubCategories(catId)
+        selectedCategoryId.value = catId
       }
 
       form.subCategoryId = asset.subCategory?.id as number
@@ -350,37 +263,11 @@ const fetchAssetDetails = async () => {
   }
 }
 
-// ── Image Upload ────────────────────────────────────────────────────────────
-const onFileChange = async (e: Event) => {
-  const target = e.target as HTMLInputElement
-  const file = target.files?.[0]
-  if (!file) return
-  previewUrl.value = URL.createObjectURL(file)
-  isUploading.value = true
-  try {
-    const response = await assetService.uploadImage(file)
-    if (response.success && response.data?.path) {
-      form.image = response.data.path
-      toast.add({ title: 'Image uploaded successfully!', color: 'success', icon: 'i-lucide-circle-check' })
-    }
-  } finally {
-    isUploading.value = false
-  }
-}
-
-const removeImage = () => {
-  form.image = null
-  previewUrl.value = null
-}
-
 // ── Submit ──────────────────────────────────────────────────────────────────
 const handleSubmit = async () => {
   isSubmitting.value = true
   try {
-    const payload = {
-      ...form,
-      labels: labels.value.filter(l => l.key.trim() && l.value.trim()).map(l => ({ key: l.key.trim(), value: l.value.trim() })),
-    }
+    const payload = { ...form, labels: getFilteredLabels() }
     const response = await assetService.update(assetId, payload)
     if (response.success) {
       toast.add({ title: 'Asset updated successfully!', color: 'success', icon: 'i-lucide-circle-check' })
@@ -388,23 +275,6 @@ const handleSubmit = async () => {
     }
   } finally {
     isSubmitting.value = false
-  }
-}
-
-// ── Category Events ─────────────────────────────────────────────────────────
-const onCategoryCreated = async () => {
-  await fetchCategories()
-  const last = categoryOptions.value[categoryOptions.value.length - 1]
-  if (last) selectedCategoryId.value = last.value
-}
-
-const onSubCategoryCreated = async () => {
-  if (!selectedCategoryId.value) return
-  const res = await subCategoryService.getByCategoryId(Number(selectedCategoryId.value))
-  if (res.success) {
-    subCategoryOptions.value = res.data.map((s) => ({ label: s.name, value: s.id }))
-    const last = subCategoryOptions.value[subCategoryOptions.value.length - 1]
-    if (last) form.subCategoryId = last.value
   }
 }
 
