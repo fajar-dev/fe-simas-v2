@@ -175,7 +175,7 @@ const columns: TableColumn<Asset>[] = [
   },
   {
     id: 'lastLocation',
-    header: 'Last Location',
+    header: sortHeader('Last Location', 'lastLocation'),
     cell: ({ row }) => {
       const lastLoc = row.original.lastLocation
       if (!lastLoc || !lastLoc.location) return h('span', { class: 'text-neutral-500 italic' }, '-')
@@ -189,7 +189,7 @@ const columns: TableColumn<Asset>[] = [
   },
   {
     id: 'activeHolder',
-    header: 'Active Holder',
+    header: sortHeader('Active Holder', 'activeHolder'),
     cell: ({ row }) => {
       const holder = row.original.activeHolder
       if (!holder || !holder.employee) return h('span', { class: 'text-neutral-500 italic' }, '-')
