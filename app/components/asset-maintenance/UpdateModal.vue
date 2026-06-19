@@ -12,7 +12,7 @@
     <template #body>
       <UForm id="update-maintenance-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
         <!-- Asset Field -->
-        <UFormField label="Asset" name="assetId" required>
+        <UFormField v-if="!lockAssetId" label="Asset" name="assetId" required>
           <USelectMenu
             v-model="selectedAsset"
             :items="assetOptions"
@@ -67,6 +67,7 @@ import type { Attachment } from '~/types/attachment'
 const open = defineModel<boolean>({ default: false })
 const props = defineProps<{
   maintenance: AssetMaintenance | null
+  lockAssetId?: number
 }>()
 
 const emit = defineEmits<{ updated: [] }>()
@@ -131,8 +132,10 @@ const populateForm = () => {
   form.attachmentIds = props.maintenance.attachments?.map(a => a.id) || []
   uploadedAttachments.value = props.maintenance.attachments || []
 
-  const matched = assetOptions.value.find(o => o.value === props.maintenance?.assetId)
-  selectedAsset.value = matched || undefined
+  if (!props.lockAssetId) {
+    const matched = assetOptions.value.find(o => o.value === props.maintenance?.assetId)
+    selectedAsset.value = matched || undefined
+  }
 }
 
 const handleSubmit = async () => {
@@ -156,7 +159,11 @@ const handleSubmit = async () => {
 
 watch(open, async (val) => {
   if (val) {
-    await loadAssets()
+    if (props.lockAssetId) {
+      form.assetId = props.lockAssetId
+    } else {
+      await loadAssets()
+    }
     populateForm()
   }
 })

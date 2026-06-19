@@ -12,7 +12,7 @@
     <template #body>
       <UForm id="add-maintenance-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
         <!-- Asset Field -->
-        <UFormField label="Asset" name="assetId" required>
+        <UFormField v-if="!lockAssetId" label="Asset" name="assetId" required>
           <USelectMenu
             v-model="selectedAsset"
             :items="assetOptions"
@@ -65,6 +65,10 @@ import type { AssetMaintenancePayload } from '~/types/asset-maintenance'
 import type { Attachment } from '~/types/attachment'
 
 const open = defineModel<boolean>({ default: false })
+const props = defineProps<{
+  lockAssetId?: number
+}>()
+
 const emit = defineEmits<{ created: [] }>()
 const toast = useToast()
 
@@ -113,7 +117,7 @@ const loadAssets = async () => {
 }
 
 const resetForm = () => {
-  form.assetId = undefined as unknown as number
+  form.assetId = props.lockAssetId ? props.lockAssetId : (undefined as unknown as number)
   form.date = new Date().toISOString().split('T')[0] || ''
   form.note = ''
   form.attachmentIds = []
@@ -143,7 +147,11 @@ const handleSubmit = async () => {
 watch(open, (val) => {
   if (val) {
     resetForm()
-    loadAssets()
+    if (props.lockAssetId) {
+      form.assetId = props.lockAssetId
+    } else {
+      loadAssets()
+    }
   }
 })
 </script>
