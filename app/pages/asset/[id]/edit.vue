@@ -269,12 +269,8 @@ const fetchAssetDetails = async () => {
       form.subCategoryId = asset.subCategory?.id as number
       previewUrl.value = asset.image
       labels.value = (asset.labels || []).map(l => ({ key: l.key, value: l.value }))
-    } else {
-      toast.add({ title: 'Failed to load asset details', color: 'error', icon: 'i-lucide-circle-alert' })
-      navigateTo('/asset')
     }
   } catch {
-    toast.add({ title: 'Failed to load asset details', color: 'error', icon: 'i-lucide-circle-alert' })
     navigateTo('/asset')
   } finally {
     isLoadingAsset.value = false
