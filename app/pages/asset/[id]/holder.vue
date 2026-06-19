@@ -158,7 +158,7 @@ const columns: TableColumn<AssetHolder>[] = [
           class: 'bg-primary-50 text-primary-700'
         }),
         h('div', { class: 'flex flex-col' }, [
-          h('span', { class: 'text-neutral-900 dark:text-neutral-100 font-semibold text-sm' }, employee.name),
+          h('span', { class: 'text-neutral-900 font-semibold text-sm' }, employee.name),
           h('span', { class: 'text-neutral-500 text-xs font-mono' }, employee.employeeId)
         ])
       ])
@@ -168,7 +168,7 @@ const columns: TableColumn<AssetHolder>[] = [
     accessorKey: 'assignedDate',
     header: sortHeader('Assigned Date', 'assignedDate'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-900 dark:text-neutral-200 font-medium text-sm' }, row.original.assignedDate)
+      return h('span', { class: 'text-neutral-900 font-medium' }, row.original.assignedDate)
     }
   },
   {
@@ -183,35 +183,18 @@ const columns: TableColumn<AssetHolder>[] = [
           label: 'Active'
         })
       }
-      return h('span', { class: 'text-neutral-600 dark:text-neutral-400 font-medium text-sm' }, returnedDate)
+      return h('span', { class: 'text-neutral-900 font-medium' }, returnedDate)
     }
   },
   {
     id: 'notes',
     header: 'Notes',
     cell: ({ row }) => {
-      const assignNote = row.original.assignNote
-      const returnNote = row.original.returnNote
-      
-      const elements = []
-      if (assignNote) {
-        elements.push(h('div', { class: 'text-xs text-neutral-600 dark:text-neutral-400' }, [
-          h('span', { class: 'font-semibold text-neutral-400 dark:text-neutral-500 mr-1' }, 'Assign:'),
-          assignNote
-        ]))
-      }
-      if (returnNote) {
-        elements.push(h('div', { class: 'text-xs text-neutral-600 dark:text-neutral-400 mt-1' }, [
-          h('span', { class: 'font-semibold text-neutral-400 dark:text-neutral-500 mr-1' }, 'Return:'),
-          returnNote
-        ]))
-      }
-      
-      if (elements.length === 0) {
-        return h('span', { class: 'text-neutral-400 text-xs' }, '-')
-      }
-      
-      return h('div', { class: 'max-w-xs' }, elements)
+      const notes = [
+        row.original.assignNote ? `Assign: ${row.original.assignNote}` : null,
+        row.original.returnNote ? `Return: ${row.original.returnNote}` : null
+      ].filter(Boolean).join(' | ')
+      return h('span', { class: 'text-neutral-600 truncate max-w-md block' }, notes || '-')
     }
   },
   {
@@ -233,7 +216,7 @@ const columns: TableColumn<AssetHolder>[] = [
 
       return h(
         'div',
-        { class: 'flex flex-wrap gap-1 max-w-[220px]' },
+        { class: 'flex flex-wrap gap-2 max-w-sm' },
         attachments.map(att => {
           const theme = getAttachmentTheme(att.mimeType)
           return h(
@@ -241,7 +224,7 @@ const columns: TableColumn<AssetHolder>[] = [
             {
               href: att.url,
               target: '_blank',
-              class: 'cursor-pointer inline-block max-w-full'
+              class: 'cursor-pointer inline-block max-w-[160px]'
             },
             [
               h(UBadge, {
@@ -249,8 +232,7 @@ const columns: TableColumn<AssetHolder>[] = [
                 variant: 'subtle',
                 icon: theme.icon,
                 label: att.originalName,
-                size: 'xs',
-                class: 'max-w-[130px] truncate'
+                class: 'max-w-full truncate'
               })
             ]
           )
@@ -259,31 +241,43 @@ const columns: TableColumn<AssetHolder>[] = [
     }
   },
   {
-    id: 'handledBy',
-    header: 'Handled By',
+    accessorKey: 'createdBy',
+    header: 'Assign By',
     cell: ({ row }) => {
       const creator = row.original.createdBy
-      const returner = row.original.returnedBy
-      const elements = []
-      
       if (creator) {
-        elements.push(h('div', { class: 'flex items-center gap-1.5' }, [
-          h('span', { class: 'text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide' }, 'Assign By:'),
-          h('span', { class: 'text-neutral-700 dark:text-neutral-300 text-xs font-medium' }, creator.name)
-        ]))
+        return h('div', { class: 'flex items-center gap-2' }, [
+          h(UAvatar, {
+            src: creator.photo || undefined,
+            alt: creator.name,
+            size: 'xs',
+            class: 'bg-primary-50 text-primary-700'
+          }),
+          h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
+        ])
+      } else {
+        return h('span', { class: 'text-neutral-500 italic text-sm' }, 'System')
       }
+    }
+  },
+  {
+    accessorKey: 'returnedBy',
+    header: 'Return By',
+    cell: ({ row }) => {
+      const returner = row.original.returnedBy
       if (returner) {
-        elements.push(h('div', { class: 'flex items-center gap-1.5 mt-1' }, [
-          h('span', { class: 'text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide' }, 'Return By:'),
-          h('span', { class: 'text-neutral-700 dark:text-neutral-300 text-xs font-medium' }, returner.name)
-        ]))
+        return h('div', { class: 'flex items-center gap-2' }, [
+          h(UAvatar, {
+            src: returner.photo || undefined,
+            alt: returner.name,
+            size: 'xs',
+            class: 'bg-primary-50 text-primary-700'
+          }),
+          h('span', { class: 'text-neutral-700 font-medium text-sm' }, returner.name)
+        ])
+      } else {
+        return h('span', { class: 'text-neutral-400 text-sm' }, '-')
       }
-      
-      if (elements.length === 0) {
-        return h('span', { class: 'text-neutral-400 text-xs' }, '-')
-      }
-      
-      return h('div', { class: 'flex flex-col' }, elements)
     }
   }
 ]
