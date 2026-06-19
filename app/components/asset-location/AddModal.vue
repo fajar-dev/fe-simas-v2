@@ -1,0 +1,263 @@
+<template>
+  <UModal 
+    title="Relocate Asset"
+    description="Fill in the details to change the asset's location."
+    v-model:open="open" 
+    :ui="{ 
+      content: 'sm:max-w-md', 
+      overlay: 'bg-black/40',
+      footer: 'justify-end'
+    }"
+  >
+    <template #body>
+      <UForm id="add-location-history-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
+        <!-- Asset Field (Only shown if not locked to a specific asset) -->
+        <UFormField v-if="!lockAssetId" label="Asset" name="assetId" required>
+          <USelectMenu
+            v-model="selectedAsset"
+            :items="assetOptions"
+            searchable
+            searchable-placeholder="Search assets..."
+            placeholder="Select asset"
+            :loading="isLoadingAssets"
+            class="w-full"
+          />
+        </UFormField>
+
+        <!-- Branch Field -->
+        <UFormField label="Branch" name="branchId" required>
+          <USelectMenu
+            v-model="selectedBranch"
+            :items="branchOptions"
+            searchable
+            searchable-placeholder="Search branches..."
+            placeholder="Select branch"
+            :loading="isLoadingBranches"
+            class="w-full"
+          />
+        </UFormField>
+
+        <!-- Location Field -->
+        <UFormField label="New Location" name="locationId" required>
+          <USelectMenu
+            v-model="selectedLocation"
+            :items="filteredLocationOptions"
+            searchable
+            searchable-placeholder="Search locations..."
+            :placeholder="selectedBranch ? 'Select location' : 'Select branch first'"
+            :disabled="!selectedBranch"
+            :loading="isLoadingLocations"
+            class="w-full"
+          />
+        </UFormField>
+
+        <!-- Date Field -->
+        <UFormField label="Relocation Date" name="date" required>
+          <UInputDate v-model="dateVal" class="w-full">
+            <template #trailing>
+              <UPopover>
+                <UButton icon="i-lucide-calendar" color="neutral" variant="ghost" size="sm" square />
+                <template #content>
+                  <UCalendar v-model="dateVal" />
+                </template>
+              </UPopover>
+            </template>
+          </UInputDate>
+        </UFormField>
+
+        <!-- Note Field -->
+        <UFormField label="Note / Reason" name="note">
+          <UTextarea v-model="form.note" placeholder="Enter relocation reasons or details (optional)" class="w-full" :rows="3" />
+        </UFormField>
+      </UForm>
+    </template>
+    <template #footer>
+      <div class="flex justify-end items-center gap-2 w-full">
+        <UButton label="Cancel" @click="open = false" color="neutral" variant="outline" />
+        <UButton
+          type="submit"
+          form="add-location-history-form"
+          color="primary"
+          :loading="isSubmitting"
+        >
+          Relocate Asset
+        </UButton>
+      </div>
+    </template>
+  </UModal>
+</template>
+
+<script setup lang="ts">
+import { z } from 'zod'
+import { parseDate } from '@internationalized/date'
+import { assetLocationService } from '~/services/asset-location-service'
+import { branchService } from '~/services/branch-service'
+import { locationService } from '~/services/location-service'
+import { assetService } from '~/services/asset-service'
+
+const open = defineModel<boolean>({ default: false })
+const props = defineProps<{
+  lockAssetId?: number
+}>()
+
+const emit = defineEmits<{ created: [] }>()
+const toast = useToast()
+
+// State
+const isSubmitting = ref(false)
+const isLoadingAssets = ref(false)
+const isLoadingBranches = ref(false)
+const isLoadingLocations = ref(false)
+
+const assetOptions = ref<{ label: string; value: number }[]>([])
+const branchOptions = ref<{ label: string; value: number }[]>([])
+const allLocations = ref<any[]>([])
+
+const selectedAsset = ref<{ label: string; value: number } | undefined>(undefined)
+const selectedBranch = ref<{ label: string; value: number } | undefined>(undefined)
+const selectedLocation = ref<{ label: string; value: number } | undefined>(undefined)
+
+const filteredLocationOptions = computed(() => {
+  if (!selectedBranch.value) return []
+  return allLocations.value
+    .filter(l => l.branchId === selectedBranch.value?.value)
+    .map(l => ({
+      label: l.name,
+      value: l.id
+    }))
+})
+
+const schema = z.object({
+  assetId: z.number(),
+  branchId: z.number(),
+  locationId: z.number(),
+  date: z.string().min(1, 'Date is required'),
+  note: z.string().optional().or(z.literal('')),
+})
+
+const form = reactive({
+  assetId: undefined as unknown as number,
+  branchId: undefined as unknown as number,
+  locationId: undefined as unknown as number,
+  date: new Date().toISOString().split('T')[0] || '', // Default to today
+  note: '',
+})
+
+const dateVal = computed({
+  get: () => {
+    if (!form.date) return undefined
+    try { return parseDate(form.date) } catch { return undefined }
+  },
+  set: (val) => {
+    form.date = val ? val.toString() : ''
+  }
+})
+
+// Sync selections with form fields
+watch(selectedAsset, (val) => {
+  if (val) form.assetId = val.value
+})
+watch(selectedBranch, (val) => {
+  if (val) {
+    form.branchId = val.value
+  } else {
+    form.branchId = undefined as unknown as number
+  }
+  // Reset location when branch changes
+  selectedLocation.value = undefined
+  form.locationId = undefined as unknown as number
+})
+watch(selectedLocation, (val) => {
+  if (val) form.locationId = val.value
+})
+
+const loadAssets = async () => {
+  isLoadingAssets.value = true
+  try {
+    const res = await assetService.getAll(1, 200)
+    if (res.success && res.data) {
+      assetOptions.value = res.data.map(a => ({
+        label: `${a.code} - ${a.name}`,
+        value: a.id
+      }))
+    }
+  } finally {
+    isLoadingAssets.value = false
+  }
+}
+
+const loadBranches = async () => {
+  isLoadingBranches.value = true
+  try {
+    const res = await branchService.getAll(1, 200)
+    if (res.success && res.data) {
+      branchOptions.value = res.data.map(b => ({
+        label: `${b.code} - ${b.name}`,
+        value: b.id
+      }))
+    }
+  } finally {
+    isLoadingBranches.value = false
+  }
+}
+
+const loadLocations = async () => {
+  isLoadingLocations.value = true
+  try {
+    const res = await locationService.getAll(1, 200)
+    if (res.success && res.data) {
+      allLocations.value = res.data
+    }
+  } finally {
+    isLoadingLocations.value = false
+  }
+}
+
+const resetForm = () => {
+  form.assetId = props.lockAssetId ? props.lockAssetId : (undefined as unknown as number)
+  form.branchId = undefined as unknown as number
+  form.locationId = undefined as unknown as number
+  form.date = new Date().toISOString().split('T')[0] || ''
+  form.note = ''
+  selectedAsset.value = undefined
+  selectedBranch.value = undefined
+  selectedLocation.value = undefined
+}
+
+const handleSubmit = async () => {
+  isSubmitting.value = true
+  try {
+    const response = await assetLocationService.create({
+      assetId: form.assetId,
+      locationId: form.locationId,
+      date: form.date,
+      note: form.note,
+    })
+    if (response.success) {
+      toast.add({
+        title: 'Asset relocated successfully!',
+        color: 'success',
+        icon: 'i-lucide-circle-check'
+      })
+      emit('created')
+      open.value = false
+      resetForm()
+    }
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+watch(open, (val) => {
+  if (val) {
+    resetForm()
+    loadBranches()
+    loadLocations()
+    if (props.lockAssetId) {
+      form.assetId = props.lockAssetId
+    } else {
+      loadAssets()
+    }
+  }
+})
+</script>
