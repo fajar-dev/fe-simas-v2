@@ -19,7 +19,6 @@
             color="primary"
             variant="solid"
             icon="i-lucide-plus"
-            size="sm"
             @click="showAddModal = true"
           >
             Add Maintenance
