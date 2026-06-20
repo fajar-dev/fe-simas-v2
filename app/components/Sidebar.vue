@@ -44,7 +44,7 @@
             />
           </UTooltip>
         </div>
-        <ScannerModal v-model="showScanner" @scanned="onAssetScanned" />
+        <ScanAssetModal v-model="showScanner" />
         <div v-for="group in navGroups" :key="group.title" class="space-y-1">
           <!-- Group Title -->
           <h3
@@ -203,7 +203,6 @@
 
 <script setup lang="ts">
 import { useFeedback } from '~/composables/useFeedback'
-import { assetService } from '~/services/asset-service'
 
 const { state: authState } = useAuth()
 const { isCollapsed, navGroups, bottomNavItems, isItemActive } = useNavigation()
@@ -211,19 +210,4 @@ const { isCollapsed, navGroups, bottomNavItems, isItemActive } = useNavigation()
 const { triggerFeedback, isCapturing } = useFeedback()
 
 const showScanner = ref(false)
-const toast = useToast()
-
-async function onAssetScanned(code: string) {
-  try {
-    const res = await assetService.getAll(1, 1, code)
-    const asset = res.success && res.data.length > 0 ? res.data[0] : null
-    if (asset?.code === code) {
-      navigateTo(`/asset/${asset.id}`)
-    } else {
-      toast.add({ title: `Asset with code "${code}" not found`, color: 'error', icon: 'i-lucide-circle-x' })
-    }
-  } catch {
-    toast.add({ title: `Failed to search asset`, color: 'error', icon: 'i-lucide-circle-x' })
-  }
-}
 </script>
