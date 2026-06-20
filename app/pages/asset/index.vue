@@ -61,7 +61,7 @@
             
             <template #content>
               <div class="p-3 w-48 space-y-2 select-none">
-                <div class="text-xs font-semibold text-neutral-500 mb-1">
+                <div class="text-sm font-semibold text-neutral-600 mb-1">
                   Custom Labels
                 </div>
                 <div v-if="availableLabelKeys.length === 0" class="text-xs text-neutral-400 italic">
