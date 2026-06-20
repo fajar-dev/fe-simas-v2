@@ -117,11 +117,11 @@
               <UInput v-model="form.model" placeholder="Model (optional)" class="w-full" />
             </UFormField>
 
-            <UFormField label="Status" name="status">
+            <UFormField label="Status" name="status" required>
               <USelect
                 v-model="form.status"
                 :items="statusOptions"
-                placeholder="Select status (optional)"
+                placeholder="Select status..."
                 class="w-full"
               />
             </UFormField>
