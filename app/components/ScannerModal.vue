@@ -35,24 +35,6 @@
           <div class="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary-400 to-transparent rounded-full shadow-[0_0_10px_rgba(var(--color-primary-400),0.7)] animate-[scanline_2s_ease-in-out_infinite]" />
         </div>
       </div>
-
-      <!-- Manual Input -->
-      <div class="mt-4">
-        <label class="text-xs font-medium text-neutral-500 uppercase tracking-wider block mb-1.5">Or enter code manually</label>
-        <div class="flex items-center gap-2">
-          <UInput
-            v-model="manualCode"
-            placeholder="Type or paste code..."
-            class="w-full"
-            @keyup.enter="submitManual"
-          />
-          <UButton icon="i-lucide-arrow-right" color="primary" :disabled="!manualCode.trim()" @click="submitManual" />
-        </div>
-      </div>
-    </template>
-
-    <template #footer>
-      <UButton label="Cancel" color="neutral" variant="outline" class="w-full justify-center" @click="open = false" />
     </template>
   </UModal>
 </template>
@@ -80,12 +62,10 @@ const scanFormats = [
   'data_matrix',
 ] as any
 
-const manualCode = ref('')
 const error = ref('')
 
 watch(open, (val) => {
   if (val) {
-    manualCode.value = ''
     error.value = ''
   }
 })
@@ -117,14 +97,6 @@ function onCameraError(err: Error) {
     error.value = 'Camera is already in use by another app.'
   } else {
     error.value = `Camera error: ${err.message || err.name}`
-  }
-}
-
-function submitManual() {
-  const code = manualCode.value.trim()
-  if (code) {
-    emit('scanned', code)
-    open.value = false
   }
 }
 </script>
