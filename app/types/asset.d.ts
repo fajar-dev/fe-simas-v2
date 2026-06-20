@@ -70,4 +70,14 @@ export interface AssetPayload {
   image?: string | null
   subCategoryId: number
   labels?: AssetLabel[]
+  
+  // Immediate assignment
+  employeeId?: number
+  assignedDate?: string
+  assignNote?: string
+
+  // Immediate relocation
+  locationId?: number
+  locationDate?: string
+  locationNote?: string
 }
