@@ -10,7 +10,7 @@ export interface Branch {
 }
 
 export interface BranchPayload {
-    code: string
+    code?: string
     name: string
     description?: string
 }

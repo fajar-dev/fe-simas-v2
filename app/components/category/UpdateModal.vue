@@ -11,6 +11,9 @@
   >
     <template #body>
       <UForm id="update-category-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-3">
+        <UFormField label="Code" name="code">
+          <UInput v-model="form.code" placeholder="Auto-generated if empty" class="w-full" />
+        </UFormField>
         <UFormField label="Name" name="name" required>
           <UInput v-model="form.name" placeholder="Enter category name" class="w-full" />
         </UFormField>
@@ -51,17 +54,20 @@ const toast = useToast()
 const isSubmitting = ref(false)
 
 const schema = z.object({
+  code: z.string().optional().or(z.literal('')),
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional().or(z.literal('')),
 })
 
 const form = reactive<CategoryPayload>({
+  code: '',
   name: '',
   description: '',
 })
 
 const populateForm = () => {
   if (props.category) {
+    form.code = props.category.code || ''
     form.name = props.category.name
     form.description = props.category.description || ''
   }

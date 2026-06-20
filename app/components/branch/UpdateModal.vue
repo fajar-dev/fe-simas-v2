@@ -11,8 +11,8 @@
   >
     <template #body>
       <UForm id="update-branch-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-3">
-        <UFormField label="Code" name="code" required>
-          <UInput v-model="form.code" placeholder="Enter branch code" class="w-full" />
+        <UFormField label="Code" name="code">
+          <UInput v-model="form.code" placeholder="Auto-generated if empty" class="w-full" />
         </UFormField>
         <UFormField label="Name" name="name" required>
           <UInput v-model="form.name" placeholder="Enter branch name" class="w-full" />
@@ -54,7 +54,7 @@ const toast = useToast()
 const isSubmitting = ref(false)
 
 const schema = z.object({
-  code: z.string().min(1, 'Code is required'),
+  code: z.string().optional().or(z.literal('')),
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional().or(z.literal('')),
 })

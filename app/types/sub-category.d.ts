@@ -1,5 +1,6 @@
 export interface SubCategory {
     id: number
+    code: string
     name: string
     description: string | null
     categoryId: number
@@ -12,6 +13,7 @@ export interface SubCategory {
 }
 
 export interface SubCategoryPayload {
+    code?: string
     name: string
     description?: string
     categoryId: number

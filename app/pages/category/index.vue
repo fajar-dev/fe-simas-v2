@@ -109,6 +109,13 @@ const fetchCategories = async () => {
 // Table columns
 const columns: TableColumn<Category>[] = [
   {
+    accessorKey: 'code',
+    header: sortHeader('Code', 'code'),
+    cell: ({ row }) => {
+      return h('span', { class: 'font-medium text-neutral-900' }, row.original.code)
+    }
+  },
+  {
     accessorKey: 'name',
     header: sortHeader('Name', 'name'),
     cell: ({ row }) => {

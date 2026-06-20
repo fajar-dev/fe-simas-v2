@@ -111,6 +111,14 @@ const fetchAssets = async () => {
 // Table columns
 const columns: TableColumn<Asset>[] = [
   {
+    id: 'no',
+    header: 'No',
+    cell: ({ row }) => {
+      const rowNumber = (page.value - 1) * perPage.value + row.index + 1
+      return h('span', { class: 'text-neutral-500' }, rowNumber)
+    }
+  },
+  {
     id: 'asset',
     header: sortHeader('Asset', 'name'),
     cell: ({ row }) => {

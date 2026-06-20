@@ -21,6 +21,9 @@
             class="w-full"
           />
         </UFormField>
+        <UFormField label="Code" name="code">
+          <UInput v-model="form.code" placeholder="Auto-generated if empty" class="w-full" />
+        </UFormField>
         <UFormField label="Name" name="name" required>
           <UInput v-model="form.name" placeholder="Enter sub category name" class="w-full" />
         </UFormField>
@@ -67,17 +70,20 @@ const selectedCategory = computed({
 
 const schema = z.object({
   categoryId: z.number().int().positive('Category is required'),
+  code: z.string().optional().or(z.literal('')),
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional().or(z.literal('')),
 })
 
 const form = reactive<SubCategoryPayload>({
+  code: '',
   name: '',
   description: '',
   categoryId: undefined as unknown as number,
 })
 
 const resetForm = () => {
+  form.code = ''
   form.name = ''
   form.description = ''
   form.categoryId = undefined as unknown as number
