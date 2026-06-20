@@ -117,6 +117,15 @@
               <UInput v-model="form.model" placeholder="Model (optional)" class="w-full" />
             </UFormField>
 
+            <UFormField label="Status" name="status">
+              <USelect
+                v-model="form.status"
+                :items="statusOptions"
+                placeholder="Select status (optional)"
+                class="w-full"
+              />
+            </UFormField>
+
             <!-- Labels -->
             <div>
               <div class="flex items-center justify-between mb-1.5">
@@ -295,6 +304,16 @@ const UInputMenu = resolveComponent('UInputMenu')
 
 const showCamera = ref(false)
 
+const statusOptions = [
+  { label: 'Active', value: 'active' },
+  { label: 'Idle', value: 'idle' },
+  { label: 'Under Repair', value: 'under_repair' },
+  { label: 'Damaged', value: 'damaged' },
+  { label: 'Lost', value: 'lost' },
+  { label: 'Sold', value: 'sold' },
+  { label: 'Disposed', value: 'disposed' },
+]
+
 const {
   toast, isUploading, previewUrl,
   labels, addLabel, removeLabel, getFilteredLabels,
@@ -332,6 +351,8 @@ const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number } & {
   hasHolder: boolean
   hasMaintenance: boolean
   hasLocation: boolean
+  status?: string | null
+  statusNote?: string | null
 }>({
   categoryId: undefined as unknown as number,
   name: '',
@@ -354,6 +375,8 @@ const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number } & {
   hasHolder: true,
   hasMaintenance: true,
   hasLocation: true,
+  status: null,
+  statusNote: null,
 })
 
 const onAssignAttachmentsChanged = (ids: number[]) => {
@@ -562,6 +585,8 @@ const resetForm = () => {
     hasHolder: true,
     hasMaintenance: true,
     hasLocation: true,
+    status: null,
+    statusNote: null,
   })
   selectedCategoryId.value = undefined
   selectedEmployee.value = undefined
@@ -612,6 +637,8 @@ const handleSubmit = async () => {
         locationDate: form.hasLocation && form.locationId ? form.locationDate : null,
         locationNote: form.hasLocation && form.locationId ? form.locationNote : null,
         locationAttachmentIds: form.hasLocation && form.locationId ? form.locationAttachmentIds : null,
+        status: form.status || null,
+        statusNote: form.statusNote || null,
       }
       const response = await assetService.create(payload)
       response.success ? successCount++ : failedCodes.push(code)
