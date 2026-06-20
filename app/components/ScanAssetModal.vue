@@ -32,9 +32,11 @@
         />
 
         <!-- Scanning guide -->
-        <div v-if="!cameraError && !isSearching" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <div class="w-48 h-48 border-2 border-primary/50 rounded-2xl animate-pulse" />
-          <span class="text-xs text-neutral-400 mt-3">Point at asset barcode...</span>
+        <div v-if="!cameraError && !isSearching" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div class="relative w-56 h-56">
+            <div class="absolute inset-0 border-2 border-white/30 rounded-xl" />
+            <div class="absolute top-0 left-2 right-2 h-0.5 bg-gradient-to-r from-transparent via-primary-400 to-transparent rounded-full shadow-[0_0_8px_rgba(var(--color-primary-400),0.6)] animate-[scanline_2s_ease-in-out_infinite]" />
+          </div>
         </div>
 
         <!-- Searching overlay -->
@@ -144,3 +146,10 @@ async function searchByCode(code: string) {
   }
 }
 </script>
+
+<style>
+@keyframes scanline {
+  0%, 100% { top: 0; }
+  50% { top: calc(100% - 2px); }
+}
+</style>
