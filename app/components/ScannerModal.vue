@@ -31,21 +31,10 @@
           class="w-full h-full"
         />
 
-        <!-- Loading overlay -->
-        <div v-if="!error && !scannedValue" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+        <!-- Scanning overlay -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <div class="w-48 h-48 border-2 border-primary/50 rounded-2xl animate-pulse" />
           <span class="text-xs text-neutral-400 mt-3">Scanning...</span>
-        </div>
-
-        <!-- Success overlay -->
-        <div v-if="scannedValue" class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-3 z-10">
-          <div class="w-14 h-14 rounded-full bg-green-500/20 flex items-center justify-center">
-            <UIcon name="i-lucide-check" class="w-7 h-7 text-green-400" />
-          </div>
-          <p class="text-sm font-semibold text-white">Code Detected</p>
-          <p class="text-lg font-mono text-green-400 px-4 py-2 bg-neutral-900/80 rounded-lg border border-neutral-700 max-w-full truncate">
-            {{ scannedValue }}
-          </p>
         </div>
       </div>
 
@@ -65,26 +54,7 @@
     </template>
 
     <template #footer>
-      <div class="flex items-center gap-3 w-full">
-        <UButton label="Cancel" color="neutral" variant="outline" class="flex-1 justify-center" @click="open = false" />
-        <UButton
-          v-if="scannedValue"
-          label="Use Code"
-          icon="i-lucide-check"
-          color="primary"
-          class="flex-1 justify-center"
-          @click="confirmScanned"
-        />
-        <UButton
-          v-if="scannedValue"
-          label="Scan Again"
-          icon="i-lucide-refresh-cw"
-          color="neutral"
-          variant="outline"
-          size="sm"
-          @click="resetScan"
-        />
-      </div>
+      <UButton label="Cancel" color="neutral" variant="outline" class="w-full justify-center" @click="open = false" />
     </template>
   </UModal>
 </template>
@@ -112,13 +82,11 @@ const scanFormats = [
   'data_matrix',
 ] as any
 
-const scannedValue = ref('')
 const manualCode = ref('')
 const error = ref('')
 
 watch(open, (val) => {
   if (val) {
-    scannedValue.value = ''
     manualCode.value = ''
     error.value = ''
   }
@@ -137,7 +105,8 @@ function paintBoundingBox(detectedCodes: DetectedBarcode[], ctx: CanvasRendering
 function onDetect(detectedCodes: DetectedBarcode[]) {
   const first = detectedCodes[0]
   if (first?.rawValue) {
-    scannedValue.value = first.rawValue
+    emit('scanned', first.rawValue)
+    open.value = false
   }
 }
 
@@ -153,22 +122,11 @@ function onCameraError(err: Error) {
   }
 }
 
-function confirmScanned() {
-  if (scannedValue.value) {
-    emit('scanned', scannedValue.value)
-    open.value = false
-  }
-}
-
 function submitManual() {
   const code = manualCode.value.trim()
   if (code) {
     emit('scanned', code)
     open.value = false
   }
-}
-
-function resetScan() {
-  scannedValue.value = ''
 }
 </script>
