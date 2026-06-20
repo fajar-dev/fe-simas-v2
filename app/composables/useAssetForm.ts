@@ -20,6 +20,12 @@ export const assetSchema = z.object({
   description: z.string().optional().nullable().or(z.literal('')),
 })
 
+export const depreciationMethodOptions = [
+  { label: 'None (Tanpa Penyusutan)', value: 'none' },
+  { label: 'Straight Line (Garis Lurus)', value: 'straight_line' },
+  { label: 'Declining Balance (Saldo Menurun)', value: 'declining_balance' },
+]
+
 export function useAssetForm() {
   const toast = useToast()
   const isUploading = ref(false)
@@ -132,6 +138,19 @@ export function useAssetForm() {
     set: (val) => { form.price = parseIndonesianNumber(val) as any }
   })
 
+  const makeResidualValueDisplayComputed = (form: { residualValue?: number }) => computed({
+    get: () => formatIndonesianNumber(form.residualValue),
+    set: (val) => { form.residualValue = parseIndonesianNumber(val) as any }
+  })
+
+  const makeDepreciationStartDateComputed = (form: { depreciationStartDate?: string | null }) => computed({
+    get: () => {
+      if (!form.depreciationStartDate) return undefined
+      try { return parseDate(form.depreciationStartDate) } catch { return undefined }
+    },
+    set: (val) => { form.depreciationStartDate = val ? val.toString() : '' }
+  })
+
   const availableLabelKeys = ref<string[]>([])
   const fetchLabelKeys = async () => {
     const res = await assetService.getLabelKeys()
@@ -174,5 +193,7 @@ export function useAssetForm() {
     // Helpers
     makePurchaseDateComputed,
     makePriceDisplayComputed,
+    makeResidualValueDisplayComputed,
+    makeDepreciationStartDateComputed,
   }
 }
