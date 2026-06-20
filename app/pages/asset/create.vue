@@ -65,7 +65,7 @@
                   <p v-else-if="codeStatuses[index] === 'available'" class="text-xs text-green-500 mt-1">Code available</p>
                 </div>
               </div>
-              <ScannerModal v-model="showCodeScanner" @scanned="onCodeScanned" />
+              <AssetScannerModal v-model="showCodeScanner" @scanned="onCodeScanned" />
             </div>
   
             <UFormField label="Name" name="name" required>

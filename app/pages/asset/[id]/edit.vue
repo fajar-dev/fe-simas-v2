@@ -73,7 +73,7 @@
               <p v-if="codeStatus === 'exists'" class="text-xs text-red-500 mt-1">Code "{{ form.code }}" already exists</p>
               <p v-else-if="codeStatus === 'available'" class="text-xs text-green-500 mt-1">Code available</p>
             </UFormField>
-            <ScannerModal v-model="showCodeScanner" @scanned="(code: string) => { form.code = code }" />
+            <AssetScannerModal v-model="showCodeScanner" @scanned="(code: string) => { form.code = code }" />
 
             <UFormField label="Name" name="name" required>
               <UInput v-model="form.name" placeholder="Asset name" class="w-full" />
