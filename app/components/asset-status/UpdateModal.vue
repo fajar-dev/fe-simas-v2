@@ -26,10 +26,6 @@
           />
         </UFormField>
 
-        <UFormField label="Date" name="date" required>
-          <UInput v-model="state.date" type="date" class="w-full" />
-        </UFormField>
-
         <UFormField label="Note" name="note">
           <UTextarea
             v-model="state.note"
@@ -83,13 +79,11 @@ const statusOptions = [
 
 const schema = z.object({
   status: z.string().min(1, 'Status is required'),
-  date: z.string().min(1, 'Date is required'),
   note: z.string().optional().nullable(),
 })
 
 const state = reactive({
   status: '',
-  date: new Date().toISOString().split('T')[0],
   note: '',
 })
 
@@ -103,7 +97,6 @@ const onSubmit = async () => {
       assetId: props.assetId,
       status: state.status!,
       note: state.note || null,
-      date: state.date!,
     })
     if (response.success) {
       toast.add({ title: 'Status updated successfully!', color: 'success', icon: 'i-lucide-circle-check' })
@@ -118,7 +111,6 @@ const onSubmit = async () => {
 watch(open, (val) => {
   if (val) {
     state.status = ''
-    state.date = new Date().toISOString().split('T')[0]
     state.note = ''
   }
 })

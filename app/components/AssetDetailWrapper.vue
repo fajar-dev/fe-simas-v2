@@ -110,7 +110,7 @@
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Status</span>
               <div class="flex items-center gap-2">
-                <UBadge v-if="asset.lastStatus" :color="getStatusColor(asset.lastStatus.status)" variant="subtle" size="sm">
+                <UBadge v-if="asset.lastStatus" :color="getStatusColor(asset.lastStatus.status)" variant="subtle">
                   {{ getStatusLabel(asset.lastStatus.status) }}
                 </UBadge>
                 <span v-else class="text-sm text-neutral-500">-</span>

@@ -7,7 +7,6 @@ export interface CreateAssetStatusPayload {
     assetId: number
     status: string
     note?: string | null
-    date: string
 }
 
 export class AssetStatusService {
