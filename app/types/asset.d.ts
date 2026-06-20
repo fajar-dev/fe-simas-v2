@@ -74,7 +74,9 @@ export interface AssetPayload {
   employeeId?: number | null
   assignedDate?: string | null
   assignNote?: string | null
+  assignAttachmentIds?: number[] | null
   locationId?: number | null
   locationDate?: string | null
   locationNote?: string | null
+  locationAttachmentIds?: number[] | null
 }

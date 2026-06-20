@@ -162,6 +162,11 @@
               <UFormField v-if="form.employeeId" label="Assignment Notes" name="assignNote">
                 <UTextarea v-model="form.assignNote" placeholder="Enter assignment notes..." class="w-full" :rows="2" />
               </UFormField>
+              <AttachmentManager
+                v-if="form.employeeId"
+                v-model="uploadedAssignAttachments"
+                @change="onAssignAttachmentsChanged"
+              />
             </div>
 
             <!-- Location Section -->
@@ -199,6 +204,11 @@
               <UFormField v-if="form.locationId" label="Relocation Notes" name="locationNote">
                 <UTextarea v-model="form.locationNote" placeholder="Enter relocation reasons..." class="w-full" :rows="2" />
               </UFormField>
+              <AttachmentManager
+                v-if="form.locationId"
+                v-model="uploadedLocationAttachments"
+                @change="onLocationAttachmentsChanged"
+              />
             </div>
           </div>
         </div>
@@ -227,6 +237,7 @@ import type { AssetPayload } from '~/types/asset'
 import { employeeService } from '~/services/employee-service'
 import { branchService } from '~/services/branch-service'
 import { locationService } from '~/services/location-service'
+import type { Attachment } from '~/types/attachment'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -243,6 +254,8 @@ const {
 // ── State ───────────────────────────────────────────────────────────────────
 const isSubmitting = ref(false)
 const submitMode = ref<'save' | 'another'>('save')
+const uploadedAssignAttachments = ref<Attachment[]>([])
+const uploadedLocationAttachments = ref<Attachment[]>([])
 
 // ── Schema & Form ───────────────────────────────────────────────────────────
 const schema = assetSchema.pick({ categoryId: true, name: true, subCategoryId: true, brand: true, model: true, price: true, purchaseDate: true, description: true })
@@ -255,10 +268,12 @@ const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number } & {
   employeeId?: number | null
   assignedDate?: string
   assignNote?: string
+  assignAttachmentIds?: number[] | null
   branchId?: number | null
   locationId?: number | null
   locationDate?: string
   locationNote?: string
+  locationAttachmentIds?: number[] | null
 }>({
   categoryId: undefined as unknown as number,
   name: '',
@@ -272,11 +287,20 @@ const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number } & {
   employeeId: null,
   assignedDate: getLocalDatetimeString(),
   assignNote: '',
+  assignAttachmentIds: [],
   branchId: null,
   locationId: null,
   locationDate: getLocalDatetimeString(),
   locationNote: '',
+  locationAttachmentIds: [],
 })
+
+const onAssignAttachmentsChanged = (ids: number[]) => {
+  form.assignAttachmentIds = ids
+}
+const onLocationAttachmentsChanged = (ids: number[]) => {
+  form.locationAttachmentIds = ids
+}
 
 const purchaseDateVal = makePurchaseDateComputed(form)
 const priceDisplay = makePriceDisplayComputed(form)
@@ -446,7 +470,9 @@ const resetForm = () => {
     categoryId: undefined, name: '', description: '', price: undefined,
     purchaseDate: '', brand: '', model: '', image: null, subCategoryId: undefined,
     employeeId: null, assignedDate: getLocalDatetimeString(), assignNote: '',
+    assignAttachmentIds: [],
     branchId: null, locationId: null, locationDate: getLocalDatetimeString(), locationNote: '',
+    locationAttachmentIds: [],
   })
   selectedCategoryId.value = undefined
   selectedEmployee.value = undefined
@@ -454,6 +480,8 @@ const resetForm = () => {
   selectedLocation.value = undefined
   previewUrl.value = null
   labels.value = []
+  uploadedAssignAttachments.value = []
+  uploadedLocationAttachments.value = []
 }
 
 // ── Submit ──────────────────────────────────────────────────────────────────
@@ -487,9 +515,11 @@ const handleSubmit = async () => {
         employeeId: form.employeeId || null,
         assignedDate: form.employeeId ? form.assignedDate : null,
         assignNote: form.employeeId ? form.assignNote : null,
+        assignAttachmentIds: form.employeeId ? form.assignAttachmentIds : null,
         locationId: form.locationId || null,
         locationDate: form.locationId ? form.locationDate : null,
         locationNote: form.locationId ? form.locationNote : null,
+        locationAttachmentIds: form.locationId ? form.locationAttachmentIds : null,
       }
       const response = await assetService.create(payload)
       response.success ? successCount++ : failedCodes.push(code)
