@@ -26,9 +26,19 @@
     <UCard v-else-if="asset" class="w-full">
       <div class="w-full mb-4 flex items-center justify-between">
         <UButton label="Back" to="/asset" color="neutral" icon="i-lucide-arrow-left" variant="link" />
-        <UButton :to="`/asset/${asset.id}/edit`" color="primary" icon="i-lucide-edit">
-          <span class="hidden sm:inline">Edit Asset</span>
-        </UButton>
+        <div class="flex items-center gap-2">
+          <UButton
+            color="neutral"
+            variant="outline"
+            icon="i-lucide-history"
+            @click="showLogDrawer = true"
+          >
+            <span class="hidden sm:inline">Activity Log</span>
+          </UButton>
+          <UButton :to="`/asset/${asset.id}/edit`" color="primary" icon="i-lucide-edit">
+            <span class="hidden sm:inline">Edit Asset</span>
+          </UButton>
+        </div>
       </div>
 
       <!-- Grid: Image on Left, Content Grid on Right -->
@@ -182,6 +192,9 @@
 
     <!-- Lightbox Modal -->
     <Lightbox />
+
+    <!-- Activity Log Drawer -->
+    <AssetLogDrawer v-model:open="showLogDrawer" :asset-id="assetId" />
   </div>
 </template>
 
@@ -199,6 +212,8 @@ const { asset, isLoading } = inject('assetState') as {
 }
 
 const { openLightbox } = useLightbox()
+
+const showLogDrawer = ref(false)
 
 const items = computed(() => {
   const tabs: TabsItem[] = []
