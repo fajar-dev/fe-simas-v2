@@ -52,6 +52,11 @@ export interface Asset {
       } | null
     } | null
   } | null
+  createdBy?: {
+    id: number
+    name: string
+    photo: string | null
+  } | null
 }
 
 export interface AssetPayload {

@@ -131,6 +131,24 @@
               </div>
             </div>
 
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Created By</span>
+              <div class="text-sm text-neutral-900 font-medium">
+                <div v-if="asset.createdBy" class="flex items-center gap-2 min-w-0">
+                  <UAvatar
+                    :src="asset.createdBy.photo || undefined"
+                    :alt="asset.createdBy.name"
+                    class="bg-primary-50 text-primary-700 shrink-0 animate-none"
+                    size="md"
+                  />
+                  <span class="text-sm text-neutral-900 truncate" :title="asset.createdBy.name">
+                    {{ asset.createdBy.name }}
+                  </span>
+                </div>
+                <span v-else>-</span>
+              </div>
+            </div>
+
             <!-- Custom Specs / Labels inline in the grid -->
             <div v-for="label in asset.labels" :key="label.id || label.key" class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1 truncate" :title="label.key">{{ label.key }}</span>
