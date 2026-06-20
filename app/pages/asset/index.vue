@@ -120,8 +120,6 @@ const UBadge = resolveComponent('UBadge')
 const UAvatar = resolveComponent('UAvatar')
 const UCheckbox = resolveComponent('UCheckbox')
 const UPopover = resolveComponent('UPopover')
-const UTooltip = resolveComponent('UTooltip')
-const UIcon = resolveComponent('UIcon')
 const AssetStatusBadge = resolveComponent('AssetStatusBadge')
 
 // State

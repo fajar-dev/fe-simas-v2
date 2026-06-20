@@ -1,6 +1,6 @@
 <template>
-  <div class="flex items-center gap-1.5">
-    <UBadge :color="getStatusColor(status)" variant="subtle" size="sm">
+  <div class="flex items-center gap-2">
+    <UBadge :color="getStatusColor(status)" variant="subtle">
       {{ getStatusLabel(status) }}
     </UBadge>
     <UTooltip
@@ -8,7 +8,7 @@
       :text="`${note} — ${formatDate(createdAt)}`"
       :content="{ side: 'right', sideOffset: 4 }"
     >
-      <UIcon name="i-lucide-info" class="w-3.5 h-3.5 text-neutral-400 cursor-help" />
+      <UIcon name="i-lucide-info" class="w-4 h-4 text-neutral-400 cursor-help" />
     </UTooltip>
   </div>
 </template>
