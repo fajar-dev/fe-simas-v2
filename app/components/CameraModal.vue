@@ -1,0 +1,204 @@
+<template>
+  <UModal v-model:open="open" :ui="{ content: 'sm:max-w-md', overlay: 'bg-black/60' }">
+    <template #content>
+      <UCard :ui="{ body: 'flex flex-col gap-4 p-5' }">
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3 border-b border-neutral-100">
+          <h3 class="text-base font-semibold text-neutral-800 flex items-center gap-2">
+            <UIcon name="i-lucide-camera" class="w-5 h-5 text-primary" />
+            Take Photo
+          </h3>
+          <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="sm" square @click="open = false" />
+        </div>
+
+        <!-- Camera / Preview -->
+        <div class="w-full aspect-square bg-neutral-950 rounded-lg overflow-hidden relative flex items-center justify-center shadow-inner">
+          <!-- Error State -->
+          <div v-if="error" class="p-6 text-center text-neutral-300 flex flex-col items-center gap-3 select-none">
+            <div class="w-12 h-12 rounded-full bg-error/10 flex items-center justify-center">
+              <UIcon name="i-lucide-triangle-alert" class="w-6 h-6 text-error" />
+            </div>
+            <p class="text-sm font-medium">{{ error }}</p>
+            <UButton size="xs" color="neutral" variant="outline" icon="i-lucide-refresh-cw" @click="initCamera">Try Again</UButton>
+          </div>
+
+          <!-- Loading -->
+          <div v-else-if="loading && !captured" class="absolute inset-0 flex flex-col items-center justify-center bg-neutral-900/80 text-white gap-2 select-none z-10">
+            <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-primary" />
+            <span class="text-sm">Initializing camera...</span>
+          </div>
+
+          <!-- Live Video -->
+          <video
+            v-show="!captured && !error"
+            ref="videoEl"
+            class="w-full h-full object-cover"
+            autoplay
+            playsinline
+            muted
+          />
+
+          <!-- Captured Preview -->
+          <img v-if="captured" :src="captured" class="w-full h-full object-cover" alt="Captured photo" />
+
+          <!-- Switch Camera -->
+          <UButton
+            v-if="!captured && !error && cameras.length > 1"
+            icon="i-lucide-switch-camera"
+            color="neutral"
+            variant="solid"
+            size="sm"
+            square
+            class="absolute top-2 right-2 rounded-full opacity-80 hover:opacity-100 bg-neutral-900/60 hover:bg-neutral-900 border border-neutral-700 text-white shadow"
+            @click="switchCamera"
+          />
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3">
+          <template v-if="captured">
+            <UButton color="neutral" variant="outline" icon="i-lucide-refresh-cw" class="flex-1 justify-center" @click="retake">Retake</UButton>
+            <UButton color="primary" icon="i-lucide-check" class="flex-1 justify-center" @click="usePhoto">Use Photo</UButton>
+          </template>
+          <template v-else>
+            <!-- Shutter -->
+            <div class="flex-1 flex justify-center py-1">
+              <button
+                :disabled="loading || !!error"
+                class="w-14 h-14 rounded-full border-[3px] border-primary-400 flex items-center justify-center bg-transparent active:scale-95 transition-transform focus:outline-none disabled:opacity-40"
+                @click="capture"
+              >
+                <span class="w-10 h-10 rounded-full bg-primary-500 hover:bg-primary-600 active:bg-primary-700 transition-colors block" />
+              </button>
+            </div>
+          </template>
+        </div>
+      </UCard>
+    </template>
+  </UModal>
+</template>
+
+<script setup lang="ts">
+const open = defineModel<boolean>({ default: false })
+const emit = defineEmits<{ captured: [file: File] }>()
+
+const videoEl = ref<HTMLVideoElement | null>(null)
+const stream = ref<MediaStream | null>(null)
+const cameras = ref<MediaDeviceInfo[]>([])
+const cameraIdx = ref(0)
+const captured = ref('')
+const capturedFile = ref<File | null>(null)
+const error = ref('')
+const loading = ref(false)
+
+watch(open, (val) => {
+  if (val) {
+    captured.value = ''
+    capturedFile.value = null
+    error.value = ''
+    initCamera()
+  } else {
+    stopStream()
+  }
+})
+
+async function initCamera() {
+  loading.value = true
+  error.value = ''
+
+  if (!navigator.mediaDevices?.getUserMedia) {
+    error.value = 'Camera not supported (requires HTTPS).'
+    loading.value = false
+    return
+  }
+
+  try {
+    stopStream()
+
+    const allDevices = await navigator.mediaDevices.enumerateDevices()
+    cameras.value = allDevices.filter(d => d.kind === 'videoinput')
+
+    const deviceId = cameras.value[cameraIdx.value]?.deviceId
+    const constraints: MediaStreamConstraints = {
+      video: deviceId
+        ? { deviceId: { exact: deviceId } }
+        : { facingMode: 'environment' }
+    }
+
+    const ms = await navigator.mediaDevices.getUserMedia(constraints)
+    stream.value = ms
+
+    await nextTick()
+    if (videoEl.value) {
+      videoEl.value.srcObject = ms
+      await videoEl.value.play().catch(() => {})
+    }
+  } catch (err: any) {
+    if (err.name === 'NotAllowedError') {
+      error.value = 'Camera permission denied. Please allow access.'
+    } else if (err.name === 'NotFoundError') {
+      error.value = 'No camera found on this device.'
+    } else {
+      error.value = `Camera error: ${err.message || err.name}`
+    }
+  } finally {
+    loading.value = false
+  }
+}
+
+function stopStream() {
+  stream.value?.getTracks().forEach(t => t.stop())
+  stream.value = null
+  if (videoEl.value) videoEl.value.srcObject = null
+}
+
+async function switchCamera() {
+  cameraIdx.value = (cameraIdx.value + 1) % cameras.value.length
+  await initCamera()
+}
+
+function capture() {
+  const video = videoEl.value
+  if (!video) return
+
+  const canvas = document.createElement('canvas')
+  const vw = video.videoWidth
+  const vh = video.videoHeight
+  const size = Math.min(vw, vh)
+  const sx = (vw - size) / 2
+  const sy = (vh - size) / 2
+  const target = Math.min(size, 1200)
+
+  canvas.width = target
+  canvas.height = target
+  const ctx = canvas.getContext('2d')
+  if (ctx) ctx.drawImage(video, sx, sy, size, size, 0, 0, target, target)
+
+  canvas.toBlob((blob) => {
+    if (!blob) return
+    const file = new File([blob], `photo_${Date.now()}.jpg`, { type: 'image/jpeg' })
+    capturedFile.value = file
+    captured.value = URL.createObjectURL(blob)
+    stopStream()
+  }, 'image/jpeg', 0.9)
+}
+
+function retake() {
+  if (captured.value) URL.revokeObjectURL(captured.value)
+  captured.value = ''
+  capturedFile.value = null
+  initCamera()
+}
+
+function usePhoto() {
+  if (capturedFile.value) {
+    emit('captured', capturedFile.value)
+    open.value = false
+  }
+}
+
+onBeforeUnmount(() => {
+  stopStream()
+  if (captured.value) URL.revokeObjectURL(captured.value)
+})
+</script>

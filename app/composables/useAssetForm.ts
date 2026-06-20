@@ -81,9 +81,7 @@ export function useAssetForm() {
 
   const triggerFileInput = () => { fileInput.value?.click() }
 
-  const onFileChange = async (e: Event, form: { image?: string | null }) => {
-    const file = (e.target as HTMLInputElement)?.files?.[0]
-    if (!file) return
+  const handleUploadImageFile = async (file: File, form: { image?: string | null }) => {
     previewUrl.value = URL.createObjectURL(file)
     isUploading.value = true
     try {
@@ -95,6 +93,12 @@ export function useAssetForm() {
     } finally {
       isUploading.value = false
     }
+  }
+
+  const onFileChange = async (e: Event, form: { image?: string | null }) => {
+    const file = (e.target as HTMLInputElement)?.files?.[0]
+    if (!file) return
+    await handleUploadImageFile(file, form)
   }
 
   const removeImage = (form: { image?: string | null }) => {
@@ -152,6 +156,7 @@ export function useAssetForm() {
     fileInput,
     triggerFileInput,
     onFileChange,
+    handleUploadImageFile,
     removeImage,
     // Helpers
     makePurchaseDateComputed,

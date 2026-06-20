@@ -12,7 +12,11 @@
           <!-- ═══ Column 1: Identity ═══ -->
           <div class="space-y-4">
             <div>
-              <label class="text-sm font-medium text-neutral-700 mb-1.5 block">Asset Image</label>
+              <div class="flex justify-between mb-1.5">
+                <label class="text-sm font-medium text-neutral-700">Asset Image</label>
+                <UButton icon="i-lucide-camera" color="primary" variant="soft" size="xs" @click="showCamera = true">Take Photo</UButton>
+              </div>
+
               <div v-if="previewUrl" class="relative inline-block w-full aspect-square">
                 <NuxtImg :src="previewUrl" class="w-full h-full rounded-lg object-cover border border-neutral-200" />
                 <UButton icon="i-lucide-x" color="error" variant="solid" size="xs" class="absolute top-1 right-1 rounded-full" @click="removeImage(form)" />
@@ -26,6 +30,7 @@
                 <UIcon name="i-lucide-loader-2" class="w-4 h-4 animate-spin" /> Uploading...
               </div>
               <input ref="fileInput" type="file" class="hidden" accept="image/*" @change="onFileChange($event, form)" />
+              <CameraModal v-model="showCamera" @captured="(file: File) => handleUploadImageFile(file, form)" />
             </div>
 
           </div>
@@ -288,6 +293,8 @@ definePageMeta({ layout: 'dashboard' })
 
 const UInputMenu = resolveComponent('UInputMenu')
 
+const showCamera = ref(false)
+
 const {
   toast, isUploading, previewUrl,
   labels, addLabel, removeLabel, getFilteredLabels,
@@ -295,7 +302,7 @@ const {
   selectedCategoryId, categoryOptions, subCategoryOptions, isLoadingSubCategories,
   showAddCategory, showAddSubCategory,
   fetchCategories, fetchSubCategories, onCategoryCreated, onSubCategoryCreated,
-  fileInput, triggerFileInput, onFileChange, removeImage,
+  fileInput, triggerFileInput, onFileChange, handleUploadImageFile, removeImage,
   makePurchaseDateComputed, makePriceDisplayComputed,
 } = useAssetForm()
 
