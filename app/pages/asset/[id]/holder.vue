@@ -167,14 +167,14 @@ const columns: TableColumn<AssetHolder>[] = [
     accessorKey: 'assignedDate',
     header: sortHeader('Assigned Date', 'assignedDate'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-900 font-medium' }, row.original.assignedDate)
+      return h('span', { class: 'text-neutral-900 font-medium' }, formatDate(row.original.assignedDate || ''))
     }
   },
   {
     accessorKey: 'returnedDate',
     header: sortHeader('Return Date', 'returnedDate'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-900 font-medium' }, row.original.returnedDate || '-')
+      return h('span', { class: 'text-neutral-900 font-medium' }, formatDate(row.original.returnedDate || ''))
     }
   },
   {

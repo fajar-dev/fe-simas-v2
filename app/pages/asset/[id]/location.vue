@@ -106,7 +106,7 @@ const columns: TableColumn<AssetLocation>[] = [
     accessorKey: 'date',
     header: sortHeader('Relocation Date', 'date'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-900 font-medium' }, row.original.date)
+      return h('span', { class: 'text-neutral-900 font-medium' }, formatDate(row.original.date || ''))
     }
   },
   {

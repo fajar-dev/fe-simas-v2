@@ -39,16 +39,7 @@
 
         <!-- Assigned Date Field -->
         <UFormField label="Assignment Date" name="assignedDate" required>
-          <UInputDate v-model="assignedDateVal" class="w-full">
-            <template #trailing>
-              <UPopover>
-                <UButton icon="i-lucide-calendar" color="neutral" variant="ghost" size="sm" square />
-                <template #content>
-                  <UCalendar v-model="assignedDateVal" />
-                </template>
-              </UPopover>
-            </template>
-          </UInputDate>
+          <UInput type="datetime-local" v-model="form.assignedDate" class="w-full" />
         </UFormField>
 
         <!-- Note Field -->
@@ -81,7 +72,6 @@
 
 <script setup lang="ts">
 import { z } from 'zod'
-import { parseDate } from '@internationalized/date'
 import { assetHolderService } from '~/services/asset-holder-service'
 import { employeeService } from '~/services/employee-service'
 import { assetService } from '~/services/asset-service'
@@ -114,22 +104,16 @@ const schema = z.object({
   assignNote: z.string().optional().or(z.literal('')),
 })
 
+const getLocalDatetimeString = () => {
+  return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+}
+
 const form = reactive({
   assetId: undefined as unknown as number,
   employeeId: undefined as unknown as number,
-  assignedDate: new Date().toISOString().split('T')[0] || '', // Default to today
+  assignedDate: getLocalDatetimeString(), // Default to current date & time
   assignNote: '',
   attachmentIds: [] as number[],
-})
-
-const assignedDateVal = computed({
-  get: () => {
-    if (!form.assignedDate) return undefined
-    try { return parseDate(form.assignedDate) } catch { return undefined }
-  },
-  set: (val) => {
-    form.assignedDate = val ? val.toString() : ''
-  }
 })
 
 // Sync selections with form fields
@@ -179,7 +163,7 @@ const loadEmployees = async () => {
 const resetForm = () => {
   form.assetId = props.lockAssetId ? props.lockAssetId : (undefined as unknown as number)
   form.employeeId = undefined as unknown as number
-  form.assignedDate = new Date().toISOString().split('T')[0] || ''
+  form.assignedDate = getLocalDatetimeString()
   form.assignNote = ''
   form.attachmentIds = []
   selectedAsset.value = undefined

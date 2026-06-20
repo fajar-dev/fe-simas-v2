@@ -26,16 +26,7 @@
       <UForm id="return-asset-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
         <!-- Returned Date Field -->
         <UFormField label="Return Date" name="returnedDate" required>
-          <UInputDate v-model="returnedDateVal" class="w-full">
-            <template #trailing>
-              <UPopover>
-                <UButton icon="i-lucide-calendar" color="neutral" variant="ghost" size="sm" square />
-                <template #content>
-                  <UCalendar v-model="returnedDateVal" />
-                </template>
-              </UPopover>
-            </template>
-          </UInputDate>
+          <UInput type="datetime-local" v-model="form.returnedDate" class="w-full" />
         </UFormField>
 
         <!-- Note Field -->
@@ -68,7 +59,6 @@
 
 <script setup lang="ts">
 import { z } from 'zod'
-import { parseDate } from '@internationalized/date'
 import { assetHolderService } from '~/services/asset-holder-service'
 import type { AssetHolder } from '~/types/asset-holder'
 import type { Attachment } from '~/types/attachment'
@@ -90,20 +80,14 @@ const schema = z.object({
   returnNote: z.string().optional().or(z.literal('')),
 })
 
+const getLocalDatetimeString = () => {
+  return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+}
+
 const form = reactive({
-  returnedDate: new Date().toISOString().split('T')[0] || '', // Default to today
+  returnedDate: getLocalDatetimeString(), // Default to current date & time
   returnNote: '',
   attachmentIds: [] as number[],
-})
-
-const returnedDateVal = computed({
-  get: () => {
-    if (!form.returnedDate) return undefined
-    try { return parseDate(form.returnedDate) } catch { return undefined }
-  },
-  set: (val) => {
-    form.returnedDate = val ? val.toString() : ''
-  }
 })
 
 const onAttachmentsChanged = (ids: number[]) => {
@@ -111,7 +95,7 @@ const onAttachmentsChanged = (ids: number[]) => {
 }
 
 const resetForm = () => {
-  form.returnedDate = new Date().toISOString().split('T')[0] || ''
+  form.returnedDate = getLocalDatetimeString()
   form.returnNote = ''
   form.attachmentIds = []
   uploadedAttachments.value = []

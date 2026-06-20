@@ -53,16 +53,7 @@
 
         <!-- Date Field -->
         <UFormField label="Relocation Date" name="date" required>
-          <UInputDate v-model="dateVal" class="w-full">
-            <template #trailing>
-              <UPopover>
-                <UButton icon="i-lucide-calendar" color="neutral" variant="ghost" size="sm" square />
-                <template #content>
-                  <UCalendar v-model="dateVal" />
-                </template>
-              </UPopover>
-            </template>
-          </UInputDate>
+          <UInput type="datetime-local" v-model="form.date" class="w-full" />
         </UFormField>
 
         <!-- Note Field -->
@@ -95,7 +86,6 @@
 
 <script setup lang="ts">
 import { z } from 'zod'
-import { parseDate } from '@internationalized/date'
 import { assetLocationService } from '~/services/asset-location-service'
 import { branchService } from '~/services/branch-service'
 import { locationService } from '~/services/location-service'
@@ -133,23 +123,17 @@ const schema = z.object({
   note: z.string().optional().or(z.literal('')),
 })
 
+const getLocalDatetimeString = () => {
+  return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+}
+
 const form = reactive({
   assetId: undefined as unknown as number,
   branchId: undefined as unknown as number,
   locationId: undefined as unknown as number,
-  date: new Date().toISOString().split('T')[0] || '', // Default to today
+  date: getLocalDatetimeString(), // Default to current date & time
   note: '',
   attachmentIds: [] as number[],
-})
-
-const dateVal = computed({
-  get: () => {
-    if (!form.date) return undefined
-    try { return parseDate(form.date) } catch { return undefined }
-  },
-  set: (val) => {
-    form.date = val ? val.toString() : ''
-  }
 })
 
 // Sync selections with form fields
@@ -227,7 +211,7 @@ const resetForm = () => {
   form.assetId = props.lockAssetId ? props.lockAssetId : (undefined as unknown as number)
   form.branchId = undefined as unknown as number
   form.locationId = undefined as unknown as number
-  form.date = new Date().toISOString().split('T')[0] || ''
+  form.date = getLocalDatetimeString()
   form.note = ''
   form.attachmentIds = []
   selectedAsset.value = undefined
