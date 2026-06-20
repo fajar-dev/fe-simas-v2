@@ -122,6 +122,7 @@ const UCheckbox = resolveComponent('UCheckbox')
 const UPopover = resolveComponent('UPopover')
 const UTooltip = resolveComponent('UTooltip')
 const UIcon = resolveComponent('UIcon')
+const AssetStatusBadge = resolveComponent('AssetStatusBadge')
 
 // State
 const data = ref<Asset[]>([])
@@ -333,18 +334,11 @@ const baseColumns: TableColumn<Asset>[] = [
     cell: ({ row }) => {
       const status = row.original.lastStatus
       if (!status) return h('span', { class: 'text-neutral-500 italic' }, '-')
-      const cfg = STATUS_CONFIG[status.status] || { label: status.status, color: 'neutral' }
-      const badge = h(UBadge, { color: cfg.color, variant: 'subtle', size: 'sm' }, () => cfg.label)
-      if (status.note) {
-        const tooltipText = `${status.note} — ${formatDate(status.createdAt)}`
-        return h('div', { class: 'flex items-center gap-1.5' }, [
-          badge,
-          h('span', { title: tooltipText, class: 'cursor-help' }, [
-            h(UIcon, { name: 'i-lucide-info', class: 'w-3.5 h-3.5 text-neutral-400' })
-          ])
-        ])
-      }
-      return badge
+      return h(AssetStatusBadge, {
+        status: status.status,
+        note: status.note,
+        createdAt: status.createdAt,
+      })
     }
   }
 ]
