@@ -51,22 +51,13 @@
           class="absolute top-2 right-2 rounded-full bg-neutral-900/60 hover:bg-neutral-900 border border-neutral-700 text-white"
           @click="switchCamera"
         />
-      </div>
+    </template>
 
-      <!-- Shutter (only in live mode) -->
-      <div v-if="!captured && !error" class="flex justify-center pt-4">
-        <UButton
-          icon="i-lucide-camera"
-          size="xl"
-          color="primary"
-          :disabled="loading"
-          label="Capture"
-          @click="capture"
-        />
+    <template #footer>
+      <div v-if="!captured && !error" class="flex justify-center w-full">
+        <UButton icon="i-lucide-camera" color="primary" :disabled="loading" label="Capture" class="flex-1 justify-center" @click="capture" />
       </div>
-
-      <!-- Captured actions -->
-      <div v-if="captured" class="flex items-center gap-3 pt-4">
+      <div v-else-if="captured" class="flex items-center gap-3 w-full">
         <UButton label="Retake" icon="i-lucide-refresh-cw" color="neutral" variant="outline" class="flex-1 justify-center" @click="retake" />
         <UButton label="Use Photo" icon="i-lucide-check" color="primary" class="flex-1 justify-center" @click="usePhoto" />
       </div>
