@@ -1,12 +1,11 @@
 <template>
   <UModal
     v-model:open="open"
-    title="Scan Asset"
-    description="Scan barcode or QR code to find an asset."
     :ui="{
       content: 'sm:max-w-md',
       overlay: 'bg-black/40',
-      footer: 'justify-end'
+      footer: 'justify-end',
+      header: 'hidden'
     }"
   >
     <template #body>
@@ -127,19 +126,11 @@ async function searchByCode(code: string) {
   isSearching.value = true
   lastScannedCode.value = code
 
-  try {
-    const res = await assetService.getAll(1, 1, code)
-    const asset = res.success && res.data.length > 0 ? res.data[0] : null
-    if (asset?.code === code) {
-      open.value = false
-      navigateTo(`/asset/${asset.id}`)
-    } else {
-      toast.add({ title: `Asset "${code}" not found`, color: 'error', icon: 'i-lucide-circle-x' })
-      isSearching.value = false
-    }
-  } catch {
-    toast.add({ title: 'Failed to search asset', color: 'error', icon: 'i-lucide-circle-x' })
-    isSearching.value = false
+  const res = await assetService.getAll(1, 1, code)
+  const asset = res.success && res.data.length > 0 ? res.data[0] : null
+  if (asset?.code === code) {
+    open.value = false
+    navigateTo(`/asset/${asset.id}`)
   }
 }
 </script>

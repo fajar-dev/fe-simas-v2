@@ -1,12 +1,11 @@
 <template>
   <UModal
     v-model:open="open"
-    title="Scan Barcode / QR Code"
-    description="Point your camera at a barcode or QR code to scan."
     :ui="{
       content: 'sm:max-w-md',
       overlay: 'bg-black/40',
-      footer: 'justify-end'
+      footer: 'justify-end',
+      header: 'hidden'
     }"
   >
     <template #body>
