@@ -32,7 +32,7 @@
 
         <!-- Scanning guide -->
         <div class="absolute inset-0 pointer-events-none">
-          <div class="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary-400 to-transparent rounded-full shadow-[0_0_10px_rgba(var(--color-primary-400),0.7)] animate-[scanline_2s_ease-in-out_infinite]" />
+          <div class="absolute left-0 right-0 h-0.5 bg-primary-400 shadow-[0_0_10px_rgba(var(--color-primary-400),0.7)] animate-[scanline_2s_ease-in-out_infinite]" />
         </div>
       </div>
     </template>
