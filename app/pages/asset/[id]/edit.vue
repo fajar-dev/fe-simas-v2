@@ -59,17 +59,21 @@
           <!-- ═══ Column 2: Details ═══ -->
           <div class="space-y-4">
             <UFormField label="Code" name="code" required>
-              <div class="relative w-full">
-                <UInput v-model="form.code" placeholder="e.g. AST-001" class="w-full" />
-                <div v-if="codeStatus" class="absolute right-2 top-1/2 -translate-y-1/2">
-                  <UIcon v-if="codeStatus === 'checking'" name="i-lucide-loader-2" class="w-4 h-4 text-neutral-400 animate-spin" />
-                  <UIcon v-else-if="codeStatus === 'available'" name="i-lucide-circle-check" class="w-4 h-4 text-green-500" />
-                  <UIcon v-else-if="codeStatus === 'exists'" name="i-lucide-circle-x" class="w-4 h-4 text-red-500" />
+              <div class="flex items-center gap-2">
+                <div class="relative w-full">
+                  <UInput v-model="form.code" placeholder="e.g. AST-001" class="w-full" />
+                  <div v-if="codeStatus" class="absolute right-2 top-1/2 -translate-y-1/2">
+                    <UIcon v-if="codeStatus === 'checking'" name="i-lucide-loader-2" class="w-4 h-4 text-neutral-400 animate-spin" />
+                    <UIcon v-else-if="codeStatus === 'available'" name="i-lucide-circle-check" class="w-4 h-4 text-green-500" />
+                    <UIcon v-else-if="codeStatus === 'exists'" name="i-lucide-circle-x" class="w-4 h-4 text-red-500" />
+                  </div>
                 </div>
+                <UButton icon="i-lucide-scan" color="neutral" variant="ghost" size="sm" square @click="showCodeScanner = true" title="Scan barcode" />
               </div>
               <p v-if="codeStatus === 'exists'" class="text-xs text-red-500 mt-1">Code "{{ form.code }}" already exists</p>
               <p v-else-if="codeStatus === 'available'" class="text-xs text-green-500 mt-1">Code available</p>
             </UFormField>
+            <ScannerModal v-model="showCodeScanner" @scanned="(code: string) => { form.code = code }" />
 
             <UFormField label="Name" name="name" required>
               <UInput v-model="form.name" placeholder="Asset name" class="w-full" />
@@ -223,6 +227,7 @@ const goBack = () => {
 const UInputMenu = resolveComponent('UInputMenu')
 
 const showCamera = ref(false)
+const showCodeScanner = ref(false)
 
 const {
   toast, isUploading, previewUrl,

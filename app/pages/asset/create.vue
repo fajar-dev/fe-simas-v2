@@ -40,7 +40,10 @@
             <div>
               <div class="flex items-center justify-between mb-1.5">
                 <label class="text-sm font-medium text-neutral-700">Code <span class="text-red-500">*</span></label>
-                <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addCode">Add Code</UButton>
+                <div class="flex items-center gap-1">
+                  <UButton icon="i-lucide-scan" color="neutral" variant="soft" size="xs" @click="openCodeScanner(-1)">Scan</UButton>
+                  <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addCode">Add Code</UButton>
+                </div>
               </div>
               <div class="space-y-2">
                 <div v-for="(_, index) in codes" :key="index">
@@ -55,12 +58,14 @@
                       </div>
                     </div>
                     <UButton v-if="codes.length > 1" icon="i-lucide-trash" color="error" variant="ghost" size="sm" square @click="removeCode(index)" />
+                    <UButton icon="i-lucide-scan" color="neutral" variant="ghost" size="sm" square @click="openCodeScanner(index)" title="Scan barcode" />
                   </div>
                   <p v-if="isDuplicateCode(index)" class="text-xs text-red-500 mt-1">Duplicate code in the list</p>
                   <p v-else-if="codeStatuses[index] === 'exists'" class="text-xs text-red-500 mt-1">Code "{{ codes[index] }}" already exists</p>
                   <p v-else-if="codeStatuses[index] === 'available'" class="text-xs text-green-500 mt-1">Code available</p>
                 </div>
               </div>
+              <ScannerModal v-model="showCodeScanner" @scanned="onCodeScanned" />
             </div>
   
             <UFormField label="Name" name="name" required>
@@ -306,6 +311,27 @@ definePageMeta({ layout: 'dashboard' })
 const UInputMenu = resolveComponent('UInputMenu')
 
 const showCamera = ref(false)
+const showCodeScanner = ref(false)
+const scanTargetIndex = ref(-1)
+
+function openCodeScanner(index: number) {
+  scanTargetIndex.value = index
+  showCodeScanner.value = true
+}
+
+function onCodeScanned(code: string) {
+  if (scanTargetIndex.value >= 0 && scanTargetIndex.value < codes.value.length) {
+    codes.value[scanTargetIndex.value] = code
+  } else {
+    // Scan from header button: fill first empty code, or add new
+    const emptyIdx = codes.value.findIndex(c => !c.trim())
+    if (emptyIdx >= 0) {
+      codes.value[emptyIdx] = code
+    } else {
+      codes.value.push(code)
+    }
+  }
+}
 
 const statusOptions = [
   { label: 'Active', value: 'active' },

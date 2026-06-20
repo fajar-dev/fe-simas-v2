@@ -29,20 +29,22 @@
       <nav class="space-y-4">
         <div :class="[isCollapsed ? 'flex justify-center' : '']">
           <UTooltip
-            text="Search Asset"
+            text="Scan Asset"
             :disabled="!isCollapsed"
             :content="{ align: 'center', side: 'right', sideOffset: 8 }"
           >
             <UButton
-              :label="isCollapsed ? undefined : 'Search Asset'"
+              :label="isCollapsed ? undefined : 'Scan Asset'"
               color="primary"
               :square="isCollapsed"
               :class="[isCollapsed ? '' : 'w-full']"
               icon="i-lucide-scan"
               variant="subtle"
+              @click="showScanner = true"
             />
           </UTooltip>
         </div>
+        <ScannerModal v-model="showScanner" @scanned="onAssetScanned" />
         <div v-for="group in navGroups" :key="group.title" class="space-y-1">
           <!-- Group Title -->
           <h3
@@ -201,9 +203,31 @@
 
 <script setup lang="ts">
 import { useFeedback } from '~/composables/useFeedback'
+import { assetService } from '~/services/asset-service'
 
 const { state: authState } = useAuth()
 const { isCollapsed, navGroups, bottomNavItems, isItemActive } = useNavigation()
 
 const { triggerFeedback, isCapturing } = useFeedback()
+
+const showScanner = ref(false)
+const toast = useToast()
+
+async function onAssetScanned(code: string) {
+  try {
+    const res = await assetService.getAll(1, 1, code)
+    if (res.success && res.data.length > 0) {
+      const asset = res.data[0]
+      if (asset?.code === code) {
+        navigateTo(`/asset/${asset.id}`)
+        return
+      }
+    }
+    // If exact match not found, navigate to asset list with search
+    navigateTo(`/asset?q=${encodeURIComponent(code)}`)
+    toast.add({ title: `Searching for "${code}"...`, color: 'info', icon: 'i-lucide-search' })
+  } catch {
+    navigateTo(`/asset?q=${encodeURIComponent(code)}`)
+  }
+}
 </script>
