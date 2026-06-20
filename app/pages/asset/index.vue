@@ -348,11 +348,11 @@ const baseColumns: TableColumn<Asset>[] = [
       const cfg = STATUS_CONFIG[status.status] || { label: status.status, color: 'neutral' }
       const badge = h(UBadge, { color: cfg.color, variant: 'subtle', size: 'sm' }, () => cfg.label)
       if (status.note) {
-        const tooltipText = `${status.note}\n${formatDate(status.createdAt)}`
+        const tooltipText = `${status.note} — ${formatDate(status.createdAt)}`
         return h('div', { class: 'flex items-center gap-1.5' }, [
           badge,
-          h(UTooltip, { text: tooltipText }, {
-            default: () => h(UIcon, { name: 'i-lucide-info', class: 'w-3.5 h-3.5 text-neutral-400 cursor-help' })
+          h(UTooltip, { text: tooltipText, content: { side: 'right' } }, {
+            default: () => h(UIcon, { name: 'i-lucide-info', class: 'w-3.5 h-3.5 text-neutral-400 cursor-help shrink-0' })
           })
         ])
       }
