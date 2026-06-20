@@ -39,8 +39,8 @@
         </UFormField>
 
         <!-- Note Field -->
-        <UFormField label="Note" name="note">
-          <UTextarea v-model="form.note" placeholder="Enter maintenance details (optional)" class="w-full" :rows="3" />
+        <UFormField label="Note" name="note" required>
+          <UTextarea v-model="form.note" placeholder="Enter maintenance details" class="w-full" :rows="3" />
         </UFormField>
 
         <!-- Reusable Attachment Manager -->
@@ -93,7 +93,7 @@ const uploadedAttachments = ref<Attachment[]>([])
 const schema = z.object({
   assetId: z.number(),
   date: z.string().min(1, 'Date is required'),
-  note: z.string().optional().or(z.literal('')),
+  note: z.string().min(1, 'Note is required'),
 })
 
 const form = reactive<AssetMaintenancePayload>({
