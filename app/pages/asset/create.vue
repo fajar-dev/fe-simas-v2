@@ -126,7 +126,7 @@
                   <UInputMenu
                     v-model="label.key"
                     :items="availableLabelKeys"
-                    mode="autocomplete"
+                    autocomplete
                     placeholder="Key"
                     class="w-full"
                   />
