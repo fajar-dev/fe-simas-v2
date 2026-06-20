@@ -123,7 +123,13 @@
               </div>
               <div v-else class="space-y-2">
                 <div v-for="(label, index) in labels" :key="index" class="flex items-center gap-2">
-                  <UInput v-model="label.key" placeholder="Key" class="w-full" />
+                  <UInputMenu
+                    v-model="label.key"
+                    :items="availableLabelKeys"
+                    mode="autocomplete"
+                    placeholder="Key"
+                    class="w-full"
+                  />
                   <UInput v-model="label.value" placeholder="Value" class="w-full" />
                   <UButton icon="i-lucide-trash" color="error" variant="ghost" size="sm" square @click="removeLabel(index)" />
                 </div>
@@ -280,9 +286,12 @@ import type { SelectMenuItem } from '@nuxt/ui'
 
 definePageMeta({ layout: 'dashboard' })
 
+const UInputMenu = resolveComponent('UInputMenu')
+
 const {
   toast, isUploading, previewUrl,
   labels, addLabel, removeLabel, getFilteredLabels,
+  availableLabelKeys, fetchLabelKeys,
   selectedCategoryId, categoryOptions, subCategoryOptions, isLoadingSubCategories,
   showAddCategory, showAddSubCategory,
   fetchCategories, fetchSubCategories, onCategoryCreated, onSubCategoryCreated,
@@ -618,5 +627,6 @@ onMounted(() => {
   fetchCategories()
   loadEmployees()
   loadBranches()
+  fetchLabelKeys()
 })
 </script>

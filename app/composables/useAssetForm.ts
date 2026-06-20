@@ -117,6 +117,14 @@ export function useAssetForm() {
     set: (val) => { form.price = parseIndonesianNumber(val) as any }
   })
 
+  const availableLabelKeys = ref<string[]>([])
+  const fetchLabelKeys = async () => {
+    const res = await assetService.getLabelKeys()
+    if (res.success) {
+      availableLabelKeys.value = res.data
+    }
+  }
+
   return {
     toast,
     isUploading,
@@ -126,6 +134,8 @@ export function useAssetForm() {
     addLabel,
     removeLabel,
     getFilteredLabels,
+    availableLabelKeys,
+    fetchLabelKeys,
     // Category
     selectedCategoryId,
     categoryOptions,
