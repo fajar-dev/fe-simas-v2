@@ -31,9 +31,9 @@
             color="neutral"
             variant="outline"
             icon="i-lucide-activity"
-            @click="showStatusDrawer = true"
+            @click="showStatusModal = true"
           >
-            <span class="hidden sm:inline">Status History</span>
+            <span class="hidden sm:inline">Change Status</span>
           </UButton>
           <UButton
             color="neutral"
@@ -114,7 +114,6 @@
                   {{ getStatusLabel(asset.lastStatus.status) }}
                 </UBadge>
                 <span v-else class="text-sm text-neutral-500">-</span>
-                <UButton icon="i-lucide-edit-3" size="xs" color="neutral" variant="ghost" square @click="showStatusModal = true" />
               </div>
             </div>
 
@@ -217,9 +216,6 @@
 
     <!-- Status Update Modal -->
     <AssetStatusUpdateModal v-if="asset" v-model="showStatusModal" :asset-id="assetId" @created="onStatusCreated" />
-
-    <!-- Status History Drawer -->
-    <AssetStatusHistoryDrawer v-model:open="showStatusDrawer" :asset-id="assetId" ref="statusDrawerRef" />
   </div>
 </template>
 
@@ -249,8 +245,6 @@ const { openLightbox } = useLightbox()
 
 const showLogDrawer = ref(false)
 const showStatusModal = ref(false)
-const showStatusDrawer = ref(false)
-const statusDrawerRef = ref<InstanceType<typeof import('./asset-status/HistoryDrawer.vue').default> | null>(null)
 
 type BadgeColor = 'success' | 'neutral' | 'primary' | 'warning' | 'error'
 
@@ -271,7 +265,6 @@ const { fetchAsset } = inject('assetActions') as { fetchAsset: () => Promise<voi
 
 const onStatusCreated = async () => {
   await fetchAsset()
-  statusDrawerRef.value?.resetAndFetch()
 }
 
 const items = computed(() => {
