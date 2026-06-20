@@ -147,6 +147,10 @@ const toggleLabelColumn = (key: string, checked: boolean) => {
   }
 }
 
+watch(activeLabelColumns, (newVal) => {
+  localStorage.setItem('active_label_columns', JSON.stringify(newVal))
+}, { deep: true })
+
 const {
   search,
   page,
@@ -450,6 +454,12 @@ const handleDelete = async () => {
 
 // Initial fetch
 onMounted(() => {
+  const saved = localStorage.getItem('active_label_columns')
+  if (saved) {
+    try {
+      activeLabelColumns.value = JSON.parse(saved)
+    } catch { /* ignore */ }
+  }
   fetchAssets()
   fetchLabelKeys()
 })
