@@ -123,18 +123,6 @@ const UPopover = resolveComponent('UPopover')
 const UTooltip = resolveComponent('UTooltip')
 const UIcon = resolveComponent('UIcon')
 
-type BadgeColor = 'success' | 'neutral' | 'primary' | 'warning' | 'error'
-
-const STATUS_CONFIG: Record<string, { label: string; color: BadgeColor }> = {
-  active: { label: 'Active', color: 'success' },
-  idle: { label: 'Idle', color: 'neutral' },
-  under_repair: { label: 'Under Repair', color: 'warning' },
-  damaged: { label: 'Damaged', color: 'error' },
-  lost: { label: 'Lost', color: 'error' },
-  sold: { label: 'Sold', color: 'primary' },
-  disposed: { label: 'Disposed', color: 'neutral' },
-}
-
 // State
 const data = ref<Asset[]>([])
 const isLoading = ref(false)

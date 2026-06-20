@@ -114,9 +114,9 @@
                   {{ getStatusLabel(asset.lastStatus.status) }}
                 </UBadge>
                 <span v-else class="text-sm text-neutral-500">-</span>
-                <span v-if="asset.lastStatus?.note" :title="`${asset.lastStatus.note} — ${formatDate(asset.lastStatus.createdAt)}`" class="cursor-help">
-                  <UIcon name="i-lucide-info" class="w-4 h-4 text-neutral-400" />
-                </span>
+                <UTooltip v-if="asset.lastStatus?.note" :delay-duration="0" :text="`${asset.lastStatus.note} — ${formatDate(asset.lastStatus.createdAt)}`">
+                  <UButton color="neutral" icon="i-lucide-info" variant="ghost" size="sm" />
+                </UTooltip>
               </div>
             </div>
 
@@ -248,21 +248,6 @@ const { openLightbox } = useLightbox()
 
 const showLogDrawer = ref(false)
 const showStatusModal = ref(false)
-
-type BadgeColor = 'success' | 'neutral' | 'primary' | 'warning' | 'error'
-
-const STATUS_CONFIG: Record<string, { label: string; color: BadgeColor }> = {
-  active: { label: 'Active', color: 'success' },
-  idle: { label: 'Idle', color: 'neutral' },
-  under_repair: { label: 'Under Repair', color: 'warning' },
-  damaged: { label: 'Damaged', color: 'error' },
-  lost: { label: 'Lost', color: 'error' },
-  sold: { label: 'Sold', color: 'primary' },
-  disposed: { label: 'Disposed', color: 'neutral' },
-}
-
-const getStatusLabel = (status: string) => STATUS_CONFIG[status]?.label || status
-const getStatusColor = (status: string) => STATUS_CONFIG[status]?.color || 'neutral'
 
 const { fetchAsset } = inject('assetActions') as { fetchAsset: () => Promise<void> }
 
