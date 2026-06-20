@@ -30,6 +30,14 @@
           <UButton
             color="neutral"
             variant="outline"
+            icon="i-lucide-activity"
+            @click="showStatusDrawer = true"
+          >
+            <span class="hidden sm:inline">Status History</span>
+          </UButton>
+          <UButton
+            color="neutral"
+            variant="outline"
             icon="i-lucide-history"
             @click="showLogDrawer = true"
           >
@@ -96,6 +104,17 @@
               <div class="text-sm text-neutral-900 font-medium flex items-center gap-2 min-w-0">
                 <span class="truncate" :title="asset.purchaseDate || '-'">{{ asset.purchaseDate || '-' }}</span>
                 <span v-if="asset.age" class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium shrink-0">{{ asset.age }}</span>
+              </div>
+            </div>
+
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Status</span>
+              <div class="flex items-center gap-2">
+                <UBadge v-if="asset.lastStatus" :color="getStatusColor(asset.lastStatus.status)" variant="subtle" size="sm">
+                  {{ getStatusLabel(asset.lastStatus.status) }}
+                </UBadge>
+                <span v-else class="text-sm text-neutral-500">-</span>
+                <UButton icon="i-lucide-edit-3" size="xs" color="neutral" variant="ghost" square @click="showStatusModal = true" />
               </div>
             </div>
 
@@ -195,6 +214,12 @@
 
     <!-- Activity Log Drawer -->
     <AssetLogDrawer v-model:open="showLogDrawer" :asset-id="assetId" />
+
+    <!-- Status Update Modal -->
+    <AssetStatusUpdateModal v-if="asset" v-model="showStatusModal" :asset-id="assetId" @created="onStatusCreated" />
+
+    <!-- Status History Drawer -->
+    <AssetStatusHistoryDrawer v-model:open="showStatusDrawer" :asset-id="assetId" ref="statusDrawerRef" />
   </div>
 </template>
 
@@ -223,6 +248,31 @@ const { asset, isLoading } = inject('assetState') as {
 const { openLightbox } = useLightbox()
 
 const showLogDrawer = ref(false)
+const showStatusModal = ref(false)
+const showStatusDrawer = ref(false)
+const statusDrawerRef = ref<InstanceType<typeof import('./asset-status/HistoryDrawer.vue').default> | null>(null)
+
+type BadgeColor = 'success' | 'neutral' | 'primary' | 'warning' | 'error'
+
+const STATUS_CONFIG: Record<string, { label: string; color: BadgeColor }> = {
+  active: { label: 'Active', color: 'success' },
+  idle: { label: 'Idle', color: 'neutral' },
+  under_repair: { label: 'Under Repair', color: 'warning' },
+  damaged: { label: 'Damaged', color: 'error' },
+  lost: { label: 'Lost', color: 'error' },
+  sold: { label: 'Sold', color: 'primary' },
+  disposed: { label: 'Disposed', color: 'neutral' },
+}
+
+const getStatusLabel = (status: string) => STATUS_CONFIG[status]?.label || status
+const getStatusColor = (status: string) => STATUS_CONFIG[status]?.color || 'neutral'
+
+const { fetchAsset } = inject('assetActions') as { fetchAsset: () => Promise<void> }
+
+const onStatusCreated = async () => {
+  await fetchAsset()
+  statusDrawerRef.value?.resetAndFetch()
+}
 
 const items = computed(() => {
   const tabs: TabsItem[] = []

@@ -6,6 +6,21 @@ export interface AssetLabel {
   value: string
 }
 
+export interface AssetStatus {
+  id: number
+  assetId: number
+  status: string
+  note: string | null
+  date: string
+  createdAt: string
+  updatedAt: string
+  createdBy?: {
+    id: number
+    name: string
+    photo: string | null
+  } | null
+}
+
 export interface Asset {
   id: number
   code: string
@@ -53,6 +68,17 @@ export interface Asset {
         id: number
         name: string
       } | null
+    } | null
+  } | null
+  lastStatus?: {
+    id: number
+    status: string
+    note: string | null
+    date: string
+    createdBy?: {
+      id: number
+      name: string
+      photo: string | null
     } | null
   } | null
   createdBy?: {

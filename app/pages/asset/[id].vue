@@ -39,6 +39,10 @@ provide('assetState', {
   isLoading
 })
 
+provide('assetActions', {
+  fetchAsset: loadData
+})
+
 onMounted(() => {
   loadData()
 })

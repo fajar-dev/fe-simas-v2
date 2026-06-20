@@ -33,7 +33,7 @@
           </UButton>
           <UButton
             color="neutral"
-            variant="outline"
+            variant="subtle"
             icon="i-lucide-filter"
             class="w-full lg:w-auto justify-center relative"
             @click="showFilterDrawer = true"
@@ -55,9 +55,7 @@
               variant="outline"
               icon="i-lucide-table-properties"
               class="w-full lg:w-auto justify-center"
-            >
-              Columns
-            </UButton>
+            />
             
             <template #content>
               <div class="p-3 w-48 space-y-2 select-none">
@@ -122,6 +120,18 @@ const UBadge = resolveComponent('UBadge')
 const UAvatar = resolveComponent('UAvatar')
 const UCheckbox = resolveComponent('UCheckbox')
 const UPopover = resolveComponent('UPopover')
+
+type BadgeColor = 'success' | 'neutral' | 'primary' | 'warning' | 'error'
+
+const STATUS_CONFIG: Record<string, { label: string; color: BadgeColor }> = {
+  active: { label: 'Active', color: 'success' },
+  idle: { label: 'Idle', color: 'neutral' },
+  under_repair: { label: 'Under Repair', color: 'warning' },
+  damaged: { label: 'Damaged', color: 'error' },
+  lost: { label: 'Lost', color: 'error' },
+  sold: { label: 'Sold', color: 'primary' },
+  disposed: { label: 'Disposed', color: 'neutral' },
+}
 
 // State
 const data = ref<Asset[]>([])
@@ -325,6 +335,16 @@ const baseColumns: TableColumn<Asset>[] = [
         age ? h('span', { class: 'font-medium text-neutral-900' }, age) : null,
         h('span', { class: 'text-xs text-neutral-500' }, date)
       ])
+    }
+  },
+  {
+    id: 'lastStatus',
+    header: 'Status',
+    cell: ({ row }) => {
+      const status = row.original.lastStatus
+      if (!status) return h('span', { class: 'text-neutral-500 italic' }, '-')
+      const cfg = STATUS_CONFIG[status.status] || { label: status.status, color: 'neutral' }
+      return h(UBadge, { color: cfg.color, variant: 'subtle', size: 'sm' }, () => cfg.label)
     }
   }
 ]
