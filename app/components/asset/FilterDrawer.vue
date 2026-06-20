@@ -196,6 +196,10 @@ import { branchService } from '~/services/branch-service'
 import { locationService } from '~/services/location-service'
 import { employeeService } from '~/services/employee-service'
 
+const props = defineProps<{
+  initialFilters?: Record<string, any>
+}>()
+
 const open = defineModel<boolean>('open', { default: false })
 const emit = defineEmits<{
   apply: [filters: Record<string, any>]
@@ -347,6 +351,11 @@ const fetchEmployees = async () => {
 // Fetch data when drawer opens
 watch(open, (isOpen) => {
   if (isOpen) {
+    // Sync local filters with parent's activeFilters
+    Object.keys(filters).forEach(key => {
+      filters[key] = props.initialFilters?.[key] ?? undefined
+    })
+
     fetchCategories()
     fetchBranches()
     fetchEmployees()

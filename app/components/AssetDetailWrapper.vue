@@ -25,7 +25,7 @@
 
     <UCard v-else-if="asset" class="w-full">
       <div class="w-full mb-4 flex items-center justify-between">
-        <UButton label="Back" to="/asset" color="neutral" icon="i-lucide-arrow-left" variant="link" />
+        <UButton label="Back" color="neutral" icon="i-lucide-arrow-left" variant="link" @click="goBack" />
         <div class="flex items-center gap-2">
           <UButton
             color="neutral"
@@ -203,7 +203,16 @@ import type { TabsItem } from '@nuxt/ui'
 import type { Asset } from '~/types/asset'
 
 const route = useRoute()
+const router = useRouter()
 const assetId = Number(route.params.id)
+
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    navigateTo('/asset')
+  }
+}
 
 // Inject state from the parent page ([id].vue) to prevent reloading on tab changes
 const { asset, isLoading } = inject('assetState') as {

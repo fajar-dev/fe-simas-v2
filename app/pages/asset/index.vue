@@ -66,6 +66,7 @@
     <!-- Filter Drawer -->
     <AssetFilterDrawer
       v-model:open="showFilterDrawer"
+      :initial-filters="activeFilters"
       @apply="onApplyFilters"
     />
   </div>
@@ -90,6 +91,7 @@ const UAvatar = resolveComponent('UAvatar')
 // State
 const data = ref<Asset[]>([])
 const isLoading = ref(false)
+const activeFilters = ref<Record<string, any>>({})
 
 const {
   search,
@@ -98,12 +100,11 @@ const {
   sortBy,
   order,
   sortHeader
-} = useTableQuery(() => fetchAssets(), { syncUrl: true })
+} = useTableQuery(() => fetchAssets(), { syncUrl: true, filters: activeFilters })
 const selectedAsset = ref<Asset | null>(null)
 const showDeleteModal = ref(false)
 const isDeleting = ref(false)
 const showFilterDrawer = ref(false)
-const activeFilters = ref<Record<string, any>>({})
 
 const activeFilterCount = computed(() => Object.keys(activeFilters.value).length)
 
@@ -139,8 +140,6 @@ const onApplyFilters = (filters: Record<string, any>) => {
   page.value = 1
   fetchAssets()
 }
-
-
 
 // Table columns
 const columns: TableColumn<Asset>[] = [
