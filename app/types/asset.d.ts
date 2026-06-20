@@ -11,9 +11,7 @@ export interface AssetStatus {
   assetId: number
   status: string
   note: string | null
-  date: string
   createdAt: string
-  updatedAt: string
   createdBy?: {
     id: number
     name: string
@@ -74,7 +72,6 @@ export interface Asset {
     id: number
     status: string
     note: string | null
-    date: string
     createdBy?: {
       id: number
       name: string

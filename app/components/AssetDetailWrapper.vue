@@ -30,18 +30,18 @@
           <UButton
             color="neutral"
             variant="outline"
-            icon="i-lucide-repeat-2"
-            @click="showStatusModal = true"
-          >
-            <span class="hidden sm:inline">Change Status</span>
-          </UButton>
-          <UButton
-            color="neutral"
-            variant="outline"
             icon="i-lucide-history"
             @click="showLogDrawer = true"
           >
             <span class="hidden sm:inline">Activity Log</span>
+          </UButton>
+          <UButton
+            color="primary"
+            variant="outline"
+            icon="i-lucide-repeat-2"
+            @click="showStatusModal = true"
+          >
+            <span class="hidden sm:inline">Change Status</span>
           </UButton>
           <UButton :to="`/asset/${asset.id}/edit`" color="primary" icon="i-lucide-edit">
             <span class="hidden sm:inline">Edit Asset</span>
