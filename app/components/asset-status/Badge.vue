@@ -5,7 +5,7 @@
     </UBadge>
     <UTooltip
       v-if="note"
-      :text="`${note} — ${formatDate(createdAt)}`"
+      :text="`${note} — ${formatDate(createdAt ?? '')}`"
       :content="{ side: 'right', sideOffset: 4 }"
     >
       <UIcon name="i-lucide-info" class="w-4 h-4 text-neutral-400 cursor-help" />

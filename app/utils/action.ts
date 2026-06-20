@@ -1,4 +1,4 @@
-export type BadgeColor = 'success' | 'neutral' | 'primary' | 'warning' | 'error'
+
 
 export const getActionIcon = (module: string, action: string) => {
   const key = `${module}:${action}`

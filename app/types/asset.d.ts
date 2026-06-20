@@ -109,4 +109,6 @@ export interface AssetPayload {
   locationDate?: string | null
   locationNote?: string | null
   locationAttachmentIds?: number[] | null
+  status?: string | null
+  statusNote?: string | null
 }

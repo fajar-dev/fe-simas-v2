@@ -351,8 +351,8 @@ const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number } & {
   hasHolder: boolean
   hasMaintenance: boolean
   hasLocation: boolean
-  status?: string | null
-  statusNote?: string | null
+  status?: string
+  statusNote?: string
 }>({
   categoryId: undefined as unknown as number,
   name: '',
@@ -376,7 +376,7 @@ const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number } & {
   hasMaintenance: true,
   hasLocation: true,
   status: 'active',
-  statusNote: null,
+  statusNote: undefined,
 })
 
 const onAssignAttachmentsChanged = (ids: number[]) => {
@@ -586,7 +586,7 @@ const resetForm = () => {
     hasMaintenance: true,
     hasLocation: true,
     status: 'active',
-    statusNote: null,
+    statusNote: undefined,
   })
   selectedCategoryId.value = undefined
   selectedEmployee.value = undefined
