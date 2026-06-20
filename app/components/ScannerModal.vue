@@ -36,6 +36,10 @@
         </div>
       </div>
     </template>
+
+    <template #footer>
+      <UButton label="Close" color="neutral" variant="outline" class="w-full justify-center" @click="open = false" />
+    </template>
   </UModal>
 </template>
 

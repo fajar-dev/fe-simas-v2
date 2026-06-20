@@ -126,11 +126,19 @@ async function searchByCode(code: string) {
   isSearching.value = true
   lastScannedCode.value = code
 
-  const res = await assetService.getAll(1, 1, code)
-  const asset = res.success && res.data.length > 0 ? res.data[0] : null
-  if (asset?.code === code) {
-    open.value = false
-    navigateTo(`/asset/${asset.id}`)
+  try {
+    const res = await assetService.getAll(1, 1, code)
+    const asset = res.success && res.data.length > 0 ? res.data[0] : null
+    if (asset?.code === code) {
+      open.value = false
+      navigateTo(`/asset/${asset.id}`)
+    } else {
+      toast.add({ title: `Asset "${code}" not found`, color: 'error', icon: 'i-lucide-circle-x' })
+      isSearching.value = false
+    }
+  } catch {
+    toast.add({ title: 'Failed to search asset', color: 'error', icon: 'i-lucide-circle-x' })
+    isSearching.value = false
   }
 }
 </script>
