@@ -84,22 +84,6 @@ export interface Asset {
     name: string
     photo: string | null
   } | null
-  depreciationMethod: string
-  usefulLife: number | null
-  residualValue: number | null
-  depreciationStartDate: string | null
-  depreciation?: {
-    method: string
-    usefulLife: number | null
-    residualValue: number | null
-    startDate: string | null
-    monthlyAmount: number | null
-    monthsElapsed: number
-    accumulated: number
-    bookValue: number
-    percentage: number
-    isFullyDepreciated: boolean
-  } | null
 }
 
 export interface AssetPayload {
@@ -127,8 +111,4 @@ export interface AssetPayload {
   locationAttachmentIds?: number[] | null
   status?: string | null
   statusNote?: string | null
-  depreciationMethod?: string
-  usefulLife?: number
-  residualValue?: number
-  depreciationStartDate?: string | null
 }

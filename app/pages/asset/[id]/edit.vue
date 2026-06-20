@@ -154,50 +154,6 @@
           </div>
         </div>
 
-        <!-- Depreciation Settings -->
-        <div class="mt-8 pt-6 border-t border-neutral-100 col-span-full">
-          <h3 class="text-md font-semibold text-neutral-800 mb-4 flex items-center gap-2">
-            <UIcon name="i-lucide-trending-down" class="w-5 h-5 text-primary-500" />
-            Depreciation
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <UFormField label="Method" name="depreciationMethod">
-              <USelect
-                v-model="form.depreciationMethod"
-                :items="depreciationMethodOptions"
-                placeholder="Select method..."
-                class="w-full"
-              />
-            </UFormField>
-
-            <UFormField v-if="form.depreciationMethod && form.depreciationMethod !== 'none'" label="Useful Life (Months)" name="usefulLife" required>
-              <UInput v-model.number="form.usefulLife" type="number" placeholder="e.g. 48" min="1" class="w-full" />
-            </UFormField>
-
-            <UFormField v-if="form.depreciationMethod && form.depreciationMethod !== 'none'" label="Residual Value" name="residualValue">
-              <UInput v-model="residualValueDisplay" placeholder="0" class="w-full">
-                <template #leading>
-                  <span class="text-neutral-500 text-sm">Rp</span>
-                </template>
-              </UInput>
-            </UFormField>
-
-            <UFormField v-if="form.depreciationMethod && form.depreciationMethod !== 'none'" label="Start Date" name="depreciationStartDate">
-              <UInputDate v-model="depreciationStartDateVal" class="w-full">
-                <template #trailing>
-                  <UPopover>
-                    <UButton icon="i-lucide-calendar" color="neutral" variant="ghost" size="sm" square />
-                    <template #content>
-                      <UCalendar v-model="depreciationStartDateVal" />
-                    </template>
-                  </UPopover>
-                </template>
-              </UInputDate>
-              <p class="text-xs text-neutral-400 mt-1">Defaults to Purchase Date if empty</p>
-            </UFormField>
-          </div>
-        </div>
-
         <!-- Feature Settings -->
         <div class="mt-8 pt-6 border-t border-neutral-100 col-span-full">
           <h3 class="text-md font-semibold text-neutral-800 mb-4 flex items-center gap-2">
@@ -247,7 +203,7 @@
 
 <script setup lang="ts">
 import { assetService } from '~/services/asset-service'
-import { assetSchema, depreciationMethodOptions } from '~/composables/useAssetForm'
+import { assetSchema } from '~/composables/useAssetForm'
 import type { AssetPayload } from '~/types/asset'
 
 definePageMeta({ layout: 'dashboard' })
@@ -278,7 +234,6 @@ const {
   fetchCategories, fetchSubCategories, onCategoryCreated, onSubCategoryCreated,
   fileInput, triggerFileInput, onFileChange, handleUploadImageFile, removeImage,
   makePurchaseDateComputed, makePriceDisplayComputed,
-  makeResidualValueDisplayComputed, makeDepreciationStartDateComputed,
 } = useAssetForm()
 
 // ── State ───────────────────────────────────────────────────────────────────
@@ -320,18 +275,12 @@ const form = reactive<AssetPayload>({
   hasHolder: true,
   hasMaintenance: true,
   hasLocation: true,
-  depreciationMethod: 'none',
-  usefulLife: undefined as unknown as number,
-  residualValue: undefined as unknown as number,
-  depreciationStartDate: undefined as unknown as string,
 })
 
 watch(() => form.code, (newCode) => validateCode(newCode))
 
 const purchaseDateVal = makePurchaseDateComputed(form)
 const priceDisplay = makePriceDisplayComputed(form)
-const residualValueDisplay = makeResidualValueDisplayComputed(form)
-const depreciationStartDateVal = makeDepreciationStartDateComputed(form)
 
 // ── Category Select ─────────────────────────────────────────────────────────
 const selectedCategory = computed({
@@ -377,10 +326,6 @@ const fetchAssetDetails = async () => {
       form.hasHolder = asset.hasHolder
       form.hasMaintenance = asset.hasMaintenance
       form.hasLocation = asset.hasLocation
-      form.depreciationMethod = asset.depreciationMethod || 'none'
-      form.usefulLife = asset.usefulLife ?? undefined
-      form.residualValue = asset.residualValue ?? undefined
-      form.depreciationStartDate = asset.depreciationStartDate ?? undefined
 
       const catId = asset.subCategory?.category?.id
       if (catId) {

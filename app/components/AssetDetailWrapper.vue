@@ -201,64 +201,6 @@
       </div>
     </UCard>
 
-    <!-- Depreciation Card -->
-    <UCard v-if="asset && asset.depreciation && asset.depreciation.method !== 'none'" class="w-full">
-      <div class="flex items-center gap-2 mb-4">
-        <UIcon name="i-lucide-trending-down" class="w-5 h-5 text-primary-500" />
-        <h3 class="text-md font-semibold text-neutral-800">Depreciation</h3>
-        <UBadge v-if="asset.depreciation.isFullyDepreciated" color="warning" variant="subtle" size="sm">Fully Depreciated</UBadge>
-        <UBadge color="neutral" variant="subtle" size="sm">
-          {{ asset.depreciation.method === 'straight_line' ? 'Straight Line' : 'Declining Balance' }}
-        </UBadge>
-      </div>
-
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mb-4">
-        <div>
-          <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Useful Life</span>
-          <div class="text-sm text-neutral-900 font-medium">
-            {{ asset.depreciation.usefulLife ? `${asset.depreciation.usefulLife} months` : '-' }}
-          </div>
-        </div>
-        <div>
-          <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Residual Value</span>
-          <div class="text-sm text-neutral-900 font-medium">{{ formatCurrency(asset.depreciation.residualValue) }}</div>
-        </div>
-        <div>
-          <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Monthly</span>
-          <div class="text-sm text-neutral-900 font-medium">{{ formatCurrency(asset.depreciation.monthlyAmount) }}</div>
-        </div>
-        <div>
-          <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Months Elapsed</span>
-          <div class="text-sm text-neutral-900 font-medium">{{ asset.depreciation.monthsElapsed }}</div>
-        </div>
-        <div>
-          <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Accumulated</span>
-          <div class="text-sm font-semibold text-red-600">{{ formatCurrency(asset.depreciation.accumulated) }}</div>
-        </div>
-        <div>
-          <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Book Value</span>
-          <div class="text-sm font-semibold text-primary-600">{{ formatCurrency(asset.depreciation.bookValue) }}</div>
-        </div>
-      </div>
-
-      <!-- Progress bar -->
-      <div>
-        <div class="flex items-center justify-between mb-1.5">
-          <span class="text-xs text-neutral-500">Depreciation Progress</span>
-          <span class="text-xs font-semibold" :class="asset.depreciation.percentage >= 100 ? 'text-red-600' : 'text-primary-600'">
-            {{ asset.depreciation.percentage }}%
-          </span>
-        </div>
-        <div class="w-full h-2.5 bg-neutral-100 rounded-full overflow-hidden">
-          <div
-            class="h-full rounded-full transition-all duration-500"
-            :class="asset.depreciation.percentage >= 100 ? 'bg-red-500' : asset.depreciation.percentage >= 75 ? 'bg-amber-500' : 'bg-primary-500'"
-            :style="{ width: `${Math.min(100, asset.depreciation.percentage)}%` }"
-          />
-        </div>
-      </div>
-    </UCard>
-
     <!-- Tabs Navigation -->
     <UTabs v-model="activeTab" :items="items" variant="link" :ui="{  }" class="gap-4" />
 
