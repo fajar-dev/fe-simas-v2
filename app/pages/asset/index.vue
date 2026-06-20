@@ -21,15 +21,33 @@
       table-class="min-w-[1200px]"
     >
       <template #actions>
-        <UButton
+        <div class="flex gap-2">
+          <UButton
           color="primary"
           variant="solid"
           icon="i-lucide-plus"
           class="w-full lg:w-auto justify-center"
           to="/asset/create"
-        >
+          >
           Add Asset
         </UButton>
+        <UButton
+          color="neutral"
+          variant="outline"
+          icon="i-lucide-filter"
+          class="w-full lg:w-auto justify-center relative"
+          @click="showFilterDrawer = true"
+        >
+          Filter
+          <UBadge
+            v-if="activeFilterCount > 0"
+            :label="String(activeFilterCount)"
+            color="primary"
+            size="sm"
+            variant="solid"
+          />
+        </UButton>
+        </div>
       </template>
     </DataTable>
 
@@ -44,6 +62,12 @@
 
     <!-- Lightbox Modal -->
     <Lightbox />
+
+    <!-- Filter Drawer -->
+    <AssetFilterDrawer
+      v-model:open="showFilterDrawer"
+      @apply="onApplyFilters"
+    />
   </div>
 </template>
 
@@ -78,6 +102,10 @@ const {
 const selectedAsset = ref<Asset | null>(null)
 const showDeleteModal = ref(false)
 const isDeleting = ref(false)
+const showFilterDrawer = ref(false)
+const activeFilters = ref<Record<string, any>>({})
+
+const activeFilterCount = computed(() => Object.keys(activeFilters.value).length)
 
 // Pagination meta
 const meta = reactive({
@@ -92,7 +120,7 @@ const { openLightbox } = useLightbox()
 const fetchAssets = async () => {
   isLoading.value = true
   try {
-    const response = await assetService.getAll(page.value, perPage.value, search.value, sortBy.value, order.value)
+    const response = await assetService.getAll(page.value, perPage.value, search.value, sortBy.value, order.value, activeFilters.value)
     if (response.success) {
       data.value = response.data
       if (response.meta) {
@@ -104,6 +132,12 @@ const fetchAssets = async () => {
   } finally {
     isLoading.value = false
   }
+}
+
+const onApplyFilters = (filters: Record<string, any>) => {
+  activeFilters.value = filters
+  page.value = 1
+  fetchAssets()
 }
 
 
@@ -268,7 +302,7 @@ const columns: TableColumn<Asset>[] = [
 ]
 
 function getRowItems(row: Row<Asset>) {
-  return [
+  const primaryActions = [
     {
       label: 'Edit Asset',
       icon: 'i-lucide-edit',
@@ -286,6 +320,40 @@ function getRowItems(row: Row<Asset>) {
       }
     }
   ]
+
+  const historyActions = []
+  if (row.original.hasLocation !== false) {
+    historyActions.push({
+      label: 'Location History',
+      icon: 'i-lucide-map-pin',
+      onSelect() {
+        navigateTo(`/asset/${row.original.id}/location`)
+      }
+    })
+  }
+  if (row.original.hasHolder !== false) {
+    historyActions.push({
+      label: 'Holder History',
+      icon: 'i-lucide-user',
+      onSelect() {
+        navigateTo(`/asset/${row.original.id}/holder`)
+      }
+    })
+  }
+  if (row.original.hasMaintenance !== false) {
+    historyActions.push({
+      label: 'Maintenance History',
+      icon: 'i-lucide-wrench',
+      onSelect() {
+        navigateTo(`/asset/${row.original.id}/maintenance`)
+      }
+    })
+  }
+
+  if (historyActions.length > 0) {
+    return [primaryActions, historyActions]
+  }
+  return [primaryActions]
 }
 
 // Handle delete

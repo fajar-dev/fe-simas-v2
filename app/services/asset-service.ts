@@ -9,11 +9,17 @@ export class AssetService {
         return { headers: { Authorization: `Bearer ${useAuth().state.token}` } }
     }
 
-    async getAll(page = 1, perPage = 10, q = '', sortBy = '', order = ''): Promise<ApiResponse<Asset[]>> {
+    async getAll(page = 1, perPage = 10, q = '', sortBy = '', order = '', filters: Record<string, any> = {}): Promise<ApiResponse<Asset[]>> {
         try {
             let url = `/asset?page=${page}&limit=${perPage}&q=${q}`
             if (sortBy) url += `&sortBy=${sortBy}`
             if (order) url += `&order=${order}`
+            // Append filter params
+            for (const [key, value] of Object.entries(filters)) {
+                if (value !== undefined && value !== null && value !== '') {
+                    url += `&${key}=${encodeURIComponent(value)}`
+                }
+            }
             const response = await apiService.client.get<ApiResponse<Asset[]>>(
                 url,
                 this.authHeaders
