@@ -375,7 +375,7 @@ const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number } & {
   hasHolder: true,
   hasMaintenance: true,
   hasLocation: true,
-  status: null,
+  status: 'active',
   statusNote: null,
 })
 
@@ -585,7 +585,7 @@ const resetForm = () => {
     hasHolder: true,
     hasMaintenance: true,
     hasLocation: true,
-    status: null,
+    status: 'active',
     statusNote: null,
   })
   selectedCategoryId.value = undefined
