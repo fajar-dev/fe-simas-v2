@@ -38,7 +38,7 @@
         <div v-if="asset.image" class="relative w-full aspect-[8/7] cursor-pointer overflow-hidden rounded-lg border border-neutral-200 group sm:col-span-4" @click="openLightbox(asset.image)">
           <NuxtImg :src="asset.image" :alt="asset.name" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
         </div>
-        <div v-else class="w-full aspect-[8/7] flex flex-col items-center justify-center bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-400 sm:col-span-4">
+        <div v-else class="w-full aspect-[8/7] flex flex-col items-center justify-center bg-neutral-50 border border-neutral-200 rounded-lg text-neutral-400 sm:col-span-4">
           <UIcon name="i-lucide-package" class="w-8 h-8 text-neutral-400 mb-1" />
           <span class="text-xs text-neutral-500 font-medium">No Image</span>
         </div>
