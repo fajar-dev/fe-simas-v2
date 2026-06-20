@@ -12,13 +12,14 @@
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <label class="text-sm font-medium text-neutral-700">Category</label>
-            <UButton v-if="filters.categoryId" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('categoryId')">Clear</UButton>
+            <UButton v-if="filters.categoryIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('categoryIds')">Clear</UButton>
           </div>
           <USelectMenu
-            v-model="filters.categoryId"
+            v-model="filters.categoryIds"
             :items="categoryOptions"
             placeholder="All Categories"
             value-key="value"
+            multiple
             class="w-full"
             @update:model-value="onCategoryChange"
           />
@@ -28,14 +29,15 @@
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <label class="text-sm font-medium text-neutral-700">Sub Category</label>
-            <UButton v-if="filters.subCategoryId" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('subCategoryId')">Clear</UButton>
+            <UButton v-if="filters.subCategoryIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('subCategoryIds')">Clear</UButton>
           </div>
           <USelectMenu
-            v-model="filters.subCategoryId"
+            v-model="filters.subCategoryIds"
             :items="subCategoryOptions"
             placeholder="All Sub Categories"
             value-key="value"
-            :disabled="!filters.categoryId"
+            multiple
+            :disabled="!filters.categoryIds?.length"
             class="w-full"
           />
         </div>
@@ -46,13 +48,14 @@
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <label class="text-sm font-medium text-neutral-700">Branch</label>
-            <UButton v-if="filters.branchId" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('branchId')">Clear</UButton>
+            <UButton v-if="filters.branchIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('branchIds')">Clear</UButton>
           </div>
           <USelectMenu
-            v-model="filters.branchId"
+            v-model="filters.branchIds"
             :items="branchOptions"
             placeholder="All Branches"
             value-key="value"
+            multiple
             class="w-full"
             @update:model-value="onBranchChange"
           />
@@ -62,14 +65,33 @@
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <label class="text-sm font-medium text-neutral-700">Location</label>
-            <UButton v-if="filters.locationId" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('locationId')">Clear</UButton>
+            <UButton v-if="filters.locationIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('locationIds')">Clear</UButton>
           </div>
           <USelectMenu
-            v-model="filters.locationId"
+            v-model="filters.locationIds"
             :items="locationOptions"
             placeholder="All Locations"
             value-key="value"
-            :disabled="!filters.branchId"
+            multiple
+            :disabled="!filters.branchIds?.length"
+            class="w-full"
+          />
+        </div>
+
+        <USeparator />
+
+        <!-- Status -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-sm font-medium text-neutral-700">Status</label>
+            <UButton v-if="filters.status?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('status')">Clear</UButton>
+          </div>
+          <USelectMenu
+            v-model="filters.status"
+            :items="statusOptions"
+            placeholder="All Statuses"
+            value-key="value"
+            multiple
             class="w-full"
           />
         </div>
@@ -164,6 +186,32 @@
           </div>
         </div>
 
+        <USeparator />
+
+        <!-- Labels -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-sm font-medium text-neutral-700">Labels</label>
+            <UButton icon="i-lucide-plus" size="xs" color="primary" variant="soft" @click="addLabelFilter">Add</UButton>
+          </div>
+          <div v-if="!labelFilters.length" class="text-sm text-neutral-400 py-3 text-center border border-dashed border-neutral-200 rounded-lg">
+            No label filters added
+          </div>
+          <div v-else class="space-y-2">
+            <div v-for="(lf, index) in labelFilters" :key="index" class="flex items-center gap-2">
+              <UInputMenu
+                v-model="lf.key"
+                :items="availableLabelKeys"
+                autocomplete
+                placeholder="Key"
+                class="w-full"
+              />
+              <UInput v-model="lf.value" placeholder="Value" class="w-full" />
+              <UButton icon="i-lucide-trash" color="error" variant="ghost" size="sm" square @click="removeLabelFilter(index)" />
+            </div>
+          </div>
+        </div>
+
       </div>
     </template>
 
@@ -195,6 +243,7 @@ import { subCategoryService } from '~/services/sub-category-service'
 import { branchService } from '~/services/branch-service'
 import { locationService } from '~/services/location-service'
 import { employeeService } from '~/services/employee-service'
+import { assetService } from '~/services/asset-service'
 
 const props = defineProps<{
   initialFilters?: Record<string, any>
@@ -207,10 +256,11 @@ const emit = defineEmits<{
 
 // Filter state
 const filters = reactive<Record<string, any>>({
-  categoryId: undefined,
-  subCategoryId: undefined,
-  branchId: undefined,
-  locationId: undefined,
+  categoryIds: [],
+  subCategoryIds: [],
+  branchIds: [],
+  locationIds: [],
+  status: [],
   holderStatus: undefined,
   holderId: undefined,
   priceMin: undefined,
@@ -219,12 +269,28 @@ const filters = reactive<Record<string, any>>({
   purchaseDateTo: undefined,
 })
 
+// Label filters (separate from main filters, merged on apply)
+const labelFilters = ref<{ key: string; value: string }[]>([])
+const addLabelFilter = () => { labelFilters.value.push({ key: '', value: '' }) }
+const removeLabelFilter = (index: number) => { labelFilters.value.splice(index, 1) }
+
 // Options
 const categoryOptions = ref<{ label: string; value: number }[]>([])
 const subCategoryOptions = ref<{ label: string; value: number }[]>([])
 const branchOptions = ref<{ label: string; value: number }[]>([])
 const locationOptions = ref<{ label: string; value: number }[]>([])
 const employeeOptions = ref<{ label: string; value: number }[]>([])
+const availableLabelKeys = ref<string[]>([])
+
+const statusOptions = [
+  { label: 'Active', value: 'active' },
+  { label: 'Idle', value: 'idle' },
+  { label: 'Under Repair', value: 'under_repair' },
+  { label: 'Damaged', value: 'damaged' },
+  { label: 'Lost', value: 'lost' },
+  { label: 'Sold', value: 'sold' },
+  { label: 'Disposed', value: 'disposed' },
+]
 
 const holderStatusOptions = [
   { label: 'Has Holder', value: 'has_holder' },
@@ -254,35 +320,51 @@ const applyDatePreset = (preset: { years: number }) => {
   filters.purchaseDateTo = date.toISOString().split('T')[0]
 }
 
-// Cascading: category → sub category
-const onCategoryChange = () => {
-  filters.subCategoryId = undefined
-  if (filters.categoryId) {
-    fetchSubCategories(filters.categoryId)
-  } else {
-    subCategoryOptions.value = []
+// Cascading: category → sub category (fetch for all selected categories)
+const onCategoryChange = async () => {
+  filters.subCategoryIds = []
+  subCategoryOptions.value = []
+  if (filters.categoryIds?.length) {
+    const allSubs: { label: string; value: number }[] = []
+    for (const catId of filters.categoryIds) {
+      const res = await subCategoryService.getByCategoryId(catId)
+      if (res.success) {
+        allSubs.push(...res.data.map(s => ({ label: s.name, value: s.id })))
+      }
+    }
+    subCategoryOptions.value = allSubs
   }
 }
 
-// Cascading: branch → location
-const onBranchChange = () => {
-  filters.locationId = undefined
-  if (filters.branchId) {
-    fetchLocations(filters.branchId)
-  } else {
-    locationOptions.value = []
+// Cascading: branch → location (fetch for all selected branches)
+const onBranchChange = async () => {
+  filters.locationIds = []
+  locationOptions.value = []
+  if (filters.branchIds?.length) {
+    const allLocs: { label: string; value: number }[] = []
+    for (const branchId of filters.branchIds) {
+      const res = await locationService.getByBranchId(branchId)
+      if (res.success) {
+        allLocs.push(...res.data.map(l => ({ label: l.name, value: l.id })))
+      }
+    }
+    locationOptions.value = allLocs
   }
 }
 
 // Clear single field
 const clearField = (field: string) => {
-  filters[field] = undefined
-  if (field === 'categoryId') {
-    filters.subCategoryId = undefined
+  if (['categoryIds', 'subCategoryIds', 'branchIds', 'locationIds', 'status'].includes(field)) {
+    filters[field] = []
+  } else {
+    filters[field] = undefined
+  }
+  if (field === 'categoryIds') {
+    filters.subCategoryIds = []
     subCategoryOptions.value = []
   }
-  if (field === 'branchId') {
-    filters.locationId = undefined
+  if (field === 'branchIds') {
+    filters.locationIds = []
     locationOptions.value = []
   }
   if (field === 'holderStatus') {
@@ -292,9 +374,18 @@ const clearField = (field: string) => {
 
 // Reset all
 const resetAll = () => {
-  Object.keys(filters).forEach(key => {
-    filters[key] = undefined
-  })
+  filters.categoryIds = []
+  filters.subCategoryIds = []
+  filters.branchIds = []
+  filters.locationIds = []
+  filters.status = []
+  filters.holderStatus = undefined
+  filters.holderId = undefined
+  filters.priceMin = undefined
+  filters.priceMax = undefined
+  filters.purchaseDateFrom = undefined
+  filters.purchaseDateTo = undefined
+  labelFilters.value = []
   subCategoryOptions.value = []
   locationOptions.value = []
   applyFilters()
@@ -304,9 +395,16 @@ const resetAll = () => {
 const applyFilters = () => {
   const cleanFilters: Record<string, any> = {}
   for (const [key, value] of Object.entries(filters)) {
-    if (value !== undefined && value !== null && value !== '') {
+    if (Array.isArray(value)) {
+      if (value.length > 0) cleanFilters[key] = value
+    } else if (value !== undefined && value !== null && value !== '') {
       cleanFilters[key] = value
     }
+  }
+  // Merge label filters
+  const validLabels = labelFilters.value.filter(l => l.key.trim() && l.value.trim())
+  if (validLabels.length) {
+    cleanFilters.labels = validLabels.map(l => ({ key: l.key.trim(), value: l.value.trim() }))
   }
   emit('apply', cleanFilters)
   open.value = false
@@ -320,24 +418,10 @@ const fetchCategories = async () => {
   }
 }
 
-const fetchSubCategories = async (categoryId: number) => {
-  const res = await subCategoryService.getByCategoryId(categoryId)
-  if (res.success) {
-    subCategoryOptions.value = res.data.map(s => ({ label: s.name, value: s.id }))
-  }
-}
-
 const fetchBranches = async () => {
   const res = await branchService.getAll(1, 100, '')
   if (res.success) {
     branchOptions.value = res.data.map(b => ({ label: b.name, value: b.id }))
-  }
-}
-
-const fetchLocations = async (branchId: number) => {
-  const res = await locationService.getByBranchId(branchId)
-  if (res.success) {
-    locationOptions.value = res.data.map(l => ({ label: l.name, value: l.id }))
   }
 }
 
@@ -348,20 +432,38 @@ const fetchEmployees = async () => {
   }
 }
 
+const fetchLabelKeys = async () => {
+  const res = await assetService.getLabelKeys()
+  if (res.success) {
+    availableLabelKeys.value = res.data
+  }
+}
+
 // Fetch data when drawer opens
 watch(open, (isOpen) => {
   if (isOpen) {
     // Sync local filters with parent's activeFilters
-    Object.keys(filters).forEach(key => {
-      filters[key] = props.initialFilters?.[key] ?? undefined
-    })
+    const init = props.initialFilters || {}
+    filters.categoryIds = init.categoryIds || []
+    filters.subCategoryIds = init.subCategoryIds || []
+    filters.branchIds = init.branchIds || []
+    filters.locationIds = init.locationIds || []
+    filters.status = init.status || []
+    filters.holderStatus = init.holderStatus ?? undefined
+    filters.holderId = init.holderId ?? undefined
+    filters.priceMin = init.priceMin ?? undefined
+    filters.priceMax = init.priceMax ?? undefined
+    filters.purchaseDateFrom = init.purchaseDateFrom ?? undefined
+    filters.purchaseDateTo = init.purchaseDateTo ?? undefined
+    labelFilters.value = init.labels ? init.labels.map((l: any) => ({ ...l })) : []
 
     fetchCategories()
     fetchBranches()
     fetchEmployees()
+    fetchLabelKeys()
     // Refetch sub-categories/locations if parent is already selected
-    if (filters.categoryId) fetchSubCategories(filters.categoryId)
-    if (filters.branchId) fetchLocations(filters.branchId)
+    if (filters.categoryIds?.length) onCategoryChange()
+    if (filters.branchIds?.length) onBranchChange()
   }
 })
 </script>

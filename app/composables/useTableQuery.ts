@@ -31,8 +31,22 @@ export function useTableQuery(onQueryChange: () => void, options: TableQueryOpti
     const query = route!.query
     const parsedFilters: Record<string, any> = {}
     
-    const numberFields = ['categoryId', 'subCategoryId', 'branchId', 'locationId', 'holderId', 'priceMin', 'priceMax']
+    const arrayNumberFields = ['categoryIds', 'subCategoryIds', 'branchIds', 'locationIds']
+    const arrayStringFields = ['status']
+    const numberFields = ['holderId', 'priceMin', 'priceMax']
     const stringFields = ['holderStatus', 'purchaseDateFrom', 'purchaseDateTo']
+    
+    arrayNumberFields.forEach(field => {
+      if (query[field] !== undefined && query[field] !== '') {
+        parsedFilters[field] = String(query[field]).split(',').map(Number).filter(n => !isNaN(n))
+      }
+    })
+
+    arrayStringFields.forEach(field => {
+      if (query[field] !== undefined && query[field] !== '') {
+        parsedFilters[field] = String(query[field]).split(',')
+      }
+    })
     
     numberFields.forEach(field => {
       if (query[field] !== undefined && query[field] !== '') {
@@ -45,6 +59,15 @@ export function useTableQuery(onQueryChange: () => void, options: TableQueryOpti
         parsedFilters[field] = query[field]
       }
     })
+
+    // Parse label.* params
+    const labelFilters: { key: string; value: string }[] = []
+    for (const [qKey, qVal] of Object.entries(query)) {
+      if (qKey.startsWith('label.') && qVal) {
+        labelFilters.push({ key: qKey.substring(6), value: String(qVal) })
+      }
+    }
+    if (labelFilters.length) parsedFilters.labels = labelFilters
     
     filters.value = parsedFilters
   }
@@ -62,7 +85,16 @@ export function useTableQuery(onQueryChange: () => void, options: TableQueryOpti
     // Append filters to URL query
     if (filters && filters.value) {
       for (const [key, value] of Object.entries(filters.value)) {
-        if (value !== undefined && value !== null && value !== '') {
+        if (value === undefined || value === null || value === '') continue
+        if (key === 'labels' && Array.isArray(value)) {
+          for (const label of value as { key: string; value: string }[]) {
+            if (label.key && label.value) {
+              query[`label.${label.key}`] = label.value
+            }
+          }
+        } else if (Array.isArray(value) && value.length > 0) {
+          query[key] = value.join(',')
+        } else if (!Array.isArray(value)) {
           query[key] = String(value)
         }
       }

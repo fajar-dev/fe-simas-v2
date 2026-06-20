@@ -16,7 +16,16 @@ export class AssetService {
             if (order) url += `&order=${order}`
             // Append filter params
             for (const [key, value] of Object.entries(filters)) {
-                if (value !== undefined && value !== null && value !== '') {
+                if (value === undefined || value === null || value === '') continue
+                if (key === 'labels' && Array.isArray(value)) {
+                    for (const label of value) {
+                        if (label.key && label.value) {
+                            url += `&label.${encodeURIComponent(label.key)}=${encodeURIComponent(label.value)}`
+                        }
+                    }
+                } else if (Array.isArray(value) && value.length > 0) {
+                    url += `&${key}=${value.join(',')}`
+                } else if (!Array.isArray(value)) {
                     url += `&${key}=${encodeURIComponent(value)}`
                 }
             }
