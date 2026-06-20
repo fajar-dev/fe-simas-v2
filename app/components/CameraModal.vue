@@ -51,6 +51,7 @@
           class="absolute top-2 right-2 rounded-full bg-neutral-900/60 hover:bg-neutral-900 border border-neutral-700 text-white"
           @click="switchCamera"
         />
+      </div>
     </template>
 
     <template #footer>
