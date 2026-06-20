@@ -64,32 +64,12 @@
           @click="capture"
         />
       </div>
-    </template>
 
-    <template #footer>
-      <template v-if="captured">
-        <UButton
-          label="Retake"
-          icon="i-lucide-refresh-cw"
-          color="neutral"
-          variant="outline"
-          @click="retake"
-        />
-        <UButton
-          label="Use Photo"
-          icon="i-lucide-check"
-          color="primary"
-          @click="usePhoto"
-        />
-      </template>
-      <template v-else>
-        <UButton
-          label="Cancel"
-          color="neutral"
-          variant="outline"
-          @click="open = false"
-        />
-      </template>
+      <!-- Captured actions -->
+      <div v-if="captured" class="flex items-center gap-3 pt-4">
+        <UButton label="Retake" icon="i-lucide-refresh-cw" color="neutral" variant="outline" class="flex-1 justify-center" @click="retake" />
+        <UButton label="Use Photo" icon="i-lucide-check" color="primary" class="flex-1 justify-center" @click="usePhoto" />
+      </div>
     </template>
   </UModal>
 </template>
