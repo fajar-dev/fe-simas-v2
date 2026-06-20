@@ -109,11 +109,14 @@
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Status</span>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5">
                 <UBadge v-if="asset.lastStatus" :color="getStatusColor(asset.lastStatus.status)" variant="subtle">
                   {{ getStatusLabel(asset.lastStatus.status) }}
                 </UBadge>
                 <span v-else class="text-sm text-neutral-500">-</span>
+                <UTooltip v-if="asset.lastStatus?.note" :text="`${asset.lastStatus.note}\n${formatDate(asset.lastStatus.createdAt)}`">
+                  <UIcon name="i-lucide-info" class="w-3.5 h-3.5 text-neutral-400 cursor-help" />
+                </UTooltip>
               </div>
             </div>
 

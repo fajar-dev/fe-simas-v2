@@ -72,6 +72,7 @@ export interface Asset {
     id: number
     status: string
     note: string | null
+    createdAt: string
     createdBy?: {
       id: number
       name: string

@@ -120,6 +120,8 @@ const UBadge = resolveComponent('UBadge')
 const UAvatar = resolveComponent('UAvatar')
 const UCheckbox = resolveComponent('UCheckbox')
 const UPopover = resolveComponent('UPopover')
+const UTooltip = resolveComponent('UTooltip')
+const UIcon = resolveComponent('UIcon')
 
 type BadgeColor = 'success' | 'neutral' | 'primary' | 'warning' | 'error'
 
@@ -344,7 +346,17 @@ const baseColumns: TableColumn<Asset>[] = [
       const status = row.original.lastStatus
       if (!status) return h('span', { class: 'text-neutral-500 italic' }, '-')
       const cfg = STATUS_CONFIG[status.status] || { label: status.status, color: 'neutral' }
-      return h(UBadge, { color: cfg.color, variant: 'subtle', size: 'sm' }, () => cfg.label)
+      const badge = h(UBadge, { color: cfg.color, variant: 'subtle', size: 'sm' }, () => cfg.label)
+      if (status.note) {
+        const tooltipText = `${status.note}\n${formatDate(status.createdAt)}`
+        return h('div', { class: 'flex items-center gap-1.5' }, [
+          badge,
+          h(UTooltip, { text: tooltipText }, {
+            default: () => h(UIcon, { name: 'i-lucide-info', class: 'w-3.5 h-3.5 text-neutral-400 cursor-help' })
+          })
+        ])
+      }
+      return badge
     }
   }
 ]
