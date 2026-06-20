@@ -30,7 +30,7 @@
           <UButton
             color="neutral"
             variant="outline"
-            icon="i-lucide-activity"
+            icon="i-lucide-repeat-2"
             @click="showStatusModal = true"
           >
             <span class="hidden sm:inline">Change Status</span>
