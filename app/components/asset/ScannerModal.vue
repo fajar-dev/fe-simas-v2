@@ -32,7 +32,7 @@
 
         <!-- Scanning guide -->
         <div class="absolute inset-0 pointer-events-none">
-          <div class="absolute left-0 right-0 h-0.5 bg-[#009838] shadow-[0_0_10px_#009838b3] animate-[scanline_2s_ease-in-out_infinite]" />
+          <div class="absolute left-0 right-0 h-0.5 bg-[#009838] animate-[scanline_2s_ease-in-out_infinite]" />
         </div>
       </div>
     </template>
