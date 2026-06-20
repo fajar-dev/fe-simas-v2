@@ -200,32 +200,49 @@ const { asset, isLoading } = inject('assetState') as {
 
 const { openLightbox } = useLightbox()
 
-const items = computed(() => [
-  {
-    value: 'location',
-    label: 'Location',
-    icon: 'i-lucide-map-pin',
-    to: `/asset/${assetId}/location`
-  },
-  {
-    value: 'holder',
-    label: 'Holder',
-    icon: 'i-lucide-user',
-    to: `/asset/${assetId}/holder`
-  },
-  {
-    value: 'maintenance',
-    label: 'Maintenance',
-    icon: 'i-lucide-wrench',
-    to: `/asset/${assetId}/maintenance`
+const items = computed(() => {
+  const tabs: TabsItem[] = []
+  if (asset.value?.hasLocation !== false) {
+    tabs.push({
+      value: 'location',
+      label: 'Location',
+      icon: 'i-lucide-map-pin',
+      to: `/asset/${assetId}/location`
+    })
   }
-] satisfies TabsItem[])
+  if (asset.value?.hasHolder !== false) {
+    tabs.push({
+      value: 'holder',
+      label: 'Holder',
+      icon: 'i-lucide-user',
+      to: `/asset/${assetId}/holder`
+    })
+  }
+  if (asset.value?.hasMaintenance !== false) {
+    tabs.push({
+      value: 'maintenance',
+      label: 'Maintenance',
+      icon: 'i-lucide-wrench',
+      to: `/asset/${assetId}/maintenance`
+    })
+  }
+  return tabs
+})
 
 const activeTab = computed({
   get() {
-    if (route.path.endsWith('/holder')) return 'holder'
-    if (route.path.endsWith('/maintenance')) return 'maintenance'
-    return 'location'
+    let current: string = 'location'
+    if (route.path.endsWith('/holder')) current = 'holder'
+    else if (route.path.endsWith('/maintenance')) current = 'maintenance'
+
+    const isAllowed = items.value.some(i => i.value === current)
+    if (!isAllowed && items.value.length > 0) {
+      const firstTab = items.value[0]
+      if (firstTab && firstTab.to) {
+        navigateTo(firstTab.to)
+      }
+    }
+    return current
   },
   set(val) {
     const target = items.value.find(i => i.value === val)?.to

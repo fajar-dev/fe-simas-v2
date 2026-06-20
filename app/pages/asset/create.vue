@@ -132,15 +132,48 @@
           </div>
         </div>
 
-        <!-- Optional Initial Assignment & Location -->
+        <!-- Feature Settings -->
         <div class="mt-8 pt-6 border-t border-neutral-100 col-span-full">
+          <h3 class="text-md font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+            <UIcon name="i-lucide-toggle-left" class="w-5 h-5 text-primary-500" />
+            Asset Features
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
+              <div>
+                <span class="font-medium text-sm text-neutral-850 block">Asset Holder (Assignment)</span>
+                <p class="text-xs text-neutral-500">Allow assigning this asset to employees.</p>
+              </div>
+              <USwitch v-model="form.hasHolder" />
+            </div>
+
+            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
+              <div>
+                <span class="font-medium text-sm text-neutral-850 block">Asset Location History</span>
+                <p class="text-xs text-neutral-500">Track relocations and physical placement.</p>
+              </div>
+              <USwitch v-model="form.hasLocation" />
+            </div>
+
+            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
+              <div>
+                <span class="font-medium text-sm text-neutral-850 block">Asset Maintenance History</span>
+                <p class="text-xs text-neutral-500">Log repair, calibration, and service history.</p>
+              </div>
+              <USwitch v-model="form.hasMaintenance" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional Initial Assignment & Location -->
+        <div v-if="form.hasHolder || form.hasLocation" class="mt-8 pt-6 border-t border-neutral-100 col-span-full">
           <h3 class="text-md font-semibold text-neutral-800 mb-4 flex items-center gap-2">
             <UIcon name="i-lucide-settings-2" class="w-5 h-5 text-primary-500" />
             Initial Assignment &amp; Location (Optional)
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Assignment Section -->
-            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 space-y-4">
+            <div v-if="form.hasHolder" class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 space-y-4">
               <div class="font-medium text-sm text-neutral-850 flex items-center gap-1.5 border-b border-neutral-100 pb-2">
                 <UIcon name="i-lucide-user-plus" class="w-4 h-4 text-primary-500" />
                 Assign to Employee
@@ -171,7 +204,7 @@
             </div>
 
             <!-- Location Section -->
-            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 space-y-4">
+            <div v-if="form.hasLocation" class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 space-y-4">
               <div class="font-medium text-sm text-neutral-850 flex items-center gap-1.5 border-b border-neutral-100 pb-2">
                 <UIcon name="i-lucide-map-pin" class="w-4 h-4 text-primary-500" />
                 Set Initial Location
@@ -280,6 +313,9 @@ const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number } & {
   locationDate?: string
   locationNote?: string
   locationAttachmentIds?: number[] | null
+  hasHolder: boolean
+  hasMaintenance: boolean
+  hasLocation: boolean
 }>({
   categoryId: undefined as unknown as number,
   name: '',
@@ -299,6 +335,9 @@ const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number } & {
   locationDate: getLocalDatetimeString(),
   locationNote: '',
   locationAttachmentIds: [],
+  hasHolder: true,
+  hasMaintenance: true,
+  hasLocation: true,
 })
 
 const onAssignAttachmentsChanged = (ids: number[]) => {
@@ -504,6 +543,9 @@ const resetForm = () => {
     assignAttachmentIds: [],
     branchId: null, locationId: null, locationDate: getLocalDatetimeString(), locationNote: '',
     locationAttachmentIds: [],
+    hasHolder: true,
+    hasMaintenance: true,
+    hasLocation: true,
   })
   selectedCategoryId.value = undefined
   selectedEmployee.value = undefined
@@ -543,14 +585,17 @@ const handleSubmit = async () => {
         name: form.name, description: form.description, price: form.price,
         purchaseDate: form.purchaseDate, brand: form.brand, model: form.model,
         image: form.image, subCategoryId: form.subCategoryId, labels: filteredLabels,
-        employeeId: form.employeeId || null,
-        assignedDate: form.employeeId ? form.assignedDate : null,
-        assignNote: form.employeeId ? form.assignNote : null,
-        assignAttachmentIds: form.employeeId ? form.assignAttachmentIds : null,
-        locationId: form.locationId || null,
-        locationDate: form.locationId ? form.locationDate : null,
-        locationNote: form.locationId ? form.locationNote : null,
-        locationAttachmentIds: form.locationId ? form.locationAttachmentIds : null,
+        hasHolder: form.hasHolder,
+        hasMaintenance: form.hasMaintenance,
+        hasLocation: form.hasLocation,
+        employeeId: form.hasHolder ? (form.employeeId || null) : null,
+        assignedDate: form.hasHolder && form.employeeId ? form.assignedDate : null,
+        assignNote: form.hasHolder && form.employeeId ? form.assignNote : null,
+        assignAttachmentIds: form.hasHolder && form.employeeId ? form.assignAttachmentIds : null,
+        locationId: form.hasLocation ? (form.locationId || null) : null,
+        locationDate: form.hasLocation && form.locationId ? form.locationDate : null,
+        locationNote: form.hasLocation && form.locationId ? form.locationNote : null,
+        locationAttachmentIds: form.hasLocation && form.locationId ? form.locationAttachmentIds : null,
       }
       const response = await assetService.create(payload)
       response.success ? successCount++ : failedCodes.push(code)

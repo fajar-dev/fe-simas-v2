@@ -28,6 +28,9 @@ export interface Asset {
   createdAt: string
   updatedAt: string
   labels: AssetLabel[]
+  hasHolder: boolean
+  hasMaintenance: boolean
+  hasLocation: boolean
   activeHolder?: {
     id: number
     employeeId: number
@@ -70,6 +73,9 @@ export interface AssetPayload {
   image?: string | null
   subCategoryId: number
   labels?: AssetLabel[]
+  hasHolder?: boolean
+  hasMaintenance?: boolean
+  hasLocation?: boolean
 
   employeeId?: number | null
   assignedDate?: string | null

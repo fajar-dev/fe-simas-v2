@@ -199,7 +199,6 @@ const columns: TableColumn<Asset>[] = [
           src: emp.photo || undefined,
           alt: emp.name,
           class: 'bg-primary-50 text-primary-700',
-          loading: 'lazy'
         }),
         h('div', { class: 'flex flex-col min-w-0' }, [
           h('span', { class: 'text-neutral-900 font-semibold truncate' }, emp.name),

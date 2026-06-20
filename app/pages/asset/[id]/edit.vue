@@ -141,6 +141,39 @@
           </div>
         </div>
 
+        <!-- Feature Settings -->
+        <div class="mt-8 pt-6 border-t border-neutral-100 col-span-full">
+          <h3 class="text-md font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+            <UIcon name="i-lucide-toggle-left" class="w-5 h-5 text-primary-500" />
+            Asset Features
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
+              <div>
+                <span class="font-medium text-sm text-neutral-850 block">Asset Holder (Assignment)</span>
+                <p class="text-xs text-neutral-500">Allow assigning this asset to employees.</p>
+              </div>
+              <USwitch v-model="form.hasHolder" />
+            </div>
+
+            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
+              <div>
+                <span class="font-medium text-sm text-neutral-850 block">Asset Location History</span>
+                <p class="text-xs text-neutral-500">Track relocations and physical placement.</p>
+              </div>
+              <USwitch v-model="form.hasLocation" />
+            </div>
+
+            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
+              <div>
+                <span class="font-medium text-sm text-neutral-850 block">Asset Maintenance History</span>
+                <p class="text-xs text-neutral-500">Log repair, calibration, and service history.</p>
+              </div>
+              <USwitch v-model="form.hasMaintenance" />
+            </div>
+          </div>
+        </div>
+
         <!-- Footer Actions -->
         <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-neutral-100">
           <UButton type="submit" color="primary" :loading="isSubmitting" :disabled="isUploading || codeStatus === 'exists'">
@@ -211,6 +244,9 @@ const form = reactive<AssetPayload>({
   model: '',
   image: null,
   subCategoryId: undefined as unknown as number,
+  hasHolder: true,
+  hasMaintenance: true,
+  hasLocation: true,
 })
 
 watch(() => form.code, (newCode) => validateCode(newCode))
@@ -259,6 +295,9 @@ const fetchAssetDetails = async () => {
       form.brand = asset.brand ?? undefined
       form.model = asset.model ?? undefined
       form.image = asset.image
+      form.hasHolder = asset.hasHolder
+      form.hasMaintenance = asset.hasMaintenance
+      form.hasLocation = asset.hasLocation
 
       const catId = asset.subCategory?.category?.id
       if (catId) {
