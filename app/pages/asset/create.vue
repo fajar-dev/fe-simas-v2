@@ -136,16 +136,19 @@
                 No labels added yet
               </div>
               <div v-else class="space-y-2">
-                <div v-for="(label, index) in labels" :key="index" class="flex items-center gap-2">
-                  <UInputMenu
-                    v-model="label.key"
-                    :items="availableLabelKeys"
-                    autocomplete
-                    placeholder="Key"
-                    class="w-full"
-                  />
-                  <UInput v-model="label.value" placeholder="Value" class="w-full" />
-                  <UButton icon="i-lucide-trash" color="error" variant="ghost" size="sm" square @click="removeLabel(index)" />
+                <div v-for="(label, index) in labels" :key="index">
+                  <div class="flex items-center gap-2">
+                    <UInputMenu
+                      v-model="label.key"
+                      :items="availableLabelKeys"
+                      autocomplete
+                      placeholder="Key"
+                      class="w-full"
+                    />
+                    <UInput v-model="label.value" placeholder="Value" class="w-full" />
+                    <UButton icon="i-lucide-trash" color="error" variant="ghost" size="sm" square @click="removeLabel(index)" />
+                  </div>
+                  <p v-if="isDuplicateLabelKey(index)" class="text-xs text-red-500 mt-1">Duplicate key "{{ label.key }}"</p>
                 </div>
               </div>
             </div>
@@ -272,10 +275,10 @@
 
         <!-- Footer Actions -->
         <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-neutral-100">
-          <UButton color="primary" variant="outline" :loading="isSubmitting && submitMode === 'another'" :disabled="isUploading || isSubmitting || hasInvalidCodes" @click="submitMode = 'another'; submitForm()">
+          <UButton color="primary" variant="outline" :loading="isSubmitting && submitMode === 'another'" :disabled="isUploading || isSubmitting || hasInvalidCodes || hasDuplicateLabelKeys" @click="submitMode = 'another'; submitForm()">
             Save &amp; Create Another
           </UButton>
-          <UButton type="submit" color="primary" :loading="isSubmitting && submitMode === 'save'" :disabled="isUploading || isSubmitting || hasInvalidCodes" @click="submitMode = 'save'">
+          <UButton type="submit" color="primary" :loading="isSubmitting && submitMode === 'save'" :disabled="isUploading || isSubmitting || hasInvalidCodes || hasDuplicateLabelKeys" @click="submitMode = 'save'">
             Save Asset
           </UButton>
         </div>
@@ -317,6 +320,7 @@ const statusOptions = [
 const {
   toast, isUploading, previewUrl,
   labels, addLabel, removeLabel, getFilteredLabels,
+  isDuplicateLabelKey, hasDuplicateLabelKeys,
   availableLabelKeys, fetchLabelKeys,
   selectedCategoryId, categoryOptions, subCategoryOptions, isLoadingSubCategories,
   showAddCategory, showAddSubCategory,

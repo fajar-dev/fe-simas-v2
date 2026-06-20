@@ -34,6 +34,17 @@ export function useAssetForm() {
       .filter(l => l.key.trim() && l.value.trim())
       .map(l => ({ key: l.key.trim(), value: l.value.trim() }))
 
+  const isDuplicateLabelKey = (index: number) => {
+    const key = labels.value[index]?.key?.trim()
+    if (!key) return false
+    return labels.value.some((l, i) => i !== index && l.key.trim() === key)
+  }
+
+  const hasDuplicateLabelKeys = computed(() => {
+    const keys = labels.value.map(l => l.key.trim()).filter(k => k.length > 0)
+    return new Set(keys).size !== keys.length
+  })
+
   // ── Category & Sub Category ─────────────────────────────────────────────
   const selectedCategoryId = ref<number | undefined>(undefined)
   const categoryOptions = ref<{ label: string; value: number }[]>([])
@@ -138,6 +149,8 @@ export function useAssetForm() {
     addLabel,
     removeLabel,
     getFilteredLabels,
+    isDuplicateLabelKey,
+    hasDuplicateLabelKeys,
     availableLabelKeys,
     fetchLabelKeys,
     // Category
