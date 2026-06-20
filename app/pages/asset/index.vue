@@ -351,9 +351,9 @@ const baseColumns: TableColumn<Asset>[] = [
         const tooltipText = `${status.note} — ${formatDate(status.createdAt)}`
         return h('div', { class: 'flex items-center gap-1.5' }, [
           badge,
-          h(UTooltip, { text: tooltipText, content: { side: 'right' } }, {
-            default: () => h(UIcon, { name: 'i-lucide-info', class: 'w-3.5 h-3.5 text-neutral-400 cursor-help shrink-0' })
-          })
+          h('span', { title: tooltipText, class: 'cursor-help' }, [
+            h(UIcon, { name: 'i-lucide-info', class: 'w-3.5 h-3.5 text-neutral-400' })
+          ])
         ])
       }
       return badge

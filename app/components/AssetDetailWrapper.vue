@@ -114,9 +114,9 @@
                   {{ getStatusLabel(asset.lastStatus.status) }}
                 </UBadge>
                 <span v-else class="text-sm text-neutral-500">-</span>
-                <UTooltip v-if="asset.lastStatus?.note" :text="`${asset.lastStatus.note} — ${formatDate(asset.lastStatus.createdAt)}`" :content="{ side: 'right' }">
-                  <UIcon name="i-lucide-info" class="w-4 h-4 text-neutral-400 cursor-help" />
-                </UTooltip>
+                <span v-if="asset.lastStatus?.note" :title="`${asset.lastStatus.note} — ${formatDate(asset.lastStatus.createdAt)}`" class="cursor-help">
+                  <UIcon name="i-lucide-info" class="w-4 h-4 text-neutral-400" />
+                </span>
               </div>
             </div>
 
