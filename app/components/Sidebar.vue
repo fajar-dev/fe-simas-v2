@@ -216,18 +216,14 @@ const toast = useToast()
 async function onAssetScanned(code: string) {
   try {
     const res = await assetService.getAll(1, 1, code)
-    if (res.success && res.data.length > 0) {
-      const asset = res.data[0]
-      if (asset?.code === code) {
-        navigateTo(`/asset/${asset.id}`)
-        return
-      }
+    const asset = res.success && res.data.length > 0 ? res.data[0] : null
+    if (asset?.code === code) {
+      navigateTo(`/asset/${asset.id}`)
+    } else {
+      toast.add({ title: `Asset with code "${code}" not found`, color: 'error', icon: 'i-lucide-circle-x' })
     }
-    // If exact match not found, navigate to asset list with search
-    navigateTo(`/asset?q=${encodeURIComponent(code)}`)
-    toast.add({ title: `Searching for "${code}"...`, color: 'info', icon: 'i-lucide-search' })
   } catch {
-    navigateTo(`/asset?q=${encodeURIComponent(code)}`)
+    toast.add({ title: `Failed to search asset`, color: 'error', icon: 'i-lucide-circle-x' })
   }
 }
 </script>
