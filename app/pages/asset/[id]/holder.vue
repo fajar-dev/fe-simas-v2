@@ -154,7 +154,8 @@ const columns: TableColumn<AssetHolder>[] = [
         h(UAvatar, {
           src: employee.photo || undefined,
           alt: employee.name,
-          class: 'bg-primary-50 text-primary-700'
+          class: 'bg-primary-50 text-primary-700',
+          loading: 'lazy'
         }),
         h('div', { class: 'flex flex-col' }, [
           h('span', { class: 'text-neutral-900 font-semibold text-sm' }, employee.name),
@@ -242,7 +243,8 @@ const columns: TableColumn<AssetHolder>[] = [
             src: creator.photo || undefined,
             alt: creator.name,
             size: 'xs',
-            class: 'bg-primary-50 text-primary-700'
+            class: 'bg-primary-50 text-primary-700',
+            loading: 'lazy'
           }),
           h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
         ])
@@ -262,7 +264,8 @@ const columns: TableColumn<AssetHolder>[] = [
             src: returner.photo || undefined,
             alt: returner.name,
             size: 'xs',
-            class: 'bg-primary-50 text-primary-700'
+            class: 'bg-primary-50 text-primary-700',
+            loading: 'lazy'
           }),
           h('span', { class: 'text-neutral-700 font-medium text-sm' }, returner.name)
         ])

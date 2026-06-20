@@ -140,7 +140,7 @@
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Assignment Section -->
-            <div class="p-4 rounded-xl border border-neutral-100 bg-neutral-50/50 space-y-4">
+            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 space-y-4">
               <div class="font-medium text-sm text-neutral-850 flex items-center gap-1.5 border-b border-neutral-100 pb-2">
                 <UIcon name="i-lucide-user-plus" class="w-4 h-4 text-primary-500" />
                 Assign to Employee
@@ -149,6 +149,7 @@
                 <USelectMenu
                   v-model="selectedEmployee"
                   :items="employeeOptions"
+                  :avatar="selectedEmployee?.avatar"
                   searchable
                   searchable-placeholder="Search employees..."
                   placeholder="Select employee to assign"
@@ -170,7 +171,7 @@
             </div>
 
             <!-- Location Section -->
-            <div class="p-4 rounded-xl border border-neutral-100 bg-neutral-50/50 space-y-4">
+            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 space-y-4">
               <div class="font-medium text-sm text-neutral-850 flex items-center gap-1.5 border-b border-neutral-100 pb-2">
                 <UIcon name="i-lucide-map-pin" class="w-4 h-4 text-primary-500" />
                 Set Initial Location
@@ -242,6 +243,7 @@ import { employeeService } from '~/services/employee-service'
 import { branchService } from '~/services/branch-service'
 import { locationService } from '~/services/location-service'
 import type { Attachment } from '~/types/attachment'
+import type { SelectMenuItem } from '@nuxt/ui'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -391,12 +393,16 @@ const hasInvalidCodes = computed(() => {
 const isLoadingEmployees = ref(false)
 const isLoadingBranches = ref(false)
 const isLoadingLocations = ref(false)
-
-const employeeOptions = ref<{ label: string; value: number }[]>([])
+const employeeOptions = ref<{
+  label: string
+  value: number
+  avatar?: { src: string; alt: string; loading?: 'lazy' | 'eager' }
+  photo?: { src: string; alt: string; loading?: 'lazy' | 'eager' }
+}[]>([])
 const branchOptions = ref<{ label: string; value: number }[]>([])
 const filteredLocationOptions = ref<{ label: string; value: number }[]>([])
 
-const selectedEmployee = ref<{ label: string; value: number } | undefined>(undefined)
+const selectedEmployee = ref<{ label: string; value: number; avatar?: any; photo?: any } | undefined>(undefined)
 const selectedBranch = ref<{ label: string; value: number } | undefined>(undefined)
 const selectedLocation = ref<{ label: string; value: number } | undefined>(undefined)
 const showAddLocation = ref(false)
@@ -412,7 +418,17 @@ const loadEmployees = async () => {
     if (res.success && res.data) {
       employeeOptions.value = res.data.map(e => ({
         label: `${e.name} (${e.employeeId})`,
-        value: e.id
+        value: e.id,
+        photo: e.photo ? {
+          src: e.photo,
+          alt: e.name,
+          loading: 'lazy' as const
+        } : undefined,
+        avatar: e.photo ? {
+          src: e.photo,
+          alt: e.name,
+          loading: 'lazy' as const
+        } : undefined
       }))
     }
   } finally {

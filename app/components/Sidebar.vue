@@ -163,6 +163,7 @@
             :alt="authState.user?.name"
             size="sm"
             class="ring-2 ring-primary/10 shrink-0"
+            loading="lazy"
           />
           <div v-if="!isCollapsed" class="min-w-0 flex-1 text-left">
             <h2 class="text-sm font-medium truncate text-neutral-900">

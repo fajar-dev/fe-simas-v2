@@ -123,7 +123,8 @@ const columns: TableColumn<User>[] = [
           src: photo || undefined, 
           alt: name, 
           size: 'lg',
-          class: 'bg-primary-50 text-primary-700'
+          class: 'bg-primary-50 text-primary-700',
+          loading: 'lazy'
         }),
         h('div', { class: 'flex flex-col' }, [
           h('span', { class: 'font-medium text-neutral-900' }, name),

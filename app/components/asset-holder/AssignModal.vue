@@ -29,6 +29,7 @@
           <USelectMenu
             v-model="selectedEmployee"
             :items="employeeOptions"
+            :avatar="selectedEmployee?.avatar"
             searchable
             searchable-placeholder="Search employees by name or ID..."
             placeholder="Select employee"
@@ -76,6 +77,7 @@ import { assetHolderService } from '~/services/asset-holder-service'
 import { employeeService } from '~/services/employee-service'
 import { assetService } from '~/services/asset-service'
 import type { Attachment } from '~/types/attachment'
+import type { SelectMenuItem } from '@nuxt/ui'
 
 const open = defineModel<boolean>({ default: false })
 const props = defineProps<{
@@ -91,10 +93,15 @@ const isLoadingAssets = ref(false)
 const isLoadingEmployees = ref(false)
 
 const assetOptions = ref<{ label: string; value: number }[]>([])
-const employeeOptions = ref<{ label: string; value: number }[]>([])
+const employeeOptions = ref<{
+  label: string
+  value: number
+  avatar?: { src: string; alt: string; loading?: 'lazy' | 'eager' }
+  photo?: { src: string; alt: string; loading?: 'lazy' | 'eager' }
+}[]>([])
 
 const selectedAsset = ref<{ label: string; value: number } | undefined>(undefined)
-const selectedEmployee = ref<{ label: string; value: number } | undefined>(undefined)
+const selectedEmployee = ref<{ label: string; value: number; avatar?: any; photo?: any } | undefined>(undefined)
 const uploadedAttachments = ref<Attachment[]>([])
 
 const schema = z.object({
@@ -152,7 +159,17 @@ const loadEmployees = async () => {
     if (res.success && res.data) {
       employeeOptions.value = res.data.map(e => ({
         label: `${e.name} (${e.employeeId})`,
-        value: e.id
+        value: e.id,
+        photo: e.photo ? {
+          src: e.photo,
+          alt: e.name,
+          loading: 'lazy' as const
+        } : undefined,
+        avatar: e.photo ? {
+          src: e.photo,
+          alt: e.name,
+          loading: 'lazy' as const
+        } : undefined
       }))
     }
   } finally {

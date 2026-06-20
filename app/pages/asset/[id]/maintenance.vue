@@ -194,7 +194,8 @@ const columns: TableColumn<AssetMaintenance>[] = [
             src: creator.photo || undefined,
             alt: creator.name,
             size: 'xs',
-            class: 'bg-primary-50 text-primary-700'
+            class: 'bg-primary-50 text-primary-700',
+            loading: 'lazy'
           }),
           h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
         ])
