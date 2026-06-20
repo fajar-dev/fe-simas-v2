@@ -21,12 +21,11 @@
       table-class="min-w-[1200px]"
     >
       <template #actions>
-        <div class="flex gap-2">
+        <div class="flex items-center gap-2">
           <UButton
             color="primary"
             variant="solid"
             icon="i-lucide-plus"
-            class="w-full lg:w-auto justify-center"
             to="/asset/create"
           >
             Add Asset
@@ -35,7 +34,7 @@
             color="neutral"
             variant="subtle"
             icon="i-lucide-filter"
-            class="w-full lg:w-auto justify-center relative"
+            class="relative"
             @click="showFilterDrawer = true"
           >
             Filter
@@ -54,7 +53,6 @@
               color="neutral"
               variant="outline"
               icon="i-lucide-table-properties"
-              class="w-full lg:w-auto justify-center"
             />
             
             <template #content>
@@ -89,6 +87,14 @@
       :item-name="selectedAsset?.name" 
       :loading="isDeleting"
       @confirm="handleDelete" 
+    />
+
+    <!-- Change Status Modal -->
+    <AssetStatusUpdateModal
+      v-if="selectedAsset"
+      v-model="showStatusModal"
+      :asset-id="selectedAsset.id"
+      @created="fetchAssets"
     />
 
     <!-- Lightbox Modal -->
@@ -161,6 +167,7 @@ const {
 const selectedAsset = ref<Asset | null>(null)
 const showDeleteModal = ref(false)
 const isDeleting = ref(false)
+const showStatusModal = ref(false)
 const showFilterDrawer = ref(false)
 
 const activeFilterCount = computed(() => Object.keys(activeFilters.value).length)
@@ -395,6 +402,14 @@ function getRowItems(row: Row<Asset>) {
       icon: 'i-lucide-edit',
       onSelect() {
         navigateTo(`/asset/${row.original.id}/edit`)
+      }
+    },
+    {
+      label: 'Change Status',
+      icon: 'i-lucide-arrow-left-right',
+      onSelect() {
+        selectedAsset.value = row.original
+        showStatusModal.value = true
       }
     },
     {
