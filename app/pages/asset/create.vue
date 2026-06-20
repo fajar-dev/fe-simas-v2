@@ -132,76 +132,73 @@
           </div>
         </div>
 
-        <!-- Immediate Assignment and Location Options (Only on Create) -->
-        <div class="border-t border-neutral-100 pt-6 mt-6 space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Optional Initial Assignment & Location -->
+        <div class="mt-8 pt-6 border-t border-neutral-100 col-span-full">
+          <h3 class="text-md font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+            <UIcon name="i-lucide-settings-2" class="w-5 h-5 text-primary-500" />
+            Initial Assignment &amp; Location (Optional)
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Assignment Section -->
-            <div class="space-y-4 border border-neutral-100 rounded-xl p-4 bg-neutral-50/50">
-              <div class="flex items-center gap-2">
-                <UCheckbox v-model="shouldAssign" label="Assign Asset Immediately" />
+            <div class="p-4 rounded-xl border border-neutral-100 bg-neutral-50/50 space-y-4">
+              <div class="font-medium text-sm text-neutral-850 flex items-center gap-1.5 border-b border-neutral-100 pb-2">
+                <UIcon name="i-lucide-user-plus" class="w-4 h-4 text-primary-500" />
+                Assign to Employee
               </div>
-              <div v-if="shouldAssign" class="space-y-4 pt-2">
-                <UFormField label="Employee" name="employeeId" required>
-                  <USelectMenu
-                    v-model="selectedEmployee"
-                    :items="employeeOptions"
-                    searchable
-                    searchable-placeholder="Search employees by name or ID..."
-                    placeholder="Select employee"
-                    :loading="isLoadingEmployees"
-                    class="w-full bg-white"
-                  />
-                </UFormField>
-
-                <UFormField label="Assignment Date" name="assignedDate" required>
-                  <UInput type="datetime-local" v-model="form.assignedDate" class="w-full bg-white" />
-                </UFormField>
-
-                <UFormField label="Assignment Notes" name="assignNote">
-                  <UTextarea v-model="form.assignNote" placeholder="Enter assignment details or notes (optional)" class="w-full bg-white" :rows="2" />
-                </UFormField>
-              </div>
+              <UFormField label="Employee" name="employeeId">
+                <USelectMenu
+                  v-model="selectedEmployee"
+                  :items="employeeOptions"
+                  searchable
+                  searchable-placeholder="Search employees..."
+                  placeholder="Select employee to assign"
+                  :loading="isLoadingEmployees"
+                  class="w-full"
+                />
+              </UFormField>
+              <UFormField v-if="form.employeeId" label="Assignment Date" name="assignedDate">
+                <UInput type="datetime-local" v-model="form.assignedDate" class="w-full" />
+              </UFormField>
+              <UFormField v-if="form.employeeId" label="Assignment Notes" name="assignNote">
+                <UTextarea v-model="form.assignNote" placeholder="Enter assignment notes..." class="w-full" :rows="2" />
+              </UFormField>
             </div>
 
-            <!-- Relocation Section -->
-            <div class="space-y-4 border border-neutral-100 rounded-xl p-4 bg-neutral-50/50">
-              <div class="flex items-center gap-2">
-                <UCheckbox v-model="shouldRelocate" label="Set Location Immediately" />
+            <!-- Location Section -->
+            <div class="p-4 rounded-xl border border-neutral-100 bg-neutral-50/50 space-y-4">
+              <div class="font-medium text-sm text-neutral-850 flex items-center gap-1.5 border-b border-neutral-100 pb-2">
+                <UIcon name="i-lucide-map-pin" class="w-4 h-4 text-primary-500" />
+                Set Initial Location
               </div>
-              <div v-if="shouldRelocate" class="space-y-4 pt-2">
-                <UFormField label="Branch" name="branchId" required>
-                  <USelectMenu
-                    v-model="selectedBranch"
-                    :items="branchOptions"
-                    searchable
-                    searchable-placeholder="Search branches..."
-                    placeholder="Select branch"
-                    :loading="isLoadingBranches"
-                    class="w-full bg-white"
-                  />
-                </UFormField>
-
-                <UFormField label="New Location" name="locationId" required>
-                  <USelectMenu
-                    v-model="selectedLocation"
-                    :items="filteredLocationOptions"
-                    searchable
-                    searchable-placeholder="Search locations..."
-                    :placeholder="selectedBranch ? 'Select location' : 'Select branch first'"
-                    :disabled="!selectedBranch"
-                    :loading="isLoadingLocations"
-                    class="w-full bg-white"
-                  />
-                </UFormField>
-
-                <UFormField label="Relocation Date" name="locationDate" required>
-                  <UInput type="datetime-local" v-model="form.locationDate" class="w-full bg-white" />
-                </UFormField>
-
-                <UFormField label="Relocation Notes" name="locationNote">
-                  <UTextarea v-model="form.locationNote" placeholder="Enter relocation reasons or details (optional)" class="w-full bg-white" :rows="2" />
-                </UFormField>
-              </div>
+              <UFormField label="Branch" name="branchId">
+                <USelectMenu
+                  v-model="selectedBranch"
+                  :items="branchOptions"
+                  searchable
+                  searchable-placeholder="Search branches..."
+                  placeholder="Select branch"
+                  :loading="isLoadingBranches"
+                  class="w-full"
+                />
+              </UFormField>
+              <UFormField label="Location" name="locationId">
+                <USelectMenu
+                  v-model="selectedLocation"
+                  :items="filteredLocationOptions"
+                  searchable
+                  searchable-placeholder="Search locations..."
+                  :placeholder="selectedBranch ? 'Select location' : 'Select branch first'"
+                  :disabled="!selectedBranch"
+                  :loading="isLoadingLocations"
+                  class="w-full"
+                />
+              </UFormField>
+              <UFormField v-if="form.locationId" label="Relocation Date" name="locationDate">
+                <UInput type="datetime-local" v-model="form.locationDate" class="w-full" />
+              </UFormField>
+              <UFormField v-if="form.locationId" label="Relocation Notes" name="locationNote">
+                <UTextarea v-model="form.locationNote" placeholder="Enter relocation reasons..." class="w-full" :rows="2" />
+              </UFormField>
             </div>
           </div>
         </div>
@@ -224,13 +221,12 @@
 </template>
 
 <script setup lang="ts">
-import { z } from 'zod'
 import { assetService } from '~/services/asset-service'
 import { assetSchema } from '~/composables/useAssetForm'
+import type { AssetPayload } from '~/types/asset'
 import { employeeService } from '~/services/employee-service'
 import { branchService } from '~/services/branch-service'
 import { locationService } from '~/services/location-service'
-import type { AssetPayload } from '~/types/asset'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -249,28 +245,21 @@ const isSubmitting = ref(false)
 const submitMode = ref<'save' | 'another'>('save')
 
 // ── Schema & Form ───────────────────────────────────────────────────────────
-const shouldAssign = ref(false)
-const shouldRelocate = ref(false)
+const schema = assetSchema.pick({ categoryId: true, name: true, subCategoryId: true, brand: true, model: true, price: true, purchaseDate: true, description: true })
 
-const baseSchema = assetSchema.pick({ categoryId: true, name: true, subCategoryId: true, brand: true, model: true, price: true, purchaseDate: true, description: true })
+const getLocalDatetimeString = () => {
+  return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+}
 
-const schema = computed(() => {
-  const extension: Record<string, any> = {}
-  if (shouldAssign.value) {
-    extension.employeeId = z.number().int().positive('Employee is required')
-    extension.assignedDate = z.string().min(1, 'Assignment date is required')
-    extension.assignNote = z.string().optional().or(z.literal(''))
-  }
-  if (shouldRelocate.value) {
-    extension.branchId = z.number().int().positive('Branch is required')
-    extension.locationId = z.number().int().positive('Location is required')
-    extension.locationDate = z.string().min(1, 'Relocation date is required')
-    extension.locationNote = z.string().optional().or(z.literal(''))
-  }
-  return baseSchema.extend(extension)
-})
-
-const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number; branchId?: number }>({
+const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number } & {
+  employeeId?: number | null
+  assignedDate?: string
+  assignNote?: string
+  branchId?: number | null
+  locationId?: number | null
+  locationDate?: string
+  locationNote?: string
+}>({
   categoryId: undefined as unknown as number,
   name: '',
   description: '',
@@ -280,128 +269,13 @@ const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number; branchI
   model: '',
   image: null,
   subCategoryId: undefined as unknown as number,
-  
-  // Assignment fields
-  employeeId: undefined as unknown as number,
-  assignedDate: '',
+  employeeId: null,
+  assignedDate: getLocalDatetimeString(),
   assignNote: '',
-  
-  // Relocation fields
-  branchId: undefined as unknown as number,
-  locationId: undefined as unknown as number,
-  locationDate: '',
+  branchId: null,
+  locationId: null,
+  locationDate: getLocalDatetimeString(),
   locationNote: '',
-})
-
-// ── Immediate Assign & Location Loaders ──────────────────────────────────────
-const isLoadingEmployees = ref(false)
-const isLoadingBranches = ref(false)
-const isLoadingLocations = ref(false)
-
-const employeeOptions = ref<{ label: string; value: number }[]>([])
-const branchOptions = ref<{ label: string; value: number }[]>([])
-const filteredLocationOptions = ref<{ label: string; value: number }[]>([])
-
-const selectedEmployee = ref<{ label: string; value: number } | undefined>(undefined)
-const selectedBranch = ref<{ label: string; value: number } | undefined>(undefined)
-const selectedLocation = ref<{ label: string; value: number } | undefined>(undefined)
-
-const getLocalDatetimeString = () => {
-  return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
-}
-
-const loadEmployees = async () => {
-  if (employeeOptions.value.length > 0) return
-  isLoadingEmployees.value = true
-  try {
-    const res = await employeeService.getAll(1, 500)
-    if (res.success && res.data) {
-      employeeOptions.value = res.data.map(e => ({
-        label: `${e.name} (${e.employeeId})`,
-        value: e.id
-      }))
-    }
-  } finally {
-    isLoadingEmployees.value = false
-  }
-}
-
-const loadBranches = async () => {
-  if (branchOptions.value.length > 0) return
-  isLoadingBranches.value = true
-  try {
-    const res = await branchService.getAll(1, 200)
-    if (res.success && res.data) {
-      branchOptions.value = res.data.map(b => ({
-        label: `${b.code} - ${b.name}`,
-        value: b.id
-      }))
-    }
-  } finally {
-    isLoadingBranches.value = false
-  }
-}
-
-const loadLocationsForBranch = async (branchId: number) => {
-  isLoadingLocations.value = true
-  try {
-    const res = await locationService.getByBranchId(branchId)
-    if (res.success && res.data) {
-      filteredLocationOptions.value = res.data.map(l => ({
-        label: l.name,
-        value: l.id
-      }))
-    }
-  } finally {
-    isLoadingLocations.value = false
-  }
-}
-
-watch(selectedEmployee, (val) => {
-  if (val) form.employeeId = val.value
-})
-
-watch(selectedBranch, async (val) => {
-  if (val) {
-    form.branchId = val.value
-    await loadLocationsForBranch(val.value)
-  } else {
-    form.branchId = undefined
-    filteredLocationOptions.value = []
-  }
-  selectedLocation.value = undefined
-  form.locationId = undefined as unknown as number
-})
-
-watch(selectedLocation, (val) => {
-  if (val) form.locationId = val.value
-})
-
-watch(shouldAssign, (val) => {
-  if (val) {
-    form.assignedDate = getLocalDatetimeString()
-    loadEmployees()
-  } else {
-    form.employeeId = undefined as unknown as number
-    form.assignedDate = ''
-    form.assignNote = ''
-    selectedEmployee.value = undefined
-  }
-})
-
-watch(shouldRelocate, (val) => {
-  if (val) {
-    form.locationDate = getLocalDatetimeString()
-    loadBranches()
-  } else {
-    form.branchId = undefined
-    form.locationId = undefined as unknown as number
-    form.locationDate = ''
-    form.locationNote = ''
-    selectedBranch.value = undefined
-    selectedLocation.value = undefined
-    filteredLocationOptions.value = []
-  }
 })
 
 const purchaseDateVal = makePurchaseDateComputed(form)
@@ -485,6 +359,84 @@ const hasInvalidCodes = computed(() => {
   return new Set(trimmed).size !== trimmed.length || Object.values(codeStatuses.value).some(s => s === 'exists')
 })
 
+// ── Assignment & Location Selects ───────────────────────────────────────────
+const isLoadingEmployees = ref(false)
+const isLoadingBranches = ref(false)
+const isLoadingLocations = ref(false)
+
+const employeeOptions = ref<{ label: string; value: number }[]>([])
+const branchOptions = ref<{ label: string; value: number }[]>([])
+const filteredLocationOptions = ref<{ label: string; value: number }[]>([])
+
+const selectedEmployee = ref<{ label: string; value: number } | undefined>(undefined)
+const selectedBranch = ref<{ label: string; value: number } | undefined>(undefined)
+const selectedLocation = ref<{ label: string; value: number } | undefined>(undefined)
+
+watch(selectedEmployee, (val) => {
+  form.employeeId = val?.value ?? null
+})
+
+const loadEmployees = async () => {
+  isLoadingEmployees.value = true
+  try {
+    const res = await employeeService.getAll(1, 500)
+    if (res.success && res.data) {
+      employeeOptions.value = res.data.map(e => ({
+        label: `${e.name} (${e.employeeId})`,
+        value: e.id
+      }))
+    }
+  } finally {
+    isLoadingEmployees.value = false
+  }
+}
+
+const loadBranches = async () => {
+  isLoadingBranches.value = true
+  try {
+    const res = await branchService.getAll(1, 200)
+    if (res.success && res.data) {
+      branchOptions.value = res.data.map(b => ({
+        label: `${b.code} - ${b.name}`,
+        value: b.id
+      }))
+    }
+  } finally {
+    isLoadingBranches.value = false
+  }
+}
+
+const loadLocationsForBranch = async (branchId: number) => {
+  isLoadingLocations.value = true
+  try {
+    const res = await locationService.getByBranchId(branchId)
+    if (res.success && res.data) {
+      filteredLocationOptions.value = res.data.map(l => ({
+        label: l.name,
+        value: l.id
+      }))
+    }
+  } finally {
+    isLoadingLocations.value = false
+  }
+}
+
+watch(selectedBranch, async (val) => {
+  if (val) {
+    form.branchId = val.value
+    await loadLocationsForBranch(val.value)
+  } else {
+    form.branchId = null
+    filteredLocationOptions.value = []
+  }
+  selectedLocation.value = undefined
+  form.locationId = null
+})
+
+watch(selectedLocation, (val) => {
+  form.locationId = val?.value ?? null
+})
+
 // ── Reset ───────────────────────────────────────────────────────────────────
 const resetForm = () => {
   codes.value = ['']
@@ -493,18 +445,15 @@ const resetForm = () => {
   Object.assign(form, {
     categoryId: undefined, name: '', description: '', price: undefined,
     purchaseDate: '', brand: '', model: '', image: null, subCategoryId: undefined,
-    employeeId: undefined, assignedDate: '', assignNote: '',
-    branchId: undefined, locationId: undefined, locationDate: '', locationNote: '',
+    employeeId: null, assignedDate: getLocalDatetimeString(), assignNote: '',
+    branchId: null, locationId: null, locationDate: getLocalDatetimeString(), locationNote: '',
   })
   selectedCategoryId.value = undefined
-  previewUrl.value = null
-  labels.value = []
-  shouldAssign.value = false
-  shouldRelocate.value = false
   selectedEmployee.value = undefined
   selectedBranch.value = undefined
   selectedLocation.value = undefined
-  filteredLocationOptions.value = []
+  previewUrl.value = null
+  labels.value = []
 }
 
 // ── Submit ──────────────────────────────────────────────────────────────────
@@ -535,20 +484,13 @@ const handleSubmit = async () => {
         name: form.name, description: form.description, price: form.price,
         purchaseDate: form.purchaseDate, brand: form.brand, model: form.model,
         image: form.image, subCategoryId: form.subCategoryId, labels: filteredLabels,
+        employeeId: form.employeeId || null,
+        assignedDate: form.employeeId ? form.assignedDate : null,
+        assignNote: form.employeeId ? form.assignNote : null,
+        locationId: form.locationId || null,
+        locationDate: form.locationId ? form.locationDate : null,
+        locationNote: form.locationId ? form.locationNote : null,
       }
-
-      if (shouldAssign.value) {
-        payload.employeeId = form.employeeId
-        payload.assignedDate = form.assignedDate
-        payload.assignNote = form.assignNote || undefined
-      }
-
-      if (shouldRelocate.value) {
-        payload.locationId = form.locationId
-        payload.locationDate = form.locationDate
-        payload.locationNote = form.locationNote || undefined
-      }
-
       const response = await assetService.create(payload)
       response.success ? successCount++ : failedCodes.push(code)
     }
@@ -566,5 +508,9 @@ const handleSubmit = async () => {
   }
 }
 
-onMounted(() => fetchCategories())
+onMounted(() => {
+  fetchCategories()
+  loadEmployees()
+  loadBranches()
+})
 </script>
