@@ -74,7 +74,7 @@ const {
   sortBy,
   order,
   sortHeader
-} = useTableQuery(() => fetchAssets())
+} = useTableQuery(() => fetchAssets(), { syncUrl: true })
 const selectedAsset = ref<Asset | null>(null)
 const showDeleteModal = ref(false)
 const isDeleting = ref(false)

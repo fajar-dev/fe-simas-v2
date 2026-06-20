@@ -90,7 +90,7 @@ const {
   sortBy,
   order,
   sortHeader
-} = useTableQuery(() => fetchHistory(), 'createdAt', 'DESC')
+} = useTableQuery(() => fetchHistory(), { defaultSortBy: 'createdAt', defaultOrder: 'DESC' })
 
 // Pagination meta
 const meta = reactive({

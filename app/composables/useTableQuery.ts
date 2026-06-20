@@ -1,12 +1,40 @@
 import { UIcon } from '#components'
 
-export function useTableQuery(onQueryChange: () => void, defaultSortBy: string = '', defaultOrder: 'ASC' | 'DESC' = 'DESC') {
-  const search = ref('')
+interface TableQueryOptions {
+  defaultSortBy?: string
+  defaultOrder?: 'ASC' | 'DESC'
+  syncUrl?: boolean
+}
+
+export function useTableQuery(onQueryChange: () => void, options: TableQueryOptions = {}) {
+  const { defaultSortBy = '', defaultOrder = 'DESC', syncUrl = false } = options
+
+  const route = syncUrl ? useRoute() : null
+  const router = syncUrl ? useRouter() : null
+
+  // Initialize from URL query params if syncUrl enabled
+  const search = ref(syncUrl ? ((route!.query.q as string) || '') : '')
   const limitOptions = ref([10, 25, 50, 100])
-  const perPage = ref(10)
-  const page = ref(1)
-  const sortBy = ref(defaultSortBy)
-  const order = ref(defaultOrder)
+  const perPage = ref(syncUrl ? (Number(route!.query.perPage) || 10) : 10)
+  const page = ref(syncUrl ? (Number(route!.query.page) || 1) : 1)
+  const sortBy = ref(syncUrl ? ((route!.query.sortBy as string) || defaultSortBy) : defaultSortBy)
+  const order = ref<'ASC' | 'DESC'>(
+    syncUrl
+      ? ((route!.query.order as string)?.toUpperCase() === 'ASC' ? 'ASC' : (route!.query.order as string)?.toUpperCase() === 'DESC' ? 'DESC' : defaultOrder)
+      : defaultOrder
+  )
+
+  // Sync state to URL query params (only if enabled)
+  const syncToUrl = () => {
+    if (!syncUrl || !router) return
+    const query: Record<string, string> = {}
+    if (page.value > 1) query.page = String(page.value)
+    if (perPage.value !== 10) query.perPage = String(perPage.value)
+    if (search.value) query.q = search.value
+    if (sortBy.value) query.sortBy = sortBy.value
+    if (sortBy.value && order.value) query.order = order.value
+    router.replace({ query })
+  }
 
   const toggleSort = (column: string) => {
     if (sortBy.value === column) {
@@ -19,6 +47,7 @@ export function useTableQuery(onQueryChange: () => void, defaultSortBy: string =
 
   // Watch for pagination and sorting changes
   watch([page, perPage, sortBy, order], () => {
+    syncToUrl()
     onQueryChange()
   })
 
@@ -28,6 +57,7 @@ export function useTableQuery(onQueryChange: () => void, defaultSortBy: string =
     clearTimeout(searchTimeout)
     searchTimeout = setTimeout(() => {
       page.value = 1
+      syncToUrl()
       onQueryChange()
     }, 300)
   })
