@@ -44,7 +44,7 @@
             />
           </UTooltip>
         </div>
-        <ScanAssetModal v-model="showScanner" />
+        <AssetScanModal v-model="showScanner" />
         <div v-for="group in navGroups" :key="group.title" class="space-y-1">
           <!-- Group Title -->
           <h3
