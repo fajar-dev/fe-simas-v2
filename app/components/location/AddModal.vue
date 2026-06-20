@@ -51,6 +51,10 @@ import { locationService } from '~/services/location-service'
 import { branchService } from '~/services/branch-service'
 import type { LocationPayload } from '~/types/location'
 
+const props = defineProps<{
+  defaultBranchId?: number
+}>()
+
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ created: [] }>()
 const toast = useToast()
@@ -80,7 +84,7 @@ const form = reactive<LocationPayload>({
 const resetForm = () => {
   form.name = ''
   form.description = ''
-  form.branchId = undefined as unknown as number
+  form.branchId = props.defaultBranchId || (undefined as unknown as number)
 }
 
 const fetchBranches = async () => {

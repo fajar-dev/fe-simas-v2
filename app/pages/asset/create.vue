@@ -187,16 +187,19 @@
                 />
               </UFormField>
               <UFormField label="Location" name="locationId">
-                <USelectMenu
-                  v-model="selectedLocation"
-                  :items="filteredLocationOptions"
-                  searchable
-                  searchable-placeholder="Search locations..."
-                  :placeholder="selectedBranch ? 'Select location' : 'Select branch first'"
-                  :disabled="!selectedBranch"
-                  :loading="isLoadingLocations"
-                  class="w-full"
-                />
+                <div class="flex items-center gap-2">
+                  <USelectMenu
+                    v-model="selectedLocation"
+                    :items="filteredLocationOptions"
+                    searchable
+                    searchable-placeholder="Search locations..."
+                    :placeholder="selectedBranch ? 'Select location' : 'Select branch first'"
+                    :disabled="!selectedBranch"
+                    :loading="isLoadingLocations"
+                    class="w-full"
+                  />
+                  <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square :disabled="!selectedBranch" @click="showAddLocation = true" />
+                </div>
               </UFormField>
               <UFormField v-if="form.locationId" label="Relocation Date" name="locationDate">
                 <UInput type="datetime-local" v-model="form.locationDate" class="w-full" />
@@ -227,6 +230,7 @@
 
     <CategoryAddModal v-model="showAddCategory" @created="onCategoryCreated" />
     <SubCategoryAddModal v-model="showAddSubCategory" @created="() => onSubCategoryCreated(form)" />
+    <LocationAddModal v-model="showAddLocation" :default-branch-id="form.branchId || undefined" @created="onLocationCreated" />
   </div>
 </template>
 
@@ -395,6 +399,7 @@ const filteredLocationOptions = ref<{ label: string; value: number }[]>([])
 const selectedEmployee = ref<{ label: string; value: number } | undefined>(undefined)
 const selectedBranch = ref<{ label: string; value: number } | undefined>(undefined)
 const selectedLocation = ref<{ label: string; value: number } | undefined>(undefined)
+const showAddLocation = ref(false)
 
 watch(selectedEmployee, (val) => {
   form.employeeId = val?.value ?? null
@@ -460,6 +465,16 @@ watch(selectedBranch, async (val) => {
 watch(selectedLocation, (val) => {
   form.locationId = val?.value ?? null
 })
+
+const onLocationCreated = async () => {
+  if (!form.branchId) return
+  await loadLocationsForBranch(Number(form.branchId))
+  const last = filteredLocationOptions.value[filteredLocationOptions.value.length - 1]
+  if (last) {
+    selectedLocation.value = last
+    form.locationId = last.value
+  }
+}
 
 // ── Reset ───────────────────────────────────────────────────────────────────
 const resetForm = () => {
