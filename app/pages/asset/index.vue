@@ -302,10 +302,7 @@ const baseColumns: TableColumn<Asset>[] = [
         ])
       ])
     }
-  }
-]
-
-const trailingColumns: TableColumn<Asset>[] = [
+  },
   {
     accessorKey: 'price',
     header: sortHeader('Price', 'price'),
@@ -325,7 +322,10 @@ const trailingColumns: TableColumn<Asset>[] = [
         h('span', { class: 'text-xs text-neutral-500' }, date)
       ])
     }
-  },
+  }
+]
+
+const trailingColumns: TableColumn<Asset>[] = [
   {
     id: 'actions',
     header: 'Action',
