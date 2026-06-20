@@ -1,6 +1,7 @@
 export interface AssetLog {
   id: number
   assetId: number
+  module: string
   action: string
   description: string
   createdAt: string

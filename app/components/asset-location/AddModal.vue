@@ -95,6 +95,7 @@ import type { Attachment } from '~/types/attachment'
 const open = defineModel<boolean>({ default: false })
 const props = defineProps<{
   lockAssetId?: number
+  excludeLocationId?: number
 }>()
 
 const emit = defineEmits<{ created: [] }>()
@@ -146,10 +147,12 @@ const loadLocationsForBranch = async (branchId: number) => {
   try {
     const res = await locationService.getByBranchId(branchId)
     if (res.success && res.data) {
-      filteredLocationOptions.value = res.data.map(l => ({
-        label: l.name,
-        value: l.id
-      }))
+      filteredLocationOptions.value = res.data
+        .filter(l => l.id !== props.excludeLocationId)
+        .map(l => ({
+          label: l.name,
+          value: l.id
+        }))
     }
   } finally {
     isLoadingLocations.value = false

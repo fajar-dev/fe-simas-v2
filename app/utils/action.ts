@@ -1,29 +1,31 @@
 export type BadgeColor = 'success' | 'neutral' | 'primary' | 'warning' | 'error'
 
-export const getActionIcon = (action: string) => {
+export const getActionIcon = (module: string, action: string) => {
+  const key = `${module}:${action}`
   const icons: Record<string, string> = {
-    create: 'i-lucide-plus',
-    update: 'i-lucide-edit-3',
-    assign: 'i-lucide-user-plus',
-    return: 'i-lucide-user-minus',
-    relocate: 'i-lucide-map-pin',
-    maintenance_create: 'i-lucide-wrench',
-    maintenance_update: 'i-lucide-refresh-cw',
-    maintenance_delete: 'i-lucide-trash',
+    'asset:create': 'i-lucide-plus',
+    'asset:update': 'i-lucide-edit-3',
+    'holder:assign': 'i-lucide-user-plus',
+    'holder:return': 'i-lucide-user-minus',
+    'location:relocate': 'i-lucide-map-pin',
+    'maintenance:create': 'i-lucide-wrench',
+    'maintenance:update': 'i-lucide-refresh-cw',
+    'maintenance:delete': 'i-lucide-trash',
   }
-  return icons[action] || 'i-lucide-info'
+  return icons[key] || 'i-lucide-info'
 }
 
-export const getActionTheme = (action: string): { color: BadgeColor; label: string } => {
+export const getActionTheme = (module: string, action: string): { color: BadgeColor; label: string } => {
+  const key = `${module}:${action}`
   const themes: Record<string, { color: BadgeColor; label: string }> = {
-    create: { color: 'success', label: 'Create' },
-    update: { color: 'neutral', label: 'Update' },
-    assign: { color: 'primary', label: 'Assign' },
-    return: { color: 'warning', label: 'Return' },
-    relocate: { color: 'primary', label: 'Relocate' },
-    maintenance_create: { color: 'success', label: 'Maintenance Create' },
-    maintenance_update: { color: 'warning', label: 'Maintenance Update' },
-    maintenance_delete: { color: 'error', label: 'Maintenance Delete' },
+    'asset:create': { color: 'success', label: 'Asset Created' },
+    'asset:update': { color: 'neutral', label: 'Asset Updated' },
+    'holder:assign': { color: 'primary', label: 'Assigned' },
+    'holder:return': { color: 'warning', label: 'Returned' },
+    'location:relocate': { color: 'primary', label: 'Relocated' },
+    'maintenance:create': { color: 'success', label: 'Maintenance Created' },
+    'maintenance:update': { color: 'warning', label: 'Maintenance Updated' },
+    'maintenance:delete': { color: 'error', label: 'Maintenance Deleted' },
   }
-  return themes[action] || { color: 'neutral', label: action }
+  return themes[key] || { color: 'neutral', label: `${module}:${action}` }
 }

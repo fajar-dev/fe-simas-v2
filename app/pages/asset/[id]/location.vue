@@ -31,6 +31,7 @@
       <AssetLocationAddModal
         v-model="showAddModal"
         :lock-asset-id="assetId"
+        :exclude-location-id="asset?.lastLocation?.location?.id"
         @created="fetchLocations"
       />
     </div>

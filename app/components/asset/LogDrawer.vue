@@ -100,11 +100,11 @@ const meta = reactive({
 // Map logs to UTimeline items format
 const timelineItems = computed(() =>
   logs.value.map((log) => {
-    const theme = getActionTheme(log.action)
+    const theme = getActionTheme(log.module, log.action)
     return {
       title: theme.label,
       description: log.description,
-      icon: getActionIcon(log.action),
+      icon: getActionIcon(log.module, log.action),
       color: theme.color,
       date: formatDate(log.createdAt),
       user: log.createdBy
