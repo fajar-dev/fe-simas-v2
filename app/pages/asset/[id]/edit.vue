@@ -27,7 +27,7 @@
 
     <UCard v-else class="w-full">
       <div class="w-full mb-4">
-        <UButton label="Back" to="/asset" color="neutral" icon="i-lucide-arrow-left" variant="link" />
+        <UButton label="Back" color="neutral" icon="i-lucide-arrow-left" variant="link" @click="goBack" />
       </div>
       <UForm id="edit-asset-form" :schema="schema" :state="form" @submit="handleSubmit">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
@@ -196,7 +196,16 @@ import type { AssetPayload } from '~/types/asset'
 definePageMeta({ layout: 'dashboard' })
 
 const route = useRoute()
+const router = useRouter()
 const assetId = Number(route.params.id)
+
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    navigateTo('/asset')
+  }
+}
 
 const {
   toast, isUploading, previewUrl,
@@ -324,7 +333,7 @@ const handleSubmit = async () => {
     const response = await assetService.update(assetId, payload)
     if (response.success) {
       toast.add({ title: 'Asset updated successfully!', color: 'success', icon: 'i-lucide-circle-check' })
-      navigateTo('/asset')
+      goBack()
     }
   } finally {
     isSubmitting.value = false
