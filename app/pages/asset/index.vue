@@ -23,30 +23,63 @@
       <template #actions>
         <div class="flex gap-2">
           <UButton
-          color="primary"
-          variant="solid"
-          icon="i-lucide-plus"
-          class="w-full lg:w-auto justify-center"
-          to="/asset/create"
-          >
-          Add Asset
-        </UButton>
-        <UButton
-          color="neutral"
-          variant="outline"
-          icon="i-lucide-filter"
-          class="w-full lg:w-auto justify-center relative"
-          @click="showFilterDrawer = true"
-        >
-          Filter
-          <UBadge
-            v-if="activeFilterCount > 0"
-            :label="String(activeFilterCount)"
             color="primary"
-            size="sm"
             variant="solid"
-          />
-        </UButton>
+            icon="i-lucide-plus"
+            class="w-full lg:w-auto justify-center"
+            to="/asset/create"
+          >
+            Add Asset
+          </UButton>
+          <UButton
+            color="neutral"
+            variant="outline"
+            icon="i-lucide-filter"
+            class="w-full lg:w-auto justify-center relative"
+            @click="showFilterDrawer = true"
+          >
+            Filter
+            <UBadge
+              v-if="activeFilterCount > 0"
+              :label="String(activeFilterCount)"
+              color="primary"
+              size="sm"
+              variant="solid"
+            />
+          </UButton>
+          
+          <!-- Column Checklist Dropdown/Popover -->
+          <UPopover>
+            <UButton
+              color="neutral"
+              variant="outline"
+              icon="i-lucide-table-properties"
+              class="w-full lg:w-auto justify-center"
+            >
+              Columns
+            </UButton>
+            
+            <template #content>
+              <div class="p-3 w-48 space-y-2 select-none">
+                <div class="text-xs font-semibold text-neutral-500 mb-1">
+                  Custom Labels
+                </div>
+                <div v-if="availableLabelKeys.length === 0" class="text-xs text-neutral-400 italic">
+                  No custom labels found
+                </div>
+                <div v-else class="space-y-1.5 max-h-48 overflow-y-auto">
+                  <div v-for="key in availableLabelKeys" :key="key" class="flex items-center gap-2">
+                    <UCheckbox
+                      :id="`col-${key}`"
+                      :model-value="activeLabelColumns.includes(key)"
+                      :label="key"
+                      @update:model-value="(val: boolean) => toggleLabelColumn(key, val)"
+                    />
+                  </div>
+                </div>
+              </div>
+            </template>
+          </UPopover>
         </div>
       </template>
     </DataTable>
@@ -87,11 +120,32 @@ const UDropdownMenu = resolveComponent('UDropdownMenu')
 const NuxtImg = resolveComponent('NuxtImg')
 const UBadge = resolveComponent('UBadge')
 const UAvatar = resolveComponent('UAvatar')
+const UCheckbox = resolveComponent('UCheckbox')
+const UPopover = resolveComponent('UPopover')
 
 // State
 const data = ref<Asset[]>([])
 const isLoading = ref(false)
 const activeFilters = ref<Record<string, any>>({})
+const availableLabelKeys = ref<string[]>([])
+const activeLabelColumns = ref<string[]>([])
+
+const fetchLabelKeys = async () => {
+  const res = await assetService.getLabelKeys()
+  if (res.success) {
+    availableLabelKeys.value = res.data
+  }
+}
+
+const toggleLabelColumn = (key: string, checked: boolean) => {
+  if (checked) {
+    if (!activeLabelColumns.value.includes(key)) {
+      activeLabelColumns.value.push(key)
+    }
+  } else {
+    activeLabelColumns.value = activeLabelColumns.value.filter(k => k !== key)
+  }
+}
 
 const {
   search,
@@ -142,7 +196,7 @@ const onApplyFilters = (filters: Record<string, any>) => {
 }
 
 // Table columns
-const columns: TableColumn<Asset>[] = [
+const baseColumns: TableColumn<Asset>[] = [
   {
     id: 'no',
     header: 'No',
@@ -248,7 +302,10 @@ const columns: TableColumn<Asset>[] = [
         ])
       ])
     }
-  },
+  }
+]
+
+const trailingColumns: TableColumn<Asset>[] = [
   {
     accessorKey: 'price',
     header: sortHeader('Price', 'price'),
@@ -299,6 +356,21 @@ const columns: TableColumn<Asset>[] = [
     }
   }
 ]
+
+const columns = computed(() => {
+  const list = [...baseColumns]
+  activeLabelColumns.value.forEach(key => {
+    list.push({
+      id: `label:${key}`,
+      header: sortHeader(key, `label:${key}`),
+      cell: ({ row }) => {
+        const label = row.original.labels?.find(l => l.key === key)
+        return h('span', { class: 'text-neutral-600' }, label ? label.value : '-')
+      }
+    })
+  })
+  return [...list, ...trailingColumns]
+})
 
 function getRowItems(row: Row<Asset>) {
   const primaryActions = [
@@ -379,5 +451,6 @@ const handleDelete = async () => {
 // Initial fetch
 onMounted(() => {
   fetchAssets()
+  fetchLabelKeys()
 })
 </script>

@@ -113,6 +113,18 @@ export class AssetService {
             return handleServiceError(error)
         }
     }
+
+    async getLabelKeys(): Promise<ApiResponse<string[]>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<string[]>>(
+                `/asset/label-keys`,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
 }
 
 export const assetService = new AssetService()
