@@ -55,15 +55,13 @@
 
       <!-- Shutter (only in live mode) -->
       <div v-if="!captured && !error" class="flex justify-center pt-4">
-        <UButton
-          icon="i-lucide-circle"
-          size="xl"
-          color="primary"
-          variant="solid"
-          class="rounded-full !p-3"
+        <button
           :disabled="loading"
+          class="group w-16 h-16 rounded-full border-[3px] border-neutral-300 flex items-center justify-center bg-transparent transition-all active:scale-90 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed hover:border-primary-400"
           @click="capture"
-        />
+        >
+          <span class="w-12 h-12 rounded-full bg-white group-hover:bg-primary-50 group-active:bg-primary-100 transition-colors block shadow-sm" />
+        </button>
       </div>
     </template>
 
