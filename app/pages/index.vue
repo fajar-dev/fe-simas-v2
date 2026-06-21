@@ -46,10 +46,20 @@
           <DonutChart
             :data="categoryDonutValues"
             :categories="categoryDonutCategories"
-            :height="260"
+            :height="200"
             :radius="4"
-            :arc-width="50"
+            :arc-width="40"
+            hide-legend
           />
+          <div class="mt-3 max-h-36 overflow-y-auto space-y-1.5 pr-1">
+            <div v-for="(item, i) in categoryData" :key="item.name" class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: chartColors[i % chartColors.length] }" />
+                <span class="text-neutral-700 truncate">{{ item.name }}</span>
+              </div>
+              <span class="font-medium text-neutral-900 tabular-nums shrink-0 ml-2">{{ item.count.toLocaleString('id-ID') }}</span>
+            </div>
+          </div>
         </div>
         <div v-else class="flex items-center justify-center h-64 text-sm text-neutral-400">
           No data available
@@ -107,10 +117,20 @@
           <DonutChart
             :data="locationDonutValues"
             :categories="locationDonutCategories"
-            :height="260"
+            :height="200"
             :radius="4"
-            :arc-width="50"
+            :arc-width="40"
+            hide-legend
           />
+          <div class="mt-3 max-h-36 overflow-y-auto space-y-1.5 pr-1">
+            <div v-for="(item, i) in locationData" :key="item.name" class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: chartColors[i % chartColors.length] }" />
+                <span class="text-neutral-700 truncate">{{ item.name }}</span>
+              </div>
+              <span class="font-medium text-neutral-900 tabular-nums shrink-0 ml-2">{{ item.count.toLocaleString('id-ID') }}</span>
+            </div>
+          </div>
         </div>
         <div v-else class="flex items-center justify-center h-64 text-sm text-neutral-400">
           No data available
@@ -168,10 +188,20 @@
           <DonutChart
             :data="subCategoryDonutValues"
             :categories="subCategoryDonutCategories"
-            :height="300"
+            :height="200"
             :radius="4"
-            :arc-width="50"
+            :arc-width="40"
+            hide-legend
           />
+          <div class="mt-3 max-h-40 overflow-y-auto space-y-1.5 pr-1">
+            <div v-for="(item, i) in subCategoryData" :key="item.name" class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: chartColors[i % chartColors.length] }" />
+                <span class="text-neutral-700 truncate">{{ item.name }}</span>
+              </div>
+              <span class="font-medium text-neutral-900 tabular-nums shrink-0 ml-2">{{ item.count.toLocaleString('id-ID') }}</span>
+            </div>
+          </div>
         </div>
         <div v-else class="flex items-center justify-center h-72 text-sm text-neutral-400">
           No data available
