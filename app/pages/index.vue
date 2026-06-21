@@ -29,9 +29,9 @@
     </div>
 
     <!-- Charts Row 1: Category -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
       <!-- Asset by Category (Donut) -->
-      <UCard>
+      <UCard class="lg:col-span-4">
         <template #header>
           <div>
             <h3 class="text-base font-semibold text-neutral-900">Asset by Category</h3>
@@ -57,7 +57,7 @@
       </UCard>
 
       <!-- Price by Category (Bar) -->
-      <UCard>
+      <UCard class="lg:col-span-8">
         <template #header>
           <div>
             <h3 class="text-base font-semibold text-neutral-900">Price by Category</h3>
@@ -88,9 +88,9 @@
     </div>
 
     <!-- Charts Row 2: Location -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
       <!-- Asset by Location (Donut) -->
-      <UCard>
+      <UCard class="lg:col-span-4">
         <template #header>
           <div>
             <h3 class="text-base font-semibold text-neutral-900">Asset by Location</h3>
@@ -116,7 +116,7 @@
       </UCard>
 
       <!-- Price by Location (Bar) -->
-      <UCard>
+      <UCard class="lg:col-span-8">
         <template #header>
           <div>
             <h3 class="text-base font-semibold text-neutral-900">Price by Location</h3>
