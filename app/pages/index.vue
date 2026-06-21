@@ -76,7 +76,7 @@
             :y-axis="['totalPrice']"
             x-axis="name"
             :orientation="Orientation.Horizontal"
-            :x-formatter="priceFormatter"
+            :x-formatter="formatPriceShort"
             :y-formatter="(i: number) => categoryBarData[i]?.name ?? ''"
             :padding="{ top: 0, right: 10, bottom: 0, left: 80 }"
             :radius="4"
@@ -137,7 +137,7 @@
             :y-axis="['totalPrice']"
             x-axis="name"
             :orientation="Orientation.Horizontal"
-            :x-formatter="priceFormatter"
+            :x-formatter="formatPriceShort"
             :y-formatter="(i: number) => locationBarData[i]?.name ?? ''"
             :padding="{ top: 0, right: 10, bottom: 0, left: 80 }"
             :radius="4"
@@ -198,6 +198,7 @@
             :y-axis="['count']"
             x-axis="label"
             :x-formatter="(i: number) => agingBarData[i]?.label ?? ''"
+            :x-num-ticks="agingBarData.length"
             :radius="4"
             hide-legend
           />
@@ -227,6 +228,7 @@
             :y-axis="['count']"
             x-axis="label"
             :x-formatter="(i: number) => qualityBarData[i]?.label ?? ''"
+            :x-num-ticks="qualityBarData.length"
             :radius="4"
             hide-legend
           />
@@ -333,14 +335,6 @@ const qualityBarData = computed(() => qualityData.value.map(q => ({ label: q.lab
 const qualityBarCategories = computed(() => ({
   count: { name: 'Assets', color: '#ef4444' },
 }))
-
-// ── Formatters ───────────────────────────────────────
-const priceFormatter = (tick: number) => {
-  if (tick >= 1_000_000_000) return `Rp ${(tick / 1_000_000_000).toFixed(1)} M`
-  if (tick >= 1_000_000) return `Rp ${(tick / 1_000_000).toFixed(1)} Jt`
-  if (tick >= 1_000) return `Rp ${(tick / 1_000).toFixed(0)} Rb`
-  return `Rp ${tick}`
-}
 
 // ── Fetch ────────────────────────────────────────────
 const fetchSummary = async () => {

@@ -37,3 +37,9 @@ export const parseIndonesianNumber = (value: string): number | undefined => {
   return isNaN(parsed) ? undefined : parsed
 }
 
+export const formatPriceShort = (tick: number) => {
+  if (tick >= 1_000_000_000) return `Rp ${(tick / 1_000_000_000).toFixed(1)} M`
+  if (tick >= 1_000_000) return `Rp ${(tick / 1_000_000).toFixed(1)} Jt`
+  if (tick >= 1_000) return `Rp ${(tick / 1_000).toFixed(0)} Rb`
+  return `Rp ${tick}`
+}
