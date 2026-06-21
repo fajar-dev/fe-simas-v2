@@ -17,6 +17,11 @@ export interface ChartGroupItem {
     totalPrice: number
 }
 
+export interface LabelCountItem {
+    label: string
+    count: number
+}
+
 export class StatisticService {
     private get authHeaders() {
         return { headers: { Authorization: `Bearer ${useAuth().state.token}` } }
@@ -50,6 +55,42 @@ export class StatisticService {
         try {
             const response = await apiService.client.get<ApiResponse<ChartGroupItem[]>>(
                 "/statistic/assets-by-location",
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
+    async getAssetsBySubCategory(): Promise<ApiResponse<ChartGroupItem[]>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<ChartGroupItem[]>>(
+                "/statistic/assets-by-sub-category",
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
+    async getAssetAging(): Promise<ApiResponse<LabelCountItem[]>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<LabelCountItem[]>>(
+                "/statistic/asset-aging",
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
+    async getDataQuality(): Promise<ApiResponse<LabelCountItem[]>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<LabelCountItem[]>>(
+                "/statistic/data-quality",
                 this.authHeaders
             )
             return response.data

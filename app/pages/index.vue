@@ -149,12 +149,99 @@
         </div>
       </UCard>
     </div>
+
+    <!-- Charts Row 3: Sub Category, Aging, Data Quality -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <!-- Sub Category (Donut) -->
+      <UCard>
+        <template #header>
+          <div>
+            <h3 class="text-base font-semibold text-neutral-900">Sub Category</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">Asset by Sub Category</p>
+          </div>
+        </template>
+
+        <div v-if="isChartLoading" class="flex items-center justify-center h-72">
+          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-neutral-400" />
+        </div>
+        <div v-else-if="subCategoryData.length">
+          <DonutChart
+            :data="subCategoryDonutValues"
+            :categories="subCategoryDonutCategories"
+            :height="300"
+            :radius="4"
+            :arc-width="50"
+          />
+        </div>
+        <div v-else class="flex items-center justify-center h-72 text-sm text-neutral-400">
+          No data available
+        </div>
+      </UCard>
+
+      <!-- Asset Aging (Bar) -->
+      <UCard>
+        <template #header>
+          <div>
+            <h3 class="text-base font-semibold text-neutral-900">Asset Aging</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">Asset distribution by age</p>
+          </div>
+        </template>
+
+        <div v-if="isChartLoading" class="flex items-center justify-center h-72">
+          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-neutral-400" />
+        </div>
+        <div v-else-if="agingData.length">
+          <BarChart
+            :data="agingBarData"
+            :categories="agingBarCategories"
+            :height="300"
+            :y-axis="['count']"
+            x-axis="label"
+            :x-formatter="(i: number) => agingBarData[i]?.label ?? ''"
+            :radius="4"
+            hide-legend
+          />
+        </div>
+        <div v-else class="flex items-center justify-center h-72 text-sm text-neutral-400">
+          No data available
+        </div>
+      </UCard>
+
+      <!-- Data Quality (Bar) -->
+      <UCard>
+        <template #header>
+          <div>
+            <h3 class="text-base font-semibold text-neutral-900">Data Quality</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">Missing asset information overview</p>
+          </div>
+        </template>
+
+        <div v-if="isChartLoading" class="flex items-center justify-center h-72">
+          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-neutral-400" />
+        </div>
+        <div v-else-if="qualityData.length">
+          <BarChart
+            :data="qualityBarData"
+            :categories="qualityBarCategories"
+            :height="300"
+            :y-axis="['count']"
+            x-axis="label"
+            :x-formatter="(i: number) => qualityBarData[i]?.label ?? ''"
+            :radius="4"
+            hide-legend
+          />
+        </div>
+        <div v-else class="flex items-center justify-center h-72 text-sm text-neutral-400">
+          No data available
+        </div>
+      </UCard>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { statisticService } from '~/services/statistic-service'
-import type { StatisticSummary, ChartGroupItem } from '~/services/statistic-service'
+import type { StatisticSummary, ChartGroupItem, LabelCountItem } from '~/services/statistic-service'
 
 definePageMeta({
   layout: 'dashboard'
@@ -188,6 +275,9 @@ const stats = computed(() => [
 // ── Chart data ───────────────────────────────────────
 const categoryData = ref<ChartGroupItem[]>([])
 const locationData = ref<ChartGroupItem[]>([])
+const subCategoryData = ref<ChartGroupItem[]>([])
+const agingData = ref<LabelCountItem[]>([])
+const qualityData = ref<LabelCountItem[]>([])
 
 // Category Donut
 const categoryDonutValues = computed(() => categoryData.value.map(c => c.count))
@@ -221,6 +311,29 @@ const locationBarCategories = computed(() => ({
   totalPrice: { name: 'Total Price', color: '#10b981' },
 }))
 
+// Sub Category Donut
+const subCategoryDonutValues = computed(() => subCategoryData.value.map(s => s.count))
+const subCategoryDonutCategories = computed(() => {
+  const result: Record<string, { name: string; color: string }> = {}
+  subCategoryData.value.forEach((s, i) => {
+    result[i.toString()] = { name: `${s.name}  ${s.count}`, color: chartColors[i % chartColors.length] ?? '#3b82f6' }
+  })
+  return result
+})
+
+// Aging Bar
+const agingColors = ['#f59e0b', '#10b981', '#3b82f6']
+const agingBarData = computed(() => agingData.value.map(a => ({ label: a.label, count: a.count })))
+const agingBarCategories = computed(() => ({
+  count: { name: 'Assets', color: '#f59e0b' },
+}))
+
+// Quality Bar
+const qualityBarData = computed(() => qualityData.value.map(q => ({ label: q.label, count: q.count })))
+const qualityBarCategories = computed(() => ({
+  count: { name: 'Assets', color: '#ef4444' },
+}))
+
 // ── Formatters ───────────────────────────────────────
 const priceFormatter = (tick: number) => {
   if (tick >= 1_000_000_000) return `Rp ${(tick / 1_000_000_000).toFixed(1)} M`
@@ -243,12 +356,18 @@ const fetchSummary = async () => {
 const fetchCharts = async () => {
   isChartLoading.value = true
   try {
-    const [catRes, locRes] = await Promise.all([
+    const [catRes, locRes, subCatRes, agingRes, qualityRes] = await Promise.all([
       statisticService.getAssetsByCategory(),
       statisticService.getAssetsByLocation(),
+      statisticService.getAssetsBySubCategory(),
+      statisticService.getAssetAging(),
+      statisticService.getDataQuality(),
     ])
     if (catRes.success) categoryData.value = catRes.data
     if (locRes.success) locationData.value = locRes.data
+    if (subCatRes.success) subCategoryData.value = subCatRes.data
+    if (agingRes.success) agingData.value = agingRes.data
+    if (qualityRes.success) qualityData.value = qualityRes.data
   } finally {
     isChartLoading.value = false
   }
