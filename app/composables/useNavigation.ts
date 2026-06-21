@@ -42,7 +42,7 @@ export const useNavigation = () => {
         {
           label: 'Sub Category',
           to: '/sub-category',
-          icon: 'i-lucide-list'
+          icon: 'i-lucide-list-tree'
         },
         {
           label: 'Location',
