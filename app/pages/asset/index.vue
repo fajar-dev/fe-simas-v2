@@ -32,7 +32,7 @@
           </UButton>
           <UButton
             color="neutral"
-            variant="subtle"
+            variant="soft"
             icon="i-lucide-filter"
             class="relative"
             @click="showFilterDrawer = true"
@@ -51,7 +51,7 @@
           <UPopover>
             <UButton
               color="neutral"
-              variant="outline"
+              variant="ghost"
               icon="i-lucide-table-properties"
             />
             

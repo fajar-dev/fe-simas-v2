@@ -57,8 +57,8 @@
                         <UIcon v-else-if="codeStatuses[index] === 'exists'" name="i-lucide-circle-x" class="w-4 h-4 text-red-500" />
                       </div>
                     </div>
-                    <UButton v-if="codes.length > 1" icon="i-lucide-trash" color="error" variant="ghost" size="sm" square @click="removeCode(index)" />
-                    <UButton icon="i-lucide-scan" color="neutral" variant="ghost" size="sm" square @click="openCodeScanner(index)" title="Scan barcode" />
+                    <UButton v-if="codes.length > 1" icon="i-lucide-trash" color="error" variant="soft" size="sm" square @click="removeCode(index)" />
+                    <UButton icon="i-lucide-scan" color="neutral" variant="soft" size="sm" square @click="openCodeScanner(index)" title="Scan barcode" />
                   </div>
                   <p v-if="isDuplicateCode(index)" class="text-xs text-red-500 mt-1">Duplicate code in the list</p>
                   <p v-else-if="codeStatuses[index] === 'exists'" class="text-xs text-red-500 mt-1">Code "{{ codes[index] }}" already exists</p>
@@ -151,7 +151,7 @@
                       class="w-full"
                     />
                     <UInput v-model="label.value" placeholder="Value" class="w-full" />
-                    <UButton icon="i-lucide-trash" color="error" variant="ghost" size="sm" square @click="removeLabel(index)" />
+                    <UButton icon="i-lucide-trash" color="error" variant="soft" size="sm" square @click="removeLabel(index)" />
                   </div>
                   <p v-if="isDuplicateLabelKey(index)" class="text-xs text-red-500 mt-1">Duplicate key "{{ label.key }}"</p>
                 </div>

@@ -1,6 +1,8 @@
 <template>
   <UModal
     v-model:open="open"
+    @after-enter="focusInput"
+    @after:enter="focusInput"
     :ui="{
       content: 'sm:max-w-md',
       overlay: 'bg-black/40',
@@ -99,7 +101,9 @@
         <label class="text-xs font-medium text-neutral-500 uppercase tracking-wider block mb-1.5">Or enter code manually</label>
         <div class="flex items-center gap-2">
           <UInput
+            ref="manualInputRef"
             v-model="manualCode"
+            autofocus
             placeholder="Type asset code..."
             class="w-full"
             :disabled="isSearching"
@@ -136,6 +140,18 @@ const toast = useToast()
 const barcode = useBarcodeScanner()
 const nfc = useNfcReader()
 
+const manualInputRef = ref<any>(null)
+
+function focusInput() {
+  nextTick(() => {
+    if (manualInputRef.value) {
+      const el = manualInputRef.value.$el || manualInputRef.value
+      const input = manualInputRef.value.inputRef || (el instanceof HTMLInputElement ? el : el.querySelector?.('input'))
+      input?.focus()
+    }
+  })
+}
+
 function switchTab(tab: string) {
   activeTab.value = tab
   if (tab === 'nfc') startNfc()
@@ -157,6 +173,12 @@ watch(open, (val) => {
     isSearching.value = false
     lastScannedCode.value = ''
     nfc.stopScan()
+
+    // Auto focus the manual input when modal opens
+    focusInput()
+    setTimeout(focusInput, 50)
+    setTimeout(focusInput, 150)
+    setTimeout(focusInput, 300)
   } else {
     nfc.stopScan()
   }

@@ -68,7 +68,7 @@
                     <UIcon v-else-if="codeStatus === 'exists'" name="i-lucide-circle-x" class="w-4 h-4 text-red-500" />
                   </div>
                 </div>
-                <UButton icon="i-lucide-scan" color="neutral" variant="ghost" size="sm" square @click="showCodeScanner = true" title="Scan barcode" />
+                <UButton icon="i-lucide-scan" color="neutral" variant="soft" size="sm" square @click="showCodeScanner = true" title="Scan barcode" />
               </div>
               <p v-if="codeStatus === 'exists'" class="text-xs text-red-500 mt-1">Code "{{ form.code }}" already exists</p>
               <p v-else-if="codeStatus === 'available'" class="text-xs text-green-500 mt-1">Code available</p>
@@ -149,7 +149,7 @@
                       class="w-full"
                     />
                     <UInput v-model="label.value" placeholder="Value" class="w-full" />
-                    <UButton icon="i-lucide-trash" color="error" variant="ghost" size="sm" square @click="removeLabel(index)" />
+                    <UButton icon="i-lucide-trash" color="error" variant="soft" size="sm" square @click="removeLabel(index)" />
                   </div>
                   <p v-if="isDuplicateLabelKey(index)" class="text-xs text-red-500 mt-1">Duplicate key "{{ label.key }}"</p>
                 </div>

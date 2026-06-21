@@ -29,16 +29,16 @@
       <nav class="space-y-4">
         <div :class="[isCollapsed ? 'flex justify-center' : '']">
           <UTooltip
-            text="Scan Asset"
+            text="Search Asset"
             :disabled="!isCollapsed"
             :content="{ align: 'center', side: 'right', sideOffset: 8 }"
           >
             <UButton
-              :label="isCollapsed ? undefined : 'Scan Asset'"
+              :label="isCollapsed ? undefined : 'Search Asset'"
               color="primary"
               :square="isCollapsed"
               :class="[isCollapsed ? '' : 'w-full']"
-              icon="i-lucide-scan"
+              icon="i-lucide-scan-qr-code"
               variant="subtle"
               @click="showScanner = true"
             />

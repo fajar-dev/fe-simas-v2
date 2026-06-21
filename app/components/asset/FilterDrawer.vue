@@ -134,20 +134,26 @@
             <label class="text-sm font-medium text-neutral-700">Price Range</label>
             <UButton v-if="filters.priceMin || filters.priceMax" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('priceMin'); clearField('priceMax')">Clear</UButton>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2">
             <UInput
-              v-model="filters.priceMin"
-              type="number"
+              v-model="priceMinDisplay"
               placeholder="Min"
-              class="flex-1"
-            />
-            <span class="text-neutral-400 text-sm">—</span>
+              class="w-full sm:flex-1"
+            >
+              <template #leading>
+                <span class="text-neutral-500 text-sm">Rp</span>
+              </template>
+            </UInput>
+            <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
             <UInput
-              v-model="filters.priceMax"
-              type="number"
+              v-model="priceMaxDisplay"
               placeholder="Max"
-              class="flex-1"
-            />
+              class="w-full sm:flex-1"
+            >
+              <template #leading>
+                <span class="text-neutral-500 text-sm">Rp</span>
+              </template>
+            </UInput>
           </div>
         </div>
 
@@ -159,18 +165,28 @@
             <label class="text-sm font-medium text-neutral-700">Purchase Date</label>
             <UButton v-if="filters.purchaseDateFrom || filters.purchaseDateTo" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('purchaseDateFrom'); clearField('purchaseDateTo')">Clear</UButton>
           </div>
-          <div class="flex items-center gap-2 mb-2">
-            <UInput
-              v-model="filters.purchaseDateFrom"
-              type="date"
-              class="flex-1"
-            />
-            <span class="text-neutral-400 text-sm">—</span>
-            <UInput
-              v-model="filters.purchaseDateTo"
-              type="date"
-              class="flex-1"
-            />
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+            <UInputDate v-model="purchaseDateFromVal" class="w-full sm:flex-1">
+              <template #trailing>
+                <UPopover>
+                  <UButton icon="i-lucide-calendar" color="neutral" variant="ghost" size="sm" square />
+                  <template #content>
+                    <UCalendar v-model="purchaseDateFromVal" />
+                  </template>
+                </UPopover>
+              </template>
+            </UInputDate>
+            <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
+            <UInputDate v-model="purchaseDateToVal" class="w-full sm:flex-1">
+              <template #trailing>
+                <UPopover>
+                  <UButton icon="i-lucide-calendar" color="neutral" variant="ghost" size="sm" square />
+                  <template #content>
+                    <UCalendar v-model="purchaseDateToVal" />
+                  </template>
+                </UPopover>
+              </template>
+            </UInputDate>
           </div>
           <div class="flex flex-wrap gap-1.5">
             <UButton
@@ -202,7 +218,6 @@
               <UInputMenu
                 v-model="lf.key"
                 :items="availableLabelKeys"
-                autocomplete
                 placeholder="Key"
                 class="w-full"
               />
@@ -238,6 +253,7 @@
 </template>
 
 <script setup lang="ts">
+import { parseDate } from '@internationalized/date'
 import { categoryService } from '~/services/category-service'
 import { subCategoryService } from '~/services/sub-category-service'
 import { branchService } from '~/services/branch-service'
@@ -267,6 +283,32 @@ const filters = reactive<Record<string, any>>({
   priceMax: undefined,
   purchaseDateFrom: undefined,
   purchaseDateTo: undefined,
+})
+
+const purchaseDateFromVal = computed({
+  get: () => {
+    if (!filters.purchaseDateFrom) return undefined
+    try { return parseDate(filters.purchaseDateFrom) } catch { return undefined }
+  },
+  set: (val) => { filters.purchaseDateFrom = val ? val.toString() : undefined }
+})
+
+const purchaseDateToVal = computed({
+  get: () => {
+    if (!filters.purchaseDateTo) return undefined
+    try { return parseDate(filters.purchaseDateTo) } catch { return undefined }
+  },
+  set: (val) => { filters.purchaseDateTo = val ? val.toString() : undefined }
+})
+
+const priceMinDisplay = computed({
+  get: () => formatIndonesianNumber(filters.priceMin),
+  set: (val) => { filters.priceMin = parseIndonesianNumber(val) }
+})
+
+const priceMaxDisplay = computed({
+  get: () => formatIndonesianNumber(filters.priceMax),
+  set: (val) => { filters.priceMax = parseIndonesianNumber(val) }
 })
 
 // Label filters (separate from main filters, merged on apply)
