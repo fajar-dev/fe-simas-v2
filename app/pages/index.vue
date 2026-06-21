@@ -77,6 +77,8 @@
             x-axis="name"
             :orientation="Orientation.Horizontal"
             :x-formatter="priceFormatter"
+            :y-formatter="(i: number) => categoryBarData[i]?.name ?? ''"
+            :padding="{ top: 0, right: 10, bottom: 0, left: 120 }"
             :radius="4"
             hide-legend
           />
@@ -136,6 +138,8 @@
             x-axis="name"
             :orientation="Orientation.Horizontal"
             :x-formatter="priceFormatter"
+            :y-formatter="(i: number) => locationBarData[i]?.name ?? ''"
+            :padding="{ top: 0, right: 10, bottom: 0, left: 120 }"
             :radius="4"
             hide-legend
           />
