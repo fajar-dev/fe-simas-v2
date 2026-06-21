@@ -29,9 +29,9 @@
     </div>
 
     <!-- Charts Row 1: Category -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
       <!-- Asset by Category (Donut) -->
-      <UCard class="lg:col-span-4">
+      <UCard class="md:col-span-4">
         <template #header>
           <div>
             <h3 class="text-base font-semibold text-neutral-900">Asset by Category</h3>
@@ -57,7 +57,7 @@
       </UCard>
 
       <!-- Price by Category (Bar) -->
-      <UCard class="lg:col-span-8">
+      <UCard class="md:col-span-8">
         <template #header>
           <div>
             <h3 class="text-base font-semibold text-neutral-900">Price by Category</h3>
@@ -90,9 +90,9 @@
     </div>
 
     <!-- Charts Row 2: Location -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
       <!-- Asset by Location (Donut) -->
-      <UCard class="lg:col-span-4">
+      <UCard class="md:col-span-4">
         <template #header>
           <div>
             <h3 class="text-base font-semibold text-neutral-900">Asset by Location</h3>
@@ -118,7 +118,7 @@
       </UCard>
 
       <!-- Price by Location (Bar) -->
-      <UCard class="lg:col-span-8">
+      <UCard class="md:col-span-8">
         <template #header>
           <div>
             <h3 class="text-base font-semibold text-neutral-900">Price by Location</h3>
@@ -151,7 +151,7 @@
     </div>
 
     <!-- Charts Row 3: Sub Category, Aging, Data Quality -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <!-- Sub Category (Donut) -->
       <UCard>
         <template #header>
