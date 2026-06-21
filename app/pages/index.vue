@@ -7,7 +7,7 @@
     />
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
       <UCard
         v-for="stat in stats"
         :key="stat.key"
