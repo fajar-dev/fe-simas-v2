@@ -18,6 +18,7 @@
     "axios": "^1.16.1",
     "modern-screenshot": "^4.7.0",
     "nuxt": "^4.4.6",
+    "nuxt-charts": "2.1.4",
     "nuxt-vue3-google-signin": "0.0.13",
     "tailwindcss": "^4.3.0",
     "vue-qrcode-reader": "^5.7.3",
