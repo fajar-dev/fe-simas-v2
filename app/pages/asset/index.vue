@@ -218,7 +218,7 @@ const onApplyFilters = (filters: Record<string, any>) => {
 const handleExport = async () => {
   isExporting.value = true
   try {
-    await assetService.exportExcel(search.value, sortBy.value, order.value, activeFilters.value)
+    await assetService.exportExcel(search.value, sortBy.value, order.value, activeFilters.value, activeLabelColumns.value)
     useToast().add({ title: 'Export successful', description: 'File downloaded', color: 'success' })
   } catch (error) {
     useToast().add({ title: 'Export failed', description: 'Failed to export assets', color: 'error' })

@@ -135,10 +135,11 @@ export class AssetService {
         }
     }
 
-    async exportExcel(q = '', sortBy = '', order = '', filters: Record<string, any> = {}): Promise<void> {
+    async exportExcel(q = '', sortBy = '', order = '', filters: Record<string, any> = {}, labelColumns: string[] = []): Promise<void> {
         let url = `/asset/export?q=${q}`
         if (sortBy) url += `&sortBy=${sortBy}`
         if (order) url += `&order=${order}`
+        if (labelColumns.length > 0) url += `&labelColumns=${labelColumns.map(encodeURIComponent).join(',')}`
         for (const [key, value] of Object.entries(filters)) {
             if (value === undefined || value === null || value === '') continue
             if (key === 'labels' && Array.isArray(value)) {
