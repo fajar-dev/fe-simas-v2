@@ -56,7 +56,6 @@
             v-model="selectedRole"
             :items="roleOptions"
             placeholder="Select a role"
-            value-key="value"
             class="w-full"
           />
         </UFormField>
@@ -120,8 +119,8 @@ const form = reactive<UserPayload>({
 })
 
 const selectedRole = computed({
-  get: () => roleOptions.value.find(r => r.value === form.roleId) || null,
-  set: (val: any) => { form.roleId = val?.value ?? null }
+  get: () => roleOptions.value.find(r => r.value === form.roleId),
+  set: (val) => { form.roleId = val?.value as unknown as number ?? null }
 })
 
 const resetForm = () => {
