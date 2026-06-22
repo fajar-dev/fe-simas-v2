@@ -123,7 +123,12 @@
             placeholder="All Employees"
             value-key="value"
             class="w-full"
-          />
+          >
+            <template #item="{ item }">
+              <UAvatar :src="item.avatar" :alt="item.label" size="2xs" />
+              <span>{{ item.label }}</span>
+            </template>
+          </USelectMenu>
         </div>
 
         <USeparator />
@@ -340,7 +345,7 @@ const categoryOptions = ref<{ label: string; value: number }[]>([])
 const subCategoryOptions = ref<{ label: string; value: number }[]>([])
 const branchOptions = ref<{ label: string; value: number }[]>([])
 const locationOptions = ref<{ label: string; value: number }[]>([])
-const employeeOptions = ref<{ label: string; value: number }[]>([])
+const employeeOptions = ref<{ label: string; value: number; avatar?: string }[]>([])
 const availableLabelKeys = ref<string[]>([])
 
 const statusOptions = [
@@ -498,7 +503,11 @@ const fetchBranches = async () => {
 const fetchEmployees = async () => {
   const res = await employeeService.getAll(1, 100, '')
   if (res.success) {
-    employeeOptions.value = res.data.map(e => ({ label: `${e.name} (${e.employeeId})`, value: e.id }))
+    employeeOptions.value = res.data.map(e => ({
+      label: `${e.name} (${e.employeeId})`,
+      value: e.id,
+      avatar: e.photo || undefined,
+    }))
   }
 }
 

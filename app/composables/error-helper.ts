@@ -8,7 +8,7 @@ export const handleServiceError = (error: any): never => {
     const toast = useToast()
     const responseData = error.response?.data
     
-    let title = responseData?.message || 'Gagal'
+    let title = responseData?.message || 'error'
     let message = ''
     
     if (error.response?.status === 422 && responseData?.errors) {
