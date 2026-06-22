@@ -14,7 +14,7 @@
         search-placeholder="Search notes..."
         table-class="min-w-[600px]"
       >
-        <template #actions>
+        <template #actions v-if="hasPermission('asset-location:create')">
           <UButton
             class="w-full lg:w-auto justify-center"
             color="primary"
@@ -49,6 +49,7 @@ definePageMeta({
 
 const route = useRoute()
 const assetId = Number(route.params.id)
+const { hasPermission } = useAuth()
 
 const UButton = resolveComponent('UButton')
 const UAvatar = resolveComponent('UAvatar')

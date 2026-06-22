@@ -20,9 +20,8 @@
       search-placeholder="Search role name..."
       table-class="min-w-[768px]"
     >
-      <template #actions>
+      <template #actions v-if="hasPermission('role:create')">
         <UButton
-          v-if="hasPermission('role:create')"
           color="primary"
           variant="solid"
           icon="i-lucide-plus"
@@ -57,11 +56,11 @@ definePageMeta({
   layout: 'dashboard'
 })
 
+const { hasPermission } = useAuth()
+
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 const UBadge = resolveComponent('UBadge')
-
-const { hasPermission } = useAuth()
 
 // State
 const data = ref<Role[]>([])
@@ -110,58 +109,59 @@ const fetchRoles = async () => {
 }
 
 // Table columns
-const columns = computed<TableColumn<Role>[]>(() => {
-  const cols: TableColumn<Role>[] = [
-    {
-      id: 'no',
-      header: 'No',
-      cell: ({ row }) => {
-        const index = row.index + 1 + ((page.value - 1) * perPage.value)
-        return h('span', { class: 'text-neutral-500' }, index)
-      }
-    },
-    {
-      accessorKey: 'name',
-      header: sortHeader('Name', 'name'),
-      cell: ({ row }) => {
-        const name = row.original.name
-        const isSuperAdmin = row.original.isSuperAdmin
-        return h('div', { class: 'flex items-center gap-2' }, [
-          h('span', { class: 'font-medium text-neutral-900' }, name),
-          ...(isSuperAdmin
-            ? [h(UBadge, { color: 'warning', variant: 'subtle', size: 'sm' }, () => 'Super Admin')]
-            : [])
-        ])
-      }
-    },
-    {
-      accessorKey: 'permissions',
-      header: 'Permissions',
-      cell: ({ row }) => {
-        const count = row.original.permissions?.length || 0
-        const isSuperAdmin = row.original.isSuperAdmin
-        if (isSuperAdmin) {
-          return h(UBadge, { color: 'warning', variant: 'subtle' }, () => 'All Permissions')
-        }
-        return h(UBadge, { color: 'primary', variant: 'subtle' }, () => `${count} permissions`)
-      }
-    },
-    {
-      accessorKey: 'createdAt',
-      header: sortHeader('Created At', 'createdAt'),
-      cell: ({ row }) => {
-        const date = new Date(row.original.createdAt)
-        return h('span', { class: 'text-neutral-500' }, date.toLocaleDateString('id-ID', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric'
-        }))
-      }
+const baseColumns: TableColumn<Role>[] = [
+  {
+    id: 'no',
+    header: 'No',
+    cell: ({ row }) => {
+      const index = row.index + 1 + ((page.value - 1) * perPage.value)
+      return h('span', { class: 'text-neutral-500' }, index)
     }
-  ]
+  },
+  {
+    accessorKey: 'name',
+    header: sortHeader('Name', 'name'),
+    cell: ({ row }) => {
+      const name = row.original.name
+      const isSuperAdmin = row.original.isSuperAdmin
+      return h('div', { class: 'flex items-center gap-2' }, [
+        h('span', { class: 'font-medium text-neutral-900' }, name),
+        ...(isSuperAdmin
+          ? [h(UBadge, { color: 'warning', variant: 'subtle', size: 'sm' }, () => 'Super Admin')]
+          : [])
+      ])
+    }
+  },
+  {
+    accessorKey: 'permissions',
+    header: 'Permissions',
+    cell: ({ row }) => {
+      const count = row.original.permissions?.length || 0
+      const isSuperAdmin = row.original.isSuperAdmin
+      if (isSuperAdmin) {
+        return h(UBadge, { color: 'warning', variant: 'subtle' }, () => 'All Permissions')
+      }
+      return h(UBadge, { color: 'primary', variant: 'subtle' }, () => `${count} permissions`)
+    }
+  },
+  {
+    accessorKey: 'createdAt',
+    header: sortHeader('Created At', 'createdAt'),
+    cell: ({ row }) => {
+      const date = new Date(row.original.createdAt)
+      return h('span', { class: 'text-neutral-500' }, date.toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      }))
+    }
+  }
+]
 
+const columns = computed(() => {
+  const list = [...baseColumns]
   if (hasPermission('role:update', 'role:delete')) {
-    cols.push({
+    list.push({
       id: 'actions',
       header: 'Action',
       meta: {
@@ -171,13 +171,15 @@ const columns = computed<TableColumn<Role>[]>(() => {
         }
       },
       cell: ({ row }) => {
+        const items = getRowItems(row)
+        if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
         return h(
           UDropdownMenu,
           {
             content: {
               align: 'end'
             },
-            items: getRowItems(row),
+            items: items,
             'aria-label': 'Actions dropdown'
           },
           () =>
@@ -191,8 +193,7 @@ const columns = computed<TableColumn<Role>[]>(() => {
       }
     })
   }
-
-  return cols
+  return list
 })
 
 function getRowItems(row: Row<Role>) {

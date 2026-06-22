@@ -36,6 +36,7 @@
             <span class="hidden sm:inline">Activity Log</span>
           </UButton>
           <UButton
+            v-if="hasPermission('asset-status:create')"
             color="primary"
             variant="outline"
             icon="i-lucide-repeat-2"
@@ -43,7 +44,12 @@
           >
             <span class="hidden sm:inline">Change Status</span>
           </UButton>
-          <UButton :to="`/asset/${asset.id}/edit`" color="primary" icon="i-lucide-edit">
+          <UButton
+            v-if="hasPermission('asset:update')"
+            :to="`/asset/${asset.id}/edit`"
+            color="primary"
+            icon="i-lucide-edit"
+          >
             <span class="hidden sm:inline">Edit Asset</span>
           </UButton>
         </div>
@@ -227,6 +233,7 @@ import type { Asset } from '~/types/asset'
 const route = useRoute()
 const router = useRouter()
 const assetId = Number(route.params.id)
+const { hasPermission } = useAuth()
 
 const goBack = () => {
   const lastQuery = localStorage.getItem('last_asset_query')
@@ -256,7 +263,7 @@ const onStatusCreated = async () => {
 
 const items = computed(() => {
   const tabs: TabsItem[] = []
-  if (asset.value?.hasLocation !== false) {
+  if (asset.value?.hasLocation !== false && hasPermission('asset-location:read')) {
     tabs.push({
       value: 'location',
       label: 'Location',
@@ -264,7 +271,7 @@ const items = computed(() => {
       to: `/asset/${assetId}/location`
     })
   }
-  if (asset.value?.hasHolder !== false) {
+  if (asset.value?.hasHolder !== false && hasPermission('asset-holder:read')) {
     tabs.push({
       value: 'holder',
       label: 'Holder',
@@ -272,7 +279,7 @@ const items = computed(() => {
       to: `/asset/${assetId}/holder`
     })
   }
-  if (asset.value?.hasMaintenance !== false) {
+  if (asset.value?.hasMaintenance !== false && hasPermission('asset-maintenance:read')) {
     tabs.push({
       value: 'maintenance',
       label: 'Maintenance',

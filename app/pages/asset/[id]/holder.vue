@@ -17,7 +17,7 @@
         <template #actions>
           <!-- Context-sensitive action button: Assign if available, Return if assigned -->
           <UButton
-            v-if="!activeHolder"
+            v-if="!activeHolder && hasPermission('asset-holder:create')"
             class="w-full lg:w-auto justify-center"
             color="primary"
             variant="solid"
@@ -28,7 +28,7 @@
             Assign Asset
           </UButton>
           <UButton
-            v-else
+            v-if="activeHolder && hasPermission('asset-holder:return')"
             class="w-full lg:w-auto justify-center"
             color="error"
             variant="solid"
@@ -70,6 +70,7 @@ definePageMeta({
 
 const route = useRoute()
 const assetId = Number(route.params.id)
+const { hasPermission } = useAuth()
 
 const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')

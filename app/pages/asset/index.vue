@@ -23,8 +23,9 @@
       <template #actions>
         <div class="flex flex-wrap items-center justify-center sm:justify-end gap-2">
           <!-- Import & Export -->
-          <div class="flex items-center gap-2 w-full sm:w-auto">
+          <div v-if="hasPermission('asset:import', 'asset:export')" class="flex items-center gap-2 w-full sm:w-auto">
             <UButton
+              v-if="hasPermission('asset:import')"
               color="primary"
               variant="outline"
               icon="i-lucide-upload"
@@ -34,6 +35,7 @@
               Import
             </UButton>
             <UButton
+              v-if="hasPermission('asset:export')"
               color="primary"
               variant="soft"
               icon="i-lucide-download"
@@ -48,6 +50,7 @@
           <!-- Main Actions -->
           <div class="flex items-center gap-2 w-full sm:w-auto">
             <UButton
+              v-if="hasPermission('asset:create')"
               color="primary"
               variant="solid"
               icon="i-lucide-plus"
@@ -151,6 +154,8 @@ import type { Asset } from '~/types/asset'
 definePageMeta({
   layout: 'dashboard'
 })
+
+const { hasPermission } = useAuth()
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
@@ -404,13 +409,15 @@ const trailingColumns: TableColumn<Asset>[] = [
       }
     },
     cell: ({ row }) => {
+      const items = getRowItems(row)
+      if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
       return h(
         UDropdownMenu,
         {
           content: {
             align: 'end'
           },
-          items: getRowItems(row),
+          items: items,
           'aria-label': 'Actions dropdown'
         },
         () =>
@@ -441,23 +448,28 @@ const columns = computed(() => {
 })
 
 function getRowItems(row: Row<Asset>) {
-  const primaryActions = [
-    {
+  const primaryActions = []
+  if (hasPermission('asset:update')) {
+    primaryActions.push({
       label: 'Edit Asset',
       icon: 'i-lucide-edit',
       onSelect() {
         navigateTo(`/asset/${row.original.id}/edit`)
       }
-    },
-    {
+    })
+  }
+  if (hasPermission('asset-status:create')) {
+    primaryActions.push({
       label: 'Change Status',
       icon: 'i-lucide-arrow-left-right',
       onSelect() {
         selectedAsset.value = row.original
         showStatusModal.value = true
       }
-    },
-    {
+    })
+  }
+  if (hasPermission('asset:delete')) {
+    primaryActions.push({
       label: 'Delete Asset',
       color: 'error' as const,
       icon: 'i-lucide-trash',
@@ -465,11 +477,11 @@ function getRowItems(row: Row<Asset>) {
         selectedAsset.value = row.original
         showDeleteModal.value = true
       }
-    }
-  ]
+    })
+  }
 
   const historyActions = []
-  if (row.original.hasLocation !== false) {
+  if (row.original.hasLocation !== false && hasPermission('asset-location:read')) {
     historyActions.push({
       label: 'Location History',
       icon: 'i-lucide-map-pin',
@@ -478,7 +490,7 @@ function getRowItems(row: Row<Asset>) {
       }
     })
   }
-  if (row.original.hasHolder !== false) {
+  if (row.original.hasHolder !== false && hasPermission('asset-holder:read')) {
     historyActions.push({
       label: 'Holder History',
       icon: 'i-lucide-user',
@@ -487,7 +499,7 @@ function getRowItems(row: Row<Asset>) {
       }
     })
   }
-  if (row.original.hasMaintenance !== false) {
+  if (row.original.hasMaintenance !== false && hasPermission('asset-maintenance:read')) {
     historyActions.push({
       label: 'Maintenance History',
       icon: 'i-lucide-wrench',
@@ -497,10 +509,16 @@ function getRowItems(row: Row<Asset>) {
     })
   }
 
-  if (historyActions.length > 0) {
+  if (primaryActions.length > 0 && historyActions.length > 0) {
     return [primaryActions, historyActions]
   }
-  return [primaryActions]
+  if (primaryActions.length > 0) {
+    return [primaryActions]
+  }
+  if (historyActions.length > 0) {
+    return [historyActions]
+  }
+  return []
 }
 
 // Handle delete

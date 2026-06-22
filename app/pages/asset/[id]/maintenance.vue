@@ -14,7 +14,7 @@
         search-placeholder="Search notes..."
         table-class="min-w-[600px]"
       >
-        <template #actions>
+        <template #actions v-if="hasPermission('asset-maintenance:create')">
           <UButton
             class="w-full lg:w-auto justify-center"
             color="primary"
@@ -66,6 +66,7 @@ definePageMeta({
 
 const route = useRoute()
 const assetId = Number(route.params.id)
+const { hasPermission } = useAuth()
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
@@ -124,7 +125,7 @@ const fetchMaintenances = async () => {
 }
 
 // Table columns
-const columns: TableColumn<AssetMaintenance>[] = [
+const baseColumns: TableColumn<AssetMaintenance>[] = [
   {
     accessorKey: 'date',
     header: sortHeader('Maintenance Date', 'date'),
@@ -203,47 +204,57 @@ const columns: TableColumn<AssetMaintenance>[] = [
         return h('span', { class: 'text-neutral-500 italic text-sm' }, 'System')
       }
     }
-  },
-  {
-    id: 'actions',
-    header: 'Action',
-    meta: {
-      class: {
-        td: 'text-right',
-        th: 'text-right'
-      }
-    },
-    cell: ({ row }) => {
-      return h(
-        UDropdownMenu,
-        {
-          content: { align: 'end' },
-          items: getRowItems(row),
-          'aria-label': 'Actions dropdown'
-        },
-        () =>
-          h(UButton, {
-            icon: 'i-lucide-ellipsis-vertical',
-            color: 'neutral',
-            variant: 'ghost',
-            'aria-label': 'Actions dropdown'
-          })
-      )
-    }
-  },
+  }
 ]
 
+const columns = computed(() => {
+  const list = [...baseColumns]
+  if (hasPermission('asset-maintenance:update', 'asset-maintenance:delete')) {
+    list.push({
+      id: 'actions',
+      header: 'Action',
+      meta: {
+        class: {
+          td: 'text-right',
+          th: 'text-right'
+        }
+      },
+      cell: ({ row }) => {
+        return h(
+          UDropdownMenu,
+          {
+            content: { align: 'end' },
+            items: getRowItems(row),
+            'aria-label': 'Actions dropdown'
+          },
+          () =>
+            h(UButton, {
+              icon: 'i-lucide-ellipsis-vertical',
+              color: 'neutral',
+              variant: 'ghost',
+              'aria-label': 'Actions dropdown'
+            })
+        )
+      }
+    })
+  }
+  return list
+})
+
 function getRowItems(row: Row<AssetMaintenance>) {
-  return [
-    {
+  const actions = []
+  if (hasPermission('asset-maintenance:update')) {
+    actions.push({
       label: 'Edit Record',
       icon: 'i-lucide-edit',
       onSelect() {
         selectedMaintenance.value = row.original
         showUpdateModal.value = true
       }
-    },
-    {
+    })
+  }
+  if (hasPermission('asset-maintenance:delete')) {
+    actions.push({
       label: 'Delete Record',
       color: 'error' as const,
       icon: 'i-lucide-trash',
@@ -251,8 +262,9 @@ function getRowItems(row: Row<AssetMaintenance>) {
         selectedMaintenance.value = row.original
         showDeleteModal.value = true
       }
-    }
-  ]
+    })
+  }
+  return actions
 }
 
 const toast = useToast()
