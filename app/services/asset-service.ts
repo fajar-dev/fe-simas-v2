@@ -167,6 +167,41 @@ export class AssetService {
         link.click()
         URL.revokeObjectURL(link.href)
     }
+
+    async downloadImportTemplate(): Promise<void> {
+        const response = await apiService.client.get('/asset/import-template', {
+            ...this.authHeaders,
+            responseType: 'blob',
+        })
+        const blob = new Blob([response.data], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        })
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(blob)
+        link.download = 'asset_import_template.xlsx'
+        link.click()
+        URL.revokeObjectURL(link.href)
+    }
+
+    async importExcel(file: File): Promise<ApiResponse<{ success: number; errors: { row: number; message: string }[] }>> {
+        try {
+            const formData = new FormData()
+            formData.append('file', file)
+            const response = await apiService.client.post<ApiResponse<{ success: number; errors: { row: number; message: string }[] }>>(
+                '/asset/import',
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${useAuth().state.token}`,
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
 }
 
 export const assetService = new AssetService()

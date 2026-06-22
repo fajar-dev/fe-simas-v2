@@ -29,6 +29,7 @@
               variant="outline"
               icon="i-lucide-upload"
               class="flex-1 sm:flex-none justify-center"
+              @click="showImportModal = true"
             >
               Import
             </UButton>
@@ -132,6 +133,12 @@
       :initial-filters="activeFilters"
       @apply="onApplyFilters"
     />
+
+    <!-- Import Modal -->
+    <AssetImportModal
+      v-model="showImportModal"
+      @imported="fetchAssets"
+    />
   </div>
 </template>
 
@@ -196,6 +203,7 @@ const isDeleting = ref(false)
 const isExporting = ref(false)
 const showStatusModal = ref(false)
 const showFilterDrawer = ref(false)
+const showImportModal = ref(false)
 
 const activeFilterCount = computed(() => Object.keys(activeFilters.value).length)
 
