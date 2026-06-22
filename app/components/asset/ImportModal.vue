@@ -66,12 +66,8 @@
             :icon="importResult.errors.length > 0 ? 'i-lucide-alert-triangle' : 'i-lucide-check-circle'"
             variant="soft"
             :title="`${importResult.success} successful, ${importResult.errors.length} failed`"
-          />
-
-          <!-- Error detail table -->
-          <div v-if="importResult.errors.length > 0">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-medium text-error">{{ importResult.errors.length }} failed</span>
+          >
+            <template v-if="importResult.errors.length > 0" #actions>
               <UButton
                 color="neutral"
                 variant="soft"
@@ -81,7 +77,11 @@
               >
                 Download Errors
               </UButton>
-            </div>
+            </template>
+          </UAlert>
+
+          <!-- Error detail table -->
+          <div v-if="importResult.errors.length > 0">
             <div class="border border-neutral-200 rounded-lg overflow-hidden">
               <table class="w-full text-sm">
                 <thead>
@@ -204,13 +204,12 @@ const handleImport = async () => {
 
 const downloadErrors = () => {
   if (!importResult.value?.errors.length) return
-  const header = 'Row,Error'
-  const rows = importResult.value.errors.map(err => `${err.row},"${err.message.replace(/"/g, '""')}"`)
-  const csv = [header, ...rows].join('\n')
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const lines = importResult.value.errors.map(err => `Row ${err.row}: ${err.message}`)
+  const txt = `Import Errors (${new Date().toLocaleString()})\n${'='.repeat(40)}\n\n${lines.join('\n')}`
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' })
   const link = document.createElement('a')
   link.href = URL.createObjectURL(blob)
-  link.download = `import_errors_${new Date().toISOString().slice(0, 10)}.csv`
+  link.download = `import_errors_${new Date().toISOString().slice(0, 10)}.txt`
   link.click()
   URL.revokeObjectURL(link.href)
 }
