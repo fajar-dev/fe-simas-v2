@@ -159,6 +159,18 @@ const baseColumns: TableColumn<User>[] = [
         ? h(UBadge, { color: 'neutral', variant: 'subtle' }, () => role.name)
         : h('span', { class: 'text-xs text-neutral-400' }, '-')
     }
+  },
+  {
+    accessorKey: 'employee',
+    header: 'Employee',
+    cell: ({ row }) => {
+      const employee = row.original.employee
+      if (!employee) return h('span', { class: 'text-xs text-neutral-400' }, '-')
+      return h('div', { class: 'flex flex-col' }, [
+        h('span', { class: 'text-sm font-medium text-neutral-900' }, employee.name),
+        h('span', { class: 'text-xs text-neutral-500' }, employee.employeeId)
+      ])
+    }
   }
 ]
 

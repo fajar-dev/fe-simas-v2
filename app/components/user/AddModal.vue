@@ -36,6 +36,14 @@
       </div>
 
       <UForm id="add-user-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-3">
+        <UFormField label="Link to Employee" name="employeeId">
+          <USelectMenu
+            v-model="selectedEmployee"
+            :items="employeeOptions"
+            placeholder="Select an employee (optional)"
+            class="w-full"
+          />
+        </UFormField>
         <UFormField label="Name" name="name" required>
           <UInput v-model="form.name" placeholder="Enter full name" class="w-full" />
         </UFormField>
@@ -82,8 +90,10 @@
 import { z } from 'zod'
 import { userService } from '~/services/user-service'
 import { roleService } from '~/services/role-service'
+import { employeeService } from '~/services/employee-service'
 import type { UserPayload } from '~/types/user'
 import type { Role } from '~/types/role'
+import type { Employee } from '~/types/employee'
 
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ created: [] }>()
@@ -109,18 +119,44 @@ const roleOptions = computed(() =>
   roles.value.map(r => ({ label: r.name, value: r.id }))
 )
 
+const employees = ref<Employee[]>([])
+const employeeOptions = computed(() => 
+  employees.value.map(e => ({ label: `${e.name} (${e.employeeId})`, value: e.id }))
+)
+
 const form = reactive<UserPayload>({
   name: '',
   email: '',
   password: '',
   photo: null,
   isActive: true,
-  roleId: null
+  roleId: null,
+  employeeId: null
 })
 
 const selectedRole = computed({
   get: () => roleOptions.value.find(r => r.value === form.roleId),
   set: (val) => { form.roleId = val?.value as unknown as number ?? null }
+})
+
+const selectedEmployee = computed({
+  get: () => employeeOptions.value.find(e => e.value === form.employeeId),
+  set: (val) => {
+    const prevId = form.employeeId
+    form.employeeId = val?.value as unknown as number ?? null
+    // Auto-populate fields when an employee is selected
+    if (form.employeeId && form.employeeId !== prevId) {
+      const emp = employees.value.find(e => e.id === form.employeeId)
+      if (emp) {
+        form.name = emp.name
+        form.email = emp.email
+        if (emp.photo) {
+          previewUrl.value = emp.photo
+          form.photo = emp.photo
+        }
+      }
+    }
+  }
 })
 
 const resetForm = () => {
@@ -130,6 +166,7 @@ const resetForm = () => {
   form.photo = null
   form.isActive = true
   form.roleId = null
+  form.employeeId = null
   previewUrl.value = null
 }
 
@@ -144,7 +181,16 @@ const fetchRoles = async () => {
   }
 }
 
-
+const fetchEmployees = async () => {
+  try {
+    const response = await employeeService.getAll(1, 1000)
+    if (response.success) {
+      employees.value = response.data
+    }
+  } catch (error) {
+    // silently fail
+  }
+}
 
 const onFileChange = async (e: Event) => {
   const target = e.target as HTMLInputElement
@@ -210,6 +256,7 @@ const handleSubmit = async () => {
 watch(open, (val) => {
   if (val) {
     fetchRoles()
+    fetchEmployees()
   } else {
     resetForm()
   }

@@ -8,6 +8,14 @@ export interface User {
   isActive: boolean
   roleId?: number
   role?: { id: number; name: string } | null
+  employeeId?: number | null
+  employee?: {
+    id: number
+    name: string
+    employeeId: string
+    jobPosition: string
+    photo: string | null
+  } | null
   createdAt: string
 }
 
@@ -18,4 +26,6 @@ export interface UserPayload {
   photo?: string | null
   isActive: boolean
   roleId?: number | null
+  employeeId?: number | null
 }
+
