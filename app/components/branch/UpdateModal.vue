@@ -20,6 +20,15 @@
         <UFormField label="Description" name="description">
           <UTextarea v-model="form.description" placeholder="Enter description (optional)" class="w-full" :rows="3" />
         </UFormField>
+        <UFormField label="Address" name="address">
+          <UTextarea v-model="form.address" placeholder="Enter branch address (optional)" class="w-full" :rows="2" />
+        </UFormField>
+        <UFormField label="Email" name="email">
+          <UInput v-model="form.email" type="email" placeholder="Enter branch email (optional)" class="w-full" />
+        </UFormField>
+        <UFormField label="Phone" name="phone">
+          <UInput v-model="form.phone" placeholder="Enter branch phone (optional)" class="w-full" />
+        </UFormField>
       </UForm>
     </template>
     <template #footer>
@@ -57,12 +66,18 @@ const schema = z.object({
   code: z.string().optional().or(z.literal('')),
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional().or(z.literal('')),
+  address: z.string().optional().or(z.literal('')),
+  email: z.string().email('Invalid email format').optional().or(z.literal('')),
+  phone: z.string().optional().or(z.literal('')),
 })
 
 const form = reactive<BranchPayload>({
   code: '',
   name: '',
   description: '',
+  address: '',
+  email: '',
+  phone: '',
 })
 
 const populateForm = () => {
@@ -70,6 +85,9 @@ const populateForm = () => {
     form.code = props.branch.code
     form.name = props.branch.name
     form.description = props.branch.description || ''
+    form.address = props.branch.address || ''
+    form.email = props.branch.email || ''
+    form.phone = props.branch.phone || ''
   }
 }
 

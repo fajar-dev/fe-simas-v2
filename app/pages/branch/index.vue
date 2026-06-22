@@ -131,6 +131,27 @@ const columns: TableColumn<Branch>[] = [
     }
   },
   {
+    accessorKey: 'email',
+    header: sortHeader('Email', 'email'),
+    cell: ({ row }) => {
+      return h('span', { class: 'text-neutral-600' }, row.original.email || '-')
+    }
+  },
+  {
+    accessorKey: 'phone',
+    header: sortHeader('Phone', 'phone'),
+    cell: ({ row }) => {
+      return h('span', { class: 'text-neutral-600' }, row.original.phone || '-')
+    }
+  },
+  {
+    accessorKey: 'address',
+    header: sortHeader('Address', 'address'),
+    cell: ({ row }) => {
+      return h('span', { class: 'text-neutral-600' }, row.original.address || '-')
+    }
+  },
+  {
     id: 'actions',
     header: 'Action',
     meta: {
