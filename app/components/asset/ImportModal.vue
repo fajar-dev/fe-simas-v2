@@ -35,43 +35,29 @@
           </div>
         </div>
 
-        <!-- File Upload Area -->
-        <div
-          class="border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer"
-          :class="isDragOver ? 'border-primary bg-primary/5' : 'border-neutral-300 hover:border-neutral-400'"
-          @click="triggerFileInput"
-          @dragover.prevent="isDragOver = true"
-          @dragleave.prevent="isDragOver = false"
-          @drop.prevent="handleDrop"
-        >
-          <input
-            ref="fileInputRef"
-            type="file"
-            accept=".xlsx,.xls"
-            class="hidden"
-            @change="handleFileSelect"
-          />
-          <div v-if="!selectedFile" class="space-y-2">
-            <UIcon name="i-lucide-upload-cloud" class="w-10 h-10 text-neutral-400 mx-auto" />
-            <p class="text-sm text-neutral-600">
-              <span class="text-primary font-medium">Click to upload</span> or drag and drop
-            </p>
-            <p class="text-xs text-neutral-400">Excel files only (.xlsx, .xls)</p>
-          </div>
-          <div v-else class="flex items-center justify-center gap-3">
-            <UIcon name="i-lucide-file-check-2" class="w-8 h-8 text-emerald-600 shrink-0" />
-            <div class="text-left min-w-0">
-              <p class="text-sm font-medium text-neutral-700 truncate">{{ selectedFile.name }}</p>
-              <p class="text-xs text-neutral-500">{{ formatFileSize(selectedFile.size) }}</p>
+        <!-- File Upload Area (same pattern as Create Asset image upload) -->
+        <div>
+          <label class="text-sm font-medium text-neutral-700 mb-1.5 block">File</label>
+          <div v-if="selectedFile" class="relative p-3 border border-neutral-200 rounded-lg">
+            <div class="flex items-center gap-3">
+              <UIcon name="i-lucide-file-check-2" class="w-8 h-8 text-emerald-600 shrink-0" />
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium text-neutral-700 truncate">{{ selectedFile.name }}</p>
+                <p class="text-xs text-neutral-500">{{ formatFileSize(selectedFile.size) }}</p>
+              </div>
             </div>
-            <UButton
-              color="neutral"
-              variant="ghost"
-              icon="i-lucide-x"
-              size="xs"
-              @click.stop="clearFile"
-            />
+            <UButton icon="i-lucide-x" color="error" variant="solid" size="xs" class="absolute top-1 right-1 rounded-full" @click="clearFile" />
           </div>
+          <div 
+            v-else 
+            class="flex flex-col items-center justify-center w-full py-8 border-2 border-dashed border-neutral-200 rounded-lg cursor-pointer hover:border-primary transition-colors"
+            @click="triggerFileInput"
+          >
+            <UIcon name="i-lucide-upload" class="w-8 h-8 text-neutral-400 mb-2" />
+            <span class="text-sm text-neutral-500">Drop your Excel file here</span>
+            <span class="text-xs text-neutral-400 mt-1">.xlsx, .xls</span>
+          </div>
+          <input ref="fileInputRef" type="file" class="hidden" accept=".xlsx,.xls" @change="onFileChange" />
         </div>
 
         <!-- Import Result -->
@@ -122,7 +108,6 @@ const toast = useToast()
 
 const fileInputRef = ref<HTMLInputElement>()
 const selectedFile = ref<File | null>(null)
-const isDragOver = ref(false)
 const isImporting = ref(false)
 const isDownloading = ref(false)
 const importResult = ref<{ success: number; errors: { row: number; message: string }[] } | null>(null)
@@ -141,19 +126,10 @@ const triggerFileInput = () => {
   fileInputRef.value?.click()
 }
 
-const handleFileSelect = (e: Event) => {
+const onFileChange = (e: Event) => {
   const input = e.target as HTMLInputElement
   if (input.files?.[0]) {
     selectedFile.value = input.files[0]
-    importResult.value = null
-  }
-}
-
-const handleDrop = (e: DragEvent) => {
-  isDragOver.value = false
-  const file = e.dataTransfer?.files?.[0]
-  if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
-    selectedFile.value = file
     importResult.value = null
   }
 }
