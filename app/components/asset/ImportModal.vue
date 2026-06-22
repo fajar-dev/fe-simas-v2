@@ -16,7 +16,7 @@
         <div class="bg-neutral-50 border border-neutral-200 rounded-lg p-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <UIcon name="i-lucide-file-spreadsheet" class="w-5 h-5 text-emerald-600" />
+              <UIcon name="i-lucide-file-spreadsheet" class="w-8 h-8 text-emerald-600" />
               <div>
                 <p class="text-sm font-medium text-neutral-700">Download Template</p>
                 <p class="text-xs text-neutral-500">Use this template for importing</p>
@@ -25,7 +25,6 @@
             <UButton
               color="primary"
               variant="soft"
-              size="xs"
               icon="i-lucide-download"
               :loading="isDownloading"
               @click="downloadTemplate"
@@ -62,24 +61,21 @@
 
         <!-- Import Result -->
         <div v-if="importResult" class="space-y-3">
-          <!-- Success count -->
-          <div class="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
-            <UIcon name="i-lucide-check-circle" class="w-5 h-5 text-emerald-600 shrink-0" />
-            <span class="text-sm text-emerald-700 font-medium">{{ importResult.success }} assets imported successfully</span>
-          </div>
+          <UAlert
+            :color="importResult.errors.length > 0 ? 'warning' : 'success'"
+            :icon="importResult.errors.length > 0 ? 'i-lucide-alert-triangle' : 'i-lucide-check-circle'"
+            variant="soft"
+            :title="`${importResult.success} successful, ${importResult.errors.length} failed`"
+          />
 
-          <!-- Error list -->
+          <!-- Error detail table -->
           <div v-if="importResult.errors.length > 0">
-            <div class="flex items-center gap-2 mb-2">
-              <UIcon name="i-lucide-alert-circle" class="w-4 h-4 text-error" />
-              <span class="text-sm font-medium text-error">{{ importResult.errors.length }} failed</span>
-            </div>
             <div class="border border-neutral-200 rounded-lg overflow-hidden">
               <table class="w-full text-sm">
                 <thead>
                   <tr class="bg-neutral-100">
-                    <th class="text-left px-3 py-2 text-xs font-semibold text-neutral-600 w-16">Row</th>
-                    <th class="text-left px-3 py-2 text-xs font-semibold text-neutral-600">Error</th>
+                    <th class="text-left px-3 py-2 font-semibold text-neutral-600 w-16">Row</th>
+                    <th class="text-left px-3 py-2 font-semibold text-neutral-600">Error</th>
                   </tr>
                 </thead>
               </table>
@@ -87,8 +83,8 @@
                 <table class="w-full text-sm">
                   <tbody>
                     <tr v-for="err in importResult.errors" :key="err.row" class="border-t border-neutral-100">
-                      <td class="px-3 py-2 text-xs font-mono font-semibold text-neutral-500 w-16 align-top">{{ err.row }}</td>
-                      <td class="px-3 py-2 text-xs text-neutral-700">{{ err.message }}</td>
+                      <td class="px-3 py-2 font-semibold text-neutral-500 w-16">{{ err.row }}</td>
+                      <td class="px-3 py-2 text-neutral-700">{{ err.message }}</td>
                     </tr>
                   </tbody>
                 </table>

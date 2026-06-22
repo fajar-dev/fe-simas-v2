@@ -77,7 +77,6 @@ import { assetHolderService } from '~/services/asset-holder-service'
 import { employeeService } from '~/services/employee-service'
 import { assetService } from '~/services/asset-service'
 import type { Attachment } from '~/types/attachment'
-import type { SelectMenuItem } from '@nuxt/ui'
 
 const open = defineModel<boolean>({ default: false })
 const props = defineProps<{
