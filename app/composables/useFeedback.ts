@@ -17,6 +17,9 @@ export const useFeedback = () => {
       const targetElement = document.getElementById('__nuxt') || document.body
       
       const blob = await domToBlob(targetElement, {
+        features: {
+          restoreScrollPosition: true
+        },
         filter: (node) => {
           if (node instanceof HTMLElement) {
             if (
