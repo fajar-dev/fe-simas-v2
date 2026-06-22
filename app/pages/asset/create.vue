@@ -522,7 +522,7 @@ watch(selectedEmployee, (val) => {
 const loadEmployees = async () => {
   isLoadingEmployees.value = true
   try {
-    const res = await employeeService.getAll(1, 500)
+    const res = await employeeService.getList()
     if (res.success && res.data) {
       employeeOptions.value = res.data.map(e => ({
         label: `${e.name} (${e.employeeId})`,
@@ -547,10 +547,10 @@ const loadEmployees = async () => {
 const loadBranches = async () => {
   isLoadingBranches.value = true
   try {
-    const res = await branchService.getAll(1, 200)
+    const res = await branchService.getList()
     if (res.success && res.data) {
       branchOptions.value = res.data.map(b => ({
-        label: `${b.code} - ${b.name}`,
+        label: b.name,
         value: b.id
       }))
     }

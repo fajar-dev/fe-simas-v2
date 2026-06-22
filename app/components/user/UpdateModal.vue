@@ -191,9 +191,9 @@ const fetchRoles = async () => {
 
 const fetchEmployees = async () => {
   try {
-    const response = await employeeService.getAll(1, 1000)
+    const response = await employeeService.getList()
     if (response.success) {
-      employees.value = response.data
+      employees.value = response.data as any
     }
   } catch (error) {
     // silently fail

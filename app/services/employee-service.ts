@@ -24,6 +24,18 @@ export class EmployeeService {
         }
     }
 
+    async getList(): Promise<ApiResponse<{ id: number; name: string; employeeId: string; photo: string | null }[]>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<{ id: number; name: string; employeeId: string; photo: string | null }[]>>(
+                `/employee/list`,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
     async getById(id: number): Promise<ApiResponse<Employee>> {
         try {
             const response = await apiService.client.get<ApiResponse<Employee>>(

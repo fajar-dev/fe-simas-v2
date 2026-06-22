@@ -24,6 +24,18 @@ export class BranchService {
         }
     }
 
+    async getList(): Promise<ApiResponse<{ id: number; name: string }[]>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<{ id: number; name: string }[]>>(
+                `/branch/list`,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
     async getById(id: number): Promise<ApiResponse<Branch>> {
         try {
             const response = await apiService.client.get<ApiResponse<Branch>>(

@@ -487,21 +487,21 @@ const applyFilters = () => {
 
 // Fetch options
 const fetchCategories = async () => {
-  const res = await categoryService.getAll(1, 100, '')
+  const res = await categoryService.getList()
   if (res.success) {
     categoryOptions.value = res.data.map(c => ({ label: c.name, value: c.id }))
   }
 }
 
 const fetchBranches = async () => {
-  const res = await branchService.getAll(1, 100, '')
+  const res = await branchService.getList()
   if (res.success) {
     branchOptions.value = res.data.map(b => ({ label: b.name, value: b.id }))
   }
 }
 
 const fetchEmployees = async () => {
-  const res = await employeeService.getAll(1, 100, '')
+  const res = await employeeService.getList()
   if (res.success) {
     employeeOptions.value = res.data.map(e => ({
       label: `${e.name} (${e.employeeId})`,

@@ -153,8 +153,7 @@ const loadAssets = async () => {
 const loadEmployees = async () => {
   isLoadingEmployees.value = true
   try {
-    // Get up to 500 employees for the searchable list
-    const res = await employeeService.getAll(1, 500)
+    const res = await employeeService.getList()
     if (res.success && res.data) {
       employeeOptions.value = res.data.map(e => ({
         label: `${e.name} (${e.employeeId})`,

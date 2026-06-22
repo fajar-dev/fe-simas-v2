@@ -88,10 +88,10 @@ const resetForm = () => {
 }
 
 const fetchBranches = async () => {
-  const response = await branchService.getAll(1, 999)
+  const response = await branchService.getList()
   if (response.success) {
     branchOptions.value = response.data.map((b) => ({
-      label: `[${b.code}] ${b.name}`,
+      label: b.name,
       value: b.id,
     }))
   }

@@ -24,6 +24,18 @@ export class CategoryService {
         }
     }
 
+    async getList(): Promise<ApiResponse<{ id: number; name: string }[]>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<{ id: number; name: string }[]>>(
+                `/category/list`,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
     async getById(id: number): Promise<ApiResponse<Category>> {
         try {
             const response = await apiService.client.get<ApiResponse<Category>>(

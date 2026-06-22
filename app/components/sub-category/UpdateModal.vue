@@ -88,7 +88,7 @@ const form = reactive<SubCategoryPayload>({
 })
 
 const fetchCategories = async () => {
-  const response = await categoryService.getAll(1, 999)
+  const response = await categoryService.getList()
   if (response.success) {
     categoryOptions.value = response.data.map((c) => ({
       label: c.name,

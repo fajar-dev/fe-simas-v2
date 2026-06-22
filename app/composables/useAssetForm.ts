@@ -55,7 +55,7 @@ export function useAssetForm() {
   const showAddSubCategory = ref(false)
 
   const fetchCategories = async () => {
-    const res = await categoryService.getAll(1, 999)
+    const res = await categoryService.getList()
     if (res.success) {
       categoryOptions.value = res.data.map((c) => ({ label: c.name, value: c.id }))
     }

@@ -198,10 +198,10 @@ const loadAssets = async () => {
 const loadBranches = async () => {
   isLoadingBranches.value = true
   try {
-    const res = await branchService.getAll(1, 200)
+    const res = await branchService.getList()
     if (res.success && res.data) {
       branchOptions.value = res.data.map(b => ({
-        label: `${b.code} - ${b.name}`,
+        label: b.name,
         value: b.id
       }))
     }
