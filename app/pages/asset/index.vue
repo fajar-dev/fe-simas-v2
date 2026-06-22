@@ -21,43 +21,59 @@
       table-class="min-w-[1200px]"
     >
       <template #actions>
-        <div class="flex items-center gap-2">
-          <UButton
-            color="primary"
-            variant="solid"
-            icon="i-lucide-plus"
-            to="/asset/create"
-          >
-            Add Asset
-          </UButton>
-          <UButton
-            color="neutral"
-            variant="soft"
-            icon="i-lucide-filter"
-            class="relative"
-            @click="showFilterDrawer = true"
-          >
-            Filter
-            <UBadge
-              v-if="activeFilterCount > 0"
-              :label="String(activeFilterCount)"
+        <div class="flex flex-wrap items-center justify-center sm:justify-end gap-2">
+          <!-- Import & Export -->
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <UButton
               color="primary"
-              size="sm"
+              variant="outline"
+              icon="i-lucide-upload"
+              class="flex-1 sm:flex-none justify-center"
+            >
+              Import
+            </UButton>
+            <UButton
+              color="primary"
+              variant="soft"
+              icon="i-lucide-download"
+              :loading="isExporting"
+              class="flex-1 sm:flex-none justify-center"
+              @click="handleExport"
+            >
+              Export
+            </UButton>
+          </div>
+
+          <!-- Main Actions -->
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <UButton
+              color="primary"
               variant="solid"
-            />
-          </UButton>
-          <UButton
-            color="neutral"
-            variant="soft"
-            icon="i-lucide-download"
-            :loading="isExporting"
-            @click="handleExport"
-          >
-            Export
-          </UButton>
+              icon="i-lucide-plus"
+              to="/asset/create"
+              class="flex-1 sm:flex-none justify-center"
+            >
+              Add Asset
+            </UButton>
+            <UButton
+              color="neutral"
+              variant="soft"
+              icon="i-lucide-filter"
+              class="relative flex-1 sm:flex-none justify-center"
+              @click="showFilterDrawer = true"
+            >
+              Filter
+              <UBadge
+                v-if="activeFilterCount > 0"
+                :label="String(activeFilterCount)"
+                color="primary"
+                size="sm"
+                variant="solid"
+              />
+            </UButton>
           
-          <!-- Column Checklist Dropdown/Popover -->
-          <UPopover>
+            <!-- Column Checklist Dropdown/Popover -->
+            <UPopover>
             <UButton
               color="neutral"
               variant="ghost"
@@ -85,6 +101,7 @@
               </div>
             </template>
           </UPopover>
+          </div>
         </div>
       </template>
     </DataTable>
@@ -219,9 +236,7 @@ const handleExport = async () => {
   isExporting.value = true
   try {
     await assetService.exportExcel(search.value, sortBy.value, order.value, activeFilters.value, activeLabelColumns.value)
-    useToast().add({ title: 'Export successful', description: 'File downloaded', color: 'success' })
-  } catch (error) {
-    useToast().add({ title: 'Export failed', description: 'Failed to export assets', color: 'error' })
+    useToast().add({ title: 'Export successful', icon:'i-lucide-check', color: 'success' })
   } finally {
     isExporting.value = false
   }
