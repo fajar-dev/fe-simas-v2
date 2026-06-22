@@ -51,6 +51,12 @@
         <UFormField label="Phone" name="phone" required>
           <UInput v-model="form.phone" type="tel" placeholder="Enter phone number" class="w-full" />
         </UFormField>
+        <UFormField label="Status" name="isActive">
+          <div class="flex items-center gap-2">
+            <USwitch v-model="form.isActive" />
+            <span class="text-sm text-neutral-600">{{ form.isActive ? 'Active' : 'Inactive' }}</span>
+          </div>
+        </UFormField>
       </UForm>
     </template>
     <template #footer>
@@ -101,7 +107,8 @@ const form = reactive<EmployeePayload>({
   jobPosition: '',
   email: '',
   phone: '',
-  photo: null
+  photo: null,
+  isActive: true
 })
 
 const resetForm = () => {
@@ -111,6 +118,7 @@ const resetForm = () => {
   form.email = ''
   form.phone = ''
   form.photo = null
+  form.isActive = true
   previewUrl.value = null
 }
 

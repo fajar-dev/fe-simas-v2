@@ -6,6 +6,7 @@ export interface Employee {
   email: string
   phone: string
   photo: string | null
+  isActive: boolean
   createdAt: string
 }
 
@@ -16,4 +17,5 @@ export interface EmployeePayload {
   email: string
   phone: string
   photo?: string | null
+  isActive?: boolean
 }

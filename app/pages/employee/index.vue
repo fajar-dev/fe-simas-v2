@@ -59,6 +59,7 @@ definePageMeta({
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 const UAvatar = resolveComponent('UAvatar')
+const UBadge = resolveComponent('UBadge')
 
 // State
 const data = ref<Employee[]>([])
@@ -151,6 +152,21 @@ const columns: TableColumn<Employee>[] = [
     header: sortHeader('Phone', 'phone'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.phone)
+    }
+  },
+  {
+    accessorKey: 'isActive',
+    header: 'Status',
+    cell: ({ row }) => {
+      const isActive = row.original.isActive
+      return h(
+        UBadge,
+        {
+          color: isActive ? 'primary' : 'error',
+          variant: 'subtle',
+        },
+        () => (isActive ? 'Active' : 'Inactive')
+      )
     }
   },
   {
