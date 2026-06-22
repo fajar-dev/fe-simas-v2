@@ -4,7 +4,7 @@
     description="Update the role's name and permissions."
     v-model:open="open" 
     :ui="{ 
-      content: 'sm:max-w-2xl', 
+      content: 'sm:max-w-md', 
       overlay: 'bg-black/40',
       footer: 'justify-end'
     }"
@@ -140,7 +140,7 @@ const groupedPermissions = computed(() => {
     if (!groups[perm.module]) {
       groups[perm.module] = []
     }
-    groups[perm.module].push(perm)
+    groups[perm.module]!.push(perm)
   }
   return groups
 })
@@ -154,7 +154,7 @@ const isSomeSelected = computed(() =>
   form.permissionIds.length > 0
 )
 
-const toggleAll = (checked: boolean) => {
+const toggleAll = (checked: boolean | 'indeterminate') => {
   if (checked) {
     form.permissionIds = [...allPermissionIds.value]
   } else {

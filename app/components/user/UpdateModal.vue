@@ -53,7 +53,7 @@
         </UFormField>
         <UFormField label="Role" name="roleId">
           <USelectMenu
-            v-model="form.roleId"
+            v-model="selectedRole"
             :items="roleOptions"
             placeholder="Select a role"
             value-key="value"
@@ -123,6 +123,11 @@ const form = reactive<UserPayload>({
   photo: null,
   isActive: true,
   roleId: null
+})
+
+const selectedRole = computed({
+  get: () => roleOptions.value.find(r => r.value === form.roleId) || null,
+  set: (val: any) => { form.roleId = val?.value ?? null }
 })
 
 const populateForm = () => {

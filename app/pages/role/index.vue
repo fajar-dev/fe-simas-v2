@@ -24,7 +24,7 @@
         <UButton
           color="primary"
           variant="solid"
-          icon="i-lucide-shield-plus"
+          icon="i-lucide-plus"
           class="w-full lg:w-auto justify-center"
           @click="showAddModal = true"
         >
