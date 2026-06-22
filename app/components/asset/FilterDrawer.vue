@@ -204,6 +204,24 @@
 
         <USeparator />
 
+        <!-- Data Quality -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-sm font-medium text-neutral-700">Data Quality</label>
+            <UButton v-if="filters.missingFields?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('missingFields')">Clear</UButton>
+          </div>
+          <USelectMenu
+            v-model="filters.missingFields"
+            :items="missingFieldOptions"
+            placeholder="All Complete"
+            value-key="value"
+            multiple
+            class="w-full"
+          />
+        </div>
+
+        <USeparator />
+
         <!-- Labels -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
@@ -283,6 +301,7 @@ const filters = reactive<Record<string, any>>({
   priceMax: undefined,
   purchaseDateFrom: undefined,
   purchaseDateTo: undefined,
+  missingFields: [],
 })
 
 const purchaseDateFromVal = computed({
@@ -337,6 +356,14 @@ const statusOptions = [
 const holderStatusOptions = [
   { label: 'Has Holder', value: 'has_holder' },
   { label: 'No Holder', value: 'no_holder' },
+]
+
+const missingFieldOptions = [
+  { label: 'Without Image', value: 'image' },
+  { label: 'Without Price', value: 'price' },
+  { label: 'Without Brand', value: 'brand' },
+  { label: 'Without Model', value: 'model' },
+  { label: 'Without Purchase Date', value: 'purchaseDate' },
 ]
 
 // Date presets
@@ -396,7 +423,7 @@ const onBranchChange = async () => {
 
 // Clear single field
 const clearField = (field: string) => {
-  if (['categoryIds', 'subCategoryIds', 'branchIds', 'locationIds', 'status'].includes(field)) {
+  if (['categoryIds', 'subCategoryIds', 'branchIds', 'locationIds', 'status', 'missingFields'].includes(field)) {
     filters[field] = []
   } else {
     filters[field] = undefined
@@ -427,6 +454,7 @@ const resetAll = () => {
   filters.priceMax = undefined
   filters.purchaseDateFrom = undefined
   filters.purchaseDateTo = undefined
+  filters.missingFields = []
   labelFilters.value = []
   subCategoryOptions.value = []
   locationOptions.value = []
@@ -497,6 +525,7 @@ watch(open, (isOpen) => {
     filters.priceMax = init.priceMax ?? undefined
     filters.purchaseDateFrom = init.purchaseDateFrom ?? undefined
     filters.purchaseDateTo = init.purchaseDateTo ?? undefined
+    filters.missingFields = init.missingFields || []
     labelFilters.value = init.labels ? init.labels.map((l: any) => ({ ...l })) : []
 
     fetchCategories()

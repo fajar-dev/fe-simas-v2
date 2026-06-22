@@ -32,7 +32,7 @@ export function useTableQuery(onQueryChange: () => void, options: TableQueryOpti
     const parsedFilters: Record<string, any> = {}
     
     const arrayNumberFields = ['categoryIds', 'subCategoryIds', 'branchIds', 'locationIds']
-    const arrayStringFields = ['status']
+    const arrayStringFields = ['status', 'missingFields']
     const numberFields = ['holderId', 'priceMin', 'priceMax']
     const stringFields = ['holderStatus', 'purchaseDateFrom', 'purchaseDateTo']
     
