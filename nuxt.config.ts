@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     'nuxt-vue3-google-signin',
     '@nuxt/image',
-    'nuxt-charts'
+    'nuxt-charts',
+    '@vite-pwa/nuxt'
   ],
 
   devtools: {
@@ -45,6 +46,47 @@ export default defineNuxtConfig({
         commaDangle: 'never',
         braceStyle: '1tbs'
       }
+    }
+  },
+
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: "SIMAS",
+      short_name: "SIMAS",
+      description: "Asset Management System",
+      lang: 'id',
+      display: 'standalone',
+      background_color: '#ffffff',
+      theme_color: '#009838',
+      icons: [
+        {
+          src: '/icons/icon_64x64.png',
+          sizes: '64x64',
+          type: 'image/png',
+        },
+        {
+          src: '/icons/icon_144x144.png',
+          sizes: '144x144',
+          type: 'image/png',
+        },
+        {
+          src: '/icons/icon_192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+
+          src: '/icons/icon_384x384.png',
+          sizes: '384x384',
+          type: 'image/png',
+        },
+        {
+          src: '/icons/icon_512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+      ],
     }
   }
 })

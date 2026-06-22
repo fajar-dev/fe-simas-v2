@@ -524,6 +524,15 @@ const handleDelete = async () => {
   }
 }
 
+// Save current query string when visiting the asset list page
+const route = useRoute()
+watch(() => route.fullPath, (newPath) => {
+  if (route.path === '/asset' || route.path === '/asset/') {
+    const queryStr = route.fullPath.split('?')[1] || ''
+    localStorage.setItem('last_asset_query', queryStr)
+  }
+}, { immediate: true })
+
 // Initial fetch
 onMounted(() => {
   const saved = localStorage.getItem('active_label_columns')

@@ -12,15 +12,16 @@ useHead({
     { name: 'viewport', content: 'width=device-width, initial-scale=1' }
   ],
   link: [
-    { rel: 'icon', href: '/favicon.ico' }
+    { rel: 'icon', href: '/favicon.ico' },
+    { rel: 'manifest', href: '/manifest.webmanifest' },
   ],
   htmlAttrs: {
     lang: 'id'
   }
 })
 
-const title = 'SIMAS - Sistem Management Asset'
-const description = 'SIMAS — Sistem Management Asset Dashboard'
+const title = 'SIMAS'
+const description = 'SIMAS — Asset Management System'
 
 useSeoMeta({
   title,

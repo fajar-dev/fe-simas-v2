@@ -229,8 +229,9 @@ const router = useRouter()
 const assetId = Number(route.params.id)
 
 const goBack = () => {
-  if (window.history.length > 1) {
-    router.back()
+  const lastQuery = localStorage.getItem('last_asset_query')
+  if (lastQuery) {
+    navigateTo(`/asset?${lastQuery}`)
   } else {
     navigateTo('/asset')
   }
