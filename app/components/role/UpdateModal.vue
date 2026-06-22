@@ -1,0 +1,258 @@
+<template>
+  <UModal 
+    title="Edit Role"
+    description="Update the role's name and permissions."
+    v-model:open="open" 
+    :ui="{ 
+      content: 'sm:max-w-2xl', 
+      overlay: 'bg-black/40',
+      footer: 'justify-end'
+    }"
+  >
+    <template #body>
+      <UForm id="update-role-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
+        <UFormField label="Name" name="name" required>
+          <UInput 
+            v-model="form.name" 
+            placeholder="Enter role name" 
+            class="w-full" 
+            :disabled="role?.isSuperAdmin"
+          />
+        </UFormField>
+
+        <div class="space-y-3">
+          <label class="text-sm font-medium text-neutral-700">Permissions</label>
+
+          <!-- Super Admin notice -->
+          <div v-if="role?.isSuperAdmin" class="bg-warning-50 border border-warning-200 rounded-lg p-3">
+            <p class="text-sm text-warning-700">
+              <UIcon name="i-lucide-info" class="w-4 h-4 inline mr-1" />
+              Super Admin roles have all permissions by default. Permissions cannot be modified.
+            </p>
+          </div>
+
+          <template v-else>
+            <!-- Select All -->
+            <div class="border border-neutral-200 rounded-lg p-3">
+              <UCheckbox
+                :model-value="isAllSelected"
+                :indeterminate="isSomeSelected && !isAllSelected"
+                label="Select All"
+                @update:model-value="toggleAll"
+              />
+            </div>
+
+            <!-- Loading state -->
+            <div v-if="isLoadingPermissions" class="flex items-center justify-center py-8">
+              <UIcon name="i-lucide-loader-2" class="w-5 h-5 animate-spin text-neutral-400" />
+              <span class="ml-2 text-sm text-neutral-500">Loading permissions...</span>
+            </div>
+
+            <!-- Permission Groups by Module -->
+            <div v-else class="space-y-3">
+              <div 
+                v-for="(perms, moduleName) in groupedPermissions" 
+                :key="moduleName"
+                class="border border-neutral-200 rounded-lg p-3 space-y-2"
+              >
+                <!-- Module Header with Select All for module -->
+                <div class="flex items-center gap-2 border-b border-neutral-100 pb-2">
+                  <UCheckbox
+                    :model-value="isModuleAllSelected(moduleName)"
+                    :indeterminate="isModuleSomeSelected(moduleName) && !isModuleAllSelected(moduleName)"
+                    :label="formatModuleName(moduleName)"
+                    @update:model-value="toggleModule(moduleName)"
+                    :ui="{ label: 'font-semibold text-neutral-900 capitalize' }"
+                  />
+                </div>
+
+                <!-- Permission Checkboxes -->
+                <div class="flex flex-wrap gap-x-4 gap-y-1 pl-6">
+                  <UCheckbox
+                    v-for="perm in perms"
+                    :key="perm.id"
+                    :model-value="form.permissionIds.includes(perm.id)"
+                    :label="formatActionName(perm.action)"
+                    @update:model-value="togglePermission(perm.id)"
+                  />
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </UForm>
+    </template>
+    <template #footer>
+      <div class="flex justify-end items-center gap-2 w-full">
+        <UButton label="Cancel" @click="open = false" color="neutral" variant="outline" />
+        <UButton
+          type="submit"
+          form="update-role-form"
+          color="primary"
+          :loading="isSubmitting"
+        >
+          Save Changes
+        </UButton>
+      </div>
+    </template>
+  </UModal>
+</template>
+
+<script setup lang="ts">
+import { z } from 'zod'
+import { roleService } from '~/services/role-service'
+import type { Role, Permission } from '~/types/role'
+
+const open = defineModel<boolean>({ default: false })
+
+const props = defineProps<{
+  role: Role | null
+}>()
+
+const emit = defineEmits<{ updated: [] }>()
+const toast = useToast()
+const isSubmitting = ref(false)
+const isLoadingPermissions = ref(false)
+
+const permissions = ref<Permission[]>([])
+
+const schema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  permissionIds: z.array(z.number())
+})
+
+const form = reactive({
+  name: '',
+  permissionIds: [] as number[]
+})
+
+const populateForm = () => {
+  if (props.role) {
+    form.name = props.role.name
+    form.permissionIds = props.role.permissions?.map(p => p.id) || []
+  }
+}
+
+// Group permissions by module
+const groupedPermissions = computed(() => {
+  const groups: Record<string, Permission[]> = {}
+  for (const perm of permissions.value) {
+    if (!groups[perm.module]) {
+      groups[perm.module] = []
+    }
+    groups[perm.module].push(perm)
+  }
+  return groups
+})
+
+// Select all logic
+const allPermissionIds = computed(() => permissions.value.map(p => p.id))
+const isAllSelected = computed(() => 
+  allPermissionIds.value.length > 0 && allPermissionIds.value.every(id => form.permissionIds.includes(id))
+)
+const isSomeSelected = computed(() => 
+  form.permissionIds.length > 0
+)
+
+const toggleAll = (checked: boolean) => {
+  if (checked) {
+    form.permissionIds = [...allPermissionIds.value]
+  } else {
+    form.permissionIds = []
+  }
+}
+
+// Module select all logic
+const isModuleAllSelected = (moduleName: string) => {
+  const modulePerms = groupedPermissions.value[moduleName] || []
+  return modulePerms.length > 0 && modulePerms.every(p => form.permissionIds.includes(p.id))
+}
+
+const isModuleSomeSelected = (moduleName: string) => {
+  const modulePerms = groupedPermissions.value[moduleName] || []
+  return modulePerms.some(p => form.permissionIds.includes(p.id))
+}
+
+const toggleModule = (moduleName: string) => {
+  const modulePerms = groupedPermissions.value[moduleName] || []
+  const moduleIds = modulePerms.map(p => p.id)
+  const allSelected = isModuleAllSelected(moduleName)
+
+  if (allSelected) {
+    form.permissionIds = form.permissionIds.filter(id => !moduleIds.includes(id))
+  } else {
+    const newIds = moduleIds.filter(id => !form.permissionIds.includes(id))
+    form.permissionIds = [...form.permissionIds, ...newIds]
+  }
+}
+
+// Single permission toggle
+const togglePermission = (id: number) => {
+  const index = form.permissionIds.indexOf(id)
+  if (index > -1) {
+    form.permissionIds.splice(index, 1)
+  } else {
+    form.permissionIds.push(id)
+  }
+}
+
+// Format helpers
+const formatModuleName = (name: string) => {
+  return name.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+}
+
+const formatActionName = (action: string) => {
+  return action.charAt(0).toUpperCase() + action.slice(1)
+}
+
+// Fetch permissions
+const fetchPermissions = async () => {
+  isLoadingPermissions.value = true
+  try {
+    const response = await roleService.getAllPermissions()
+    if (response.success) {
+      permissions.value = response.data
+    }
+  } finally {
+    isLoadingPermissions.value = false
+  }
+}
+
+const handleSubmit = async () => {
+  if (!props.role) return
+  isSubmitting.value = true
+
+  const payload: any = {
+    name: form.name
+  }
+
+  // Only send permissionIds for non-super admin roles
+  if (!props.role.isSuperAdmin) {
+    payload.permissionIds = form.permissionIds
+  }
+
+  try {
+    const response = await roleService.update(props.role.id, payload)
+    if (response.success) {
+      toast.add({
+        title: 'Role updated successfully!',
+        color: 'success',
+        icon: 'i-lucide-circle-check'
+      })
+      emit('updated')
+      open.value = false
+    }
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+watch(open, (val) => {
+  if (val) {
+    populateForm()
+    if (!props.role?.isSuperAdmin) {
+      fetchPermissions()
+    }
+  }
+})
+</script>

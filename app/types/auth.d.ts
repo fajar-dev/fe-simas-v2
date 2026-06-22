@@ -7,6 +7,7 @@ export interface User {
     photo: string
     isActive: boolean
     hasPassword?: boolean
+    role?: { id: number; name: string; isSuperAdmin: boolean; permissions: { id: number; key: string }[] } | null
 }
 
 export interface AuthData {

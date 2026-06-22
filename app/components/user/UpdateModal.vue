@@ -51,6 +51,15 @@
             <span class="text-sm text-neutral-600">{{ form.isActive ? 'Active' : 'Inactive' }}</span>
           </div>
         </UFormField>
+        <UFormField label="Role" name="roleId">
+          <USelectMenu
+            v-model="form.roleId"
+            :items="roleOptions"
+            placeholder="Select a role"
+            value-key="value"
+            class="w-full"
+          />
+        </UFormField>
       </UForm>
     </template>
     <template #footer>
@@ -73,7 +82,9 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import { userService } from '~/services/user-service'
+import { roleService } from '~/services/role-service'
 import type { User, UserPayload } from '~/types/user'
+import type { Role } from '~/types/role'
 
 const open = defineModel<boolean>({ default: false })
 
@@ -100,12 +111,18 @@ const schema = z.object({
   isActive: z.boolean()
 })
 
+const roles = ref<Role[]>([])
+const roleOptions = computed(() => 
+  roles.value.map(r => ({ label: r.name, value: r.id }))
+)
+
 const form = reactive<UserPayload>({
   name: '',
   email: '',
   password: '',
   photo: null,
-  isActive: true
+  isActive: true,
+  roleId: null
 })
 
 const populateForm = () => {
@@ -115,7 +132,19 @@ const populateForm = () => {
     form.password = ''
     form.photo = props.user.photo // will contain the MinIO presigned URL (or path)
     form.isActive = props.user.isActive
+    form.roleId = props.user.roleId || props.user.role?.id || null
     previewUrl.value = props.user.photo // display existing photo
+  }
+}
+
+const fetchRoles = async () => {
+  try {
+    const response = await roleService.getAll(1, 100)
+    if (response.success) {
+      roles.value = response.data
+    }
+  } catch (error) {
+    // silently fail
   }
 }
 
@@ -172,7 +201,8 @@ const handleSubmit = async () => {
     name: form.name,
     email: form.email,
     photo: form.photo,
-    isActive: form.isActive
+    isActive: form.isActive,
+    roleId: form.roleId
   }
 
   // Only send password if user filled it
@@ -199,6 +229,7 @@ const handleSubmit = async () => {
 watch(open, (val) => {
   if (val) {
     populateForm()
+    fetchRoles()
   } else {
     previewUrl.value = null
   }

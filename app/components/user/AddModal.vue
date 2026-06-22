@@ -51,6 +51,15 @@
             <span class="text-sm text-neutral-600">{{ form.isActive ? 'Active' : 'Inactive' }}</span>
           </div>
         </UFormField>
+        <UFormField label="Role" name="roleId">
+          <USelectMenu
+            v-model="form.roleId"
+            :items="roleOptions"
+            placeholder="Select a role"
+            value-key="value"
+            class="w-full"
+          />
+        </UFormField>
       </UForm>
     </template>
     <template #footer>
@@ -73,7 +82,9 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import { userService } from '~/services/user-service'
+import { roleService } from '~/services/role-service'
 import type { UserPayload } from '~/types/user'
+import type { Role } from '~/types/role'
 
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ created: [] }>()
@@ -94,12 +105,18 @@ const schema = z.object({
   isActive: z.boolean()
 })
 
+const roles = ref<Role[]>([])
+const roleOptions = computed(() => 
+  roles.value.map(r => ({ label: r.name, value: r.id }))
+)
+
 const form = reactive<UserPayload>({
   name: '',
   email: '',
   password: '',
   photo: null,
-  isActive: true
+  isActive: true,
+  roleId: null
 })
 
 const resetForm = () => {
@@ -108,7 +125,19 @@ const resetForm = () => {
   form.password = ''
   form.photo = null
   form.isActive = true
+  form.roleId = null
   previewUrl.value = null
+}
+
+const fetchRoles = async () => {
+  try {
+    const response = await roleService.getAll(1, 100)
+    if (response.success) {
+      roles.value = response.data
+    }
+  } catch (error) {
+    // silently fail
+  }
 }
 
 
@@ -175,6 +204,10 @@ const handleSubmit = async () => {
 }
 
 watch(open, (val) => {
-  if (!val) resetForm()
+  if (val) {
+    fetchRoles()
+  } else {
+    resetForm()
+  }
 })
 </script>
