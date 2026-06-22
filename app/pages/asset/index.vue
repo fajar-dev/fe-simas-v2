@@ -46,6 +46,15 @@
               variant="solid"
             />
           </UButton>
+          <UButton
+            color="neutral"
+            variant="soft"
+            icon="i-lucide-download"
+            :loading="isExporting"
+            @click="handleExport"
+          >
+            Export
+          </UButton>
           
           <!-- Column Checklist Dropdown/Popover -->
           <UPopover>
@@ -167,6 +176,7 @@ const {
 const selectedAsset = ref<Asset | null>(null)
 const showDeleteModal = ref(false)
 const isDeleting = ref(false)
+const isExporting = ref(false)
 const showStatusModal = ref(false)
 const showFilterDrawer = ref(false)
 
@@ -203,6 +213,18 @@ const onApplyFilters = (filters: Record<string, any>) => {
   activeFilters.value = filters
   page.value = 1
   fetchAssets()
+}
+
+const handleExport = async () => {
+  isExporting.value = true
+  try {
+    await assetService.exportExcel(search.value, sortBy.value, order.value, activeFilters.value)
+    useToast().add({ title: 'Export successful', description: 'File downloaded', color: 'success' })
+  } catch (error) {
+    useToast().add({ title: 'Export failed', description: 'Failed to export assets', color: 'error' })
+  } finally {
+    isExporting.value = false
+  }
 }
 
 // Table columns
