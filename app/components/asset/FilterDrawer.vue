@@ -125,7 +125,7 @@
             class="w-full"
           >
             <template #item="{ item }">
-              <UAvatar :src="item.avatar" :alt="item.label" size="2xs" />
+              <UAvatar :src="item.avatar?.src" :alt="item.label" size="2xs" loading="lazy" />
               <span>{{ item.label }}</span>
             </template>
           </USelectMenu>
@@ -345,7 +345,7 @@ const categoryOptions = ref<{ label: string; value: number }[]>([])
 const subCategoryOptions = ref<{ label: string; value: number }[]>([])
 const branchOptions = ref<{ label: string; value: number }[]>([])
 const locationOptions = ref<{ label: string; value: number }[]>([])
-const employeeOptions = ref<{ label: string; value: number; avatar?: string }[]>([])
+const employeeOptions = ref<{ label: string; value: number; avatar?: { src: string } }[]>([])
 const availableLabelKeys = ref<string[]>([])
 
 const statusOptions = [
@@ -506,7 +506,7 @@ const fetchEmployees = async () => {
     employeeOptions.value = res.data.map(e => ({
       label: `${e.name} (${e.employeeId})`,
       value: e.id,
-      avatar: e.photo || undefined,
+      avatar: e.photo ? { src: e.photo } : undefined,
     }))
   }
 }
