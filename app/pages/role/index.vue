@@ -22,6 +22,7 @@
     >
       <template #actions>
         <UButton
+          v-if="hasPermission('role:create')"
           color="primary"
           variant="solid"
           icon="i-lucide-plus"
@@ -59,6 +60,8 @@ definePageMeta({
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 const UBadge = resolveComponent('UBadge')
+
+const { hasPermission } = useAuth()
 
 // State
 const data = ref<Role[]>([])
@@ -107,97 +110,106 @@ const fetchRoles = async () => {
 }
 
 // Table columns
-const columns: TableColumn<Role>[] = [
-  {
-    id: 'no',
-    header: 'No',
-    cell: ({ row }) => {
-      const index = row.index + 1 + ((page.value - 1) * perPage.value)
-      return h('span', { class: 'text-neutral-500' }, index)
-    }
-  },
-  {
-    accessorKey: 'name',
-    header: sortHeader('Name', 'name'),
-    cell: ({ row }) => {
-      const name = row.original.name
-      const isSuperAdmin = row.original.isSuperAdmin
-      return h('div', { class: 'flex items-center gap-2' }, [
-        h('span', { class: 'font-medium text-neutral-900' }, name),
-        ...(isSuperAdmin
-          ? [h(UBadge, { color: 'warning', variant: 'subtle', size: 'sm' }, () => 'Super Admin')]
-          : [])
-      ])
-    }
-  },
-  {
-    accessorKey: 'permissions',
-    header: 'Permissions',
-    cell: ({ row }) => {
-      const count = row.original.permissions?.length || 0
-      const isSuperAdmin = row.original.isSuperAdmin
-      if (isSuperAdmin) {
-        return h(UBadge, { color: 'warning', variant: 'subtle' }, () => 'All Permissions')
-      }
-      return h(UBadge, { color: 'primary', variant: 'subtle' }, () => `${count} permissions`)
-    }
-  },
-  {
-    accessorKey: 'createdAt',
-    header: sortHeader('Created At', 'createdAt'),
-    cell: ({ row }) => {
-      const date = new Date(row.original.createdAt)
-      return h('span', { class: 'text-neutral-500' }, date.toLocaleDateString('id-ID', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      }))
-    }
-  },
-  {
-    id: 'actions',
-    header: 'Action',
-    meta: {
-      class: {
-        td: 'text-right',
-        th: 'text-right'
+const columns = computed<TableColumn<Role>[]>(() => {
+  const cols: TableColumn<Role>[] = [
+    {
+      id: 'no',
+      header: 'No',
+      cell: ({ row }) => {
+        const index = row.index + 1 + ((page.value - 1) * perPage.value)
+        return h('span', { class: 'text-neutral-500' }, index)
       }
     },
-    cell: ({ row }) => {
-      return h(
-        UDropdownMenu,
-        {
-          content: {
-            align: 'end'
-          },
-          items: getRowItems(row),
-          'aria-label': 'Actions dropdown'
-        },
-        () =>
-          h(UButton, {
-            icon: 'i-lucide-ellipsis-vertical',
-            color: 'neutral',
-            variant: 'ghost',
-            'aria-label': 'Actions dropdown'
-          })
-      )
+    {
+      accessorKey: 'name',
+      header: sortHeader('Name', 'name'),
+      cell: ({ row }) => {
+        const name = row.original.name
+        const isSuperAdmin = row.original.isSuperAdmin
+        return h('div', { class: 'flex items-center gap-2' }, [
+          h('span', { class: 'font-medium text-neutral-900' }, name),
+          ...(isSuperAdmin
+            ? [h(UBadge, { color: 'warning', variant: 'subtle', size: 'sm' }, () => 'Super Admin')]
+            : [])
+        ])
+      }
+    },
+    {
+      accessorKey: 'permissions',
+      header: 'Permissions',
+      cell: ({ row }) => {
+        const count = row.original.permissions?.length || 0
+        const isSuperAdmin = row.original.isSuperAdmin
+        if (isSuperAdmin) {
+          return h(UBadge, { color: 'warning', variant: 'subtle' }, () => 'All Permissions')
+        }
+        return h(UBadge, { color: 'primary', variant: 'subtle' }, () => `${count} permissions`)
+      }
+    },
+    {
+      accessorKey: 'createdAt',
+      header: sortHeader('Created At', 'createdAt'),
+      cell: ({ row }) => {
+        const date = new Date(row.original.createdAt)
+        return h('span', { class: 'text-neutral-500' }, date.toLocaleDateString('id-ID', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        }))
+      }
     }
+  ]
+
+  if (hasPermission('role:update', 'role:delete')) {
+    cols.push({
+      id: 'actions',
+      header: 'Action',
+      meta: {
+        class: {
+          td: 'text-right',
+          th: 'text-right'
+        }
+      },
+      cell: ({ row }) => {
+        return h(
+          UDropdownMenu,
+          {
+            content: {
+              align: 'end'
+            },
+            items: getRowItems(row),
+            'aria-label': 'Actions dropdown'
+          },
+          () =>
+            h(UButton, {
+              icon: 'i-lucide-ellipsis-vertical',
+              color: 'neutral',
+              variant: 'ghost',
+              'aria-label': 'Actions dropdown'
+            })
+        )
+      }
+    })
   }
-]
+
+  return cols
+})
 
 function getRowItems(row: Row<Role>) {
-  const items: any[] = [
-    {
+  const items: any[] = []
+
+  if (hasPermission('role:update')) {
+    items.push({
       label: 'Edit Role',
       icon: 'i-lucide-edit',
       onSelect() {
         selectedRole.value = row.original
         showUpdateModal.value = true
       }
-    }
-  ]
+    })
+  }
 
-  if (!row.original.isSuperAdmin) {
+  if (hasPermission('role:delete') && !row.original.isSuperAdmin) {
     items.push({
       label: 'Delete Role',
       color: 'error',
