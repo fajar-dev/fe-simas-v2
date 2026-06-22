@@ -149,6 +149,16 @@ const columns: TableColumn<User>[] = [
     }
   },
   {
+    accessorKey: 'role',
+    header: 'Role',
+    cell: ({ row }) => {
+      const role = row.original.role
+      return role
+        ? h(UBadge, { color: 'neutral', variant: 'subtle' }, () => role.name)
+        : h('span', { class: 'text-xs text-neutral-400' }, '-')
+    }
+  },
+  {
     id: 'actions',
     header: 'Action',
     meta: {
