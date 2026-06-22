@@ -19,7 +19,7 @@
       :total="meta.total"
       search-placeholder="Search branch..."
     >
-      <template #actions>
+      <template #actions v-if="hasPermission('branch:create')">
         <UButton
           color="primary"
           variant="solid"
@@ -54,6 +54,8 @@ import type { Branch } from '~/types/branch'
 definePageMeta({
   layout: 'dashboard'
 })
+
+const { hasPermission } = useAuth()
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
@@ -107,7 +109,7 @@ const fetchBranches = async () => {
 
 
 // Table columns
-const columns: TableColumn<Branch>[] = [
+const baseColumns: TableColumn<Branch>[] = [
   {
     accessorKey: 'code',
     header: sortHeader('Code', 'code'),
@@ -150,49 +152,61 @@ const columns: TableColumn<Branch>[] = [
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.address || '-')
     }
-  },
-  {
-    id: 'actions',
-    header: 'Action',
-    meta: {
-      class: {
-        td: 'text-right',
-        th: 'text-right'
-      }
-    },
-    cell: ({ row }) => {
-      return h(
-        UDropdownMenu,
-        {
-          content: {
-            align: 'end'
-          },
-          items: getRowItems(row),
-          'aria-label': 'Actions dropdown'
-        },
-        () =>
-          h(UButton, {
-            icon: 'i-lucide-ellipsis-vertical',
-            color: 'neutral',
-            variant: 'ghost',
-            'aria-label': 'Actions dropdown'
-          })
-      )
-    }
   }
 ]
 
+const columns = computed(() => {
+  const list = [...baseColumns]
+  if (hasPermission('branch:update', 'branch:delete')) {
+    list.push({
+      id: 'actions',
+      header: 'Action',
+      meta: {
+        class: {
+          td: 'text-right',
+          th: 'text-right'
+        }
+      },
+      cell: ({ row }) => {
+        const items = getRowItems(row)
+        if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+        return h(
+          UDropdownMenu,
+          {
+            content: {
+              align: 'end'
+            },
+            items: items,
+            'aria-label': 'Actions dropdown'
+          },
+          () =>
+            h(UButton, {
+              icon: 'i-lucide-ellipsis-vertical',
+              color: 'neutral',
+              variant: 'ghost',
+              'aria-label': 'Actions dropdown'
+            })
+        )
+      }
+    })
+  }
+  return list
+})
+
 function getRowItems(row: Row<Branch>) {
-  return [
-    {
+  const actions = []
+  if (hasPermission('branch:update')) {
+    actions.push({
       label: 'Edit Branch',
       icon: 'i-lucide-edit',
       onSelect() {
         selectedBranch.value = row.original
         showUpdateModal.value = true
       }
-    },
-    {
+    })
+  }
+  if (hasPermission('branch:delete')) {
+    actions.push({
       label: 'Delete Branch',
       color: 'error' as const,
       icon: 'i-lucide-trash',
@@ -200,8 +214,9 @@ function getRowItems(row: Row<Branch>) {
         selectedBranch.value = row.original
         showDeleteModal.value = true
       }
-    }
-  ]
+    })
+  }
+  return actions
 }
 
 // Handle delete

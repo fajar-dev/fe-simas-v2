@@ -19,7 +19,7 @@
       :total="meta.total"
       search-placeholder="Search location..."
     >
-      <template #actions>
+      <template #actions v-if="hasPermission('location:create')">
         <UButton
           color="primary"
           variant="solid"
@@ -54,6 +54,8 @@ import type { Location } from '~/types/location'
 definePageMeta({
   layout: 'dashboard'
 })
+
+const { hasPermission } = useAuth()
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
@@ -107,7 +109,7 @@ const fetchLocations = async () => {
 
 
 // Table columns
-const columns: TableColumn<Location>[] = [
+const baseColumns: TableColumn<Location>[] = [
   {
     accessorKey: 'name',
     header: sortHeader('Name', 'name'),
@@ -131,49 +133,61 @@ const columns: TableColumn<Location>[] = [
       const desc = row.original.description
       return h('span', { class: 'text-neutral-600' }, desc || '-')
     }
-  },
-  {
-    id: 'actions',
-    header: 'Action',
-    meta: {
-      class: {
-        td: 'text-right',
-        th: 'text-right'
-      }
-    },
-    cell: ({ row }) => {
-      return h(
-        UDropdownMenu,
-        {
-          content: {
-            align: 'end'
-          },
-          items: getRowItems(row),
-          'aria-label': 'Actions dropdown'
-        },
-        () =>
-          h(UButton, {
-            icon: 'i-lucide-ellipsis-vertical',
-            color: 'neutral',
-            variant: 'ghost',
-            'aria-label': 'Actions dropdown'
-          })
-      )
-    }
   }
 ]
 
+const columns = computed(() => {
+  const list = [...baseColumns]
+  if (hasPermission('location:update', 'location:delete')) {
+    list.push({
+      id: 'actions',
+      header: 'Action',
+      meta: {
+        class: {
+          td: 'text-right',
+          th: 'text-right'
+        }
+      },
+      cell: ({ row }) => {
+        const items = getRowItems(row)
+        if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+        return h(
+          UDropdownMenu,
+          {
+            content: {
+              align: 'end'
+            },
+            items: items,
+            'aria-label': 'Actions dropdown'
+          },
+          () =>
+            h(UButton, {
+              icon: 'i-lucide-ellipsis-vertical',
+              color: 'neutral',
+              variant: 'ghost',
+              'aria-label': 'Actions dropdown'
+            })
+        )
+      }
+    })
+  }
+  return list
+})
+
 function getRowItems(row: Row<Location>) {
-  return [
-    {
+  const actions = []
+  if (hasPermission('location:update')) {
+    actions.push({
       label: 'Edit Location',
       icon: 'i-lucide-edit',
       onSelect() {
         selectedLocation.value = row.original
         showUpdateModal.value = true
       }
-    },
-    {
+    })
+  }
+  if (hasPermission('location:delete')) {
+    actions.push({
       label: 'Delete Location',
       color: 'error' as const,
       icon: 'i-lucide-trash',
@@ -181,8 +195,9 @@ function getRowItems(row: Row<Location>) {
         selectedLocation.value = row.original
         showDeleteModal.value = true
       }
-    }
-  ]
+    })
+  }
+  return actions
 }
 
 // Handle delete

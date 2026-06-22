@@ -20,7 +20,7 @@
       search-placeholder="Search name or email..."
       table-class="min-w-[768px]"
     >
-      <template #actions>
+      <template #actions v-if="hasPermission('user:create')">
         <UButton
           color="primary"
           variant="solid"
@@ -55,6 +55,8 @@ import type { User } from '~/types/user'
 definePageMeta({
   layout: 'dashboard'
 })
+
+const { hasPermission } = useAuth()
 
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
@@ -110,7 +112,7 @@ const fetchUsers = async () => {
 
 
 // Table columns
-const columns: TableColumn<User>[] = [
+const baseColumns: TableColumn<User>[] = [
   {
     accessorKey: 'name',
     header: sortHeader('User Profile', 'name'),
@@ -157,49 +159,61 @@ const columns: TableColumn<User>[] = [
         ? h(UBadge, { color: 'neutral', variant: 'subtle' }, () => role.name)
         : h('span', { class: 'text-xs text-neutral-400' }, '-')
     }
-  },
-  {
-    id: 'actions',
-    header: 'Action',
-    meta: {
-      class: {
-        td: 'text-right',
-        th: 'text-right'
-      }
-    },
-    cell: ({ row }) => {
-      return h(
-        UDropdownMenu,
-        {
-          content: {
-            align: 'end'
-          },
-          items: getRowItems(row),
-          'aria-label': 'Actions dropdown'
-        },
-        () =>
-          h(UButton, {
-            icon: 'i-lucide-ellipsis-vertical',
-            color: 'neutral',
-            variant: 'ghost',
-            'aria-label': 'Actions dropdown'
-          })
-      )
-    }
   }
 ]
 
+const columns = computed(() => {
+  const list = [...baseColumns]
+  if (hasPermission('user:update', 'user:delete')) {
+    list.push({
+      id: 'actions',
+      header: 'Action',
+      meta: {
+        class: {
+          td: 'text-right',
+          th: 'text-right'
+        }
+      },
+      cell: ({ row }) => {
+        const items = getRowItems(row)
+        if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+        return h(
+          UDropdownMenu,
+          {
+            content: {
+              align: 'end'
+            },
+            items: items,
+            'aria-label': 'Actions dropdown'
+          },
+          () =>
+            h(UButton, {
+              icon: 'i-lucide-ellipsis-vertical',
+              color: 'neutral',
+              variant: 'ghost',
+              'aria-label': 'Actions dropdown'
+            })
+        )
+      }
+    })
+  }
+  return list
+})
+
 function getRowItems(row: Row<User>) {
-  return [
-    {
+  const actions = []
+  if (hasPermission('user:update')) {
+    actions.push({
       label: 'Edit User',
       icon: 'i-lucide-edit',
       onSelect() {
         selectedUser.value = row.original
         showUpdateModal.value = true
       }
-    },
-    {
+    })
+  }
+  if (hasPermission('user:delete')) {
+    actions.push({
       label: 'Delete User',
       color: 'error',
       icon: 'i-lucide-trash',
@@ -207,8 +221,9 @@ function getRowItems(row: Row<User>) {
         selectedUser.value = row.original
         showDeleteModal.value = true
       }
-    }
-  ]
+    })
+  }
+  return actions
 }
 
 // Handle delete
