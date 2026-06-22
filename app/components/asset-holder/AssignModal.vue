@@ -153,7 +153,7 @@ const loadAssets = async () => {
 const loadEmployees = async () => {
   isLoadingEmployees.value = true
   try {
-    const res = await employeeService.getList()
+    const res = await employeeService.getList(true)
     if (res.success && res.data) {
       employeeOptions.value = res.data.map(e => ({
         label: `${e.name} (${e.employeeId})`,

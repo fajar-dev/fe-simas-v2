@@ -24,10 +24,12 @@ export class EmployeeService {
         }
     }
 
-    async getList(): Promise<ApiResponse<{ id: number; name: string; employeeId: string; photo: string | null }[]>> {
+    async getList(isActive?: boolean): Promise<ApiResponse<{ id: number; name: string; employeeId: string; photo: string | null }[]>> {
         try {
+            let url = `/employee/list`
+            if (isActive !== undefined) url += `?isActive=${isActive}`
             const response = await apiService.client.get<ApiResponse<{ id: number; name: string; employeeId: string; photo: string | null }[]>>(
-                `/employee/list`,
+                url,
                 this.authHeaders
             )
             return response.data
