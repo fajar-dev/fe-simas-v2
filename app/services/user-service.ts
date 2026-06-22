@@ -82,7 +82,7 @@ export class UserService {
             const formData = new FormData()
             formData.append("file", file)
             const response = await apiService.client.post<ApiResponse<{ path: string }>>(
-                `/upload`,
+                `/upload?type=users`,
                 formData,
                 {
                     headers: {

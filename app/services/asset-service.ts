@@ -108,7 +108,7 @@ export class AssetService {
             const formData = new FormData()
             formData.append("file", file)
             const response = await apiService.client.post<ApiResponse<{ path: string }>>(
-                `/upload`,
+                `/upload?type=assets`,
                 formData,
                 {
                     headers: {
