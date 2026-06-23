@@ -325,6 +325,12 @@
         "submit": "Perbarui Status",
         "success": "Status berhasil diperbarui!",
         "statusRequired": "Status wajib diisi"
+      },
+      "bulkModal": {
+        "title": "Ubah Status Massal",
+        "description": "Ubah status dari {count} aset yang dipilih",
+        "submit": "Ubah Status",
+        "success": "Status diperbarui untuk {count} aset"
       }
     },
 
@@ -611,7 +617,15 @@
         "holderHistory": "Riwayat Pemegang",
         "maintenanceHistory": "Riwayat Pemeliharaan",
         "deleteSuccess": "Aset berhasil dihapus!",
-        "deleteTitle": "Hapus Aset"
+        "deleteTitle": "Hapus Aset",
+        "selectedItems": "{count} item dipilih",
+        "bulkChangeStatus": "Ubah Status",
+        "clearSelection": "Hapus Pilihan",
+        "bulkDelete": "Hapus",
+        "bulkDeleteTitle": "Hapus Aset Massal",
+        "bulkDeleteDescription": "Apakah Anda yakin ingin menghapus {count} aset yang dipilih? Tindakan ini tidak dapat dibatalkan.",
+        "bulkDeleteSuccess": "{count} aset berhasil dihapus!",
+        "bulkDeletePartial": "{deleted} dihapus, {failed} gagal (memiliki dependensi)"
       },
       "create": {
         "title": "Tambah Aset Baru",

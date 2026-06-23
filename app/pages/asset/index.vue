@@ -110,6 +110,50 @@
       </template>
     </DataTable>
 
+    <!-- Bulk Action Bar -->
+    <Transition name="">
+      <div
+        v-if="selectedIds.length > 0"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-white/90  backdrop-blur-md border border-neutral-200 shadow-lg rounded-lg px-5 py-3"
+      >
+        <span class="text-sm font-medium text-neutral-900 whitespace-nowrap">
+          {{ $t('pages.asset.index.selectedItems', { count: selectedIds.length }) }}
+        </span>
+        <UButton
+          v-if="hasPermission('asset-status:create')"
+          color="primary"
+          variant="solid"
+          icon="i-lucide-arrow-left-right"
+          @click="showBulkStatusModal = true"
+        >
+          <span class="hidden sm:block">
+            {{ $t('pages.asset.index.bulkChangeStatus') }}
+          </span>
+        </UButton>
+        <UButton
+          v-if="hasPermission('asset:delete')"
+          color="error"
+          variant="solid"
+          icon="i-lucide-trash"
+          @click="showBulkDeleteModal = true"
+        >
+          <span class="hidden sm:block">
+            {{ $t('pages.asset.index.bulkDelete') }}
+          </span>
+        </UButton>
+        <UButton
+          color="neutral"
+          variant="ghost"
+          icon="i-lucide-x"
+          @click="selectedIds = []"
+        >
+        <span class="hidden sm:block">
+            {{ $t('pages.asset.index.clearSelection') }}
+          </span>
+        </UButton>
+      </div>
+    </Transition>
+
     <!-- Delete Modal -->
     <DeleteModal 
       v-model="showDeleteModal" 
@@ -126,6 +170,25 @@
       :asset-id="selectedAsset.id"
       @created="fetchAssets"
     />
+
+    <!-- Bulk Change Status Modal -->
+    <AssetStatusBulkUpdateModal
+      v-model="showBulkStatusModal"
+      :asset-ids="selectedIds"
+      @created="onBulkStatusCreated"
+    />
+
+    <!-- Bulk Delete Modal -->
+    <DeleteModal
+      v-model="showBulkDeleteModal"
+      :title="$t('pages.asset.index.bulkDeleteTitle')"
+      :loading="isBulkDeleting"
+      @confirm="handleBulkDelete"
+    >
+      <template #description>
+        {{ $t('pages.asset.index.bulkDeleteDescription', { count: selectedIds.length }) }}
+      </template>
+    </DeleteModal>
 
     <!-- Lightbox Modal -->
     <Lightbox />
@@ -209,8 +272,12 @@ const showDeleteModal = ref(false)
 const isDeleting = ref(false)
 const isExporting = ref(false)
 const showStatusModal = ref(false)
+const showBulkStatusModal = ref(false)
+const showBulkDeleteModal = ref(false)
+const isBulkDeleting = ref(false)
 const showFilterDrawer = ref(false)
 const showImportModal = ref(false)
+const selectedIds = ref<number[]>([])
 
 const activeFilterCount = computed(() => Object.keys(activeFilters.value).length)
 
@@ -259,6 +326,47 @@ const handleExport = async () => {
 
 // Table columns
 const baseColumns: TableColumn<Asset>[] = [
+  {
+    id: 'select',
+    header: () => {
+      const allSelected = data.value.length > 0 && data.value.every(a => selectedIds.value.includes(a.id))
+      const someSelected = data.value.some(a => selectedIds.value.includes(a.id)) && !allSelected
+      return h(UCheckbox, {
+        'modelValue': allSelected,
+        'indeterminate': someSelected,
+        'onUpdate:modelValue': (val: boolean) => {
+          if (val) {
+            const newIds = [...selectedIds.value]
+            data.value.forEach(a => {
+              if (!newIds.includes(a.id)) newIds.push(a.id)
+            })
+            selectedIds.value = newIds
+          } else {
+            const currentPageIds = data.value.map(a => a.id)
+            selectedIds.value = selectedIds.value.filter(id => !currentPageIds.includes(id))
+          }
+        }
+      })
+    },
+    cell: ({ row }) => {
+      return h(UCheckbox, {
+        'modelValue': selectedIds.value.includes(row.original.id),
+        'onUpdate:modelValue': (val: boolean) => {
+          if (val) {
+            selectedIds.value = [...selectedIds.value, row.original.id]
+          } else {
+            selectedIds.value = selectedIds.value.filter(id => id !== row.original.id)
+          }
+        }
+      })
+    },
+    meta: {
+      class: {
+        td: 'w-10',
+        th: 'w-10'
+      }
+    }
+  },
   {
     id: 'no',
     header: t('pages.asset.index.columnNo'),
@@ -544,6 +652,44 @@ const handleDelete = async () => {
   }
 }
 
+// Clear selection when page/search/perPage/filters change
+watch([page, search, perPage, activeFilters], () => {
+  selectedIds.value = []
+})
+
+const onBulkStatusCreated = () => {
+  selectedIds.value = []
+  fetchAssets()
+}
+
+const handleBulkDelete = async () => {
+  isBulkDeleting.value = true
+  try {
+    const response = await assetService.bulkDelete(selectedIds.value)
+    if (response.success) {
+      const { deleted, failed } = response.data
+      if (failed.length > 0) {
+        toast.add({
+          title: t('pages.asset.index.bulkDeletePartial', { deleted, failed: failed.length }),
+          color: 'warning',
+          icon: 'i-lucide-alert-triangle'
+        })
+      } else {
+        toast.add({
+          title: t('pages.asset.index.bulkDeleteSuccess', { count: deleted }),
+          color: 'success',
+          icon: 'i-lucide-circle-check'
+        })
+      }
+      selectedIds.value = []
+      showBulkDeleteModal.value = false
+      fetchAssets()
+    }
+  } finally {
+    isBulkDeleting.value = false
+  }
+}
+
 // Save current query string when visiting the asset list page
 const route = useRoute()
 watch(() => route.fullPath, (newPath) => {
@@ -565,3 +711,15 @@ onMounted(() => {
   fetchLabelKeys()
 })
 </script>
+
+<style scoped>
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.3s ease;
+}
+.slide-up-enter-from,
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translate(-50%, 20px);
+}
+</style>

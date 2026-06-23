@@ -33,17 +33,6 @@
 
         <!-- Actions -->
         <div class="pt-2 border-t border-neutral-200 space-y-0.5">
-          <UButton
-            color="neutral"
-            variant="ghost"
-            icon="i-lucide-user"
-            class="w-full justify-start"
-            to="/profile"
-            @click="popoverOpen = false"
-          >
-            {{ $t('component.userPopover.profile') }}
-          </UButton>
-          
           <!-- Language Selector -->
           <UDropdownMenu :items="langMenuItems">
             <UButton
@@ -63,7 +52,17 @@
               />
             </template>
           </UDropdownMenu>
-
+          <UButton
+            color="neutral"
+            variant="ghost"
+            icon="i-lucide-user"
+            class="w-full justify-start"
+            to="/profile"
+            @click="popoverOpen = false"
+          >
+            {{ $t('component.userPopover.profile') }}
+          </UButton>
+          
           <UButton
             color="neutral"
             variant="ghost"

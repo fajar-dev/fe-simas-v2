@@ -202,6 +202,19 @@ export class AssetService {
             return handleServiceError(error)
         }
     }
+
+    async bulkDelete(ids: number[]): Promise<ApiResponse<{ deleted: number; failed: { id: number; message: string }[] }>> {
+        try {
+            const response = await apiService.client.post<ApiResponse<{ deleted: number; failed: { id: number; message: string }[] }>>(
+                `/asset/bulk-delete`,
+                { ids },
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
 }
 
 export const assetService = new AssetService()

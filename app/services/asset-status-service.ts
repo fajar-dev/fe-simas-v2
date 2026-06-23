@@ -9,6 +9,12 @@ export interface CreateAssetStatusPayload {
     note?: string | null
 }
 
+export interface BulkCreateAssetStatusPayload {
+    assetIds: number[]
+    status: string
+    note?: string | null
+}
+
 export class AssetStatusService {
 
     private get authHeaders() {
@@ -31,6 +37,19 @@ export class AssetStatusService {
         try {
             const response = await apiService.client.post<ApiResponse<AssetStatus>>(
                 `/asset-status`,
+                payload,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
+    async bulkCreate(payload: BulkCreateAssetStatusPayload): Promise<ApiResponse<AssetStatus[]>> {
+        try {
+            const response = await apiService.client.post<ApiResponse<AssetStatus[]>>(
+                `/asset-status/bulk`,
                 payload,
                 this.authHeaders
             )

@@ -325,6 +325,12 @@
         "submit": "Update Status",
         "success": "Status updated successfully!",
         "statusRequired": "Status is required"
+      },
+      "bulkModal": {
+        "title": "Bulk Change Status",
+        "description": "Change the status of {count} selected assets",
+        "submit": "Change Status",
+        "success": "Status updated for {count} assets"
       }
     },
 
@@ -602,7 +608,15 @@
         "holderHistory": "Holder History",
         "maintenanceHistory": "Maintenance History",
         "deleteSuccess": "Asset deleted successfully!",
-        "deleteTitle": "Delete Asset"
+        "deleteTitle": "Delete Asset",
+        "selectedItems": "{count} item selected | {count} items selected",
+        "bulkChangeStatus": "Change Status",
+        "clearSelection": "Clear",
+        "bulkDelete": "Delete",
+        "bulkDeleteTitle": "Bulk Delete Assets",
+        "bulkDeleteDescription": "Are you sure you want to delete {count} selected assets? This action cannot be undone.",
+        "bulkDeleteSuccess": "{count} asset(s) deleted successfully!",
+        "bulkDeletePartial": "{deleted} deleted, {failed} failed (has dependencies)"
       },
       "create": {
         "title": "Add New Asset",
