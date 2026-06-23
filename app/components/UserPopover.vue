@@ -51,7 +51,7 @@
               <span>{{ $t('component.userPopover.language') }}</span>
             </div>
             <USelectMenu
-              v-model="locale"
+              v-model="currentLocale"
               :items="localeOptions"
               value-key="value"
               class="w-28"
@@ -85,7 +85,7 @@
 </template>
 
 <script setup lang="ts">
-const { locale, t } = useI18n()
+const { locale, setLocale, t } = useI18n()
 const { state: authState, service: authService } = useAuth()
 const toast = useToast()
 const popoverOpen = ref(false)
@@ -94,6 +94,13 @@ const localeOptions = [
   { label: 'English', value: 'en' },
   { label: 'Bahasa Indonesia', value: 'id' }
 ]
+
+const currentLocale = computed({
+  get: () => locale.value,
+  set: (val) => {
+    setLocale(val)
+  }
+})
 
 interface Props {
   popoverProps?: Record<string, any>
