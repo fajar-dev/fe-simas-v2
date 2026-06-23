@@ -45,19 +45,24 @@
           </UButton>
           
           <!-- Language Selector -->
-          <div class="px-2 py-1 flex items-center justify-between text-sm text-neutral-700">
-            <div class="flex items-center gap-2">
-              <UIcon name="i-lucide-languages" class="w-4 h-4 text-neutral-500" />
-              <span>{{ $t('component.userPopover.language') }}</span>
-            </div>
-            <USelectMenu
-              v-model="currentLocale"
-              :items="localeOptions"
-              value-key="value"
-              class="w-28"
-              size="xs"
-            />
-          </div>
+          <UDropdownMenu :items="langMenuItems">
+            <UButton
+              color="neutral"
+              variant="ghost"
+              :icon="currentLocaleFlag"
+              class="w-full justify-start"
+            >
+              {{ currentLocaleLabel }}
+            </UButton>
+
+            <template #item-trailing="{ item }">
+              <UIcon
+                v-if="item.active"
+                name="i-lucide-check"
+                class="size-4 text-primary shrink-0"
+              />
+            </template>
+          </UDropdownMenu>
 
           <UButton
             color="neutral"
@@ -90,17 +95,27 @@ const { state: authState, service: authService } = useAuth()
 const toast = useToast()
 const popoverOpen = ref(false)
 
-const localeOptions = [
-  { label: 'English', value: 'en' },
-  { label: 'Bahasa Indonesia', value: 'id' }
+const localeOptions: { label: string; value: 'en' | 'id'; flag: string }[] = [
+  { label: 'English', value: 'en', flag: 'circle-flags:us' },
+  { label: 'Bahasa Indonesia', value: 'id', flag: 'circle-flags:id' }
 ]
 
-const currentLocale = computed({
-  get: () => locale.value,
-  set: (val) => {
-    setLocale(val)
-  }
-})
+const currentLocaleLabel = computed(() =>
+  localeOptions.find(o => o.value === locale.value)?.label ?? 'English'
+)
+
+const currentLocaleFlag = computed(() =>
+  localeOptions.find(o => o.value === locale.value)?.flag ?? 'circle-flags:us'
+)
+
+const langMenuItems = computed(() =>
+  localeOptions.map(opt => ({
+    label: opt.label,
+    icon: opt.flag,
+    active: locale.value === opt.value,
+    onSelect: () => setLocale(opt.value)
+  }))
+)
 
 interface Props {
   popoverProps?: Record<string, any>
