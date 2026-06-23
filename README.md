@@ -1,4 +1,4 @@
-# Nuxt 4 FE - frontend boilerplate
+# Nuxt 4 FE - SIMAS
 
 Frontend boilerplate dibangun dengan Nuxt 4, TypeScript, Tailwind CSS, NuxtUI, Zod, Axios
 
