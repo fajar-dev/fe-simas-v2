@@ -18,8 +18,14 @@ export default defineNuxtConfig({
       { code: 'id', language: 'id-ID', file: 'id.json' }
     ],
     defaultLocale: 'en',
-    // langDir: '../i18n/locales',
-    // strategy: 'no_prefix',
+    langDir: 'locales',
+    strategy: 'no_prefix',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      alwaysRedirect: true,
+      fallbackLocale: 'en'
+    }
   },
 
   devtools: {
