@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <Header
-      title="Asset Management"
-      description="Manage and track company assets"
+      :title="$t('pages.asset.index.title')"
+      :description="$t('pages.asset.index.description')"
     >
     </Header>
 
@@ -17,7 +17,7 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      search-placeholder="Search assets..."
+      :search-placeholder="$t('pages.asset.index.searchPlaceholder')"
       table-class="min-w-[1200px]"
     >
       <template #actions>
@@ -32,7 +32,7 @@
               class="flex-1 sm:flex-none justify-center"
               @click="showImportModal = true"
             >
-              Import
+              {{ $t('pages.asset.index.importAsset') }}
             </UButton>
             <UButton
               v-if="hasPermission('asset:export')"
@@ -43,7 +43,7 @@
               class="flex-1 sm:flex-none justify-center"
               @click="handleExport"
             >
-              Export
+              {{ $t('pages.asset.index.exportAsset') }}
             </UButton>
           </div>
 
@@ -57,7 +57,7 @@
               to="/asset/create"
               class="flex-1 sm:flex-none justify-center"
             >
-              Add Asset
+              {{ $t('pages.asset.index.addAsset') }}
             </UButton>
             <UButton
               color="neutral"
@@ -66,7 +66,7 @@
               class="relative flex-1 sm:flex-none justify-center"
               @click="showFilterDrawer = true"
             >
-              Filter
+              {{ $t('pages.asset.index.filter') }}
               <UBadge
                 v-if="activeFilterCount > 0"
                 :label="String(activeFilterCount)"
@@ -87,10 +87,10 @@
             <template #content>
               <div class="p-3 w-48 space-y-2 select-none">
                 <div class="text-sm font-semibold text-neutral-600 mb-1">
-                  Custom Labels
+                  {{ $t('pages.asset.index.customLabels') }}
                 </div>
                 <div v-if="availableLabelKeys.length === 0" class="text-xs text-neutral-400 italic">
-                  No custom labels found
+                  {{ $t('pages.asset.index.noCustomLabels') }}
                 </div>
                 <div v-else class="space-y-1.5 max-h-48 overflow-y-auto">
                   <div v-for="key in availableLabelKeys" :key="key" class="flex items-center gap-2">
@@ -113,7 +113,7 @@
     <!-- Delete Modal -->
     <DeleteModal 
       v-model="showDeleteModal" 
-      title="Delete Asset" 
+      :title="$t('pages.asset.index.deleteTitle')" 
       :item-name="selectedAsset?.name" 
       :loading="isDeleting"
       @confirm="handleDelete" 
@@ -150,6 +150,8 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { assetService } from '~/services/asset-service'
 import type { Asset } from '~/types/asset'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -249,7 +251,7 @@ const handleExport = async () => {
   isExporting.value = true
   try {
     await assetService.exportExcel(search.value, sortBy.value, order.value, activeFilters.value, activeLabelColumns.value)
-    useToast().add({ title: 'Export successful', icon:'i-lucide-check', color: 'success' })
+    useToast().add({ title: t('pages.asset.index.exportSuccess'), icon:'i-lucide-check', color: 'success' })
   } finally {
     isExporting.value = false
   }
@@ -259,7 +261,7 @@ const handleExport = async () => {
 const baseColumns: TableColumn<Asset>[] = [
   {
     id: 'no',
-    header: 'No',
+    header: t('pages.asset.index.columnNo'),
     cell: ({ row }) => {
       const rowNumber = (page.value - 1) * perPage.value + row.index + 1
       return h('span', { class: 'text-neutral-500' }, rowNumber)
@@ -267,7 +269,7 @@ const baseColumns: TableColumn<Asset>[] = [
   },
   {
     id: 'asset',
-    header: sortHeader('Asset', 'name'),
+    header: sortHeader(t('pages.asset.index.columnAsset'), 'name'),
     cell: ({ row }) => {
       const img = row.original.image
       const imageEl = img
@@ -300,7 +302,7 @@ const baseColumns: TableColumn<Asset>[] = [
   },
   {
     id: 'category',
-    header: sortHeader('Category', 'category'),
+    header: sortHeader(t('pages.asset.index.columnCategory'), 'category'),
     cell: ({ row }) => {
       const cat = row.original.subCategory?.category
       return h('span', { class: 'text-neutral-900' }, cat?.name || '-')
@@ -308,7 +310,7 @@ const baseColumns: TableColumn<Asset>[] = [
   },
   {
     id: 'subCategory',
-    header: sortHeader('Sub Category', 'subCategory'),
+    header: sortHeader(t('pages.asset.index.columnSubCategory'), 'subCategory'),
     cell: ({ row }) => {
       const sub = row.original.subCategory
       return h('span', { class: 'text-neutral-900' }, sub?.name || '-')
@@ -316,21 +318,21 @@ const baseColumns: TableColumn<Asset>[] = [
   },
   {
     accessorKey: 'brand',
-    header: sortHeader('Brand', 'brand'),
+    header: sortHeader(t('pages.asset.index.columnBrand'), 'brand'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.brand || '-')
     }
   },
   {
     accessorKey: 'model',
-    header: sortHeader('Model', 'model'),
+    header: sortHeader(t('pages.asset.index.columnModel'), 'model'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.model || '-')
     }
   },
   {
     id: 'lastLocation',
-    header: sortHeader('Last Location', 'lastLocation'),
+    header: sortHeader(t('pages.asset.index.columnLastLocation'), 'lastLocation'),
     cell: ({ row }) => {
       const lastLoc = row.original.lastLocation
       if (!lastLoc || !lastLoc.location) return h('span', { class: 'text-neutral-500 italic' }, '-')
@@ -344,7 +346,7 @@ const baseColumns: TableColumn<Asset>[] = [
   },
   {
     id: 'activeHolder',
-    header: sortHeader('Active Holder', 'activeHolder'),
+    header: sortHeader(t('pages.asset.index.columnActiveHolder'), 'activeHolder'),
     cell: ({ row }) => {
       const holder = row.original.activeHolder
       if (!holder || !holder.employee) return h('span', { class: 'text-neutral-500 italic' }, '-')
@@ -365,14 +367,14 @@ const baseColumns: TableColumn<Asset>[] = [
   },
   {
     accessorKey: 'price',
-    header: sortHeader('Price', 'price'),
+    header: sortHeader(t('pages.asset.index.columnPrice'), 'price'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, formatCurrency(row.original.price))
     }
   },
   {
     accessorKey: 'purchaseDate',
-    header: sortHeader('Purchase Date', 'purchaseDate'),
+    header: sortHeader(t('pages.asset.index.columnPurchaseDate'), 'purchaseDate'),
     cell: ({ row }) => {
       const date = row.original.purchaseDate
       const age = row.original.age
@@ -385,7 +387,7 @@ const baseColumns: TableColumn<Asset>[] = [
   },
   {
     id: 'lastStatus',
-    header: 'Status',
+    header: t('pages.asset.index.columnStatus'),
     cell: ({ row }) => {
       const status = row.original.lastStatus
       if (!status) return h('span', { class: 'text-neutral-500 italic' }, '-')
@@ -401,7 +403,7 @@ const baseColumns: TableColumn<Asset>[] = [
 const trailingColumns: TableColumn<Asset>[] = [
   {
     id: 'actions',
-    header: 'Action',
+    header: t('pages.asset.index.columnAction'),
     meta: {
       class: {
         td: 'text-right',
@@ -451,7 +453,7 @@ function getRowItems(row: Row<Asset>) {
   const primaryActions = []
   if (hasPermission('asset:update')) {
     primaryActions.push({
-      label: 'Edit Asset',
+      label: t('pages.asset.index.editAsset'),
       icon: 'i-lucide-edit',
       onSelect() {
         navigateTo(`/asset/${row.original.id}/edit`)
@@ -460,7 +462,7 @@ function getRowItems(row: Row<Asset>) {
   }
   if (hasPermission('asset-status:create')) {
     primaryActions.push({
-      label: 'Change Status',
+      label: t('pages.asset.index.changeStatus'),
       icon: 'i-lucide-arrow-left-right',
       onSelect() {
         selectedAsset.value = row.original
@@ -470,7 +472,7 @@ function getRowItems(row: Row<Asset>) {
   }
   if (hasPermission('asset:delete')) {
     primaryActions.push({
-      label: 'Delete Asset',
+      label: t('pages.asset.index.deleteAsset'),
       color: 'error' as const,
       icon: 'i-lucide-trash',
       onSelect() {
@@ -483,7 +485,7 @@ function getRowItems(row: Row<Asset>) {
   const historyActions = []
   if (row.original.hasLocation !== false && hasPermission('asset-location:read')) {
     historyActions.push({
-      label: 'Location History',
+      label: t('pages.asset.index.locationHistory'),
       icon: 'i-lucide-map-pin',
       onSelect() {
         navigateTo(`/asset/${row.original.id}/location`)
@@ -492,7 +494,7 @@ function getRowItems(row: Row<Asset>) {
   }
   if (row.original.hasHolder !== false && hasPermission('asset-holder:read')) {
     historyActions.push({
-      label: 'Holder History',
+      label: t('pages.asset.index.holderHistory'),
       icon: 'i-lucide-user',
       onSelect() {
         navigateTo(`/asset/${row.original.id}/holder`)
@@ -501,7 +503,7 @@ function getRowItems(row: Row<Asset>) {
   }
   if (row.original.hasMaintenance !== false && hasPermission('asset-maintenance:read')) {
     historyActions.push({
-      label: 'Maintenance History',
+      label: t('pages.asset.index.maintenanceHistory'),
       icon: 'i-lucide-wrench',
       onSelect() {
         navigateTo(`/asset/${row.original.id}/maintenance`)
@@ -530,7 +532,7 @@ const handleDelete = async () => {
     const response = await assetService.delete(selectedAsset.value.id)
     if (response.success) {
       toast.add({
-        title: 'Asset deleted successfully!',
+        title: t('pages.asset.index.deleteSuccess'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

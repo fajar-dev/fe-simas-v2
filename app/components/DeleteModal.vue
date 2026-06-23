@@ -14,7 +14,7 @@
             </h3>
             <p class="text-sm text-neutral-600">
               <slot name="description">
-                Are you sure you want to delete <span class="text-neutral-800">{{ itemName }}</span>? <br>This action cannot be undone.
+                {{ $t('component.deleteModal.description', { name: itemName }) }} <br>{{ $t('component.deleteModal.undone') }}
               </slot>
             </p>
           </div>
@@ -29,7 +29,7 @@
             class="flex-1 justify-center"
             @click="open = false"
           >
-            Cancel
+            {{ $t('common.cancel') }}
           </UButton>
           <UButton
             color="error"
@@ -38,7 +38,7 @@
             class="flex-1 justify-center"
             @click="$emit('confirm')"
           >
-            Delete
+            {{ $t('common.delete') }}
           </UButton>
         </div>
 
@@ -48,6 +48,7 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
 const open = defineModel<boolean>({ default: false })
 
 withDefaults(defineProps<{

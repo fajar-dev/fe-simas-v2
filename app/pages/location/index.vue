@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <Header
-      title="Location Management"
-      description="Manage branch locations"
+      :title="$t('pages.location.title')"
+      :description="$t('pages.location.description')"
     >
     </Header>
 
@@ -17,7 +17,7 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      search-placeholder="Search location..."
+      :search-placeholder="$t('pages.location.searchPlaceholder')"
     >
       <template #actions v-if="hasPermission('location:create')">
         <UButton
@@ -27,7 +27,7 @@
           class="w-full lg:w-auto justify-center"
           @click="showAddModal = true"
         >
-          Add Location
+          {{ $t('pages.location.addLocation') }}
         </UButton>
       </template>
     </DataTable>
@@ -37,7 +37,7 @@
     <LocationUpdateModal v-model="showUpdateModal" :location="selectedLocation" @updated="fetchLocations" />
     <DeleteModal 
       v-model="showDeleteModal" 
-      title="Delete Location" 
+      :title="$t('pages.location.deleteTitle')" 
       :item-name="selectedLocation?.name" 
       :loading="isDeleting"
       @confirm="handleDelete" 
@@ -50,6 +50,8 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { locationService } from '~/services/location-service'
 import type { Location } from '~/types/location'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -112,14 +114,14 @@ const fetchLocations = async () => {
 const baseColumns: TableColumn<Location>[] = [
   {
     accessorKey: 'name',
-    header: sortHeader('Name', 'name'),
+    header: sortHeader(t('pages.location.columnName'), 'name'),
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, row.original.name)
     }
   },
   {
     id: 'branch',
-    header: sortHeader('Branch', 'branch'),
+    header: sortHeader(t('pages.location.columnBranch'), 'branch'),
     cell: ({ row }) => {
       const branch = row.original.branch
       if (!branch) return '-'
@@ -128,7 +130,7 @@ const baseColumns: TableColumn<Location>[] = [
   },
   {
     accessorKey: 'description',
-    header: sortHeader('Description', 'description'),
+    header: sortHeader(t('pages.location.columnDescription'), 'description'),
     cell: ({ row }) => {
       const desc = row.original.description
       return h('span', { class: 'text-neutral-600' }, desc || '-')
@@ -141,7 +143,7 @@ const columns = computed(() => {
   if (hasPermission('location:update', 'location:delete')) {
     list.push({
       id: 'actions',
-      header: 'Action',
+      header: t('pages.location.columnAction'),
       meta: {
         class: {
           td: 'text-right',
@@ -178,7 +180,7 @@ function getRowItems(row: Row<Location>) {
   const actions = []
   if (hasPermission('location:update')) {
     actions.push({
-      label: 'Edit Location',
+      label: t('pages.location.editLocation'),
       icon: 'i-lucide-edit',
       onSelect() {
         selectedLocation.value = row.original
@@ -188,7 +190,7 @@ function getRowItems(row: Row<Location>) {
   }
   if (hasPermission('location:delete')) {
     actions.push({
-      label: 'Delete Location',
+      label: t('pages.location.deleteLocation'),
       color: 'error' as const,
       icon: 'i-lucide-trash',
       onSelect() {
@@ -209,7 +211,7 @@ const handleDelete = async () => {
     const response = await locationService.delete(selectedLocation.value.id)
     if (response.success) {
       toast.add({
-        title: 'Location deleted successfully!',
+        title: t('pages.location.deleteSuccess'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

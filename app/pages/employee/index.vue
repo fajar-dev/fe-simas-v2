@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <Header
-      title="Employee Management"
-      description="Manage employee"
+      :title="$t('pages.employee.title')"
+      :description="$t('pages.employee.description')"
     >
     </Header>
 
@@ -17,7 +17,7 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      search-placeholder="Search name or employee ID..."
+      :search-placeholder="$t('pages.employee.searchPlaceholder')"
       table-class="min-w-[768px]"
     >
       <template #actions v-if="hasPermission('employee:create')">
@@ -28,7 +28,7 @@
           class="w-full lg:w-auto justify-center"
           @click="showAddModal = true"
         >
-          Add Employee
+          {{ $t('pages.employee.addEmployee') }}
         </UButton>
       </template>
     </DataTable>
@@ -38,7 +38,7 @@
     <EmployeeUpdateModal v-model="showUpdateModal" :employee="selectedEmployee" @updated="fetchEmployees" />
     <DeleteModal 
       v-model="showDeleteModal" 
-      title="Delete Employee" 
+      :title="$t('pages.employee.deleteTitle')" 
       :item-name="selectedEmployee?.name" 
       :loading="isDeleting"
       @confirm="handleDelete" 
@@ -51,6 +51,8 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { employeeService } from '~/services/employee-service'
 import type { Employee } from '~/types/employee'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -115,7 +117,7 @@ const fetchEmployees = async () => {
 const baseColumns: TableColumn<Employee>[] = [
   {
     accessorKey: 'name',
-    header: sortHeader('Employee', 'name'),
+    header: sortHeader(t('pages.employee.columnEmployee'), 'name'),
     cell: ({ row }) => {
       const name = row.original.name
       const employeeId = row.original.employeeId
@@ -137,28 +139,28 @@ const baseColumns: TableColumn<Employee>[] = [
   },
   {
     accessorKey: 'jobPosition',
-    header: sortHeader('Job Position', 'jobPosition'),
+    header: sortHeader(t('pages.employee.columnJobPosition'), 'jobPosition'),
     cell: ({ row }) => {
       return h('span', { class: 'font-medium' }, row.original.jobPosition)
     }
   },
   {
     accessorKey: 'email',
-    header: sortHeader('Email', 'email'),
+    header: sortHeader(t('pages.employee.columnEmail'), 'email'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.email)
     }
   },
   {
     accessorKey: 'phone',
-    header: sortHeader('Phone', 'phone'),
+    header: sortHeader(t('pages.employee.columnPhone'), 'phone'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.phone)
     }
   },
   {
     accessorKey: 'isActive',
-    header: 'Status',
+    header: t('pages.employee.columnStatus'),
     cell: ({ row }) => {
       const isActive = row.original.isActive
       return h(
@@ -167,7 +169,7 @@ const baseColumns: TableColumn<Employee>[] = [
           color: isActive ? 'primary' : 'error',
           variant: 'subtle',
         },
-        () => (isActive ? 'Active' : 'Inactive')
+        () => (isActive ? t('common.active') : t('common.inactive'))
       )
     }
   }
@@ -178,7 +180,7 @@ const columns = computed(() => {
   if (hasPermission('employee:update', 'employee:delete')) {
     list.push({
       id: 'actions',
-      header: 'Action',
+      header: t('pages.employee.columnAction'),
       meta: {
         class: {
           td: 'text-right',
@@ -215,7 +217,7 @@ function getRowItems(row: Row<Employee>) {
   const actions = []
   if (hasPermission('employee:update')) {
     actions.push({
-      label: 'Edit Employee',
+      label: t('pages.employee.editEmployee'),
       icon: 'i-lucide-edit',
       onSelect() {
         selectedEmployee.value = row.original
@@ -225,7 +227,7 @@ function getRowItems(row: Row<Employee>) {
   }
   if (hasPermission('employee:delete')) {
     actions.push({
-      label: 'Delete Employee',
+      label: t('pages.employee.deleteEmployee'),
       color: 'error',
       icon: 'i-lucide-trash',
       onSelect() {
@@ -246,7 +248,7 @@ const handleDelete = async () => {
     const response = await employeeService.delete(selectedEmployee.value.id)
     if (response.success) {
       toast.add({
-        title: 'Employee deleted successfully!',
+        title: t('pages.employee.deleteSuccess'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

@@ -6,10 +6,10 @@
       <BrandLogo />
       <div class="space-y-1">
         <h1 class="text-3xl font-bold text-neutral-900 ">
-          Sign In
+          {{ $t('pages.auth.signIn.title') }}
         </h1>
         <p class="text-neutral-600">
-          Please enter your credentials to sign in
+          {{ $t('pages.auth.signIn.subtitle') }}
         </p>
       </div>
     </div>
@@ -18,32 +18,32 @@
     <UForm :state="state" :schema="loginSchema" @submit="handleLogin" class="space-y-4">
       
       <!-- ID Karyawan Input Container -->
-      <UFormField label="Email" name="email" class="w-full font-medium text-neutral-800" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
+      <UFormField :label="$t('pages.auth.signIn.emailLabel')" name="email" class="w-full font-medium text-neutral-800" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
         <UInput
           id="email"
           v-model="state.email"
           type="email"
-          placeholder="Enter your email"
+          :placeholder="$t('pages.auth.signIn.emailPlaceholder')"
           
           class="w-full"
         />
       </UFormField>
 
       <!-- Password Input Container -->
-      <UFormField label="Password" name="password" class="w-full" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
+      <UFormField :label="$t('pages.auth.signIn.passwordLabel')" name="password" class="w-full" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
         <template #hint>
           <NuxtLink
             to="/auth/forgot-password"
             class="text-sm font-medium text-primary"
           >
-            Forgot password?
+            {{ $t('pages.auth.signIn.forgotPassword') }}
           </NuxtLink>
         </template>
         <UInput
           id="password"
           v-model="state.password"
           :type="showPassword ? 'text' : 'password'"
-          placeholder="Enter your password"
+          :placeholder="$t('pages.auth.signIn.passwordPlaceholder')"
           
           class="w-full"
         >
@@ -70,11 +70,11 @@
           color="primary"
           :loading="loading || googleLoading"
         >
-          Login
+          {{ $t('pages.auth.signIn.login') }}
         </UButton>
 
         <!-- OR Divider -->
-        <USeparator label="OR" color="neutral" />
+        <USeparator :label="$t('common.or')" color="neutral" />
 
         <!-- Sign In with Google Button -->
         <UButton
@@ -94,7 +94,7 @@
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
             </svg>
           </template>
-          Continue with Google
+          {{ $t('pages.auth.signIn.continueGoogle') }}
         </UButton>
       </div>
     </UForm>
@@ -112,8 +112,10 @@ definePageMeta({
 })
 
 // SEO meta configurations for auth flow
+const { t } = useI18n()
+
 useHead({
-  title: 'Sign In'
+  title: t('pages.auth.signIn.title')
 })
 
 // Form state using reactive model representation
@@ -137,8 +139,8 @@ const showToast = (type: 'success' | 'error', title: string) => {
 
 // Zod Validation Schema mapped automatically by UForm
 const loginSchema = z.object({
-  email: z.string().min(1, 'Email is required'),
-  password: z.string().min(1, 'Password is required')
+  email: z.string().min(1, t('pages.auth.signIn.emailRequired')),
+  password: z.string().min(1, t('pages.auth.signIn.passwordRequired'))
 })
 
 // Google Auth integration using composables
@@ -146,7 +148,7 @@ const { isReady, login: triggerGoogleLogin } = useCodeClient({
   onSuccess: async (response) => {
     try {
       await authService.google(response.code)
-      showToast('success', 'Login success! Welcome.')
+      showToast('success', t('pages.auth.signIn.loginSuccess'))
       navigateTo('/')
     } finally {
       googleLoading.value = false
@@ -154,7 +156,7 @@ const { isReady, login: triggerGoogleLogin } = useCodeClient({
   },
   onError: () => {
     googleLoading.value = false
-    showToast('error', 'Login failed. Please try again.')
+    showToast('error', t('pages.auth.signIn.loginFailed'))
   }
 })
 
@@ -169,7 +171,7 @@ const handleLogin = async () => {
   loading.value = true
   try {
     await authService.login(state.email, state.password)
-    showToast('success', 'Login success! Welcome.')
+    showToast('success', t('pages.auth.signIn.loginSuccess'))
     navigateTo('/')
   } finally {
     loading.value = false

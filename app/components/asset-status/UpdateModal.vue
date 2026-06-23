@@ -1,8 +1,8 @@
 <template>
   <UModal
     v-model:open="open"
-    title="Update Asset Status"
-    description="Change the current status of this asset."
+    :title="$t('component.assetStatus.updateModal.title')"
+    :description="$t('component.assetStatus.updateModal.description')"
     :ui="{
       content: 'sm:max-w-md',
       overlay: 'bg-black/40',
@@ -17,19 +17,19 @@
         class="space-y-4 w-full"
         @submit="onSubmit"
       >
-        <UFormField label="Status" name="status" required>
+        <UFormField :label="$t('common.status')" name="status" required>
           <USelect
             v-model="state.status"
             :items="statusOptions"
-            placeholder="Select status..."
+            :placeholder="$t('component.assetStatus.updateModal.selectStatus')"
             class="w-full"
           />
         </UFormField>
 
-        <UFormField label="Note" name="note">
+        <UFormField :label="$t('common.note')" name="note">
           <UTextarea
             v-model="state.note"
-            placeholder="Optional note about this status change..."
+            :placeholder="$t('component.assetStatus.updateModal.notePlaceholder')"
             class="w-full"
             :rows="3"
           />
@@ -39,14 +39,14 @@
 
     <template #footer>
       <UButton
-        label="Cancel"
+        :label="$t('common.cancel')"
         color="neutral"
         variant="outline"
         :disabled="saving"
         @click="open = false"
       />
       <UButton
-        label="Update Status"
+        :label="$t('component.assetStatus.updateModal.submit')"
         color="primary"
         type="submit"
         form="update-status-form"
@@ -59,6 +59,8 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import { assetStatusService } from '~/services/asset-status-service'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   assetId: number
@@ -78,7 +80,7 @@ const statusOptions = [
 ]
 
 const schema = z.object({
-  status: z.string().min(1, 'Status is required'),
+  status: z.string().min(1, t('component.assetStatus.updateModal.statusRequired')),
   note: z.string().optional().nullable(),
 })
 
@@ -99,7 +101,7 @@ const onSubmit = async () => {
       note: state.note || null,
     })
     if (response.success) {
-      toast.add({ title: 'Status updated successfully!', color: 'success', icon: 'i-lucide-circle-check' })
+      toast.add({ title: t('component.assetStatus.updateModal.success'), color: 'success', icon: 'i-lucide-circle-check' })
       emit('created')
       open.value = false
     }

@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <Header
-      title="Role Management"
-      description="Manage roles and permissions"
+      :title="$t('pages.role.title')"
+      :description="$t('pages.role.description')"
     >
     </Header>
 
@@ -17,7 +17,7 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      search-placeholder="Search role name..."
+      :search-placeholder="$t('pages.role.searchPlaceholder')"
       table-class="min-w-[768px]"
     >
       <template #actions v-if="hasPermission('role:create')">
@@ -28,7 +28,7 @@
           class="w-full lg:w-auto justify-center"
           @click="showAddModal = true"
         >
-          Add Role
+          {{ $t('pages.role.addRole') }}
         </UButton>
       </template>
     </DataTable>
@@ -38,7 +38,7 @@
     <RoleUpdateModal v-model="showUpdateModal" :role="selectedRole" @updated="fetchRoles" />
     <DeleteModal 
       v-model="showDeleteModal" 
-      title="Delete Role" 
+      :title="$t('pages.role.deleteTitle')" 
       :item-name="selectedRole?.name" 
       :loading="isDeleting"
       @confirm="handleDelete" 
@@ -51,6 +51,8 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { roleService } from '~/services/role-service'
 import type { Role } from '~/types/role'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -112,7 +114,7 @@ const fetchRoles = async () => {
 const baseColumns: TableColumn<Role>[] = [
   {
     id: 'no',
-    header: 'No',
+    header: t('pages.role.columnNo'),
     cell: ({ row }) => {
       const index = row.index + 1 + ((page.value - 1) * perPage.value)
       return h('span', { class: 'text-neutral-500' }, index)
@@ -120,33 +122,33 @@ const baseColumns: TableColumn<Role>[] = [
   },
   {
     accessorKey: 'name',
-    header: sortHeader('Name', 'name'),
+    header: sortHeader(t('pages.role.columnName'), 'name'),
     cell: ({ row }) => {
       const name = row.original.name
       const isSuperAdmin = row.original.isSuperAdmin
       return h('div', { class: 'flex items-center gap-2' }, [
         h('span', { class: 'font-medium text-neutral-900' }, name),
         ...(isSuperAdmin
-          ? [h(UBadge, { color: 'warning', variant: 'subtle', size: 'sm' }, () => 'Super Admin')]
+          ? [h(UBadge, { color: 'warning', variant: 'subtle', size: 'sm' }, () => t('pages.role.superAdmin'))]
           : [])
       ])
     }
   },
   {
     accessorKey: 'permissions',
-    header: 'Permissions',
+    header: t('pages.role.columnPermissions'),
     cell: ({ row }) => {
       const count = row.original.permissions?.length || 0
       const isSuperAdmin = row.original.isSuperAdmin
       if (isSuperAdmin) {
-        return h(UBadge, { color: 'warning', variant: 'subtle' }, () => 'All Permissions')
+        return h(UBadge, { color: 'warning', variant: 'subtle' }, () => t('pages.role.allPermissions'))
       }
-      return h(UBadge, { color: 'primary', variant: 'subtle' }, () => `${count} permissions`)
+      return h(UBadge, { color: 'primary', variant: 'subtle' }, () => t('pages.role.permissionCount', { count }))
     }
   },
   {
     accessorKey: 'createdAt',
-    header: sortHeader('Created At', 'createdAt'),
+    header: sortHeader(t('pages.role.columnCreatedAt'), 'createdAt'),
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt)
       return h('span', { class: 'text-neutral-500' }, date.toLocaleDateString('id-ID', {
@@ -163,7 +165,7 @@ const columns = computed(() => {
   if (hasPermission('role:update', 'role:delete')) {
     list.push({
       id: 'actions',
-      header: 'Action',
+      header: t('pages.role.columnAction'),
       meta: {
         class: {
           td: 'text-right',
@@ -201,7 +203,7 @@ function getRowItems(row: Row<Role>) {
 
   if (hasPermission('role:update')) {
     items.push({
-      label: 'Edit Role',
+      label: t('pages.role.editRole'),
       icon: 'i-lucide-edit',
       onSelect() {
         selectedRole.value = row.original
@@ -212,7 +214,7 @@ function getRowItems(row: Row<Role>) {
 
   if (hasPermission('role:delete') && !row.original.isSuperAdmin) {
     items.push({
-      label: 'Delete Role',
+      label: t('pages.role.deleteRole'),
       color: 'error',
       icon: 'i-lucide-trash',
       onSelect() {
@@ -234,7 +236,7 @@ const handleDelete = async () => {
     const response = await roleService.delete(selectedRole.value.id)
     if (response.success) {
       toast.add({
-        title: 'Role deleted successfully!',
+        title: t('pages.role.deleteSuccess'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

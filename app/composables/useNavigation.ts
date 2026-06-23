@@ -1,4 +1,5 @@
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 export interface NavItem {
   label: string
@@ -14,21 +15,22 @@ export interface NavGroup {
 
 export const useNavigation = () => {
   const route = useRoute()
+  const { t } = useI18n()
   const isCollapsed = useState('sidebar-collapsed', () => false)
   const { hasPermission } = useAuth()
 
-  const navGroups: NavGroup[] = [
+  const navGroups = computed<NavGroup[]>(() => [
     {
-      title: 'Dashboard',
+      title: t('nav.dashboard'),
       items: [
         {
-          label: 'Dashboard',
+          label: t('nav.dashboard'),
           to: '/',
           icon: 'i-lucide-layout-dashboard',
           permission: 'dashboard:read'
         },
         {
-          label: 'Assets',
+          label: t('nav.assets'),
           to: '/asset',
           icon: 'i-lucide-box',
           permission: 'asset:read'
@@ -36,56 +38,56 @@ export const useNavigation = () => {
       ]
     },
     {
-      title: 'Setting',
+      title: t('nav.setting'),
       items: [
         {
-          label: 'Category',
+          label: t('nav.category'),
           to: '/category',
           icon: 'i-lucide-list',
           permission: 'category:read'
         },
         {
-          label: 'Sub Category',
+          label: t('nav.subCategory'),
           to: '/sub-category',
           icon: 'i-lucide-list-tree',
           permission: 'sub-category:read'
         },
         {
-          label: 'Location',
+          label: t('nav.location'),
           to: '/location',
           icon: 'i-lucide-map-pin',
           permission: 'location:read'
         },
         {
-          label: 'Branch',
+          label: t('nav.branch'),
           to: '/branch',
           icon: 'i-lucide-git-branch',
           permission: 'branch:read'
         },
         {
-          label: 'Employees',
+          label: t('nav.employees'),
           to: '/employee',
           icon: 'i-lucide-users',
           permission: 'employee:read'
         },
         {
-          label: 'Users',
+          label: t('nav.users'),
           to: '/user',
           icon: 'i-lucide-user',
           permission: 'user:read'
         },
         {
-          label: 'Roles',
+          label: t('nav.roles'),
           to: '/role',
           icon: 'i-lucide-shield',
           permission: 'role:read'
         }
       ]
     }
-  ]
+  ])
 
   const filteredNavGroups = computed(() =>
-    navGroups
+    navGroups.value
       .map(group => ({
         ...group,
         items: group.items.filter(item => !item.permission || hasPermission(item.permission))

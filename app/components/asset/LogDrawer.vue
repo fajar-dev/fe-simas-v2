@@ -1,8 +1,8 @@
 <template>
   <USlideover
     v-model:open="open"
-    title="Activity Log"
-    description="History of all actions performed on this asset."
+    :title="$t('component.asset.logDrawer.title')"
+    :description="$t('component.asset.logDrawer.description')"
     :ui="{ overlay: 'bg-black/40' }"
   >
     <template #body>
@@ -46,7 +46,7 @@
             />
             <div v-else class="flex items-center gap-2 mt-1">
               <UIcon name="i-lucide-monitor" class="w-4 h-4 text-neutral-400" />
-              <span class="text-xs text-neutral-400 italic">System</span>
+              <span class="text-xs text-neutral-400 italic">{{ $t('component.asset.logDrawer.system') }}</span>
             </div>
           </template>
         </UTimeline>
@@ -55,8 +55,8 @@
         <UEmpty
           v-else
           icon="i-lucide-history"
-          title="No activity logs found"
-          description="Actions performed on this asset will appear here."
+          :title="$t('component.asset.logDrawer.noLogs')"
+          :description="$t('component.asset.logDrawer.noLogsDesc')"
         />
 
         <!-- Loading more skeleton (infinite scroll) -->
@@ -72,7 +72,7 @@
 
         <!-- End of List -->
         <p v-if="!isLoading && logs.length > 0 && logs.length >= meta.total" class="text-center py-4 text-xs text-neutral-400">
-          End of activity history
+          {{ $t('component.asset.logDrawer.endOfHistory') }}
         </p>
       </div>
     </template>

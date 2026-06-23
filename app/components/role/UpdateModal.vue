@@ -1,7 +1,7 @@
 <template>
   <UModal 
-    title="Edit Role"
-    description="Update the role's name and permissions."
+    :title="$t('component.role.updateModal.title')"
+    :description="$t('component.role.updateModal.description')"
     v-model:open="open" 
     :ui="{ 
       content: 'sm:max-w-md', 
@@ -11,23 +11,23 @@
   >
     <template #body>
       <UForm id="update-role-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
-        <UFormField label="Name" name="name" required>
+        <UFormField :label="$t('common.name')" name="name" required>
           <UInput 
             v-model="form.name" 
-            placeholder="Enter role name" 
+            :placeholder="$t('component.role.updateModal.namePlaceholder')" 
             class="w-full" 
             :disabled="role?.isSuperAdmin"
           />
         </UFormField>
 
         <div class="space-y-3">
-          <label class="text-sm font-medium text-neutral-700">Permissions</label>
+          <label class="text-sm font-medium text-neutral-700">{{ $t('common.permissions') }}</label>
 
           <!-- Super Admin notice -->
           <div v-if="role?.isSuperAdmin" class="bg-warning-50 border border-warning-200 rounded-lg p-3">
             <p class="text-sm text-warning-700">
               <UIcon name="i-lucide-info" class="w-4 h-4 inline mr-1" />
-              Super Admin roles have all permissions by default. Permissions cannot be modified.
+              {{ $t('component.role.updateModal.superAdminNote') }}
             </p>
           </div>
 
@@ -37,7 +37,7 @@
               <UCheckbox
                 :model-value="isAllSelected"
                 :indeterminate="isSomeSelected && !isAllSelected"
-                label="Select All"
+                :label="$t('common.selectAll')"
                 @update:model-value="toggleAll"
               />
             </div>
@@ -45,7 +45,7 @@
             <!-- Loading state -->
             <div v-if="isLoadingPermissions" class="flex items-center justify-center py-8">
               <UIcon name="i-lucide-loader-2" class="w-5 h-5 animate-spin text-neutral-400" />
-              <span class="ml-2 text-sm text-neutral-500">Loading permissions...</span>
+              <span class="ml-2 text-sm text-neutral-500">{{ $t('component.role.updateModal.loadingPermissions') }}</span>
             </div>
 
             <!-- Permission Groups by Module -->
@@ -84,14 +84,14 @@
     </template>
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
-        <UButton label="Cancel" @click="open = false" color="neutral" variant="outline" />
+        <UButton :label="$t('common.cancel')" @click="open = false" color="neutral" variant="outline" />
         <UButton
           type="submit"
           form="update-role-form"
           color="primary"
           :loading="isSubmitting"
         >
-          Save Changes
+          {{ $t('common.saveChanges') }}
         </UButton>
       </div>
     </template>
@@ -102,6 +102,8 @@
 import { z } from 'zod'
 import { roleService } from '~/services/role-service'
 import type { Role, Permission } from '~/types/role'
+
+const { t } = useI18n()
 
 const open = defineModel<boolean>({ default: false })
 
@@ -116,10 +118,10 @@ const isLoadingPermissions = ref(false)
 
 const permissions = ref<Permission[]>([])
 
-const schema = z.object({
-  name: z.string().min(1, 'Name is required'),
+const schema = computed(() => z.object({
+  name: z.string().min(1, t('common.nameRequired')),
   permissionIds: z.array(z.number())
-})
+}))
 
 const form = reactive({
   name: '',
@@ -235,7 +237,7 @@ const handleSubmit = async () => {
     const response = await roleService.update(props.role.id, payload)
     if (response.success) {
       toast.add({
-        title: 'Role updated successfully!',
+        title: t('component.role.updateModal.success'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

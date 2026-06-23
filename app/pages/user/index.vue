@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <Header
-      title="User Management"
-      description="Manage system users and their profiles"
+      :title="$t('pages.user.title')"
+      :description="$t('pages.user.description')"
     >
     </Header>
 
@@ -17,7 +17,7 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      search-placeholder="Search name or email..."
+      :search-placeholder="$t('pages.user.searchPlaceholder')"
       table-class="min-w-[768px]"
     >
       <template #actions v-if="hasPermission('user:create')">
@@ -28,7 +28,7 @@
           class="w-full lg:w-auto justify-center"
           @click="showAddModal = true"
         >
-          Add User
+          {{ $t('pages.user.addUser') }}
         </UButton>
       </template>
     </DataTable>
@@ -38,7 +38,7 @@
     <UserUpdateModal v-model="showUpdateModal" :user="selectedUser" @updated="fetchUsers" />
     <DeleteModal 
       v-model="showDeleteModal" 
-      title="Delete User" 
+      :title="$t('pages.user.deleteTitle')" 
       :item-name="selectedUser?.name" 
       :loading="isDeleting"
       @confirm="handleDelete" 
@@ -51,6 +51,8 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { userService } from '~/services/user-service'
 import type { User } from '~/types/user'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -115,7 +117,7 @@ const fetchUsers = async () => {
 const baseColumns: TableColumn<User>[] = [
   {
     accessorKey: 'name',
-    header: sortHeader('User Profile', 'name'),
+    header: sortHeader(t('pages.user.columnUserProfile'), 'name'),
     cell: ({ row }) => {
       const name = row.original.name
       const email = row.original.email
@@ -137,7 +139,7 @@ const baseColumns: TableColumn<User>[] = [
   },
   {
     accessorKey: 'isActive',
-    header: sortHeader('Status', 'isActive'),
+    header: sortHeader(t('pages.user.columnStatus'), 'isActive'),
     cell: ({ row }) => {
       const isActive = row.original.isActive
       return h(
@@ -146,13 +148,13 @@ const baseColumns: TableColumn<User>[] = [
           color: isActive ? 'primary' : 'error',
           variant: 'subtle',
         },
-        () => (isActive ? 'Active' : 'Inactive')
+        () => (isActive ? t('common.active') : t('common.inactive'))
       )
     }
   },
   {
     accessorKey: 'role',
-    header: 'Role',
+    header: t('pages.user.columnRole'),
     cell: ({ row }) => {
       const role = row.original.role
       return role
@@ -162,7 +164,7 @@ const baseColumns: TableColumn<User>[] = [
   },
   {
     accessorKey: 'employee',
-    header: 'Employee',
+    header: t('pages.user.columnEmployee'),
     cell: ({ row }) => {
       const employee = row.original.employee
       if (!employee) return h('span', { class: 'text-xs text-neutral-400' }, '-')
@@ -179,7 +181,7 @@ const columns = computed(() => {
   if (hasPermission('user:update', 'user:delete')) {
     list.push({
       id: 'actions',
-      header: 'Action',
+      header: t('pages.user.columnAction'),
       meta: {
         class: {
           td: 'text-right',
@@ -216,7 +218,7 @@ function getRowItems(row: Row<User>) {
   const actions = []
   if (hasPermission('user:update')) {
     actions.push({
-      label: 'Edit User',
+      label: t('pages.user.editUser'),
       icon: 'i-lucide-edit',
       onSelect() {
         selectedUser.value = row.original
@@ -226,7 +228,7 @@ function getRowItems(row: Row<User>) {
   }
   if (hasPermission('user:delete')) {
     actions.push({
-      label: 'Delete User',
+      label: t('pages.user.deleteUser'),
       color: 'error',
       icon: 'i-lucide-trash',
       onSelect() {
@@ -247,7 +249,7 @@ const handleDelete = async () => {
     const response = await userService.delete(selectedUser.value.id)
     if (response.success) {
       toast.add({
-        title: 'User deleted successfully!',
+        title: t('pages.user.deleteSuccess'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

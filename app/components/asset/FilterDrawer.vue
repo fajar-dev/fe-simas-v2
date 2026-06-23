@@ -1,8 +1,8 @@
 <template>
   <USlideover
     v-model:open="open"
-    title="Advance Filter"
-    description="Narrow down your asset list"
+    :title="$t('component.asset.filterDrawer.title')"
+    :description="$t('component.asset.filterDrawer.description')"
     :ui="{ overlay: 'bg-black/40' }"
   >
     <template #body>
@@ -11,13 +11,13 @@
         <!-- Category -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">Category</label>
-            <UButton v-if="filters.categoryIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('categoryIds')">Clear</UButton>
+            <label class="text-sm font-medium text-neutral-700">{{ $t('common.category') }}</label>
+            <UButton v-if="filters.categoryIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('categoryIds')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
             v-model="filters.categoryIds"
             :items="categoryOptions"
-            placeholder="All Categories"
+            :placeholder="$t('component.asset.filterDrawer.allCategories')"
             value-key="value"
             multiple
             class="w-full"
@@ -28,13 +28,13 @@
         <!-- Sub Category -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">Sub Category</label>
-            <UButton v-if="filters.subCategoryIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('subCategoryIds')">Clear</UButton>
+            <label class="text-sm font-medium text-neutral-700">{{ $t('common.subCategory') }}</label>
+            <UButton v-if="filters.subCategoryIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('subCategoryIds')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
             v-model="filters.subCategoryIds"
             :items="subCategoryOptions"
-            placeholder="All Sub Categories"
+            :placeholder="$t('component.asset.filterDrawer.allSubCategories')"
             value-key="value"
             multiple
             :disabled="!filters.categoryIds?.length"
@@ -47,13 +47,13 @@
         <!-- Branch -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">Branch</label>
-            <UButton v-if="filters.branchIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('branchIds')">Clear</UButton>
+            <label class="text-sm font-medium text-neutral-700">{{ $t('common.branch') }}</label>
+            <UButton v-if="filters.branchIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('branchIds')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
             v-model="filters.branchIds"
             :items="branchOptions"
-            placeholder="All Branches"
+            :placeholder="$t('component.asset.filterDrawer.allBranches')"
             value-key="value"
             multiple
             class="w-full"
@@ -64,13 +64,13 @@
         <!-- Location -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">Location</label>
-            <UButton v-if="filters.locationIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('locationIds')">Clear</UButton>
+            <label class="text-sm font-medium text-neutral-700">{{ $t('common.location') }}</label>
+            <UButton v-if="filters.locationIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('locationIds')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
             v-model="filters.locationIds"
             :items="locationOptions"
-            placeholder="All Locations"
+            :placeholder="$t('component.asset.filterDrawer.allLocations')"
             value-key="value"
             multiple
             :disabled="!filters.branchIds?.length"
@@ -83,13 +83,13 @@
         <!-- Status -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">Status</label>
-            <UButton v-if="filters.status?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('status')">Clear</UButton>
+            <label class="text-sm font-medium text-neutral-700">{{ $t('common.status') }}</label>
+            <UButton v-if="filters.status?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('status')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
             v-model="filters.status"
             :items="statusOptions"
-            placeholder="All Statuses"
+            :placeholder="$t('component.asset.filterDrawer.allStatuses')"
             value-key="value"
             multiple
             class="w-full"
@@ -101,8 +101,8 @@
         <!-- Holder Status -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">Holder Status</label>
-            <UButton v-if="filters.holderStatus" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('holderStatus')">Clear</UButton>
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.holderStatus') }}</label>
+            <UButton v-if="filters.holderStatus" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('holderStatus')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <URadioGroup
             v-model="filters.holderStatus"
@@ -114,13 +114,13 @@
         <!-- Active Holder (only if has_holder) -->
         <div v-if="filters.holderStatus === 'has_holder'">
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">Active Holder</label>
-            <UButton v-if="filters.holderId" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('holderId')">Clear</UButton>
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.detailWrapper.activeHolder') }}</label>
+            <UButton v-if="filters.holderId" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('holderId')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
             v-model="filters.holderId"
             :items="employeeOptions"
-            placeholder="All Employees"
+            :placeholder="$t('component.asset.filterDrawer.allEmployees')"
             value-key="value"
             class="w-full"
           >
@@ -136,13 +136,13 @@
         <!-- Price Range -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">Price Range</label>
-            <UButton v-if="filters.priceMin || filters.priceMax" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('priceMin'); clearField('priceMax')">Clear</UButton>
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.priceRange') }}</label>
+            <UButton v-if="filters.priceMin || filters.priceMax" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('priceMin'); clearField('priceMax')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <div class="flex flex-col sm:flex-row sm:items-center gap-2">
             <UInput
               v-model="priceMinDisplay"
-              placeholder="Min"
+              :placeholder="$t('component.asset.filterDrawer.min')"
               class="w-full sm:flex-1"
             >
               <template #leading>
@@ -152,7 +152,7 @@
             <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
             <UInput
               v-model="priceMaxDisplay"
-              placeholder="Max"
+              :placeholder="$t('component.asset.filterDrawer.max')"
               class="w-full sm:flex-1"
             >
               <template #leading>
@@ -167,8 +167,8 @@
         <!-- Purchase Date -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">Purchase Date</label>
-            <UButton v-if="filters.purchaseDateFrom || filters.purchaseDateTo" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('purchaseDateFrom'); clearField('purchaseDateTo')">Clear</UButton>
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.detailWrapper.purchaseDate') }}</label>
+            <UButton v-if="filters.purchaseDateFrom || filters.purchaseDateTo" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('purchaseDateFrom'); clearField('purchaseDateTo')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
             <UInputDate v-model="purchaseDateFromVal" class="w-full sm:flex-1">
@@ -212,13 +212,13 @@
         <!-- Data Quality -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">Data Quality</label>
-            <UButton v-if="filters.missingFields?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('missingFields')">Clear</UButton>
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.dataQuality') }}</label>
+            <UButton v-if="filters.missingFields?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('missingFields')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
             v-model="filters.missingFields"
             :items="missingFieldOptions"
-            placeholder="All Complete"
+            :placeholder="$t('component.asset.filterDrawer.allComplete')"
             value-key="value"
             multiple
             class="w-full"
@@ -230,21 +230,21 @@
         <!-- Labels -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">Labels</label>
-            <UButton icon="i-lucide-plus" size="xs" color="primary" variant="soft" @click="addLabelFilter">Add</UButton>
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.labels') }}</label>
+            <UButton icon="i-lucide-plus" size="xs" color="primary" variant="soft" @click="addLabelFilter">{{ $t('common.add') }}</UButton>
           </div>
           <div v-if="!labelFilters.length" class="text-sm text-neutral-400 py-3 text-center border border-dashed border-neutral-200 rounded-lg">
-            No label filters added
+            {{ $t('component.asset.filterDrawer.noLabels') }}
           </div>
           <div v-else class="space-y-2">
             <div v-for="(lf, index) in labelFilters" :key="index" class="flex items-center gap-2">
               <UInputMenu
                 v-model="lf.key"
                 :items="availableLabelKeys"
-                placeholder="Key"
+                :placeholder="$t('component.asset.filterDrawer.key')"
                 class="w-full"
               />
-              <UInput v-model="lf.value" placeholder="Value" class="w-full" />
+              <UInput v-model="lf.value" :placeholder="$t('component.asset.filterDrawer.value')" class="w-full" />
               <UButton icon="i-lucide-trash" color="error" variant="ghost" size="sm" square @click="removeLabelFilter(index)" />
             </div>
           </div>
@@ -261,14 +261,14 @@
           icon="i-lucide-rotate-ccw"
           @click="resetAll"
         >
-          Clear All
+          {{ $t('common.clearAll') }}
         </UButton>
         <UButton
           color="primary"
           icon="i-lucide-check"
           @click="applyFilters"
         >
-          Apply Filters
+          {{ $t('component.asset.filterDrawer.applyFilters') }}
         </UButton>
       </div>
     </template>
@@ -283,6 +283,8 @@ import { branchService } from '~/services/branch-service'
 import { locationService } from '~/services/location-service'
 import { employeeService } from '~/services/employee-service'
 import { assetService } from '~/services/asset-service'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   initialFilters?: Record<string, any>
@@ -348,36 +350,36 @@ const locationOptions = ref<{ label: string; value: number }[]>([])
 const employeeOptions = ref<{ label: string; value: number; avatar?: { src: string } }[]>([])
 const availableLabelKeys = ref<string[]>([])
 
-const statusOptions = [
-  { label: 'Active', value: 'active' },
-  { label: 'Idle', value: 'idle' },
-  { label: 'Under Repair', value: 'under_repair' },
-  { label: 'Damaged', value: 'damaged' },
-  { label: 'Lost', value: 'lost' },
-  { label: 'Sold', value: 'sold' },
-  { label: 'Disposed', value: 'disposed' },
-]
+const statusOptions = computed(() => [
+  { label: t('component.asset.filterDrawer.statusActive'), value: 'active' },
+  { label: t('component.asset.filterDrawer.statusIdle'), value: 'idle' },
+  { label: t('component.asset.filterDrawer.statusUnderRepair'), value: 'under_repair' },
+  { label: t('component.asset.filterDrawer.statusDamaged'), value: 'damaged' },
+  { label: t('component.asset.filterDrawer.statusLost'), value: 'lost' },
+  { label: t('component.asset.filterDrawer.statusSold'), value: 'sold' },
+  { label: t('component.asset.filterDrawer.statusDisposed'), value: 'disposed' },
+])
 
-const holderStatusOptions = [
-  { label: 'Has Holder', value: 'has_holder' },
-  { label: 'No Holder', value: 'no_holder' },
-]
+const holderStatusOptions = computed(() => [
+  { label: t('component.asset.filterDrawer.hasHolder'), value: 'has_holder' },
+  { label: t('component.asset.filterDrawer.noHolder'), value: 'no_holder' },
+])
 
-const missingFieldOptions = [
-  { label: 'Without Image', value: 'image' },
-  { label: 'Without Price', value: 'price' },
-  { label: 'Without Brand', value: 'brand' },
-  { label: 'Without Model', value: 'model' },
-  { label: 'Without Purchase Date', value: 'purchaseDate' },
-]
+const missingFieldOptions = computed(() => [
+  { label: t('component.asset.filterDrawer.withoutImage'), value: 'image' },
+  { label: t('component.asset.filterDrawer.withoutPrice'), value: 'price' },
+  { label: t('component.asset.filterDrawer.withoutBrand'), value: 'brand' },
+  { label: t('component.asset.filterDrawer.withoutModel'), value: 'model' },
+  { label: t('component.asset.filterDrawer.withoutPurchaseDate'), value: 'purchaseDate' },
+])
 
 // Date presets
-const datePresets = [
-  { label: '> 1 Year', years: 1 },
-  { label: '> 2 Years', years: 2 },
-  { label: '> 3 Years', years: 3 },
-  { label: '> 4 Years', years: 4 },
-]
+const datePresets = computed(() => [
+  { label: t('component.asset.filterDrawer.moreThan1Year'), years: 1 },
+  { label: t('component.asset.filterDrawer.moreThan2Years'), years: 2 },
+  { label: t('component.asset.filterDrawer.moreThan3Years'), years: 3 },
+  { label: t('component.asset.filterDrawer.moreThan4Years'), years: 4 },
+])
 
 const isDatePresetActive = (preset: { years: number }) => {
   if (!filters.purchaseDateTo) return false

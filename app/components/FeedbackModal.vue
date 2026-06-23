@@ -1,8 +1,8 @@
 <template>
   <UModal
     v-model:open="open"
-    title="Report an Issue"
-    description="Please provide detailed information about the issue."
+    :title="$t('component.feedbackModal.title')"
+    :description="$t('component.feedbackModal.description')"
     :ui="{
       content: 'sm:max-w-md',
       overlay: 'bg-black/40',
@@ -13,7 +13,7 @@
       <!-- Top Note -->
       <div class="mb-4 space-y-1">
         <p class="text-sm text-neutral-600 leading-relaxed">
-          We are improving the information system so it works well for everyone. Thank you for your feedback.
+          {{ $t('component.feedbackModal.infoNote') }}
         </p>
         <div>
           <span class="text-blue-500 font-medium underline text-sm break-all">
@@ -31,7 +31,7 @@
         @submit="onSubmit"
       >
         <!-- Type Field -->
-        <UFormField label="Type" name="type" required>
+        <UFormField :label="$t('component.feedbackModal.type')" name="type" required>
           <URadioGroup
             v-model="state.type"
             indicator="end"
@@ -43,17 +43,17 @@
         </UFormField>
 
         <!-- Description Field -->
-        <UFormField label="Description" name="description" required>
+        <UFormField :label="$t('component.feedbackModal.descriptionLabel')" name="description" required>
           <UTextarea
             v-model="state.description"
-            placeholder="Please describe your feedback..."
+            :placeholder="$t('component.feedbackModal.descriptionPlaceholder')"
             class="w-full"
             :rows="4"
           />
         </UFormField>
 
         <!-- Attachment Field -->
-        <UFormField label="Attachment" name="images" required>
+        <UFormField :label="$t('component.feedbackModal.attachment')" name="images" required>
           <UFileUpload
             v-model="state.images"
             layout="grid"
@@ -63,7 +63,7 @@
           >
             <template #actions="{ open: openFileSelect }">
               <UButton
-                label="Select Images"
+                :label="$t('component.feedbackModal.selectImages')"
                 icon="i-lucide-upload"
                 color="neutral"
                 variant="outline"
@@ -75,11 +75,11 @@
             <template #files-top="{ open: openFileSelect, files }">
               <div v-if="files?.length" class="mb-2 flex items-center justify-between">
                 <p class="font-bold text-sm">
-                  Attachment ({{ files.length }}/3)
+                  {{ $t('component.feedbackModal.attachmentCount', { count: files.length }) }}
                 </p>
                 <UButton
                   icon="i-lucide-plus"
-                  label="Add more"
+                  :label="$t('component.feedbackModal.addMore')"
                   color="neutral"
                   variant="outline"
                   :disabled="!canAddMoreImages"
@@ -96,7 +96,7 @@
       <!-- Action Buttons matching style of other modals -->
       <div class="flex justify-between items-center w-full">
         <UButton
-          label="History"
+          :label="$t('component.feedbackModal.history')"
           color="primary"
           variant="ghost"
           icon="i-lucide-history"
@@ -105,14 +105,14 @@
         />
         <div class="flex gap-2">
           <UButton
-            label="Cancel"
+            :label="$t('common.cancel')"
             color="neutral"
             variant="outline"
             :disabled="saving"
             @click="open = false"
           />
           <UButton
-            label="Send Feedback"
+            :label="$t('component.feedbackModal.send')"
             color="primary"
             variant="solid"
             type="submit"
@@ -130,15 +130,16 @@ import { z } from 'zod'
 import { useFeedback } from '~/composables/useFeedback'
 import { feedbackService } from '~/services/feedback-service'
 
+const { t } = useI18n()
 const open = defineModel<boolean>('open', { default: false })
 
 const { screenshotFile, currentUrl } = useFeedback()
 
-const schema = z.object({
-  type: z.string().min(1, 'Type is required'),
-  description: z.string().min(1, 'Description is required'),
-  images: z.array(z.any()).min(1, 'At least 1 image is required').max(3, 'Maximum 3 images allowed')
-})
+const schema = computed(() => z.object({
+  type: z.string().min(1, t('component.feedbackModal.typeRequired')),
+  description: z.string().min(1, t('component.feedbackModal.descriptionRequired')),
+  images: z.array(z.any()).min(1, t('component.feedbackModal.minImage')).max(3, t('component.feedbackModal.maxImage'))
+}))
 
 const state = reactive({
   type: 'issue',
@@ -147,11 +148,11 @@ const state = reactive({
   url: ''
 })
 
-const items = [
-  { value: 'issue', label: 'Issue' },
-  { value: 'suggestion', label: 'Suggestion' },
-  { value: 'compliment', label: 'Compliment' }
-]
+const items = computed(() => [
+  { value: 'issue', label: t('component.feedbackModal.typeIssue') },
+  { value: 'suggestion', label: t('component.feedbackModal.typeSuggestion') },
+  { value: 'compliment', label: t('component.feedbackModal.typeCompliment') }
+])
 
 const canAddMoreImages = computed(() => {
   return (state.images?.length || 0) < 3
@@ -172,7 +173,7 @@ const onSubmit = async () => {
     const response = await feedbackService.create(payload)
     if (response.success) {
       toast.add({
-        title: 'Feedback submitted successfully!',
+        title: t('component.feedbackModal.success'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

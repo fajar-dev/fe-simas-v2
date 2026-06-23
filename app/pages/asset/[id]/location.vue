@@ -11,7 +11,7 @@
         :from="meta.from"
         :to="meta.to"
         :total="meta.total"
-        search-placeholder="Search notes..."
+        :search-placeholder="$t('pages.asset.location.searchPlaceholder')"
         table-class="min-w-[600px]"
       >
         <template #actions v-if="hasPermission('asset-location:create')">
@@ -22,7 +22,7 @@
             icon="i-lucide-map-pin"
             @click="showAddModal = true"
           >
-            Relocate Asset
+            {{ $t('pages.asset.location.relocateAsset') }}
           </UButton>
         </template>
       </DataTable>
@@ -42,6 +42,8 @@
 import type { TableColumn } from '@nuxt/ui'
 import { assetLocationService } from '~/services/asset-location-service'
 import type { AssetLocation } from '~/types/asset-location'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -106,14 +108,14 @@ const fetchLocations = async () => {
 const columns: TableColumn<AssetLocation>[] = [
   {
     accessorKey: 'date',
-    header: sortHeader('Relocation Date', 'date'),
+    header: sortHeader(t('pages.asset.location.columnRelocationDate'), 'date'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-900 font-medium' }, formatDate(row.original.date || ''))
     }
   },
   {
     accessorKey: 'location',
-    header: sortHeader('Location', 'location'),
+    header: sortHeader(t('pages.asset.location.columnLocation'), 'location'),
     cell: ({ row }) => {
       const location = row.original.location
       if (!location) {
@@ -129,14 +131,14 @@ const columns: TableColumn<AssetLocation>[] = [
   },
   {
     accessorKey: 'note',
-    header: sortHeader('Notes', 'note'),
+    header: sortHeader(t('pages.asset.location.columnNotes'), 'note'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600 truncate max-w-md block' }, row.original.note || '-')
     }
   },
   {
     id: 'attachments',
-    header: 'Attachments',
+    header: t('pages.asset.location.columnAttachments'),
     cell: ({ row }) => {
       const attachments = row.original.attachments || []
       if (attachments.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
@@ -180,7 +182,7 @@ const columns: TableColumn<AssetLocation>[] = [
   },
   {
     accessorKey: 'createdBy',
-    header: sortHeader('Created By', 'createdBy'),
+    header: sortHeader(t('pages.asset.location.columnCreatedBy'), 'createdBy'),
     cell: ({ row }) => {
       const creator = row.original.createdBy
       if (creator) {
@@ -195,7 +197,7 @@ const columns: TableColumn<AssetLocation>[] = [
           h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
         ])
       } else {
-        return h('span', { class: 'text-neutral-500 italic text-sm' }, 'System')
+        return h('span', { class: 'text-neutral-500 italic text-sm' }, t('pages.asset.location.system'))
       }
     }
   }

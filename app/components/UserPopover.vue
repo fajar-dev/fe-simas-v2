@@ -41,8 +41,9 @@
             to="/profile"
             @click="popoverOpen = false"
           >
-            Profile
+            {{ $t('component.userPopover.profile') }}
           </UButton>
+          <ULocaleSelect v-model="locale" :locales="[en, id]" />
           <UButton
             color="neutral"
             variant="ghost"
@@ -51,7 +52,7 @@
             to="/feedback"
             @click="popoverOpen = false"
           >
-            My Feedback
+            {{ $t('component.userPopover.myFeedback') }}
           </UButton>
           <UButton
             color="error"
@@ -60,7 +61,7 @@
             class="w-full justify-start"
             @click="handleLogout"
           >
-            Logout
+            {{ $t('component.userPopover.logout') }}
           </UButton>
         </div>
       </div>
@@ -69,9 +70,13 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
 const { state: authState, service: authService } = useAuth()
 const toast = useToast()
 const popoverOpen = ref(false)
+
+import { en, id } from '@nuxt/ui/locale'
+const locale = ref('en')
 
 interface Props {
   popoverProps?: Record<string, any>
@@ -84,7 +89,7 @@ withDefaults(defineProps<Props>(), {
 const handleLogout = async () => {
   await authService.logout()
   toast.add({
-    title: 'Logout success',
+    title: t('component.userPopover.logoutSuccess'),
     icon: 'i-lucide-circle-check',
     color: 'success'
   })

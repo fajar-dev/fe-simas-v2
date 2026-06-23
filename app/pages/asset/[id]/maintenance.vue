@@ -11,7 +11,7 @@
         :from="meta.from"
         :to="meta.to"
         :total="meta.total"
-        search-placeholder="Search notes..."
+        :search-placeholder="$t('pages.asset.maintenance.searchPlaceholder')"
         table-class="min-w-[600px]"
       >
         <template #actions v-if="hasPermission('asset-maintenance:create')">
@@ -22,7 +22,7 @@
             icon="i-lucide-plus"
             @click="showAddModal = true"
           >
-            Add Maintenance
+            {{ $t('pages.asset.maintenance.addMaintenance') }}
           </UButton>
         </template>
       </DataTable>
@@ -45,7 +45,7 @@
       <!-- Delete Modal -->
       <DeleteModal 
         v-model="showDeleteModal" 
-        title="Delete Maintenance Record" 
+        :title="$t('pages.asset.maintenance.deleteTitle')" 
         :item-name="selectedMaintenance?.note ? `maintenance note: '${selectedMaintenance.note}'` : `maintenance ID: ${selectedMaintenance?.id}`" 
         :loading="isDeleting"
         @confirm="handleDelete" 
@@ -59,6 +59,8 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { assetMaintenanceService } from '~/services/asset-maintenance-service'
 import type { AssetMaintenance } from '~/types/asset-maintenance'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -128,21 +130,21 @@ const fetchMaintenances = async () => {
 const baseColumns: TableColumn<AssetMaintenance>[] = [
   {
     accessorKey: 'date',
-    header: sortHeader('Maintenance Date', 'date'),
+    header: sortHeader(t('pages.asset.maintenance.columnMaintenanceDate'), 'date'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-900 font-medium' }, row.original.date)
     }
   },
   {
     accessorKey: 'note',
-    header: sortHeader('Notes', 'note'),
+    header: sortHeader(t('pages.asset.maintenance.columnNotes'), 'note'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600 truncate max-w-md block' }, row.original.note || '-')
     }
   },
   {
     id: 'attachments',
-    header: 'Attachments',
+    header: t('pages.asset.maintenance.columnAttachments'),
     cell: ({ row }) => {
       const attachments = row.original.attachments || []
       if (attachments.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
@@ -186,7 +188,7 @@ const baseColumns: TableColumn<AssetMaintenance>[] = [
   },
   {
     accessorKey: 'createdBy',
-    header: sortHeader('Created By', 'createdBy'),
+    header: sortHeader(t('pages.asset.maintenance.columnCreatedBy'), 'createdBy'),
     cell: ({ row }) => {
       const creator = row.original.createdBy
       if (creator) {
@@ -201,7 +203,7 @@ const baseColumns: TableColumn<AssetMaintenance>[] = [
           h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
         ])
       } else {
-        return h('span', { class: 'text-neutral-500 italic text-sm' }, 'System')
+        return h('span', { class: 'text-neutral-500 italic text-sm' }, t('pages.asset.maintenance.system'))
       }
     }
   }
@@ -212,7 +214,7 @@ const columns = computed(() => {
   if (hasPermission('asset-maintenance:update', 'asset-maintenance:delete')) {
     list.push({
       id: 'actions',
-      header: 'Action',
+      header: t('pages.asset.maintenance.columnAction'),
       meta: {
         class: {
           td: 'text-right',
@@ -245,7 +247,7 @@ function getRowItems(row: Row<AssetMaintenance>) {
   const actions = []
   if (hasPermission('asset-maintenance:update')) {
     actions.push({
-      label: 'Edit Record',
+      label: t('pages.asset.maintenance.editRecord'),
       icon: 'i-lucide-edit',
       onSelect() {
         selectedMaintenance.value = row.original
@@ -255,7 +257,7 @@ function getRowItems(row: Row<AssetMaintenance>) {
   }
   if (hasPermission('asset-maintenance:delete')) {
     actions.push({
-      label: 'Delete Record',
+      label: t('pages.asset.maintenance.deleteRecord'),
       color: 'error' as const,
       icon: 'i-lucide-trash',
       onSelect() {
@@ -275,7 +277,7 @@ const handleDelete = async () => {
     const response = await assetMaintenanceService.delete(selectedMaintenance.value.id)
     if (response.success) {
       toast.add({
-        title: 'Asset maintenance record deleted successfully!',
+        title: t('pages.asset.maintenance.deleteSuccess'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

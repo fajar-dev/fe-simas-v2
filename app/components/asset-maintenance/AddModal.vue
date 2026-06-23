@@ -1,7 +1,7 @@
 <template>
   <UModal 
-    title="Add Asset Maintenance"
-    description="Fill in the details to record a new asset maintenance event."
+    :title="$t('component.assetMaintenance.addModal.title')"
+    :description="$t('component.assetMaintenance.addModal.description')"
     v-model:open="open" 
     :ui="{ 
       content: 'sm:max-w-md', 
@@ -12,20 +12,20 @@
     <template #body>
       <UForm id="add-maintenance-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
         <!-- Asset Field -->
-        <UFormField v-if="!lockAssetId" label="Asset" name="assetId" required>
+        <UFormField v-if="!lockAssetId" :label="$t('common.asset')" name="assetId" required>
           <USelectMenu
             v-model="selectedAsset"
             :items="assetOptions"
             searchable
-            searchable-placeholder="Search assets..."
-            placeholder="Select asset"
+            :searchable-placeholder="$t('component.assetMaintenance.addModal.searchAssets')"
+            :placeholder="$t('component.assetMaintenance.addModal.selectAsset')"
             :loading="isLoadingAssets"
             class="w-full"
           />
         </UFormField>
 
         <!-- Date Field -->
-        <UFormField label="Date" name="date" required>
+        <UFormField :label="$t('common.date')" name="date" required>
           <UInputDate v-model="dateVal" class="w-full">
             <template #trailing>
               <UPopover>
@@ -39,8 +39,8 @@
         </UFormField>
 
         <!-- Note Field -->
-        <UFormField label="Note" name="note" required>
-          <UTextarea v-model="form.note" placeholder="Enter maintenance details / notes" class="w-full" :rows="3" />
+        <UFormField :label="$t('common.note')" name="note" required>
+          <UTextarea v-model="form.note" :placeholder="$t('component.assetMaintenance.addModal.notePlaceholder')" class="w-full" :rows="3" />
         </UFormField>
 
         <!-- Reusable Attachment Manager -->
@@ -52,14 +52,14 @@
     </template>
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
-        <UButton label="Cancel" @click="open = false" color="neutral" variant="outline" />
+        <UButton :label="$t('common.cancel')" @click="open = false" color="neutral" variant="outline" />
         <UButton
           type="submit"
           form="add-maintenance-form"
           color="primary"
           :loading="isSubmitting"
         >
-          Save Maintenance
+          {{ $t('component.assetMaintenance.addModal.submit') }}
         </UButton>
       </div>
     </template>
@@ -73,6 +73,8 @@ import { assetMaintenanceService } from '~/services/asset-maintenance-service'
 import { assetService } from '~/services/asset-service'
 import type { AssetMaintenancePayload } from '~/types/asset-maintenance'
 import type { Attachment } from '~/types/attachment'
+
+const { t } = useI18n()
 
 const open = defineModel<boolean>({ default: false })
 const props = defineProps<{
@@ -91,8 +93,8 @@ const uploadedAttachments = ref<Attachment[]>([])
 
 const schema = z.object({
   assetId: z.number(),
-  date: z.string().min(1, 'Date is required'),
-  note: z.string().min(1, 'Note is required'),
+  date: z.string().min(1, t('component.assetMaintenance.addModal.dateRequired')),
+  note: z.string().min(1, t('component.assetMaintenance.addModal.noteRequired')),
 })
 
 const form = reactive<AssetMaintenancePayload>({
@@ -151,7 +153,7 @@ const handleSubmit = async () => {
     const response = await assetMaintenanceService.create(form)
     if (response.success) {
       toast.add({
-        title: 'Asset maintenance recorded successfully!',
+        title: t('component.assetMaintenance.addModal.success'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

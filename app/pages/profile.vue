@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <Header
-      title="My Profile"
-      description="Manage your personal profile details and security settings"
+      :title="$t('pages.profile.title')"
+      :description="$t('pages.profile.description')"
     >
     </Header>
 
@@ -22,7 +22,7 @@
               class="pb-3 text-sm font-semibold border-b-2 transition-all duration-200 cursor-pointer focus:outline-hidden"
               :class="isActive ? 'border-primary text-primary font-bold' : 'border-transparent text-neutral-500 hover:text-neutral-900'"
             >
-              Information
+              {{ $t('pages.profile.information') }}
             </a>
           </NuxtLink>
           <NuxtLink 
@@ -36,7 +36,7 @@
               class="pb-3 text-sm font-semibold border-b-2 transition-all duration-200 cursor-pointer focus:outline-hidden"
               :class="isActive ? 'border-primary text-primary font-bold' : 'border-transparent text-neutral-500 hover:text-neutral-900'"
             >
-              Password
+              {{ $t('pages.profile.password') }}
             </a>
           </NuxtLink>
         </div>

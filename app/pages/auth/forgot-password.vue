@@ -5,10 +5,10 @@
       <BrandLogo />
       <div class="space-y-1">
         <h1 class="text-3xl font-bold text-neutral-900">
-          Forgot Password
+          {{ $t('pages.auth.forgotPassword.title') }}
         </h1>
         <p class="text-neutral-600">
-          Enter your email address and we'll send you a link to reset your password.
+          {{ $t('pages.auth.forgotPassword.subtitle') }}
         </p>
       </div>
     </div>
@@ -30,7 +30,7 @@
           color="primary"
           @click="isSubmitted = false"
         >
-          Resend Email
+          {{ $t('pages.auth.forgotPassword.submit') }}
         </UButton>
 
         <NuxtLink
@@ -38,19 +38,19 @@
           class="flex items-center justify-center gap-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
         >
           <UIcon name="i-lucide-arrow-left" class="w-4 h-4" />
-          Back to Sign In
+          {{ $t('pages.auth.forgotPassword.backToLogin') }}
         </NuxtLink>
       </div>
     </div>
 
     <!-- Form State -->
     <UForm v-else :state="state" :schema="forgotSchema" @submit="handleSubmit" class="space-y-4">
-      <UFormField label="Email" name="email" class="w-full font-medium text-neutral-800" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
+      <UFormField :label="$t('pages.auth.forgotPassword.emailLabel')" name="email" class="w-full font-medium text-neutral-800" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
         <UInput
           id="forgot-email"
           v-model="state.email"
           type="email"
-          placeholder="Enter your email"
+          :placeholder="$t('pages.auth.forgotPassword.emailPlaceholder')"
           
           class="w-full"
         />
@@ -64,7 +64,7 @@
           color="primary"
           :loading="loading"
         >
-          Send Reset Link
+          {{ $t('pages.auth.forgotPassword.submit') }}
         </UButton>
 
         <NuxtLink
@@ -72,7 +72,7 @@
           class="flex items-center justify-center gap-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
         >
           <UIcon name="i-lucide-arrow-left" class="w-4 h-4" />
-          Back to Sign In
+          {{ $t('pages.auth.forgotPassword.backToLogin') }}
         </NuxtLink>
       </div>
     </UForm>
@@ -88,8 +88,10 @@ definePageMeta({
   middleware: 'guest'
 })
 
+const { t } = useI18n()
+
 useHead({
-  title: 'Forgot Password'
+  title: t('pages.auth.forgotPassword.title')
 })
 
 const state = reactive({
@@ -101,7 +103,7 @@ const isSubmitted = ref(false)
 const toast = useToast()
 
 const forgotSchema = z.object({
-  email: z.string().min(1, 'Email is required')
+  email: z.string().min(1, t('pages.auth.forgotPassword.emailRequired'))
 })
 
 const handleSubmit = async () => {
@@ -110,7 +112,7 @@ const handleSubmit = async () => {
     await authService.forgotPassword(state.email)
     isSubmitted.value = true
     toast.add({
-      title: 'Reset link sent',
+      title: t('pages.auth.forgotPassword.success'),
       icon: 'i-lucide-circle-check',
       color: 'success'
     })

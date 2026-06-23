@@ -44,7 +44,7 @@
     <!-- Pagination -->
     <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
       <span class="text-sm text-neutral-500">
-        Showing {{ from || 0 }} to {{ to || 0 }} of {{ total }} results
+        {{ $t('component.dataTable.showing', { from: from || 0, to: to || 0, total }) }}
       </span>
       <UPagination v-slot="{ page: activePage }" v-model:page="page" size="md" :total="total" :items-per-page="perPage">
         <!-- Optional custom pagination slots can be added here if needed, default is fine -->

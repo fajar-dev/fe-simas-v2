@@ -16,22 +16,22 @@
         </div>
       </div>
       <div class="flex flex-col">
-        <span class="text-sm font-semibold text-neutral-900">Photo</span>
-        <p class="text-xs text-neutral-400">JPG, GIF or PNG. 1MB Max.</p>
+        <span class="text-sm font-semibold text-neutral-900">{{ $t('common.photo') }}</span>
+        <p class="text-xs text-neutral-400">{{ $t('common.photoHint') }}</p>
         <div class="flex gap-2 mt-2">
-          <UButton size="xs" color="neutral" variant="outline" @click="triggerFileInput" icon="i-lucide-upload">Choose Photo</UButton>
-          <UButton v-if="previewUrl || formInfo.photo" size="xs" color="error" variant="outline" @click="removePhoto" icon="i-lucide-trash">Remove</UButton>
+          <UButton size="xs" color="neutral" variant="outline" @click="triggerFileInput" icon="i-lucide-upload">{{ $t('common.choosePhoto') }}</UButton>
+          <UButton v-if="previewUrl || formInfo.photo" size="xs" color="error" variant="outline" @click="removePhoto" icon="i-lucide-trash">{{ $t('common.remove') }}</UButton>
         </div>
       </div>
       <input type="file" ref="fileInput" class="hidden" accept="image/*" @change="onFileChange" />
     </div>
 
     <UForm :schema="infoSchema" :state="formInfo" @submit="handleInfoSubmit" class="space-y-4">
-      <UFormField label="Full Name" name="name" required>
-        <UInput v-model="formInfo.name" placeholder="Enter full name" class="w-full" />
+      <UFormField :label="$t('pages.profile.informationPage.fullName')" name="name" required>
+        <UInput v-model="formInfo.name" :placeholder="$t('pages.profile.informationPage.fullNamePlaceholder')" class="w-full" />
       </UFormField>
-      <UFormField label="Email Address" name="email" required>
-        <UInput v-model="formInfo.email" type="email" placeholder="Enter email address" class="w-full" />
+      <UFormField :label="$t('pages.profile.informationPage.emailAddress')" name="email" required>
+        <UInput v-model="formInfo.email" type="email" :placeholder="$t('pages.profile.informationPage.emailPlaceholder')" class="w-full" />
       </UFormField>
       
       <div class="flex justify-end pt-2">
@@ -42,7 +42,7 @@
           :disabled="isUploading"
           icon="i-lucide-save"
         >
-          Save Information
+          {{ $t('pages.profile.informationPage.save') }}
         </UButton>
       </div>
     </UForm>
@@ -54,6 +54,7 @@ import { z } from 'zod'
 import { userService } from '~/services/user-service'
 import type { UpdateProfilePayload } from '~/types/profile'
 
+const { t } = useI18n()
 const { state: authState, service: authService } = useAuth()
 const toast = useToast()
 
@@ -78,8 +79,8 @@ const formInfo = reactive<UpdateProfilePayload>({
 
 // Validation Schemas
 const infoSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().min(1, 'Email is required').email('Please enter a valid email address')
+  name: z.string().min(1, t('pages.profile.informationPage.nameRequired')),
+  email: z.string().min(1, t('pages.profile.informationPage.emailRequired')).email(t('pages.profile.informationPage.emailInvalid'))
 })
 
 // Populate profile details
@@ -108,20 +109,20 @@ const onFileChange = async (e: Event) => {
     if (response.success && response.data?.path) {
       formInfo.photo = response.data.path
       toast.add({
-        title: 'Photo uploaded successfully!',
+        title: t('common.photoUploaded'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })
     } else {
       toast.add({
-        title: 'Failed to upload photo',
+        title: t('common.photoUploadFailed'),
         color: 'error',
         icon: 'i-lucide-circle-alert'
       })
     }
   } catch (error) {
     toast.add({
-      title: 'Failed to upload photo',
+      title: t('common.photoUploadFailed'),
       color: 'error',
       icon: 'i-lucide-circle-alert'
     })
@@ -141,7 +142,7 @@ const handleInfoSubmit = async () => {
     const response = await authService.updateProfile(formInfo)
     if (response.success) {
       toast.add({
-        title: 'Profile updated successfully!',
+        title: t('pages.profile.informationPage.success'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

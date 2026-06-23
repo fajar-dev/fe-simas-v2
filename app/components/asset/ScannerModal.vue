@@ -33,7 +33,7 @@
               <UIcon name="i-lucide-triangle-alert" class="w-6 h-6 text-error" />
             </div>
             <p class="text-sm font-medium text-neutral-300">{{ barcode.error.value }}</p>
-            <UButton label="Try Again" icon="i-lucide-refresh-cw" size="xs" color="neutral" variant="outline" @click="barcode.reset()" />
+            <UButton :label="$t('common.tryAgain')" icon="i-lucide-refresh-cw" size="xs" color="neutral" variant="outline" @click="barcode.reset()" />
           </div>
 
           <component
@@ -60,8 +60,8 @@
             <div class="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
               <UIcon name="i-lucide-smartphone-nfc" class="w-6 h-6 text-amber-400" />
             </div>
-            <p class="text-sm font-medium text-neutral-300">NFC not supported</p>
-            <p class="text-xs text-neutral-500">NFC is only available on Android Chrome with HTTPS.</p>
+            <p class="text-sm font-medium text-neutral-300">{{ $t('component.asset.scannerModal.nfcNotSupported') }}</p>
+            <p class="text-xs text-neutral-500">{{ $t('component.asset.scannerModal.nfcNotSupportedDesc') }}</p>
           </div>
 
           <div v-else-if="nfc.error.value" class="p-6 text-center select-none flex flex-col items-center gap-3">
@@ -69,22 +69,22 @@
               <UIcon name="i-lucide-triangle-alert" class="w-6 h-6 text-error" />
             </div>
             <p class="text-sm font-medium text-neutral-300">{{ nfc.error.value }}</p>
-            <UButton label="Try Again" icon="i-lucide-refresh-cw" size="xs" color="neutral" variant="outline" @click="startNfc" />
+            <UButton :label="$t('common.tryAgain')" icon="i-lucide-refresh-cw" size="xs" color="neutral" variant="outline" @click="startNfc" />
           </div>
 
           <template v-else>
             <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4 animate-pulse">
               <UIcon name="i-lucide-smartphone-nfc" class="w-10 h-10 text-primary" />
             </div>
-            <p class="text-sm font-medium text-white">Ready to scan</p>
-            <p class="text-xs text-neutral-400 mt-1">Hold NFC tag near your device</p>
+            <p class="text-sm font-medium text-white">{{ $t('component.asset.scannerModal.readyToScan') }}</p>
+            <p class="text-xs text-neutral-400 mt-1">{{ $t('component.asset.scannerModal.holdNfc') }}</p>
           </template>
         </div>
       </div>
     </template>
 
     <template #footer>
-      <UButton label="Close" color="neutral" variant="outline" class="w-full justify-center" @click="open = false" />
+      <UButton :label="$t('common.close')" color="neutral" variant="outline" class="w-full justify-center" @click="open = false" />
     </template>
   </UModal>
 </template>
@@ -92,15 +92,16 @@
 <script setup lang="ts">
 import type { DetectedBarcode } from 'vue-qrcode-reader'
 
+const { t } = useI18n()
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{
   scanned: [code: string]
 }>()
 
-const tabs = [
-  { key: 'barcode', label: 'Barcode', icon: 'i-lucide-scan' },
-  { key: 'nfc', label: 'NFC', icon: 'i-lucide-smartphone-nfc' },
-]
+const tabs = computed(() => [
+  { key: 'barcode', label: t('component.asset.scannerModal.barcode'), icon: 'i-lucide-scan' },
+  { key: 'nfc', label: t('component.asset.scannerModal.nfc'), icon: 'i-lucide-smartphone-nfc' },
+])
 const activeTab = ref('barcode')
 
 const barcode = useBarcodeScanner()

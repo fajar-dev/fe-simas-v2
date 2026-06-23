@@ -1,7 +1,7 @@
 <template>
   <UModal 
-    title="Relocate Asset"
-    description="Fill in the details to change the asset's location."
+    :title="$t('component.assetLocation.addModal.title')"
+    :description="$t('component.assetLocation.addModal.description')"
     v-model:open="open" 
     :ui="{ 
       content: 'sm:max-w-md', 
@@ -12,39 +12,39 @@
     <template #body>
       <UForm id="add-location-history-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
         <!-- Asset Field (Only shown if not locked to a specific asset) -->
-        <UFormField v-if="!lockAssetId" label="Asset" name="assetId" required>
+        <UFormField v-if="!lockAssetId" :label="$t('common.asset')" name="assetId" required>
           <USelectMenu
             v-model="selectedAsset"
             :items="assetOptions"
             searchable
-            searchable-placeholder="Search assets..."
-            placeholder="Select asset"
+            :searchable-placeholder="$t('component.assetLocation.addModal.searchAssets')"
+            :placeholder="$t('component.assetLocation.addModal.selectAsset')"
             :loading="isLoadingAssets"
             class="w-full"
           />
         </UFormField>
 
         <!-- Branch Field -->
-        <UFormField label="Branch" name="branchId" required>
+        <UFormField :label="$t('common.branch')" name="branchId" required>
           <USelectMenu
             v-model="selectedBranch"
             :items="branchOptions"
             searchable
-            searchable-placeholder="Search branches..."
-            placeholder="Select branch"
+            :searchable-placeholder="$t('component.assetLocation.addModal.searchBranches')"
+            :placeholder="$t('component.assetLocation.addModal.selectBranch')"
             :loading="isLoadingBranches"
             class="w-full"
           />
         </UFormField>
 
         <!-- Location Field -->
-        <UFormField label="New Location" name="locationId" required>
+        <UFormField :label="$t('component.assetLocation.addModal.newLocation')" name="locationId" required>
           <USelectMenu
             v-model="selectedLocation"
             :items="filteredLocationOptions"
             searchable
-            searchable-placeholder="Search locations..."
-            :placeholder="selectedBranch ? 'Select location' : 'Select branch first'"
+            :searchable-placeholder="$t('component.assetLocation.addModal.searchLocations')"
+            :placeholder="selectedBranch ? $t('component.assetLocation.addModal.selectLocation') : $t('component.assetLocation.addModal.selectBranchFirst')"
             :disabled="!selectedBranch"
             :loading="isLoadingLocations"
             class="w-full"
@@ -52,13 +52,13 @@
         </UFormField>
 
         <!-- Date Field -->
-        <UFormField label="Relocation Date" name="date" required>
+        <UFormField :label="$t('component.assetLocation.addModal.relocationDate')" name="date" required>
           <UInput type="datetime-local" v-model="form.date" class="w-full" />
         </UFormField>
 
         <!-- Note Field -->
-        <UFormField label="Note / Reason" name="note">
-          <UTextarea v-model="form.note" placeholder="Enter relocation reasons or details (optional)" class="w-full" :rows="3" />
+        <UFormField :label="$t('component.assetLocation.addModal.noteReason')" name="note">
+          <UTextarea v-model="form.note" :placeholder="$t('component.assetLocation.addModal.notePlaceholder')" class="w-full" :rows="3" />
         </UFormField>
 
         <!-- Attachment Manager -->
@@ -70,14 +70,14 @@
     </template>
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
-        <UButton label="Cancel" @click="open = false" color="neutral" variant="outline" />
+        <UButton :label="$t('common.cancel')" @click="open = false" color="neutral" variant="outline" />
         <UButton
           type="submit"
           form="add-location-history-form"
           color="primary"
           :loading="isSubmitting"
         >
-          Relocate Asset
+          {{ $t('component.assetLocation.addModal.submit') }}
         </UButton>
       </div>
     </template>
@@ -91,6 +91,8 @@ import { branchService } from '~/services/branch-service'
 import { locationService } from '~/services/location-service'
 import { assetService } from '~/services/asset-service'
 import type { Attachment } from '~/types/attachment'
+
+const { t } = useI18n()
 
 const open = defineModel<boolean>({ default: false })
 const props = defineProps<{
@@ -120,7 +122,7 @@ const schema = z.object({
   assetId: z.number(),
   branchId: z.number(),
   locationId: z.number(),
-  date: z.string().min(1, 'Date is required'),
+  date: z.string().min(1, t('component.assetLocation.addModal.dateRequired')),
   note: z.string().optional().or(z.literal('')),
 })
 
@@ -236,7 +238,7 @@ const handleSubmit = async () => {
     })
     if (response.success) {
       toast.add({
-        title: 'Asset relocated successfully!',
+        title: t('component.assetLocation.addModal.success'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

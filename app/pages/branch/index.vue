@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <Header
-      title="Branch Management"
-      description="Manage branches"
+      :title="$t('pages.branch.title')"
+      :description="$t('pages.branch.description')"
     >
     </Header>
 
@@ -17,7 +17,7 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      search-placeholder="Search branch..."
+      :search-placeholder="$t('pages.branch.searchPlaceholder')"
     >
       <template #actions v-if="hasPermission('branch:create')">
         <UButton
@@ -27,7 +27,7 @@
           class="w-full lg:w-auto justify-center"
           @click="showAddModal = true"
         >
-          Add Branch
+          {{ $t('pages.branch.addBranch') }}
         </UButton>
       </template>
     </DataTable>
@@ -37,7 +37,7 @@
     <BranchUpdateModal v-model="showUpdateModal" :branch="selectedBranch" @updated="fetchBranches" />
     <DeleteModal 
       v-model="showDeleteModal" 
-      title="Delete Branch" 
+      :title="$t('pages.branch.deleteTitle')" 
       :item-name="selectedBranch?.name" 
       :loading="isDeleting"
       @confirm="handleDelete" 
@@ -50,6 +50,8 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { branchService } from '~/services/branch-service'
 import type { Branch } from '~/types/branch'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -112,21 +114,21 @@ const fetchBranches = async () => {
 const baseColumns: TableColumn<Branch>[] = [
   {
     accessorKey: 'code',
-    header: sortHeader('Code', 'code'),
+    header: sortHeader(t('pages.branch.columnCode'), 'code'),
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, row.original.code)
     }
   },
   {
     accessorKey: 'name',
-    header: sortHeader('Name', 'name'),
+    header: sortHeader(t('pages.branch.columnName'), 'name'),
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, row.original.name)
     }
   },
   {
     accessorKey: 'description',
-    header: sortHeader('Description', 'description'),
+    header: sortHeader(t('pages.branch.columnDescription'), 'description'),
     cell: ({ row }) => {
       const desc = row.original.description
       return h('span', { class: 'text-neutral-600' }, desc || '-')
@@ -134,21 +136,21 @@ const baseColumns: TableColumn<Branch>[] = [
   },
   {
     accessorKey: 'email',
-    header: sortHeader('Email', 'email'),
+    header: sortHeader(t('pages.branch.columnEmail'), 'email'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.email || '-')
     }
   },
   {
     accessorKey: 'phone',
-    header: sortHeader('Phone', 'phone'),
+    header: sortHeader(t('pages.branch.columnPhone'), 'phone'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.phone || '-')
     }
   },
   {
     accessorKey: 'address',
-    header: sortHeader('Address', 'address'),
+    header: sortHeader(t('pages.branch.columnAddress'), 'address'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.address || '-')
     }
@@ -160,7 +162,7 @@ const columns = computed(() => {
   if (hasPermission('branch:update', 'branch:delete')) {
     list.push({
       id: 'actions',
-      header: 'Action',
+      header: t('pages.branch.columnAction'),
       meta: {
         class: {
           td: 'text-right',
@@ -197,7 +199,7 @@ function getRowItems(row: Row<Branch>) {
   const actions = []
   if (hasPermission('branch:update')) {
     actions.push({
-      label: 'Edit Branch',
+      label: t('pages.branch.editBranch'),
       icon: 'i-lucide-edit',
       onSelect() {
         selectedBranch.value = row.original
@@ -207,7 +209,7 @@ function getRowItems(row: Row<Branch>) {
   }
   if (hasPermission('branch:delete')) {
     actions.push({
-      label: 'Delete Branch',
+      label: t('pages.branch.deleteBranch'),
       color: 'error' as const,
       icon: 'i-lucide-trash',
       onSelect() {
@@ -228,7 +230,7 @@ const handleDelete = async () => {
     const response = await branchService.delete(selectedBranch.value.id)
     if (response.success) {
       toast.add({
-        title: 'Branch deleted successfully!',
+        title: t('pages.branch.deleteSuccess'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

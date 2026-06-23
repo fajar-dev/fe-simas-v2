@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <Header
-      title="Feedback History"
-      description="View and track your submitted feedback and responses"
+      :title="$t('pages.feedback.title')"
+      :description="$t('pages.feedback.description')"
     />
 
     <DataTable
@@ -16,7 +16,7 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      search-placeholder="Search feedback..."
+      :search-placeholder="$t('pages.feedback.searchPlaceholder')"
     />
 
     <!-- Lightbox Modal -->
@@ -28,6 +28,8 @@
 import type { TableColumn } from '@nuxt/ui'
 import { feedbackService } from '~/services/feedback-service'
 import type { FeedbackItem } from '~/services/feedback-service'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -100,7 +102,7 @@ const meta = computed(() => {
 const columns: TableColumn<FeedbackItem>[] = [
   {
     accessorKey: 'timestamp',
-    header: 'Time',
+    header: t('pages.feedback.columnTime'),
     meta: { class: { td: 'w-[140px]' } },
     cell: ({ row }) => {
       const dateStr = formatDate(row.original.timestamp)
@@ -109,7 +111,7 @@ const columns: TableColumn<FeedbackItem>[] = [
   },
   {
     accessorKey: 'url',
-    header: 'URL',
+    header: t('pages.feedback.columnUrl'),
     meta: { class: { td: 'w-[180px] max-w-[180px]' } },
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900 truncate block', title: row.original.url }, row.original.url)
@@ -117,7 +119,7 @@ const columns: TableColumn<FeedbackItem>[] = [
   },
   {
     accessorKey: 'message',
-    header: 'Message',
+    header: t('pages.feedback.columnMessage'),
     meta: { class: { td: 'min-w-[300px]' } },
     cell: ({ row }) => {
       return h('div', { class: 'flex flex-col py-1' }, [
@@ -128,7 +130,7 @@ const columns: TableColumn<FeedbackItem>[] = [
   },
   {
     accessorKey: 'images',
-    header: 'Attachment',
+    header: t('pages.feedback.columnAttachment'),
     meta: { class: { td: 'w-[150px]' } },
     cell: ({ row }) => {
       const imgs = row.original.images
@@ -153,7 +155,7 @@ const columns: TableColumn<FeedbackItem>[] = [
   },
   {
     accessorKey: 'reply',
-    header: 'Reply',
+    header: t('pages.feedback.columnReply'),
     meta: { class: { td: 'min-w-[250px]' } },
     cell: ({ row }) => {
       return h('div', { class: 'flex flex-col py-1' }, [

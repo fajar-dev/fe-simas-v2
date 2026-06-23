@@ -5,17 +5,17 @@
       <UFormField v-if="authState.user?.hasPassword" name="oldPassword" required>
         <template #label>
           <div class="flex flex-col gap-0.5">
-            <span class="font-medium text-sm text-neutral-900">Current Password</span>
-            <span class="text-[10px] text-neutral-400 font-normal">Enter your current password to verify</span>
+            <span class="font-medium text-sm text-neutral-900">{{ $t('pages.profile.passwordPage.currentPassword') }}</span>
+            <span class="text-[10px] text-neutral-400 font-normal">{{ $t('pages.profile.passwordPage.currentPasswordHelper') }}</span>
           </div>
         </template>
-        <UInput v-model="formPassword.oldPassword" type="password" placeholder="Enter current password" class="w-full" />
+        <UInput v-model="formPassword.oldPassword" type="password" :placeholder="$t('pages.profile.passwordPage.currentPasswordPlaceholder')" class="w-full" />
       </UFormField>
-      <UFormField label="New Password" name="newPassword" required>
-        <UInput v-model="formPassword.newPassword" type="password" placeholder="Minimum 6 characters" class="w-full" />
+      <UFormField :label="$t('pages.profile.passwordPage.newPassword')" name="newPassword" required>
+        <UInput v-model="formPassword.newPassword" type="password" :placeholder="$t('pages.profile.passwordPage.newPasswordPlaceholder')" class="w-full" />
       </UFormField>
-      <UFormField label="Confirm New Password" name="confirmPassword" required>
-        <UInput v-model="formPassword.confirmPassword" type="password" placeholder="Confirm new password" class="w-full" />
+      <UFormField :label="$t('pages.profile.passwordPage.confirmPassword')" name="confirmPassword" required>
+        <UInput v-model="formPassword.confirmPassword" type="password" :placeholder="$t('pages.profile.passwordPage.confirmPasswordPlaceholder')" class="w-full" />
       </UFormField>
       
       <div class="flex justify-end pt-2">
@@ -25,7 +25,7 @@
           :loading="isSavingPassword"
           icon="i-lucide-key-round"
         >
-          Change Password
+          {{ $t('pages.profile.passwordPage.save') }}
         </UButton>
       </div>
     </UForm>
@@ -36,6 +36,7 @@
 import { z } from 'zod'
 import type { UpdatePasswordPayload } from '~/types/profile'
 
+const { t } = useI18n()
 const { state: authState, service: authService } = useAuth()
 const toast = useToast()
 
@@ -51,10 +52,10 @@ const formPassword = reactive({
 
 const passwordSchema = z.object({
   oldPassword: z.string().optional().or(z.literal('')),
-  newPassword: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string().min(6, 'Confirm password must be at least 6 characters')
+  newPassword: z.string().min(6, t('pages.profile.passwordPage.passwordMin')),
+  confirmPassword: z.string().min(6, t('pages.profile.passwordPage.confirmMin'))
 }).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords don't match",
+  message: t('pages.profile.passwordPage.mismatch'),
   path: ["confirmPassword"]
 })
 
@@ -73,7 +74,7 @@ const handlePasswordSubmit = async () => {
     const response = await authService.updatePassword(payload)
     if (response.success) {
       toast.add({
-        title: 'Password updated successfully!',
+        title: t('pages.profile.passwordPage.success'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

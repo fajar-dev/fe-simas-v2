@@ -1,7 +1,7 @@
 <template>
   <UModal 
-    title="Assign Asset"
-    description="Select an employee to assign this asset to."
+    :title="$t('component.assetHolder.assignModal.title')"
+    :description="$t('component.assetHolder.assignModal.description')"
     v-model:open="open" 
     :ui="{ 
       content: 'sm:max-w-md', 
@@ -12,40 +12,40 @@
     <template #body>
       <UForm id="assign-asset-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
         <!-- Asset Field (Only shown if not locked to a specific asset) -->
-        <UFormField v-if="!lockAssetId" label="Asset" name="assetId" required>
+        <UFormField v-if="!lockAssetId" :label="$t('common.asset')" name="assetId" required>
           <USelectMenu
             v-model="selectedAsset"
             :items="assetOptions"
             searchable
-            searchable-placeholder="Search assets..."
-            placeholder="Select asset"
+            :searchable-placeholder="$t('component.assetHolder.assignModal.searchAssets')"
+            :placeholder="$t('component.assetHolder.assignModal.selectAsset')"
             :loading="isLoadingAssets"
             class="w-full"
           />
         </UFormField>
 
         <!-- Employee Field -->
-        <UFormField label="Employee" name="employeeId" required>
+        <UFormField :label="$t('common.employee')" name="employeeId" required>
           <USelectMenu
             v-model="selectedEmployee"
             :items="employeeOptions"
             :avatar="selectedEmployee?.avatar"
             searchable
-            searchable-placeholder="Search employees by name or ID..."
-            placeholder="Select employee"
+            :searchable-placeholder="$t('component.assetHolder.assignModal.searchEmployees')"
+            :placeholder="$t('component.assetHolder.assignModal.selectEmployee')"
             :loading="isLoadingEmployees"
             class="w-full"
           />
         </UFormField>
 
         <!-- Assigned Date Field -->
-        <UFormField label="Assignment Date" name="assignedDate" required>
+        <UFormField :label="$t('component.assetHolder.assignModal.assignmentDate')" name="assignedDate" required>
           <UInput type="datetime-local" v-model="form.assignedDate" class="w-full" />
         </UFormField>
 
         <!-- Note Field -->
-        <UFormField label="Assignment Notes" name="assignNote">
-          <UTextarea v-model="form.assignNote" placeholder="Enter assignment details or notes (optional)" class="w-full" :rows="3" />
+        <UFormField :label="$t('component.assetHolder.assignModal.assignmentNotes')" name="assignNote">
+          <UTextarea v-model="form.assignNote" :placeholder="$t('component.assetHolder.assignModal.notesPlaceholder')" class="w-full" :rows="3" />
         </UFormField>
 
         <!-- Attachment Manager -->
@@ -57,14 +57,14 @@
     </template>
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
-        <UButton label="Cancel" @click="open = false" color="neutral" variant="outline" />
+        <UButton :label="$t('common.cancel')" @click="open = false" color="neutral" variant="outline" />
         <UButton
           type="submit"
           form="assign-asset-form"
           color="primary"
           :loading="isSubmitting"
         >
-          Assign Asset
+          {{ $t('component.assetHolder.assignModal.submit') }}
         </UButton>
       </div>
     </template>
@@ -77,6 +77,8 @@ import { assetHolderService } from '~/services/asset-holder-service'
 import { employeeService } from '~/services/employee-service'
 import { assetService } from '~/services/asset-service'
 import type { Attachment } from '~/types/attachment'
+
+const { t } = useI18n()
 
 const open = defineModel<boolean>({ default: false })
 const props = defineProps<{
@@ -104,9 +106,9 @@ const selectedEmployee = ref<{ label: string; value: number; avatar?: any; photo
 const uploadedAttachments = ref<Attachment[]>([])
 
 const schema = z.object({
-  assetId: z.number().int().positive('Asset is required'),
-  employeeId: z.number().int().positive('Employee is required'),
-  assignedDate: z.string().min(1, 'Assignment date is required'),
+  assetId: z.number().int().positive(t('component.assetHolder.assignModal.assetRequired')),
+  employeeId: z.number().int().positive(t('component.assetHolder.assignModal.employeeRequired')),
+  assignedDate: z.string().min(1, t('component.assetHolder.assignModal.dateRequired')),
   assignNote: z.string().optional().or(z.literal('')),
 })
 
@@ -198,7 +200,7 @@ const handleSubmit = async () => {
     })
     if (response.success) {
       toast.add({
-        title: 'Asset assigned successfully!',
+        title: t('component.assetHolder.assignModal.success'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

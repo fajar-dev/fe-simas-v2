@@ -3,7 +3,7 @@
     <!-- Loading: Validating Token -->
     <div v-if="isValidating" class="flex flex-col items-center gap-4 py-12">
       <UIcon name="i-lucide-loader-circle" class="w-8 h-8 text-primary animate-spin" />
-      <p class="text-neutral-500">Validating reset link...</p>
+      <p class="text-neutral-500">{{ $t('common.loading') }}</p>
     </div>
 
     <!-- Success State -->
@@ -11,7 +11,7 @@
       <BrandLogo />
       <div class="space-y-4">
         <h1 class="text-3xl font-bold text-neutral-900">
-          Password Reset
+          {{ $t('pages.auth.resetPassword.title') }}
         </h1>
         <UAlert
           title="Your password has been reset successfully"
@@ -26,7 +26,7 @@
           color="primary"
           to="/auth/sign-in"
         >
-          Sign In
+          {{ $t('pages.auth.resetPassword.backToLogin') }}
         </UButton>
       </div>
     </div>
@@ -37,21 +37,21 @@
         <BrandLogo />
         <div class="space-y-1">
           <h1 class="text-3xl font-bold text-neutral-900">
-            Reset Password
+            {{ $t('pages.auth.resetPassword.title') }}
           </h1>
           <p class="text-neutral-600">
-            Enter your new password below.
+            {{ $t('pages.auth.resetPassword.subtitle') }}
           </p>
         </div>
       </div>
 
       <UForm :state="state" :schema="resetSchema" @submit="handleReset" class="space-y-4">
-        <UFormField label="New Password" name="password" class="w-full" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
+        <UFormField :label="$t('pages.auth.resetPassword.newPassword')" name="password" class="w-full" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
           <UInput
             id="new-password"
             v-model="state.password"
             :type="showPassword ? 'text' : 'password'"
-            placeholder="Enter new password"
+            :placeholder="$t('pages.auth.resetPassword.newPasswordPlaceholder')"
             
             class="w-full"
           >
@@ -68,12 +68,12 @@
           </UInput>
         </UFormField>
 
-        <UFormField label="Confirm Password" name="confirmPassword" class="w-full" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
+        <UFormField :label="$t('pages.auth.resetPassword.confirmPassword')" name="confirmPassword" class="w-full" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
           <UInput
             id="confirm-password"
             v-model="state.confirmPassword"
             :type="showConfirmPassword ? 'text' : 'password'"
-            placeholder="Confirm new password"
+            :placeholder="$t('pages.auth.resetPassword.confirmPasswordPlaceholder')"
             
             class="w-full"
           >
@@ -98,7 +98,7 @@
             color="primary"
             :loading="loading"
           >
-            Reset Password
+            {{ $t('pages.auth.resetPassword.submit') }}
           </UButton>
 
           <NuxtLink
@@ -106,7 +106,7 @@
             class="flex items-center justify-center gap-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
           >
             <UIcon name="i-lucide-arrow-left" class="w-4 h-4" />
-            Back to Sign In
+            {{ $t('pages.auth.resetPassword.backToLogin') }}
           </NuxtLink>
         </div>
       </UForm>
@@ -123,8 +123,10 @@ definePageMeta({
   middleware: 'guest'
 })
 
+const { t } = useI18n()
+
 useHead({
-  title: 'Reset Password'
+  title: t('pages.auth.resetPassword.title')
 })
 
 const route = useRoute()
@@ -146,10 +148,10 @@ const isValidating = ref(true)
 const isSuccess = ref(false)
 
 const resetSchema = z.object({
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string().min(1, 'Please confirm your password')
+  password: z.string().min(8, t('pages.auth.resetPassword.passwordMin')),
+  confirmPassword: z.string().min(1, t('pages.auth.resetPassword.passwordRequired'))
 }).refine((data) => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
+  message: t('pages.auth.resetPassword.passwordMismatch'),
   path: ['confirmPassword']
 })
 
@@ -157,7 +159,7 @@ const resetSchema = z.object({
 onMounted(async () => {
   if (!token.value || !email.value) {
     toast.add({
-      title: 'Invalid or expired reset password link',
+      title: t('pages.auth.resetPassword.backToLogin'),
       icon: 'i-lucide-circle-x',
       color: 'error'
     })
@@ -170,7 +172,7 @@ onMounted(async () => {
     isValidating.value = false
   } catch {
     toast.add({
-      title: 'Invalid or expired reset password link',
+      title: t('pages.auth.resetPassword.backToLogin'),
       icon: 'i-lucide-circle-x',
       color: 'error'
     })
@@ -184,7 +186,7 @@ const handleReset = async () => {
     await authService.resetPassword(token.value, state.password)
     isSuccess.value = true
     toast.add({
-      title: 'Password reset successfully',
+      title: t('pages.auth.resetPassword.success'),
       icon: 'i-lucide-circle-check',
       color: 'success'
     })

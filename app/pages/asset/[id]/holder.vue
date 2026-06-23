@@ -11,7 +11,7 @@
         :from="meta.from"
         :to="meta.to"
         :total="meta.total"
-        search-placeholder="Search assignment history..."
+        :search-placeholder="$t('pages.asset.holder.searchPlaceholder')"
         table-class="min-w-[800px]"
       >
         <template #actions>
@@ -25,7 +25,7 @@
             :loading="isLoadingActive"
             @click="showAssignModal = true"
           >
-            Assign Asset
+            {{ $t('pages.asset.holder.assignAsset') }}
           </UButton>
           <UButton
             v-if="activeHolder && hasPermission('asset-holder:return')"
@@ -36,7 +36,7 @@
             :loading="isLoadingActive"
             @click="showReturnModal = true"
           >
-            Return Asset
+            {{ $t('pages.asset.holder.returnAsset') }}
           </UButton>
         </template>
       </DataTable>
@@ -63,6 +63,8 @@ import { assetHolderService } from '~/services/asset-holder-service'
 import type { AssetHolder } from '~/types/asset-holder'
 import AssignModal from '~/components/asset-holder/AssignModal.vue'
 import ReturnModal from '~/components/asset-holder/ReturnModal.vue'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -147,7 +149,7 @@ const handleReload = () => {
 const columns: TableColumn<AssetHolder>[] = [
   {
     accessorKey: 'employee',
-    header: sortHeader('Employee', 'employee'),
+    header: sortHeader(t('pages.asset.holder.columnEmployee'), 'employee'),
     cell: ({ row }) => {
       const employee = row.original.employee
       if (!employee) return h('span', { class: 'text-neutral-500 italic' }, '-')
@@ -167,32 +169,32 @@ const columns: TableColumn<AssetHolder>[] = [
   },
   {
     accessorKey: 'assignedDate',
-    header: sortHeader('Assigned Date', 'assignedDate'),
+    header: sortHeader(t('pages.asset.holder.columnAssignedDate'), 'assignedDate'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-900 font-medium' }, formatDate(row.original.assignedDate || ''))
     }
   },
   {
     accessorKey: 'returnedDate',
-    header: sortHeader('Return Date', 'returnedDate'),
+    header: sortHeader(t('pages.asset.holder.columnReturnDate'), 'returnedDate'),
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-900 font-medium' }, formatDate(row.original.returnedDate || ''))
     }
   },
   {
     accessorKey: 'notes',
-    header: sortHeader('Notes', 'notes'),
+    header: sortHeader(t('pages.asset.holder.columnNotes'), 'notes'),
     cell: ({ row }) => {
       const notes = [
-        row.original.assignNote ? `Assign: ${row.original.assignNote}` : null,
-        row.original.returnNote ? `Return: ${row.original.returnNote}` : null
+        row.original.assignNote ? `${t('pages.asset.holder.assignPrefix')}${row.original.assignNote}` : null,
+        row.original.returnNote ? `${t('pages.asset.holder.returnPrefix')}${row.original.returnNote}` : null
       ].filter(Boolean).join(' | ')
       return h('span', { class: 'text-neutral-600 truncate max-w-md block' }, notes || '-')
     }
   },
   {
     id: 'attachments',
-    header: 'Attachments',
+    header: t('pages.asset.holder.columnAttachments'),
     cell: ({ row }) => {
       const attachments = row.original.attachments || []
       if (attachments.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
@@ -235,7 +237,7 @@ const columns: TableColumn<AssetHolder>[] = [
   },
   {
     accessorKey: 'createdBy',
-    header: sortHeader('Assign By', 'createdBy'),
+    header: sortHeader(t('pages.asset.holder.columnAssignBy'), 'createdBy'),
     cell: ({ row }) => {
       const creator = row.original.createdBy
       if (creator) {
@@ -250,13 +252,13 @@ const columns: TableColumn<AssetHolder>[] = [
           h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
         ])
       } else {
-        return h('span', { class: 'text-neutral-500 italic text-sm' }, 'System')
+        return h('span', { class: 'text-neutral-500 italic text-sm' }, t('pages.asset.holder.system'))
       }
     }
   },
   {
     accessorKey: 'returnedBy',
-    header: sortHeader('Return By', 'returnedBy'),
+    header: sortHeader(t('pages.asset.holder.columnReturnBy'), 'returnedBy'),
     cell: ({ row }) => {
       const returner = row.original.returnedBy
       if (returner) {

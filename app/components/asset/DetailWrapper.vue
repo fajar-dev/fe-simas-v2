@@ -25,7 +25,7 @@
 
     <UCard v-else-if="asset" class="w-full">
       <div class="w-full mb-4 flex items-center justify-between">
-        <UButton label="Back" color="neutral" icon="i-lucide-arrow-left" variant="link" @click="goBack" />
+        <UButton :label="$t('common.back')" color="neutral" icon="i-lucide-arrow-left" variant="link" @click="goBack" />
         <div class="flex items-center gap-2">
           <UButton
             color="neutral"
@@ -33,7 +33,7 @@
             icon="i-lucide-history"
             @click="showLogDrawer = true"
           >
-            <span class="hidden sm:inline">Activity Log</span>
+            <span class="hidden sm:inline">{{ $t('component.asset.detailWrapper.activityLog') }}</span>
           </UButton>
           <UButton
             v-if="hasPermission('asset-status:create')"
@@ -42,7 +42,7 @@
             icon="i-lucide-repeat-2"
             @click="showStatusModal = true"
           >
-            <span class="hidden sm:inline">Change Status</span>
+            <span class="hidden sm:inline">{{ $t('component.asset.detailWrapper.changeStatus') }}</span>
           </UButton>
           <UButton
             v-if="hasPermission('asset:update')"
@@ -50,7 +50,7 @@
             color="primary"
             icon="i-lucide-edit"
           >
-            <span class="hidden sm:inline">Edit Asset</span>
+            <span class="hidden sm:inline">{{ $t('component.asset.detailWrapper.editAsset') }}</span>
           </UButton>
         </div>
       </div>
@@ -64,49 +64,49 @@
         </div>
         <div v-else class="w-full aspect-[8/7] flex flex-col items-center justify-center bg-neutral-50 border border-neutral-200 rounded-lg text-neutral-400 sm:col-span-4">
           <UIcon name="i-lucide-package" class="w-8 h-8 text-neutral-400 mb-1" />
-          <span class="text-xs text-neutral-500 font-medium">No Image</span>
+          <span class="text-xs text-neutral-500 font-medium">{{ $t('component.asset.detailWrapper.noImage') }}</span>
         </div>
 
         <!-- Right: Content Grid -->
         <div class="min-w-0 w-full sm:col-span-8">
           <div class="grid grid-cols-12 gap-x-8 gap-y-6">
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Code</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.code') }}</span>
               <div class="text-sm text-neutral-900 font-mono font-medium truncate" :title="asset.code">
                 {{ asset.code }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Name</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.name') }}</span>
               <div class="text-sm text-neutral-900 font-medium truncate" :title="asset.name">
                 {{ asset.name }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Category</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.category') }}</span>
               <div class="text-sm text-neutral-900 font-medium truncate" :title="asset.subCategory?.category?.name || '-'">
                 {{ asset.subCategory?.category?.name || '-' }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Sub Category</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.subCategory') }}</span>
               <div class="text-sm text-neutral-900 font-medium truncate" :title="asset.subCategory?.name || '-'">
                 {{ asset.subCategory?.name || '-' }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Price</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.price') }}</span>
               <div class="text-sm text-neutral-900 font-medium truncate" :title="formatCurrency(asset.price)">
                 {{ formatCurrency(asset.price) }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Purchase Date</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('component.asset.detailWrapper.purchaseDate') }}</span>
               <div class="text-sm text-neutral-900 font-medium flex items-center gap-2 min-w-0">
                 <span class="truncate" :title="asset.purchaseDate || '-'">{{ asset.purchaseDate || '-' }}</span>
                 <span v-if="asset.age" class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium shrink-0">{{ asset.age }}</span>
@@ -114,7 +114,7 @@
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Status</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.status') }}</span>
               <AssetStatusBadge
                 v-if="asset.lastStatus"
                 :status="asset.lastStatus.status"
@@ -125,21 +125,21 @@
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Brand</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.brand') }}</span>
               <div class="text-sm text-neutral-900 font-medium truncate" :title="asset.brand || '-'">
                 {{ asset.brand || '-' }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Model</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.model') }}</span>
               <div class="text-sm text-neutral-900 font-medium truncate" :title="asset.model || '-'">
                 {{ asset.model || '-' }}
               </div>
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Last Location</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('component.asset.detailWrapper.lastLocation') }}</span>
               <div class="text-sm text-neutral-900 font-medium flex items-center gap-1.5 flex-wrap min-w-0">
                 <span class="truncate" :title="asset.lastLocation?.location ? asset.lastLocation.location.name : '-'">{{ asset.lastLocation?.location ? asset.lastLocation.location.name : '-' }}</span>
                 <span v-if="asset.lastLocation?.location?.branch" class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium shrink-0" :title="asset.lastLocation.location.branch.name">
@@ -149,7 +149,7 @@
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Active Holder</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('component.asset.detailWrapper.activeHolder') }}</span>
               <div class="text-sm text-neutral-900 font-medium">
                 <div v-if="asset.activeHolder?.employee" class="flex items-center gap-2 min-w-0">
                   <UAvatar
@@ -168,7 +168,7 @@
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Created By</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('component.asset.detailWrapper.createdBy') }}</span>
               <div class="text-sm text-neutral-900 font-medium">
                 <div v-if="asset.createdBy" class="flex items-center gap-2 min-w-0">
                   <UAvatar
@@ -196,7 +196,7 @@
 
             <!-- Description (Full width of the 12-column content grid) -->
             <div class="col-span-12 pt-4 border-t border-neutral-100">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">Description</span>
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.description') }}</span>
               <div class="text-sm text-neutral-700">
                 {{ asset.description || '-' }}
               </div>
@@ -229,6 +229,8 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
 import type { Asset } from '~/types/asset'
+
+const { t } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -266,7 +268,7 @@ const items = computed(() => {
   if (asset.value?.hasLocation !== false && hasPermission('asset-location:read')) {
     tabs.push({
       value: 'location',
-      label: 'Location',
+      label: t('component.asset.detailWrapper.locationTab'),
       icon: 'i-lucide-map-pin',
       to: `/asset/${assetId}/location`
     })
@@ -274,7 +276,7 @@ const items = computed(() => {
   if (asset.value?.hasHolder !== false && hasPermission('asset-holder:read')) {
     tabs.push({
       value: 'holder',
-      label: 'Holder',
+      label: t('component.asset.detailWrapper.holderTab'),
       icon: 'i-lucide-user',
       to: `/asset/${assetId}/holder`
     })
@@ -282,7 +284,7 @@ const items = computed(() => {
   if (asset.value?.hasMaintenance !== false && hasPermission('asset-maintenance:read')) {
     tabs.push({
       value: 'maintenance',
-      label: 'Maintenance',
+      label: t('component.asset.detailWrapper.maintenanceTab'),
       icon: 'i-lucide-wrench',
       to: `/asset/${assetId}/maintenance`
     })

@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <Header
-      title="Sub Category Management"
-      description="Manage asset sub categories"
+      :title="$t('pages.subCategory.title')"
+      :description="$t('pages.subCategory.description')"
     >
     </Header>
 
@@ -17,7 +17,7 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      search-placeholder="Search sub category..."
+      :search-placeholder="$t('pages.subCategory.searchPlaceholder')"
     >
       <template #actions v-if="hasPermission('sub-category:create')">
         <UButton
@@ -27,7 +27,7 @@
           class="w-full lg:w-auto justify-center"
           @click="showAddModal = true"
         >
-          Add Sub Category
+          {{ $t('pages.subCategory.addSubCategory') }}
         </UButton>
       </template>
     </DataTable>
@@ -37,7 +37,7 @@
     <SubCategoryUpdateModal v-model="showUpdateModal" :sub-category="selectedSubCategory" @updated="fetchSubCategories" />
     <DeleteModal 
       v-model="showDeleteModal" 
-      title="Delete Sub Category" 
+      :title="$t('pages.subCategory.deleteTitle')" 
       :item-name="selectedSubCategory?.name" 
       :loading="isDeleting"
       @confirm="handleDelete" 
@@ -50,6 +50,8 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { subCategoryService } from '~/services/sub-category-service'
 import type { SubCategory } from '~/types/sub-category'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -112,21 +114,21 @@ const fetchSubCategories = async () => {
 const baseColumns: TableColumn<SubCategory>[] = [
   {
     accessorKey: 'code',
-    header: sortHeader('Code', 'code'),
+    header: sortHeader(t('pages.subCategory.columnCode'), 'code'),
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, row.original.code)
     }
   },
   {
     accessorKey: 'name',
-    header: sortHeader('Name', 'name'),
+    header: sortHeader(t('pages.subCategory.columnName'), 'name'),
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, row.original.name)
     }
   },
   {
     id: 'category',
-    header: sortHeader('Category', 'category'),
+    header: sortHeader(t('pages.subCategory.columnCategory'), 'category'),
     cell: ({ row }) => {
       const cat = row.original.category
       if (!cat) return '-'
@@ -135,7 +137,7 @@ const baseColumns: TableColumn<SubCategory>[] = [
   },
   {
     accessorKey: 'description',
-    header: sortHeader('Description', 'description'),
+    header: sortHeader(t('pages.subCategory.columnDescription'), 'description'),
     cell: ({ row }) => {
       const desc = row.original.description
       return h('span', { class: 'text-neutral-600' }, desc || '-')
@@ -148,7 +150,7 @@ const columns = computed(() => {
   if (hasPermission('sub-category:update', 'sub-category:delete')) {
     list.push({
       id: 'actions',
-      header: 'Action',
+      header: t('pages.subCategory.columnAction'),
       meta: {
         class: {
           td: 'text-right',
@@ -185,7 +187,7 @@ function getRowItems(row: Row<SubCategory>) {
   const actions = []
   if (hasPermission('sub-category:update')) {
     actions.push({
-      label: 'Edit Sub Category',
+      label: t('pages.subCategory.editSubCategory'),
       icon: 'i-lucide-edit',
       onSelect() {
         selectedSubCategory.value = row.original
@@ -195,7 +197,7 @@ function getRowItems(row: Row<SubCategory>) {
   }
   if (hasPermission('sub-category:delete')) {
     actions.push({
-      label: 'Delete Sub Category',
+      label: t('pages.subCategory.deleteSubCategory'),
       color: 'error' as const,
       icon: 'i-lucide-trash',
       onSelect() {
@@ -216,7 +218,7 @@ const handleDelete = async () => {
     const response = await subCategoryService.delete(selectedSubCategory.value.id)
     if (response.success) {
       toast.add({
-        title: 'Sub category deleted successfully!',
+        title: t('pages.subCategory.deleteSuccess'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

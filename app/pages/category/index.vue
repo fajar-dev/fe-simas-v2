@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Header -->
     <Header
-      title="Category Management"
-      description="Manage asset categories"
+      :title="$t('pages.category.title')"
+      :description="$t('pages.category.description')"
     >
     </Header>
 
@@ -17,7 +17,7 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      search-placeholder="Search category..."
+      :search-placeholder="$t('pages.category.searchPlaceholder')"
     >
       <template #actions v-if="hasPermission('category:create')">
         <UButton
@@ -27,7 +27,7 @@
           class="w-full lg:w-auto justify-center"
           @click="showAddModal = true"
         >
-          Add Category
+          {{ $t('pages.category.addCategory') }}
         </UButton>
       </template>
     </DataTable>
@@ -37,7 +37,7 @@
     <CategoryUpdateModal v-model="showUpdateModal" :category="selectedCategory" @updated="fetchCategories" />
     <DeleteModal 
       v-model="showDeleteModal" 
-      title="Delete Category" 
+      :title="$t('pages.category.deleteTitle')" 
       :item-name="selectedCategory?.name" 
       :loading="isDeleting"
       @confirm="handleDelete" 
@@ -50,6 +50,8 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { categoryService } from '~/services/category-service'
 import type { Category } from '~/types/category'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -112,21 +114,21 @@ const fetchCategories = async () => {
 const baseColumns: TableColumn<Category>[] = [
   {
     accessorKey: 'code',
-    header: sortHeader('Code', 'code'),
+    header: sortHeader(t('pages.category.columnCode'), 'code'),
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, row.original.code)
     }
   },
   {
     accessorKey: 'name',
-    header: sortHeader('Name', 'name'),
+    header: sortHeader(t('pages.category.columnName'), 'name'),
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, row.original.name)
     }
   },
   {
     accessorKey: 'description',
-    header: sortHeader('Description', 'description'),
+    header: sortHeader(t('pages.category.columnDescription'), 'description'),
     cell: ({ row }) => {
       const desc = row.original.description
       return h('span', { class: 'text-neutral-600' }, desc || '-')
@@ -139,7 +141,7 @@ const columns = computed(() => {
   if (hasPermission('category:update', 'category:delete')) {
     list.push({
       id: 'actions',
-      header: 'Action',
+      header: t('pages.category.columnAction'),
       meta: {
         class: {
           td: 'text-right',
@@ -176,7 +178,7 @@ function getRowItems(row: Row<Category>) {
   const actions = []
   if (hasPermission('category:update')) {
     actions.push({
-      label: 'Edit Category',
+      label: t('pages.category.editCategory'),
       icon: 'i-lucide-edit',
       onSelect() {
         selectedCategory.value = row.original
@@ -186,7 +188,7 @@ function getRowItems(row: Row<Category>) {
   }
   if (hasPermission('category:delete')) {
     actions.push({
-      label: 'Delete Category',
+      label: t('pages.category.deleteCategory'),
       color: 'error' as const,
       icon: 'i-lucide-trash',
       onSelect() {
@@ -207,7 +209,7 @@ const handleDelete = async () => {
     const response = await categoryService.delete(selectedCategory.value.id)
     if (response.success) {
       toast.add({
-        title: 'Category deleted successfully!',
+        title: t('pages.category.deleteSuccess'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

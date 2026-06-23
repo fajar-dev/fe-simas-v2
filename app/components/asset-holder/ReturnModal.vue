@@ -1,7 +1,7 @@
 <template>
   <UModal 
-    title="Return Asset"
-    description="Record the return of this asset to inventory."
+    :title="$t('component.assetHolder.returnModal.title')"
+    :description="$t('component.assetHolder.returnModal.description')"
     v-model:open="open" 
     :ui="{ 
       content: 'sm:max-w-md', 
@@ -25,13 +25,13 @@
 
       <UForm id="return-asset-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-4">
         <!-- Returned Date Field -->
-        <UFormField label="Return Date" name="returnedDate" required>
+        <UFormField :label="$t('component.assetHolder.returnModal.returnDate')" name="returnedDate" required>
           <UInput type="datetime-local" v-model="form.returnedDate" class="w-full" />
         </UFormField>
 
         <!-- Note Field -->
-        <UFormField label="Return Notes" name="returnNote">
-          <UTextarea v-model="form.returnNote" placeholder="Enter return details, condition, or notes (optional)" class="w-full" :rows="3" />
+        <UFormField :label="$t('component.assetHolder.returnModal.returnNotes')" name="returnNote">
+          <UTextarea v-model="form.returnNote" :placeholder="$t('component.assetHolder.returnModal.notesPlaceholder')" class="w-full" :rows="3" />
         </UFormField>
 
         <!-- Attachment Manager -->
@@ -43,14 +43,14 @@
     </template>
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
-        <UButton label="Cancel" @click="open = false" color="neutral" variant="outline" />
+        <UButton :label="$t('common.cancel')" @click="open = false" color="neutral" variant="outline" />
         <UButton
           type="submit"
           form="return-asset-form"
           color="success"
           :loading="isSubmitting"
         >
-          Return Asset
+          {{ $t('component.assetHolder.returnModal.submit') }}
         </UButton>
       </div>
     </template>
@@ -62,6 +62,8 @@ import { z } from 'zod'
 import { assetHolderService } from '~/services/asset-holder-service'
 import type { AssetHolder } from '~/types/asset-holder'
 import type { Attachment } from '~/types/attachment'
+
+const { t } = useI18n()
 
 const open = defineModel<boolean>({ default: false })
 const props = defineProps<{
@@ -76,7 +78,7 @@ const isSubmitting = ref(false)
 const uploadedAttachments = ref<Attachment[]>([])
 
 const schema = z.object({
-  returnedDate: z.string().min(1, 'Return date is required'),
+  returnedDate: z.string().min(1, t('component.assetHolder.returnModal.dateRequired')),
   returnNote: z.string().optional().or(z.literal('')),
 })
 
@@ -104,8 +106,8 @@ const resetForm = () => {
 const handleSubmit = async () => {
   if (!props.activeHolder) {
     toast.add({
-      title: 'Error returning asset',
-      description: 'No active holder found for this asset.',
+      title: t('component.assetHolder.returnModal.error'),
+      description: t('component.assetHolder.returnModal.noActiveHolder'),
       color: 'error'
     })
     return
@@ -120,7 +122,7 @@ const handleSubmit = async () => {
     })
     if (response.success) {
       toast.add({
-        title: 'Asset returned successfully!',
+        title: t('component.assetHolder.returnModal.success'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

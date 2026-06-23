@@ -1,7 +1,7 @@
 <template>
   <UModal 
-    title="Edit Location"
-    description="Update the location information below."
+    :title="$t('component.location.updateModal.title')"
+    :description="$t('component.location.updateModal.description')"
     v-model:open="open" 
     :ui="{ 
       content: 'sm:max-w-md', 
@@ -11,34 +11,34 @@
   >
     <template #body>
       <UForm id="update-location-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-3">
-        <UFormField label="Branch" name="branchId" required>
+        <UFormField :label="$t('common.branch')" name="branchId" required>
           <USelectMenu
             v-model="selectedBranch"
             :items="branchOptions"
             searchable
-            searchable-placeholder="Search branch..."
-            placeholder="Select branch"
+            :searchable-placeholder="$t('component.location.updateModal.searchBranch')"
+            :placeholder="$t('component.location.updateModal.selectBranch')"
             class="w-full"
           />
         </UFormField>
-        <UFormField label="Name" name="name" required>
-          <UInput v-model="form.name" placeholder="Enter location name" class="w-full" />
+        <UFormField :label="$t('common.name')" name="name" required>
+          <UInput v-model="form.name" :placeholder="$t('component.location.updateModal.namePlaceholder')" class="w-full" />
         </UFormField>
-        <UFormField label="Description" name="description">
-          <UTextarea v-model="form.description" placeholder="Enter description (optional)" class="w-full" :rows="3" />
+        <UFormField :label="$t('common.description')" name="description">
+          <UTextarea v-model="form.description" :placeholder="$t('common.enterDescription')" class="w-full" :rows="3" />
         </UFormField>
       </UForm>
     </template>
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
-        <UButton label="Cancel" @click="open = false" color="neutral" variant="outline" />
+        <UButton :label="$t('common.cancel')" @click="open = false" color="neutral" variant="outline" />
         <UButton
           type="submit"
           form="update-location-form"
           color="primary"
           :loading="isSubmitting"
         >
-          Save Changes
+          {{ $t('common.saveChanges') }}
         </UButton>
       </div>
     </template>
@@ -50,6 +50,8 @@ import { z } from 'zod'
 import { locationService } from '~/services/location-service'
 import { branchService } from '~/services/branch-service'
 import type { Location, LocationPayload } from '~/types/location'
+
+const { t } = useI18n()
 
 const open = defineModel<boolean>({ default: false })
 
@@ -70,11 +72,11 @@ const selectedBranch = computed({
   }
 })
 
-const schema = z.object({
-  branchId: z.number().int().positive('Branch is required'),
-  name: z.string().min(1, 'Name is required'),
+const schema = computed(() => z.object({
+  branchId: z.number().int().positive(t('component.location.updateModal.branchRequired')),
+  name: z.string().min(1, t('common.nameRequired')),
   description: z.string().optional().or(z.literal('')),
-})
+}))
 
 const form = reactive<LocationPayload>({
   name: '',
@@ -107,7 +109,7 @@ const handleSubmit = async () => {
     const response = await locationService.update(props.location.id, form)
     if (response.success) {
       toast.add({
-        title: 'Location updated successfully!',
+        title: t('component.location.updateModal.success'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

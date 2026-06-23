@@ -29,12 +29,12 @@
       <nav class="space-y-4">
         <div :class="[isCollapsed ? 'flex justify-center' : '']">
           <UTooltip
-            text="Search Asset"
+            :text="$t('nav.searchAsset')"
             :disabled="!isCollapsed"
             :content="{ align: 'center', side: 'right', sideOffset: 8 }"
           >
             <UButton
-              :label="isCollapsed ? undefined : 'Search Asset'"
+              :label="isCollapsed ? undefined : $t('nav.searchAsset')"
               color="primary"
               :square="isCollapsed"
               :class="[isCollapsed ? '' : 'w-full']"
@@ -127,7 +127,7 @@
 
         <!-- Static Feedback Button -->
         <UTooltip
-          text="Feedback"
+          :text="$t('nav.feedback')"
           :disabled="!isCollapsed"
           :content="{ align: 'center', side: 'right', sideOffset: 8 }"
         >
@@ -147,7 +147,7 @@
               class="w-5 h-5 shrink-0 transition-colors"
             />
             <span v-if="!isCollapsed" class="truncate">
-              {{ isCapturing ? 'Capturing...' : 'Feedback' }}
+              {{ isCapturing ? $t('nav.capturing') : $t('nav.feedback') }}
             </span>
           </button>
         </UTooltip>

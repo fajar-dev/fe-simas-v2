@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <!-- Dashboard Header -->
     <Header
-      title="Dashboard"
-      description="Overview of your asset management system"
+      :title="$t('pages.dashboard.title')"
+      :description="$t('pages.dashboard.description')"
     />
 
     <!-- Stats Cards -->
@@ -34,8 +34,8 @@
       <UCard class="md:col-span-4">
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">Asset by Category</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">Distribution of assets across categories</p>
+            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.assetByCategory') }}</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.assetByCategoryDesc') }}</p>
           </div>
         </template>
 
@@ -62,7 +62,7 @@
           </div>
         </div>
         <div v-else class="flex items-center justify-center h-64 text-sm text-neutral-400">
-          No data available
+          {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
 
@@ -70,8 +70,8 @@
       <UCard class="md:col-span-8">
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">Price by Category</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">Total asset value grouped by category</p>
+            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.priceByCategory') }}</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.priceByCategoryDesc') }}</p>
           </div>
         </template>
 
@@ -94,7 +94,7 @@
           />
         </div>
         <div v-else class="flex items-center justify-center h-64 text-sm text-neutral-400">
-          No data available
+          {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
     </div>
@@ -105,8 +105,8 @@
       <UCard class="md:col-span-4">
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">Asset by Location</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">Distribution of assets across locations</p>
+            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.assetByLocation') }}</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.assetByLocationDesc') }}</p>
           </div>
         </template>
 
@@ -133,7 +133,7 @@
           </div>
         </div>
         <div v-else class="flex items-center justify-center h-64 text-sm text-neutral-400">
-          No data available
+          {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
 
@@ -141,8 +141,8 @@
       <UCard class="md:col-span-8">
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">Price by Location</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">Total asset value grouped by location</p>
+            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.priceByLocation') }}</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.priceByLocationDesc') }}</p>
           </div>
         </template>
 
@@ -165,7 +165,7 @@
           />
         </div>
         <div v-else class="flex items-center justify-center h-64 text-sm text-neutral-400">
-          No data available
+          {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
     </div>
@@ -176,8 +176,8 @@
       <UCard>
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">Sub Category</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">Asset by Sub Category</p>
+            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.subCategories') }}</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.assetBySubCategory') }}</p>
           </div>
         </template>
 
@@ -204,7 +204,7 @@
           </div>
         </div>
         <div v-else class="flex items-center justify-center h-72 text-sm text-neutral-400">
-          No data available
+          {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
 
@@ -212,8 +212,8 @@
       <UCard>
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">Asset Aging</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">Asset distribution by age</p>
+            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.assetAging') }}</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.assetAgingDesc') }}</p>
           </div>
         </template>
 
@@ -234,7 +234,7 @@
           />
         </div>
         <div v-else class="flex items-center justify-center h-72 text-sm text-neutral-400">
-          No data available
+          {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
 
@@ -242,8 +242,8 @@
       <UCard>
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">Data Quality</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">Missing asset information overview</p>
+            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.dataQuality') }}</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.dataQualityDesc') }}</p>
           </div>
         </template>
 
@@ -264,7 +264,7 @@
           />
         </div>
         <div v-else class="flex items-center justify-center h-72 text-sm text-neutral-400">
-          No data available
+          {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
     </div>
@@ -274,6 +274,8 @@
 <script setup lang="ts">
 import { statisticService } from '~/services/statistic-service'
 import type { StatisticSummary, ChartGroupItem, LabelCountItem } from '~/services/statistic-service'
+
+const { t } = useI18n()
 
 definePageMeta({
   layout: 'dashboard'
@@ -297,11 +299,11 @@ const summary = ref<StatisticSummary>({
 })
 
 const stats = computed(() => [
-  { key: 'assets', label: 'Assets', icon: 'i-lucide-box', bgClass: 'bg-blue-50', iconClass: 'text-blue-600', value: summary.value.totalAssets },
-  { key: 'price', label: 'Total Value', icon: 'i-lucide-banknote', bgClass: 'bg-emerald-50', iconClass: 'text-emerald-600', value: summary.value.totalPrice, format: (v: number) => `Rp ${v.toLocaleString('id-ID')}` },
-  { key: 'categories', label: 'Categories', icon: 'i-lucide-list', bgClass: 'bg-violet-50', iconClass: 'text-violet-600', value: summary.value.totalCategories },
-  { key: 'subCategories', label: 'Sub Categories', icon: 'i-lucide-list-tree', bgClass: 'bg-amber-50', iconClass: 'text-amber-600', value: summary.value.totalSubCategories },
-  { key: 'locations', label: 'Locations', icon: 'i-lucide-map-pin', bgClass: 'bg-rose-50', iconClass: 'text-rose-600', value: summary.value.totalLocations },
+  { key: 'assets', label: t('pages.dashboard.assets'), icon: 'i-lucide-box', bgClass: 'bg-blue-50', iconClass: 'text-blue-600', value: summary.value.totalAssets },
+  { key: 'price', label: t('pages.dashboard.totalValue'), icon: 'i-lucide-banknote', bgClass: 'bg-emerald-50', iconClass: 'text-emerald-600', value: summary.value.totalPrice, format: (v: number) => `Rp ${v.toLocaleString('id-ID')}` },
+  { key: 'categories', label: t('pages.dashboard.categories'), icon: 'i-lucide-list', bgClass: 'bg-violet-50', iconClass: 'text-violet-600', value: summary.value.totalCategories },
+  { key: 'subCategories', label: t('pages.dashboard.subCategories'), icon: 'i-lucide-list-tree', bgClass: 'bg-amber-50', iconClass: 'text-amber-600', value: summary.value.totalSubCategories },
+  { key: 'locations', label: t('pages.dashboard.locations'), icon: 'i-lucide-map-pin', bgClass: 'bg-rose-50', iconClass: 'text-rose-600', value: summary.value.totalLocations },
 ])
 
 // ── Chart data ───────────────────────────────────────
@@ -324,7 +326,7 @@ const categoryDonutCategories = computed(() => {
 // Category Bar
 const categoryBarData = computed(() => categoryData.value.map(c => ({ name: c.name, totalPrice: c.totalPrice })))
 const categoryBarCategories = computed(() => ({
-  totalPrice: { name: 'Total Price', color: '#3b82f6' },
+  totalPrice: { name: t('pages.dashboard.totalPrice'), color: '#3b82f6' },
 }))
 
 // Location Donut
@@ -340,7 +342,7 @@ const locationDonutCategories = computed(() => {
 // Location Bar
 const locationBarData = computed(() => locationData.value.map(l => ({ name: l.name, totalPrice: l.totalPrice })))
 const locationBarCategories = computed(() => ({
-  totalPrice: { name: 'Total Price', color: '#10b981' },
+  totalPrice: { name: t('pages.dashboard.totalPrice'), color: '#10b981' },
 }))
 
 // Sub Category Donut
@@ -357,13 +359,13 @@ const subCategoryDonutCategories = computed(() => {
 const agingColors = ['#f59e0b', '#10b981', '#3b82f6']
 const agingBarData = computed(() => agingData.value.map(a => ({ label: a.label, count: a.count })))
 const agingBarCategories = computed(() => ({
-  count: { name: 'Assets', color: '#f59e0b' },
+  count: { name: t('pages.dashboard.assets'), color: '#f59e0b' },
 }))
 
 // Quality Bar
 const qualityBarData = computed(() => qualityData.value.map(q => ({ label: q.label, count: q.count })))
 const qualityBarCategories = computed(() => ({
-  count: { name: 'Assets', color: '#ef4444' },
+  count: { name: t('pages.dashboard.assets'), color: '#ef4444' },
 }))
 
 // ── Fetch ────────────────────────────────────────────

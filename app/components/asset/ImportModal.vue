@@ -1,7 +1,7 @@
 <template>
   <UModal 
-    title="Import Assets"
-    description="Upload an Excel file to import assets in bulk."
+    :title="$t('component.asset.importModal.title')"
+    :description="$t('component.asset.importModal.description')"
     v-model:open="open" 
     :ui="{ 
       content: 'sm:max-w-md', 
@@ -18,8 +18,8 @@
             <div class="flex items-center gap-2">
               <UIcon name="i-lucide-file-spreadsheet" class="w-8 h-8 text-emerald-600" />
               <div>
-                <p class="text-sm font-medium text-neutral-700">Download Template</p>
-                <p class="text-xs text-neutral-500">Use this template for importing</p>
+                <p class="text-sm font-medium text-neutral-700">{{ $t('component.asset.importModal.downloadTemplate') }}</p>
+                <p class="text-xs text-neutral-500">{{ $t('component.asset.importModal.useTemplate') }}</p>
               </div>
             </div>
             <UButton
@@ -29,14 +29,14 @@
               :loading="isDownloading"
               @click="downloadTemplate"
             >
-              Download
+              {{ $t('common.download') }}
             </UButton>
           </div>
         </div>
 
         <!-- File Upload Area (same pattern as Create Asset image upload) -->
         <div>
-          <label class="text-sm font-medium text-neutral-700 mb-1.5 block">File</label>
+          <label class="text-sm font-medium text-neutral-700 mb-1.5 block">{{ $t('component.asset.importModal.file') }}</label>
           <div v-if="selectedFile" class="relative p-3 border border-neutral-200 rounded-lg">
             <div class="flex items-center gap-3">
               <UIcon name="i-lucide-file-check-2" class="w-8 h-8 text-emerald-600 shrink-0" />
@@ -53,8 +53,8 @@
             @click="triggerFileInput"
           >
             <UIcon name="i-lucide-upload" class="w-8 h-8 text-neutral-400 mb-2" />
-            <span class="text-sm text-neutral-500">Drop your Excel file here</span>
-            <span class="text-xs text-neutral-400 mt-1">.xlsx, .xls</span>
+            <span class="text-sm text-neutral-500">{{ $t('component.asset.importModal.dropExcel') }}</span>
+            <span class="text-xs text-neutral-400 mt-1">{{ $t('component.asset.importModal.fileTypes') }}</span>
           </div>
           <input ref="fileInputRef" type="file" class="hidden" accept=".xlsx,.xls" @change="onFileChange" />
         </div>
@@ -75,7 +75,7 @@
                 icon="i-lucide-download"
                 @click="downloadErrors"
               >
-                Download Errors
+                {{ $t('component.asset.importModal.downloadErrors') }}
               </UButton>
             </template>
           </UAlert>
@@ -86,8 +86,8 @@
               <table class="w-full text-sm">
                 <thead>
                   <tr class="bg-neutral-100">
-                    <th class="text-left px-3 py-2 font-semibold text-neutral-600 w-16">Row</th>
-                    <th class="text-left px-3 py-2 font-semibold text-neutral-600">Error</th>
+                    <th class="text-left px-3 py-2 font-semibold text-neutral-600 w-16">{{ $t('component.asset.importModal.row') }}</th>
+                    <th class="text-left px-3 py-2 font-semibold text-neutral-600">{{ $t('component.asset.importModal.error') }}</th>
                   </tr>
                 </thead>
               </table>
@@ -109,7 +109,7 @@
     </template>
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
-        <UButton label="Close" @click="open = false" color="neutral" variant="outline" />
+        <UButton :label="$t('common.close')" @click="open = false" color="neutral" variant="outline" />
         <UButton
           v-if="!importResult"
           color="primary"
@@ -118,7 +118,7 @@
           :disabled="!selectedFile"
           @click="handleImport"
         >
-          Import
+          {{ $t('common.import') }}
         </UButton>
       </div>
     </template>
@@ -128,6 +128,7 @@
 <script setup lang="ts">
 import { assetService } from '~/services/asset-service'
 
+const { t } = useI18n()
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ imported: [] }>()
 const toast = useToast()
@@ -190,7 +191,7 @@ const handleImport = async () => {
       importResult.value = result.data
       if (result.data.success > 0) {
         toast.add({
-          title: `${result.data.success} assets imported successfully!`,
+          title: t('component.asset.importModal.importSuccess', { count: result.data.success }),
           color: 'success',
           icon: 'i-lucide-circle-check'
         })

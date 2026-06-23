@@ -1,8 +1,8 @@
 <template>
   <UModal
     v-model:open="open"
-    title="Take Photo"
-    description="Capture an asset photo using your camera."
+    :title="$t('component.camera.title')"
+    :description="$t('component.camera.description')"
     :ui="{
       content: 'sm:max-w-md',
       overlay: 'bg-black/40',
@@ -18,13 +18,13 @@
             <UIcon name="i-lucide-triangle-alert" class="w-6 h-6 text-error" />
           </div>
           <p class="text-sm font-medium text-neutral-300">{{ error }}</p>
-          <UButton label="Try Again" icon="i-lucide-refresh-cw" size="xs" color="neutral" variant="outline" @click="initCamera" />
+          <UButton :label="$t('common.tryAgain')" icon="i-lucide-refresh-cw" size="xs" color="neutral" variant="outline" @click="initCamera" />
         </div>
 
         <!-- Loading -->
         <div v-else-if="loading && !captured" class="absolute inset-0 flex flex-col items-center justify-center bg-neutral-900/80 gap-2 select-none z-10">
           <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-primary" />
-          <span class="text-sm text-white">Initializing camera...</span>
+          <span class="text-sm text-white">{{ $t('component.camera.initializing') }}</span>
         </div>
 
         <!-- Live Video -->
@@ -56,17 +56,18 @@
 
     <template #footer>
       <div v-if="!captured && !error" class="flex justify-center w-full">
-        <UButton icon="i-lucide-camera" color="primary" :disabled="loading" label="Capture" class="flex-1 justify-center" @click="capture" />
+        <UButton icon="i-lucide-camera" color="primary" :disabled="loading" :label="$t('component.camera.capture')" class="flex-1 justify-center" @click="capture" />
       </div>
       <div v-else-if="captured" class="flex items-center gap-3 w-full">
-        <UButton label="Retake" icon="i-lucide-refresh-cw" color="neutral" variant="outline" class="flex-1 justify-center" @click="retake" />
-        <UButton label="Use Photo" icon="i-lucide-check" color="primary" class="flex-1 justify-center" @click="usePhoto" />
+        <UButton :label="$t('component.camera.retake')" icon="i-lucide-refresh-cw" color="neutral" variant="outline" class="flex-1 justify-center" @click="retake" />
+        <UButton :label="$t('component.camera.usePhoto')" icon="i-lucide-check" color="primary" class="flex-1 justify-center" @click="usePhoto" />
       </div>
     </template>
   </UModal>
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ captured: [file: File] }>()
 
@@ -96,7 +97,7 @@ async function initCamera() {
   error.value = ''
 
   if (!navigator.mediaDevices?.getUserMedia) {
-    error.value = 'Camera not supported. HTTPS is required.'
+    error.value = t('component.camera.notSupported')
     loading.value = false
     return
   }
@@ -124,11 +125,11 @@ async function initCamera() {
     }
   } catch (err: any) {
     if (err.name === 'NotAllowedError') {
-      error.value = 'Camera permission denied. Please allow access in your browser settings.'
+      error.value = t('component.camera.permissionDenied')
     } else if (err.name === 'NotFoundError') {
-      error.value = 'No camera found on this device.'
+      error.value = t('component.camera.notFound')
     } else {
-      error.value = `Camera error: ${err.message || err.name}`
+      error.value = t('component.camera.error', { message: err.message || err.name })
     }
   } finally {
     loading.value = false

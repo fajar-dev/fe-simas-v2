@@ -1,7 +1,7 @@
 <template>
   <UModal 
-    title="Edit User"
-    description="Update the user's information below."
+    :title="$t('component.user.updateModal.title')"
+    :description="$t('component.user.updateModal.description')"
     v-model:open="open" 
     :ui="{ 
       content: 'sm:max-w-md', 
@@ -25,45 +25,45 @@
           </div>
         </div>
         <div class="flex flex-col">
-          <span class="text-sm font-semibold text-neutral-900">Photo</span>
-          <p class="text-xs text-neutral-400">JPG, GIF or PNG. 1MB Max.</p>
+          <span class="text-sm font-semibold text-neutral-900">{{ $t('common.photo') }}</span>
+          <p class="text-xs text-neutral-400">{{ $t('common.photoHint') }}</p>
           <div class="flex gap-2 mt-2">
-            <UButton size="xs" color="neutral" variant="outline" @click="triggerFileInput" icon="i-lucide-upload">Choose Photo</UButton>
-            <UButton v-if="previewUrl || form.photo" size="xs" color="error" variant="outline" @click="removePhoto" icon="i-lucide-trash">Remove</UButton>
+            <UButton size="xs" color="neutral" variant="outline" @click="triggerFileInput" icon="i-lucide-upload">{{ $t('common.choosePhoto') }}</UButton>
+            <UButton v-if="previewUrl || form.photo" size="xs" color="error" variant="outline" @click="removePhoto" icon="i-lucide-trash">{{ $t('common.remove') }}</UButton>
           </div>
         </div>
         <input type="file" ref="fileInput" class="hidden" accept="image/*" @change="onFileChange" />
       </div>
 
       <UForm id="update-user-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-3">
-        <UFormField label="Link to Employee" name="employeeId">
+        <UFormField :label="$t('component.user.updateModal.linkEmployee')" name="employeeId">
           <USelectMenu
             v-model="selectedEmployee"
             :items="employeeOptions"
-            placeholder="Select an employee (optional)"
+            :placeholder="$t('component.user.updateModal.selectEmployee')"
             class="w-full"
           />
         </UFormField>
-        <UFormField label="Name" name="name" required>
-          <UInput v-model="form.name" placeholder="Enter full name" class="w-full" />
+        <UFormField :label="$t('common.name')" name="name" required>
+          <UInput v-model="form.name" :placeholder="$t('component.user.updateModal.namePlaceholder')" class="w-full" />
         </UFormField>
-        <UFormField label="Email" name="email" required>
-          <UInput v-model="form.email" type="email" placeholder="Enter email address" class="w-full" />
+        <UFormField :label="$t('common.email')" name="email" required>
+          <UInput v-model="form.email" type="email" :placeholder="$t('component.user.updateModal.emailPlaceholder')" class="w-full" />
         </UFormField>
-        <UFormField label="New Password (optional)" name="password">
-          <UInput v-model="form.password" type="password" placeholder="Leave empty to keep unchanged" class="w-full" />
+        <UFormField :label="$t('component.user.updateModal.newPassword')" name="password">
+          <UInput v-model="form.password" type="password" :placeholder="$t('component.user.updateModal.passwordPlaceholder')" class="w-full" />
         </UFormField>
-        <UFormField label="Status" name="isActive">
+        <UFormField :label="$t('common.status')" name="isActive">
           <div class="flex items-center gap-2">
             <USwitch v-model="form.isActive" />
-            <span class="text-sm text-neutral-600">{{ form.isActive ? 'Active' : 'Inactive' }}</span>
+            <span class="text-sm text-neutral-600">{{ form.isActive ? $t('common.active') : $t('common.inactive') }}</span>
           </div>
         </UFormField>
-        <UFormField label="Role" name="roleId">
+        <UFormField :label="$t('common.role')" name="roleId">
           <USelectMenu
             v-model="selectedRole"
             :items="roleOptions"
-            placeholder="Select a role"
+            :placeholder="$t('component.user.updateModal.selectRole')"
             class="w-full"
           />
         </UFormField>
@@ -71,7 +71,7 @@
     </template>
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
-        <UButton label="Cancel" @click="open = false" color="neutral" variant="outline" />
+        <UButton :label="$t('common.cancel')" @click="open = false" color="neutral" variant="outline" />
         <UButton
           type="submit"
           form="update-user-form"
@@ -79,7 +79,7 @@
           :loading="isSubmitting"
           :disabled="isUploading"
         >
-          Save Changes
+          {{ $t('common.saveChanges') }}
         </UButton>
       </div>
     </template>
@@ -94,6 +94,8 @@ import { employeeService } from '~/services/employee-service'
 import type { User, UserPayload } from '~/types/user'
 import type { Role } from '~/types/role'
 import type { Employee } from '~/types/employee'
+
+const { t } = useI18n()
 
 const open = defineModel<boolean>({ default: false })
 
@@ -113,12 +115,12 @@ const triggerFileInput = () => {
   fileInput.value?.click()
 }
 // Schema for updating (password is optional, min 6 if filled)
-const schema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters').optional().or(z.literal('')),
+const schema = computed(() => z.object({
+  name: z.string().min(1, t('common.nameRequired')),
+  email: z.string().min(1, t('component.user.updateModal.emailRequired')).email(t('component.user.updateModal.emailInvalid')),
+  password: z.string().min(6, t('component.user.updateModal.passwordMin')).optional().or(z.literal('')),
   isActive: z.boolean()
-})
+}))
 
 const roles = ref<Role[]>([])
 const roleOptions = computed(() => 
@@ -215,20 +217,20 @@ const onFileChange = async (event: Event) => {
     if (response.success && response.data?.path) {
       form.photo = response.data.path
       toast.add({
-        title: 'Photo uploaded successfully!',
+        title: t('common.photoUploaded'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })
     } else {
       toast.add({
-        title: 'Failed to upload photo',
+        title: t('common.photoUploadFailed'),
         color: 'error',
         icon: 'i-lucide-circle-alert'
       })
     }
   } catch (error) {
     toast.add({
-      title: 'Failed to upload photo',
+      title: t('common.photoUploadFailed'),
       color: 'error',
       icon: 'i-lucide-circle-alert'
     })
@@ -265,7 +267,7 @@ const handleSubmit = async () => {
     const response = await userService.update(props.user.id, payload)
     if (response.success) {
       toast.add({
-        title: 'User updated successfully!',
+        title: t('component.user.updateModal.success'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

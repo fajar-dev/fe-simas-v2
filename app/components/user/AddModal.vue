@@ -1,7 +1,7 @@
 <template>
   <UModal 
-    title="Add User"
-    description="Fill in the details to create a new user account."
+    :title="$t('component.user.addModal.title')"
+    :description="$t('component.user.addModal.description')"
     v-model:open="open" 
     :ui="{ 
       content: 'sm:max-w-md', 
@@ -25,45 +25,45 @@
           </div>
         </div>
         <div class="flex flex-col">
-          <span class="text-sm font-semibold text-neutral-900">Photo</span>
-          <p class="text-xs text-neutral-400">JPG, GIF or PNG. 1MB Max.</p>
+          <span class="text-sm font-semibold text-neutral-900">{{ $t('common.photo') }}</span>
+          <p class="text-xs text-neutral-400">{{ $t('common.photoHint') }}</p>
           <div class="flex gap-2 mt-2">
-            <UButton size="xs" color="neutral" variant="outline" @click="triggerFileInput" icon="i-lucide-upload">Choose Photo</UButton>
-            <UButton v-if="previewUrl || form.photo" size="xs" color="error" variant="outline" @click="removePhoto" icon="i-lucide-trash">Remove</UButton>
+            <UButton size="xs" color="neutral" variant="outline" @click="triggerFileInput" icon="i-lucide-upload">{{ $t('common.choosePhoto') }}</UButton>
+            <UButton v-if="previewUrl || form.photo" size="xs" color="error" variant="outline" @click="removePhoto" icon="i-lucide-trash">{{ $t('common.remove') }}</UButton>
           </div>
         </div>
         <input type="file" ref="fileInput" class="hidden" accept="image/*" @change="onFileChange" />
       </div>
 
       <UForm id="add-user-form" :schema="schema" :state="form" @submit="handleSubmit" class="space-y-3">
-        <UFormField label="Link to Employee" name="employeeId">
+        <UFormField :label="$t('component.user.addModal.linkEmployee')" name="employeeId">
           <USelectMenu
             v-model="selectedEmployee"
             :items="employeeOptions"
-            placeholder="Select an employee (optional)"
+            :placeholder="$t('component.user.addModal.selectEmployee')"
             class="w-full"
           />
         </UFormField>
-        <UFormField label="Name" name="name" required>
-          <UInput v-model="form.name" placeholder="Enter full name" class="w-full" />
+        <UFormField :label="$t('common.name')" name="name" required>
+          <UInput v-model="form.name" :placeholder="$t('component.user.addModal.namePlaceholder')" class="w-full" />
         </UFormField>
-        <UFormField label="Email" name="email" required>
-          <UInput v-model="form.email" type="email" placeholder="Enter email address" class="w-full" />
+        <UFormField :label="$t('common.email')" name="email" required>
+          <UInput v-model="form.email" type="email" :placeholder="$t('component.user.addModal.emailPlaceholder')" class="w-full" />
         </UFormField>
-        <UFormField label="Password" name="password">
-          <UInput v-model="form.password" type="password" placeholder="Enter password (optional)" class="w-full" />
+        <UFormField :label="$t('component.user.addModal.password')" name="password">
+          <UInput v-model="form.password" type="password" :placeholder="$t('component.user.addModal.passwordPlaceholder')" class="w-full" />
         </UFormField>
-        <UFormField label="Status" name="isActive">
+        <UFormField :label="$t('common.status')" name="isActive">
           <div class="flex items-center gap-2">
             <USwitch v-model="form.isActive" />
-            <span class="text-sm text-neutral-600">{{ form.isActive ? 'Active' : 'Inactive' }}</span>
+            <span class="text-sm text-neutral-600">{{ form.isActive ? $t('common.active') : $t('common.inactive') }}</span>
           </div>
         </UFormField>
-        <UFormField label="Role" name="roleId">
+        <UFormField :label="$t('common.role')" name="roleId">
           <USelectMenu
             v-model="selectedRole"
             :items="roleOptions"
-            placeholder="Select a role"
+            :placeholder="$t('component.user.addModal.selectRole')"
             class="w-full"
           />
         </UFormField>
@@ -71,7 +71,7 @@
     </template>
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
-        <UButton label="Cancel" @click="open = false" color="neutral" variant="outline" />
+        <UButton :label="$t('common.cancel')" @click="open = false" color="neutral" variant="outline" />
         <UButton
           type="submit"
           form="add-user-form"
@@ -79,7 +79,7 @@
           :loading="isSubmitting"
           :disabled="isUploading"
         >
-          Save User
+          {{ $t('component.user.addModal.submit') }}
         </UButton>
       </div>
     </template>
@@ -95,6 +95,8 @@ import type { UserPayload } from '~/types/user'
 import type { Role } from '~/types/role'
 import type { Employee } from '~/types/employee'
 
+const { t } = useI18n()
+
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ created: [] }>()
 const toast = useToast()
@@ -107,12 +109,12 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const triggerFileInput = () => {
   fileInput.value?.click()
 }
-const schema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters').optional().or(z.literal('')),
+const schema = computed(() => z.object({
+  name: z.string().min(1, t('common.nameRequired')),
+  email: z.string().min(1, t('component.user.addModal.emailRequired')).email(t('component.user.addModal.emailInvalid')),
+  password: z.string().min(6, t('component.user.addModal.passwordMin')).optional().or(z.literal('')),
   isActive: z.boolean()
-})
+}))
 
 const roles = ref<Role[]>([])
 const roleOptions = computed(() => 
@@ -207,20 +209,20 @@ const onFileChange = async (e: Event) => {
     if (response.success && response.data?.path) {
       form.photo = response.data.path
       toast.add({
-        title: 'Photo uploaded successfully!',
+        title: t('common.photoUploaded'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })
     } else {
       toast.add({
-        title: 'Failed to upload photo',
+        title: t('common.photoUploadFailed'),
         color: 'error',
         icon: 'i-lucide-circle-alert'
       })
     }
   } catch (error) {
     toast.add({
-      title: 'Failed to upload photo',
+      title: t('common.photoUploadFailed'),
       color: 'error',
       icon: 'i-lucide-circle-alert'
     })
@@ -240,7 +242,7 @@ const handleSubmit = async () => {
     const response = await userService.create(form)
     if (response.success) {
       toast.add({
-        title: 'User created successfully!',
+        title: t('component.user.addModal.success'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

@@ -8,8 +8,19 @@ export default defineNuxtConfig({
     'nuxt-vue3-google-signin',
     '@nuxt/image',
     'nuxt-charts',
-    '@vite-pwa/nuxt'
+    '@vite-pwa/nuxt',
+    '@nuxtjs/i18n'
   ],
+
+  i18n: {
+    locales: [
+      { code: 'en', language: 'en-US', file: 'en.json' },
+      { code: 'id', language: 'id-ID', file: 'id.json' }
+    ],
+    defaultLocale: 'en',
+    // langDir: '../i18n/locales',
+    // strategy: 'no_prefix',
+  },
 
   devtools: {
     enabled: true
