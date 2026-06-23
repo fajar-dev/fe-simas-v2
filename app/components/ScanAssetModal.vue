@@ -197,16 +197,16 @@ async function searchByCode(code: string) {
   lastScannedCode.value = code
 
   try {
-    const res = await assetService.getAll(1, 1, code)
-    const asset = res.success && res.data.length > 0 ? res.data[0] : null
-    if (asset?.code === code) {
+    const res = await assetService.checkCode(code)
+    if (res.success && res.data.exists && res.data.id) {
       open.value = false
-      navigateTo(`/asset/${asset.id}`)
+      navigateTo(`/asset/${res.data.id}`)
     } else {
       toast.add({ title: `Asset "${code}" not found`, color: 'error', icon: 'i-lucide-circle-x' })
       isSearching.value = false
     }
-  } catch {
+  } catch(err) {
+    console.log(err)
     toast.add({ title: 'Failed to search asset', color: 'error', icon: 'i-lucide-circle-x' })
     isSearching.value = false
   }

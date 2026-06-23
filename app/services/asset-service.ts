@@ -64,11 +64,11 @@ export class AssetService {
         }
     }
 
-    async checkCode(code: string, excludeId?: number): Promise<ApiResponse<{ exists: boolean }>> {
+    async checkCode(code: string, excludeId?: number): Promise<ApiResponse<{ exists: boolean; id?: number }>> {
         try {
             let url = `/asset/check-code?code=${encodeURIComponent(code)}`
             if (excludeId) url += `&excludeId=${excludeId}`
-            const response = await apiService.client.get<ApiResponse<{ exists: boolean }>>(
+            const response = await apiService.client.get<ApiResponse<{ exists: boolean; id?: number }>>(
                 url,
                 this.authHeaders
             )
