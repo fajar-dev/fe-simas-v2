@@ -87,7 +87,8 @@
       "profile": "Profile",
       "myFeedback": "My Feedback",
       "logout": "Logout",
-      "logoutSuccess": "Logout success"
+      "logoutSuccess": "Logout success",
+      "language": "Language"
     },
     "feedbackModal": {
       "title": "Report an Issue",

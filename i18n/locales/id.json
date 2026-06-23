@@ -87,7 +87,8 @@
       "profile": "Profil",
       "myFeedback": "Feedback Saya",
       "logout": "Keluar",
-      "logoutSuccess": "Berhasil keluar"
+      "logoutSuccess": "Berhasil keluar",
+      "language": "Bahasa"
     },
     "feedbackModal": {
       "title": "Laporkan Masalah",

@@ -43,7 +43,22 @@
           >
             {{ $t('component.userPopover.profile') }}
           </UButton>
-          <ULocaleSelect v-model="locale" :locales="[en, id]" />
+          
+          <!-- Language Selector -->
+          <div class="px-2 py-1 flex items-center justify-between text-sm text-neutral-700">
+            <div class="flex items-center gap-2">
+              <UIcon name="i-lucide-languages" class="w-4 h-4 text-neutral-500" />
+              <span>{{ $t('component.userPopover.language') }}</span>
+            </div>
+            <USelectMenu
+              v-model="locale"
+              :items="localeOptions"
+              value-key="value"
+              class="w-28"
+              size="xs"
+            />
+          </div>
+
           <UButton
             color="neutral"
             variant="ghost"
@@ -70,13 +85,15 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { locale, t } = useI18n()
 const { state: authState, service: authService } = useAuth()
 const toast = useToast()
 const popoverOpen = ref(false)
 
-import { en, id } from '@nuxt/ui/locale'
-const locale = ref('en')
+const localeOptions = [
+  { label: 'English', value: 'en' },
+  { label: 'Bahasa Indonesia', value: 'id' }
+]
 
 interface Props {
   popoverProps?: Record<string, any>
