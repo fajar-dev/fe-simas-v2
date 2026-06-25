@@ -135,6 +135,15 @@ const baseColumns: TableColumn<Location>[] = [
       const desc = row.original.description
       return h('span', { class: 'text-neutral-600' }, desc || '-')
     }
+  },
+  {
+    id: 'mistZoneId',
+    header: t('pages.location.columnMistZoneId'),
+    cell: ({ row }) => {
+      const zoneId = row.original.mistZoneId
+      if (!zoneId) return h('span', { class: 'text-neutral-500' }, '-')
+      return h('span', { class: 'text-neutral-900 font-mono text-xs' }, zoneId)
+    }
   }
 ]
 

@@ -824,6 +824,7 @@
       "columnName": "Nama",
       "columnBranch": "Cabang",
       "columnDescription": "Deskripsi",
+      "columnMistZoneId": "ID Zona Mist",
       "columnAction": "Aksi",
       "editLocation": "Edit Lokasi",
       "deleteLocation": "Hapus Lokasi",

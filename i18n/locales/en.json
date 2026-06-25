@@ -815,6 +815,7 @@
       "columnName": "Name",
       "columnBranch": "Branch",
       "columnDescription": "Description",
+      "columnMistZoneId": "Mist Zone ID",
       "columnAction": "Action",
       "editLocation": "Edit Location",
       "deleteLocation": "Delete Location",
