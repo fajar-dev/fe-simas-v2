@@ -114,6 +114,19 @@ const columns: TableColumn<AssetLocation>[] = [
     }
   },
   {
+    accessorKey: 'source',
+    header: t('pages.asset.location.columnSource'),
+    cell: ({ row }) => {
+      const source = row.original.source
+      return h(UBadge, {
+        color: source === 'ble' ? 'primary' : 'neutral',
+        variant: 'subtle',
+        size: 'xs',
+        label: source === 'ble' ? 'BLE' : t('pages.asset.location.manualSource')
+      })
+    }
+  },
+  {
     accessorKey: 'location',
     header: sortHeader(t('pages.asset.location.columnLocation'), 'location'),
     cell: ({ row }) => {

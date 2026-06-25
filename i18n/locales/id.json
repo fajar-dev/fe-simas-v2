@@ -167,7 +167,8 @@
         "createdBy": "Dibuat Oleh",
         "locationTab": "Lokasi",
         "holderTab": "Pemegang",
-        "maintenanceTab": "Pemeliharaan"
+        "maintenanceTab": "Pemeliharaan",
+        "bleTracked": "Terlacak BLE"
       },
       "filterDrawer": {
         "title": "Filter Lanjutan",
@@ -447,7 +448,8 @@
         "namePlaceholder": "Masukkan nama lokasi",
         "submit": "Simpan Lokasi",
         "success": "Lokasi berhasil dibuat!",
-        "branchRequired": "Cabang wajib diisi"
+        "branchRequired": "Cabang wajib diisi",
+        "mistZoneIdLabel": "ID Zona Mist"
       },
       "updateModal": {
         "title": "Edit Lokasi",
@@ -456,7 +458,8 @@
         "selectBranch": "Pilih cabang",
         "namePlaceholder": "Masukkan nama lokasi",
         "success": "Lokasi berhasil diperbarui!",
-        "branchRequired": "Cabang wajib diisi"
+        "branchRequired": "Cabang wajib diisi",
+        "mistZoneIdLabel": "ID Zona Mist"
       }
     },
 
@@ -662,6 +665,8 @@
         "brandPlaceholder": "Merek (opsional)",
         "modelLabel": "Model",
         "modelPlaceholder": "Model (opsional)",
+        "bleTagMacLabel": "MAC Tag BLE",
+        "bleTagMacPlaceholder": "MAC BLE (opsional)",
         "statusLabel": "Status",
         "selectStatus": "Pilih status...",
         "labelsLabel": "Label",
@@ -728,6 +733,8 @@
         "columnNotes": "Catatan",
         "columnAttachments": "Lampiran",
         "columnCreatedBy": "Dibuat Oleh",
+        "columnSource": "Sumber",
+        "manualSource": "Manual",
         "system": "Sistem"
       },
       "maintenance": {

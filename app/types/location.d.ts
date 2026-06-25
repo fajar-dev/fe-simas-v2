@@ -12,10 +12,12 @@ export interface Location {
   } | null
   createdAt: string
   updatedAt: string
+  mistZoneId: string | null
 }
 
 export interface LocationPayload {
   name: string
   description?: string
   branchId: number
+  mistZoneId?: string | null
 }

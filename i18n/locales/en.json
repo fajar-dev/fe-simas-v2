@@ -167,7 +167,8 @@
         "createdBy": "Created By",
         "locationTab": "Location",
         "holderTab": "Holder",
-        "maintenanceTab": "Maintenance"
+        "maintenanceTab": "Maintenance",
+        "bleTracked": "BLE Tracked"
       },
       "filterDrawer": {
         "title": "Advance Filter",
@@ -447,7 +448,8 @@
         "namePlaceholder": "Enter location name",
         "submit": "Save Location",
         "success": "Location created successfully!",
-        "branchRequired": "Branch is required"
+        "branchRequired": "Branch is required",
+        "mistZoneIdLabel": "Mist Zone ID"
       },
       "updateModal": {
         "title": "Edit Location",
@@ -456,7 +458,8 @@
         "selectBranch": "Select branch",
         "namePlaceholder": "Enter location name",
         "success": "Location updated successfully!",
-        "branchRequired": "Branch is required"
+        "branchRequired": "Branch is required",
+        "mistZoneIdLabel": "Mist Zone ID"
       }
     },
 
@@ -653,6 +656,8 @@
         "brandPlaceholder": "Brand (optional)",
         "modelLabel": "Model",
         "modelPlaceholder": "Model (optional)",
+        "bleTagMacLabel": "BLE Tag MAC",
+        "bleTagMacPlaceholder": "BLE MAC (optional)",
         "statusLabel": "Status",
         "selectStatus": "Select status...",
         "labelsLabel": "Labels",
@@ -719,6 +724,8 @@
         "columnNotes": "Notes",
         "columnAttachments": "Attachments",
         "columnCreatedBy": "Created By",
+        "columnSource": "Source",
+        "manualSource": "Manual",
         "system": "System"
       },
       "maintenance": {

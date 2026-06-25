@@ -6,6 +6,7 @@ export interface AssetLocation {
   locationId: number
   date: string
   note: string | null
+  source: string | null
   createdAt: string
   updatedAt: string
   asset: {

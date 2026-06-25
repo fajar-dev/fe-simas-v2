@@ -45,11 +45,11 @@
                   <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addCode">{{ $t('pages.asset.create.addCode') }}</UButton>
                 </div>
               </div>
-              <div class="space-y-2">
-                <div v-for="(_, index) in codes" :key="index">
+              <div class="space-y-3">
+                <div v-for="(entry, index) in codes" :key="index" class="p-3 border border-neutral-200 rounded-lg space-y-2">
                   <div class="flex items-center gap-2">
                     <div class="relative w-full">
-                      <UInput v-model="codes[index]" :placeholder="$t('pages.asset.create.codePlaceholder')" class="w-full" />
+                      <UInput v-model="entry.code" :placeholder="$t('pages.asset.create.codePlaceholder')" class="w-full" />
                       <div v-if="codeStatuses[index] || isDuplicateCode(index)" class="absolute right-2 top-1/2 -translate-y-1/2">
                         <UIcon v-if="isDuplicateCode(index)" name="i-lucide-circle-x" class="w-4 h-4 text-red-500" />
                         <UIcon v-else-if="codeStatuses[index] === 'checking'" name="i-lucide-loader-2" class="w-4 h-4 text-neutral-400 animate-spin" />
@@ -60,9 +60,13 @@
                     <UButton v-if="codes.length > 1" icon="i-lucide-trash" color="error" variant="soft" size="sm" square @click="removeCode(index)" />
                     <UButton icon="i-lucide-scan" color="neutral" variant="soft" size="sm" square @click="openCodeScanner(index)" title="Scan barcode" />
                   </div>
-                  <p v-if="isDuplicateCode(index)" class="text-xs text-red-500 mt-1">{{ $t('pages.asset.create.duplicateCode') }}</p>
-                  <p v-else-if="codeStatuses[index] === 'exists'" class="text-xs text-red-500 mt-1">{{ $t('pages.asset.create.codeExists', { code: codes[index] }) }}</p>
-                  <p v-else-if="codeStatuses[index] === 'available'" class="text-xs text-green-500 mt-1">{{ $t('pages.asset.create.codeAvailable') }}</p>
+                  <p v-if="isDuplicateCode(index)" class="text-xs text-red-500">{{ $t('pages.asset.create.duplicateCode') }}</p>
+                  <p v-else-if="codeStatuses[index] === 'exists'" class="text-xs text-red-500">{{ $t('pages.asset.create.codeExists', { code: entry.code }) }}</p>
+                  <p v-else-if="codeStatuses[index] === 'available'" class="text-xs text-green-500">{{ $t('pages.asset.create.codeAvailable') }}</p>
+                  <div class="flex items-center gap-2">
+                    <UIcon name="i-lucide-bluetooth" class="w-4 h-4 text-primary shrink-0" />
+                    <UInput v-model="entry.bleTagMac" :placeholder="$t('pages.asset.create.bleTagMacPlaceholder')" class="w-full" size="sm" />
+                  </div>
                 </div>
               </div>
               <AssetScannerModal v-model="showCodeScanner" :auto-close="scanAutoClose" @scanned="onCodeScanned" />
@@ -121,6 +125,8 @@
             <UFormField :label="$t('pages.asset.create.modelLabel')" name="model">
               <UInput v-model="form.model" :placeholder="$t('pages.asset.create.modelPlaceholder')" class="w-full" />
             </UFormField>
+
+
 
             <UFormField :label="$t('pages.asset.create.statusLabel')" name="status" required>
               <USelect
@@ -326,14 +332,14 @@ function openCodeScanner(index: number) {
 
 function onCodeScanned(code: string) {
   if (scanTargetIndex.value >= 0 && scanTargetIndex.value < codes.value.length) {
-    codes.value[scanTargetIndex.value] = code
+    codes.value[scanTargetIndex.value].code = code
   } else {
     // Scan from header button: fill first empty code, or add new
-    const emptyIdx = codes.value.findIndex(c => !c.trim())
+    const emptyIdx = codes.value.findIndex(c => !c.code.trim())
     if (emptyIdx >= 0) {
-      codes.value[emptyIdx] = code
+      codes.value[emptyIdx].code = code
     } else {
-      codes.value.push(code)
+      codes.value.push({ code, bleTagMac: '' })
     }
   }
 }
@@ -373,7 +379,7 @@ const getLocalDatetimeString = () => {
   return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
 }
 
-const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number } & {
+const form = reactive<Omit<AssetPayload, 'code' | 'bleTagMac'> & { categoryId: number } & {
   employeeId?: number | null
   assignedDate?: string
   assignNote?: string
@@ -396,6 +402,7 @@ const form = reactive<Omit<AssetPayload, 'code'> & { categoryId: number } & {
   purchaseDate: '',
   brand: '',
   model: '',
+
   image: null,
   subCategoryId: undefined as unknown as number,
   employeeId: null,
@@ -452,12 +459,13 @@ watch(selectedCategoryId, async (newVal) => {
 
 // ── Codes & Validation ──────────────────────────────────────────────────────
 type CodeStatus = 'checking' | 'available' | 'exists' | null
-const codes = ref<string[]>([''])
+interface CodeEntry { code: string; bleTagMac: string }
+const codes = ref<CodeEntry[]>([{ code: '', bleTagMac: '' }])
 const codeStatuses = ref<Record<number, CodeStatus>>({})
 const codeTimers: Record<number, ReturnType<typeof setTimeout>> = {}
 const prevCodes = ref<string[]>([''])
 
-const addCode = () => { codes.value.push('') }
+const addCode = () => { codes.value.push({ code: '', bleTagMac: '' }) }
 
 const removeCode = (index: number) => {
   if (codeTimers[index]) clearTimeout(codeTimers[index])
@@ -468,13 +476,13 @@ const removeCode = (index: number) => {
     newStatuses[i] = codeStatuses.value[oldIndex] ?? null
   })
   codeStatuses.value = newStatuses
-  prevCodes.value = [...codes.value]
+  prevCodes.value = codes.value.map(c => c.code)
 }
 
 const validateCode = (index: number, code: string) => {
   if (codeTimers[index]) clearTimeout(codeTimers[index])
   const trimmed = code?.trim()
-  if (!trimmed) { codeStatuses.value[index] = null; return }
+  if (!trimmed) { codeStatuses.value[index] = null; return  }
   codeStatuses.value[index] = 'checking'
   codeTimers[index] = setTimeout(async () => {
     const res = await assetService.checkCode(trimmed)
@@ -485,20 +493,20 @@ const validateCode = (index: number, code: string) => {
 }
 
 watch(codes, (newCodes) => {
-  newCodes.forEach((code, index) => {
-    if (code !== prevCodes.value[index]) validateCode(index, code)
+  newCodes.forEach((entry, index) => {
+    if (entry.code !== prevCodes.value[index]) validateCode(index, entry.code)
   })
-  prevCodes.value = [...newCodes]
+  prevCodes.value = newCodes.map(c => c.code)
 }, { deep: true })
 
 const isDuplicateCode = (index: number) => {
-  const code = codes.value[index]?.trim()
+  const code = codes.value[index]?.code?.trim()
   if (!code) return false
-  return codes.value.some((c, i) => i !== index && c.trim() === code)
+  return codes.value.some((c, i) => i !== index && c.code.trim() === code)
 }
 
 const hasInvalidCodes = computed(() => {
-  const trimmed = codes.value.map(c => c.trim()).filter(c => c.length > 0)
+  const trimmed = codes.value.map(c => c.code.trim()).filter(c => c.length > 0)
   return new Set(trimmed).size !== trimmed.length || Object.values(codeStatuses.value).some(s => s === 'exists')
 })
 
@@ -607,7 +615,7 @@ const onLocationCreated = async () => {
 
 // ── Reset ───────────────────────────────────────────────────────────────────
 const resetForm = () => {
-  codes.value = ['']
+  codes.value = [{ code: '', bleTagMac: '' }]
   codeStatuses.value = {}
   prevCodes.value = ['']
   Object.assign(form, {
@@ -639,12 +647,13 @@ const submitForm = () => {
 }
 
 const handleSubmit = async () => {
-  const validCodes = codes.value.map(c => c.trim()).filter(c => c.length > 0)
-  if (validCodes.length === 0) {
+  const validEntries = codes.value.filter(c => c.code.trim().length > 0)
+  if (validEntries.length === 0) {
     toast.add({ title: t('pages.asset.create.codeRequired'), color: 'error', icon: 'i-lucide-circle-alert' })
     return
   }
-  if (new Set(validCodes).size !== validCodes.length) {
+  const codeValues = validEntries.map(c => c.code.trim())
+  if (new Set(codeValues).size !== codeValues.length) {
     toast.add({ title: t('pages.asset.create.duplicateCodesError'), color: 'error', icon: 'i-lucide-circle-alert' })
     return
   }
@@ -655,12 +664,13 @@ const handleSubmit = async () => {
   const filteredLabels = getFilteredLabels()
 
   try {
-    for (const code of validCodes) {
+    for (const entry of validEntries) {
       const payload: AssetPayload = {
-        code,
+        code: entry.code.trim(),
         name: form.name, description: form.description, price: form.price,
         purchaseDate: form.purchaseDate, brand: form.brand, model: form.model,
         image: form.image, subCategoryId: form.subCategoryId, labels: filteredLabels,
+        bleTagMac: entry.bleTagMac?.trim() || null,
         hasHolder: form.hasHolder,
         hasMaintenance: form.hasMaintenance,
         hasLocation: form.hasLocation,
@@ -676,7 +686,7 @@ const handleSubmit = async () => {
         statusNote: form.statusNote || null,
       }
       const response = await assetService.create(payload)
-      response.success ? successCount++ : failedCodes.push(code)
+      response.success ? successCount++ : failedCodes.push(entry.code.trim())
     }
     if (successCount > 0) {
       toast.add({ title: t('pages.asset.create.successCount', { count: successCount }), color: 'success', icon: 'i-lucide-circle-check' })

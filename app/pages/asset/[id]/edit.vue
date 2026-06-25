@@ -129,6 +129,14 @@
               <UInput v-model="form.model" :placeholder="$t('pages.asset.create.modelPlaceholder')" class="w-full" />
             </UFormField>
 
+            <UFormField :label="$t('pages.asset.create.bleTagMacLabel')" name="bleTagMac">
+              <UInput v-model="form.bleTagMac" placeholder="AA:BB:CC:DD:EE:FF" class="w-full">
+                <template #leading>
+                  <UIcon name="i-lucide-bluetooth" class="w-4 h-4 text-primary" />
+                </template>
+              </UInput>
+            </UFormField>
+
             <!-- Labels -->
             <div>
               <div class="flex items-center justify-between mb-1.5">
@@ -277,6 +285,7 @@ const form = reactive<AssetPayload>({
   purchaseDate: '',
   brand: '',
   model: '',
+  bleTagMac: null,
   image: null,
   subCategoryId: undefined as unknown as number,
   hasHolder: true,
@@ -333,6 +342,7 @@ const fetchAssetDetails = async () => {
       form.hasHolder = asset.hasHolder
       form.hasMaintenance = asset.hasMaintenance
       form.hasLocation = asset.hasLocation
+      form.bleTagMac = asset.bleTagMac || null
 
       const catId = asset.subCategory?.category?.id
       if (catId) {

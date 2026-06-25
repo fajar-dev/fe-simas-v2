@@ -27,6 +27,9 @@
         <UFormField :label="$t('common.description')" name="description">
           <UTextarea v-model="form.description" :placeholder="$t('common.enterDescription')" class="w-full" :rows="3" />
         </UFormField>
+        <UFormField :label="$t('component.location.updateModal.mistZoneIdLabel')" name="mistZoneId">
+          <UInput v-model="form.mistZoneId" placeholder="Enter Mist Zone UUID" class="w-full" />
+        </UFormField>
       </UForm>
     </template>
     <template #footer>
@@ -82,6 +85,7 @@ const form = reactive<LocationPayload>({
   name: '',
   description: '',
   branchId: undefined as unknown as number,
+  mistZoneId: null,
 })
 
 const fetchBranches = async () => {
@@ -99,6 +103,7 @@ const populateForm = () => {
     form.name = props.location.name
     form.description = props.location.description || ''
     form.branchId = props.location.branchId
+    form.mistZoneId = props.location.mistZoneId || null
   }
 }
 

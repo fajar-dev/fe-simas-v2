@@ -29,6 +29,7 @@ export interface Asset {
   age: string | null
   brand: string | null
   model: string | null
+  bleTagMac: string | null
   image: string | null
   subCategory: {
     id: number
@@ -94,6 +95,7 @@ export interface AssetPayload {
   purchaseDate?: string
   brand?: string
   model?: string
+  bleTagMac?: string | null
   image?: string | null
   subCategoryId: number
   labels?: AssetLabel[]
