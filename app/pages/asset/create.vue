@@ -487,7 +487,7 @@ const validateCode = (index: number, code: string) => {
   codeStatuses.value[index] = 'checking'
   codeTimers[index] = setTimeout(async () => {
     const res = await assetService.checkCode(trimmed)
-    if (codes.value[index]?.trim() === trimmed && res.success) {
+    if (codes.value[index]?.code?.trim() === trimmed && res.success) {
       codeStatuses.value[index] = res.data.exists ? 'exists' : 'available'
     }
   }, 500)
