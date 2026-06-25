@@ -235,7 +235,10 @@
         "nfcNotSupported": "NFC tidak didukung",
         "nfcNotSupportedDesc": "NFC hanya tersedia di Android Chrome dengan HTTPS.",
         "readyToScan": "Siap memindai",
-        "holdNfc": "Dekatkan tag NFC ke perangkat Anda"
+        "holdNfc": "Dekatkan tag NFC ke perangkat Anda",
+        "manual": "Manual",
+        "manualDesc": "Ketik kode aset secara manual",
+        "manualPlaceholder": "Masukkan kode aset..."
       }
     },
 

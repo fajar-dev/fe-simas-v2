@@ -65,7 +65,7 @@
                   <p v-else-if="codeStatuses[index] === 'available'" class="text-xs text-green-500 mt-1">{{ $t('pages.asset.create.codeAvailable') }}</p>
                 </div>
               </div>
-              <AssetScannerModal v-model="showCodeScanner" @scanned="onCodeScanned" />
+              <AssetScannerModal v-model="showCodeScanner" :auto-close="scanAutoClose" @scanned="onCodeScanned" />
             </div>
   
             <UFormField :label="$t('pages.asset.create.nameLabel')" name="name" required>
@@ -316,8 +316,11 @@ const showCamera = ref(false)
 const showCodeScanner = ref(false)
 const scanTargetIndex = ref(-1)
 
+const scanAutoClose = ref(true)
+
 function openCodeScanner(index: number) {
   scanTargetIndex.value = index
+  scanAutoClose.value = index >= 0
   showCodeScanner.value = true
 }
 

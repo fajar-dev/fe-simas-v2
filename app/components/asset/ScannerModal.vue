@@ -81,6 +81,42 @@
           </template>
         </div>
       </div>
+
+      <!-- Manual Tab -->
+      <div v-if="activeTab === 'manual'">
+        <div class="space-y-4">
+          <div class="flex flex-col items-center gap-3 py-4">
+            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <UIcon name="i-lucide-keyboard" class="w-6 h-6 text-primary" />
+            </div>
+            <p class="text-sm text-neutral-500">{{ $t('component.asset.scannerModal.manualDesc') }}</p>
+          </div>
+
+          <!-- Error Message -->
+          <div v-if="manualError" class="flex items-center gap-2 p-3 rounded-lg bg-error/10 text-error text-sm">
+            <UIcon name="i-lucide-circle-x" class="w-4 h-4 shrink-0" />
+            <span>{{ manualError }}</span>
+          </div>
+
+          <form @submit.prevent="onManualSubmit" class="flex gap-2">
+            <UInput
+              ref="manualInputRef"
+              v-model="manualCode"
+              :placeholder="$t('component.asset.scannerModal.manualPlaceholder')"
+              class="flex-1"
+              autofocus
+            />
+            <UButton
+              type="submit"
+              color="primary"
+              icon="i-lucide-check"
+              :disabled="!manualCode.trim()"
+            >
+              {{ $t('common.submit') }}
+            </UButton>
+          </form>
+        </div>
+      </div>
     </template>
 
     <template #footer>
@@ -98,19 +134,44 @@ const emit = defineEmits<{
   scanned: [code: string]
 }>()
 
+const props = withDefaults(defineProps<{
+  error?: string | null
+  autoClose?: boolean
+}>(), {
+  autoClose: true
+})
+
 const tabs = computed(() => [
   { key: 'barcode', label: t('component.asset.scannerModal.barcode'), icon: 'i-lucide-scan' },
   { key: 'nfc', label: t('component.asset.scannerModal.nfc'), icon: 'i-lucide-smartphone-nfc' },
+  { key: 'manual', label: t('component.asset.scannerModal.manual'), icon: 'i-lucide-keyboard' },
 ])
 const activeTab = ref('barcode')
+const manualCode = ref('')
+const manualError = ref<string | null>(null)
+const manualInputRef = ref<any>(null)
 
 const barcode = useBarcodeScanner()
 const nfc = useNfcReader()
 
 function switchTab(tab: string) {
   activeTab.value = tab
+  manualError.value = null
   if (tab === 'nfc') startNfc()
   else nfc.stopScan()
+  if (tab === 'manual') {
+    manualCode.value = ''
+    nextTick(() => manualInputRef.value?.inputRef?.focus())
+  }
+}
+
+function onManualSubmit() {
+  const code = manualCode.value.trim()
+  if (!code) return
+  manualError.value = null
+  emit('scanned', code)
+  manualCode.value = ''
+  if (props.autoClose) open.value = false
 }
 
 function startNfc() {
@@ -118,7 +179,7 @@ function startNfc() {
     const code = text || serial
     if (code) {
       emit('scanned', code)
-      open.value = false
+      if (props.autoClose) open.value = false
     }
   })
 }
@@ -128,8 +189,19 @@ watch(open, (val) => {
     activeTab.value = 'barcode'
     barcode.reset()
     nfc.stopScan()
+    manualCode.value = ''
+    manualError.value = null
   } else {
     nfc.stopScan()
+  }
+})
+
+// Watch for error prop from parent (e.g. 404)
+watch(() => props.error, (err) => {
+  if (err) {
+    manualError.value = err
+    manualCode.value = ''
+    nextTick(() => manualInputRef.value?.inputRef?.focus())
   }
 })
 
@@ -137,7 +209,7 @@ function onDetect(detectedCodes: DetectedBarcode[]) {
   const first = detectedCodes[0]
   if (first?.rawValue) {
     emit('scanned', first.rawValue)
-    open.value = false
+    if (props.autoClose) open.value = false
   }
 }
 </script>

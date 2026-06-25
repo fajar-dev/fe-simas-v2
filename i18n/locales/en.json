@@ -235,7 +235,10 @@
         "nfcNotSupported": "NFC not supported",
         "nfcNotSupportedDesc": "NFC is only available on Android Chrome with HTTPS.",
         "readyToScan": "Ready to scan",
-        "holdNfc": "Hold NFC tag near your device"
+        "holdNfc": "Hold NFC tag near your device",
+        "manual": "Manual",
+        "manualDesc": "Type asset code manually",
+        "manualPlaceholder": "Enter asset code..."
       }
     },
 
