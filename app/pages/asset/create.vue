@@ -63,10 +63,11 @@
                   <p v-if="isDuplicateCode(index)" class="text-xs text-red-500">{{ $t('pages.asset.create.duplicateCode') }}</p>
                   <p v-else-if="codeStatuses[index] === 'exists'" class="text-xs text-red-500">{{ $t('pages.asset.create.codeExists', { code: entry.code }) }}</p>
                   <p v-else-if="codeStatuses[index] === 'available'" class="text-xs text-green-500">{{ $t('pages.asset.create.codeAvailable') }}</p>
-                  <div class="flex items-center gap-2">
-                    <UIcon name="i-lucide-bluetooth" class="w-4 h-4 text-primary shrink-0" />
-                    <UInput v-model="entry.bleTagMac" :placeholder="$t('pages.asset.create.bleTagMacPlaceholder')" class="w-full" size="sm" />
-                  </div>
+                  <UInput v-model="entry.bleTagMac" placeholder="AA:BB:CC:DD:EE:FF" class="w-full" size="sm">
+                    <template #leading>
+                      <UIcon name="i-lucide-bluetooth" class="w-4 h-4 text-primary" />
+                    </template>
+                  </UInput>
                 </div>
               </div>
               <AssetScannerModal v-model="showCodeScanner" :auto-close="scanAutoClose" @scanned="onCodeScanned" />
