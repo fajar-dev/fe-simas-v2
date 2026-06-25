@@ -55,7 +55,8 @@
     "brand": "Brand",
     "model": "Model",
     "createdAt": "Created At",
-    "updatedAt": "Updated At"
+    "updatedAt": "Updated At",
+    "submit": "Submit"
   },
 
   "nav": {

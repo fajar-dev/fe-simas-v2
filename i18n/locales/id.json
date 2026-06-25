@@ -55,7 +55,8 @@
     "brand": "Merek",
     "model": "Model",
     "createdAt": "Dibuat Pada",
-    "updatedAt": "Diperbarui Pada"
+    "updatedAt": "Diperbarui Pada",
+    "submit": "Kirim"
   },
 
   "nav": {
