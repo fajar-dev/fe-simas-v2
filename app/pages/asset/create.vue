@@ -63,7 +63,7 @@
                   <p v-if="isDuplicateCode(index)" class="text-xs text-red-500">{{ $t('pages.asset.create.duplicateCode') }}</p>
                   <p v-else-if="codeStatuses[index] === 'exists'" class="text-xs text-red-500">{{ $t('pages.asset.create.codeExists', { code: entry.code }) }}</p>
                   <p v-else-if="codeStatuses[index] === 'available'" class="text-xs text-green-500">{{ $t('pages.asset.create.codeAvailable') }}</p>
-                  <UInput v-model="entry.bleTagMac" placeholder="AA:BB:CC:DD:EE:FF" class="w-full">
+                  <UInput :model-value="entry.bleTagMac" placeholder="AA:BB:CC:DD:EE:FF" class="w-full" maxlength="17" @update:model-value="(v: string) => entry.bleTagMac = formatMacAddress(v)">
                     <template #leading>
                       <UIcon name="i-lucide-bluetooth" class="w-4 h-4 text-primary" />
                     </template>
@@ -366,7 +366,7 @@ const {
   showAddCategory, showAddSubCategory,
   fetchCategories, fetchSubCategories, onCategoryCreated, onSubCategoryCreated,
   fileInput, triggerFileInput, onFileChange, handleUploadImageFile, removeImage,
-  makePurchaseDateComputed, makePriceDisplayComputed,
+  makePurchaseDateComputed, makePriceDisplayComputed, formatMacAddress,
 } = useAssetForm()
 
 // ── State ───────────────────────────────────────────────────────────────────

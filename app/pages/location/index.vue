@@ -142,7 +142,7 @@ const baseColumns: TableColumn<Location>[] = [
     cell: ({ row }) => {
       const zoneId = row.original.mistZoneId
       if (!zoneId) return h('span', { class: 'text-neutral-500' }, '-')
-      return h('span', { class: 'text-neutral-900 font-mono text-xs' }, zoneId)
+      return h('span', { class: 'text-neutral-900 ' }, zoneId)
     }
   }
 ]

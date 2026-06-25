@@ -140,6 +140,11 @@ export function useAssetForm() {
     }
   }
 
+  const formatMacAddress = (value: string): string => {
+    const hex = value.replace(/[^a-fA-F0-9]/g, '').toUpperCase().slice(0, 12)
+    return hex.match(/.{1,2}/g)?.join(':') || ''
+  }
+
   return {
     toast,
     isUploading,
@@ -174,5 +179,6 @@ export function useAssetForm() {
     // Helpers
     makePurchaseDateComputed,
     makePriceDisplayComputed,
+    formatMacAddress,
   }
 }

@@ -72,7 +72,7 @@
           <div class="grid grid-cols-12 gap-x-8 gap-y-6">
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.code') }}</span>
-              <div class="text-sm text-neutral-900 font-mono font-medium truncate" :title="asset.code">
+              <div class="text-sm text-neutral-900 font-medium truncate" :title="asset.code">
                 {{ asset.code }}
               </div>
             </div>
@@ -81,7 +81,7 @@
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.asset.create.bleTagMacLabel') }}</span>
               <div class="flex items-center gap-1.5">
                 <UIcon name="i-lucide-bluetooth" class="w-4 h-4 text-primary shrink-0" />
-                <span class="text-sm text-neutral-900 font-mono font-medium">{{ asset.bleTagMac }}</span>
+                <span class="text-sm text-neutral-900 font-medium">{{ asset.bleTagMac }}</span>
               </div>
             </div>
 

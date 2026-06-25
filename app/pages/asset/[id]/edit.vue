@@ -76,9 +76,9 @@
             <AssetScannerModal v-model="showCodeScanner" @scanned="(code: string) => { form.code = code }" />
 
             <UFormField :label="$t('pages.asset.create.bleTagMacLabel')" name="bleTagMac">
-              <UInput v-model="form.bleTagMac" placeholder="AA:BB:CC:DD:EE:FF" class="w-full">
+              <UInput :model-value="form.bleTagMac" placeholder="AA:BB:CC:DD:EE:FF" class="w-full" maxlength="17" @update:model-value="(v: string) => form.bleTagMac = formatMacAddress(v)">
                 <template #leading>
-                  <UIcon name="i-lucide-bluetooth" class="w-4 h-4 text-primary" />
+                  <UIcon name="i-lucide-bluetooth" class="w-4 h-4" />
                 </template>
               </UInput>
             </UFormField>
@@ -249,7 +249,7 @@ const {
   lastFetchedCategoryId, showAddCategory, showAddSubCategory,
   fetchCategories, fetchSubCategories, onCategoryCreated, onSubCategoryCreated,
   fileInput, triggerFileInput, onFileChange, handleUploadImageFile, removeImage,
-  makePurchaseDateComputed, makePriceDisplayComputed,
+  makePurchaseDateComputed, makePriceDisplayComputed, formatMacAddress,
 } = useAssetForm()
 
 // ── State ───────────────────────────────────────────────────────────────────

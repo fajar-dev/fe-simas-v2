@@ -56,7 +56,7 @@
           <div v-if="isSearching" class="absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-3 z-10">
             <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-primary" />
             <p class="text-sm text-white">{{ $t('component.scanAsset.searching') }}</p>
-            <p class="text-xs font-mono text-neutral-400">{{ lastScannedCode }}</p>
+            <p class="text-xs text-neutral-400">{{ lastScannedCode }}</p>
           </div>
         </div>
       </div>
@@ -83,7 +83,7 @@
           <div v-else-if="isSearching" class="p-6 text-center flex flex-col items-center gap-3">
             <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-primary" />
             <p class="text-sm text-white">{{ $t('component.scanAsset.searching') }}</p>
-            <p class="text-xs font-mono text-neutral-400">{{ lastScannedCode }}</p>
+            <p class="text-xs text-neutral-400">{{ lastScannedCode }}</p>
           </div>
 
           <template v-else>

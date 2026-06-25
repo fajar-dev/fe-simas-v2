@@ -209,6 +209,7 @@
 </template>
 
 <script setup lang="ts">
+import { UIcon } from '#components'
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { assetService } from '~/services/asset-service'
@@ -446,7 +447,7 @@ const baseColumns: TableColumn<Asset>[] = [
       if (!mac) return h('span', { class: 'text-neutral-500' }, '-')
       return h('div', { class: 'flex items-center gap-1.5' }, [
         h(UIcon, { name: 'i-lucide-bluetooth', class: 'w-3.5 h-3.5 text-primary shrink-0' }),
-        h('span', { class: 'text-neutral-900 font-mono text-xs' }, mac)
+        h('span', { class: 'text-neutral-900' }, mac)
       ])
     }
   },
