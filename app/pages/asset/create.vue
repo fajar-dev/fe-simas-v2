@@ -63,7 +63,7 @@
                   <p v-if="isDuplicateCode(index)" class="text-xs text-red-500">{{ $t('pages.asset.create.duplicateCode') }}</p>
                   <p v-else-if="codeStatuses[index] === 'exists'" class="text-xs text-red-500">{{ $t('pages.asset.create.codeExists', { code: entry.code }) }}</p>
                   <p v-else-if="codeStatuses[index] === 'available'" class="text-xs text-green-500">{{ $t('pages.asset.create.codeAvailable') }}</p>
-                  <UInput v-model="entry.bleTagMac" placeholder="AA:BB:CC:DD:EE:FF" class="w-full" size="sm">
+                  <UInput v-model="entry.bleTagMac" placeholder="AA:BB:CC:DD:EE:FF" class="w-full">
                     <template #leading>
                       <UIcon name="i-lucide-bluetooth" class="w-4 h-4 text-primary" />
                     </template>
@@ -333,12 +333,14 @@ function openCodeScanner(index: number) {
 
 function onCodeScanned(code: string) {
   if (scanTargetIndex.value >= 0 && scanTargetIndex.value < codes.value.length) {
-    codes.value[scanTargetIndex.value].code = code
+    const entry = codes.value[scanTargetIndex.value]
+    if (entry) entry.code = code
   } else {
     // Scan from header button: fill first empty code, or add new
     const emptyIdx = codes.value.findIndex(c => !c.code.trim())
     if (emptyIdx >= 0) {
-      codes.value[emptyIdx].code = code
+      const emptyEntry = codes.value[emptyIdx]
+      if (emptyEntry) emptyEntry.code = code
     } else {
       codes.value.push({ code, bleTagMac: '' })
     }

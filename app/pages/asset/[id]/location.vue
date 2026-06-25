@@ -121,7 +121,6 @@ const columns: TableColumn<AssetLocation>[] = [
       return h(UBadge, {
         color: source === 'ble' ? 'primary' : 'neutral',
         variant: 'subtle',
-        size: 'xs',
         label: source === 'ble' ? 'BLE' : t('pages.asset.location.manualSource')
       })
     }

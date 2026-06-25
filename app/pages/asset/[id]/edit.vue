@@ -75,6 +75,14 @@
             </UFormField>
             <AssetScannerModal v-model="showCodeScanner" @scanned="(code: string) => { form.code = code }" />
 
+            <UFormField :label="$t('pages.asset.create.bleTagMacLabel')" name="bleTagMac">
+              <UInput v-model="form.bleTagMac" placeholder="AA:BB:CC:DD:EE:FF" class="w-full">
+                <template #leading>
+                  <UIcon name="i-lucide-bluetooth" class="w-4 h-4 text-primary" />
+                </template>
+              </UInput>
+            </UFormField>
+
             <UFormField :label="$t('pages.asset.create.nameLabel')" name="name" required>
               <UInput v-model="form.name" :placeholder="$t('pages.asset.create.namePlaceholder')" class="w-full" />
             </UFormField>
@@ -129,13 +137,6 @@
               <UInput v-model="form.model" :placeholder="$t('pages.asset.create.modelPlaceholder')" class="w-full" />
             </UFormField>
 
-            <UFormField :label="$t('pages.asset.create.bleTagMacLabel')" name="bleTagMac">
-              <UInput v-model="form.bleTagMac" placeholder="AA:BB:CC:DD:EE:FF" class="w-full">
-                <template #leading>
-                  <UIcon name="i-lucide-bluetooth" class="w-4 h-4 text-primary" />
-                </template>
-              </UInput>
-            </UFormField>
 
             <!-- Labels -->
             <div>
