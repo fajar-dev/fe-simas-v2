@@ -205,11 +205,15 @@ async function searchByCode(code: string) {
     } else {
       toast.add({ title: t('component.scanAsset.notFound', { code }), color: 'error', icon: 'i-lucide-circle-x' })
       isSearching.value = false
+      manualCode.value = ''
+      focusInput()
     }
   } catch(err) {
     console.log(err)
     toast.add({ title: t('component.scanAsset.searchFailed'), color: 'error', icon: 'i-lucide-circle-x' })
     isSearching.value = false
+    manualCode.value = ''
+    focusInput()
   }
 }
 </script>
