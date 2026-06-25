@@ -611,6 +611,7 @@
         "columnSubCategory": "Sub Kategori",
         "columnBrand": "Merek",
         "columnModel": "Model",
+        "columnBleTagMac": "MAC Tag BLE",
         "columnLastLocation": "Lokasi Terakhir",
         "columnActiveHolder": "Pemegang Aktif",
         "columnPrice": "Harga",

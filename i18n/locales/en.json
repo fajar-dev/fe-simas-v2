@@ -602,6 +602,7 @@
         "columnSubCategory": "Sub Category",
         "columnBrand": "Brand",
         "columnModel": "Model",
+        "columnBleTagMac": "BLE Tag MAC",
         "columnLastLocation": "Last Location",
         "columnActiveHolder": "Active Holder",
         "columnPrice": "Price",

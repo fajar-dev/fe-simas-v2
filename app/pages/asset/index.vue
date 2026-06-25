@@ -439,6 +439,18 @@ const baseColumns: TableColumn<Asset>[] = [
     }
   },
   {
+    id: 'bleTagMac',
+    header: t('pages.asset.index.columnBleTagMac'),
+    cell: ({ row }) => {
+      const mac = row.original.bleTagMac
+      if (!mac) return h('span', { class: 'text-neutral-500' }, '-')
+      return h('div', { class: 'flex items-center gap-1.5' }, [
+        h(UIcon, { name: 'i-lucide-bluetooth', class: 'w-3.5 h-3.5 text-primary shrink-0' }),
+        h('span', { class: 'text-neutral-900 font-mono text-xs' }, mac)
+      ])
+    }
+  },
+  {
     id: 'lastLocation',
     header: sortHeader(t('pages.asset.index.columnLastLocation'), 'lastLocation'),
     cell: ({ row }) => {
