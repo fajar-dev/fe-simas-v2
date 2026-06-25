@@ -76,7 +76,7 @@
             <AssetScannerModal v-model="showCodeScanner" @scanned="(code: string) => { form.code = code }" />
 
             <UFormField :label="$t('pages.asset.create.bleTagMacLabel')" name="bleTagMac">
-              <UInput :model-value="form.bleTagMac" placeholder="AA:BB:CC:DD:EE:FF" class="w-full" maxlength="17" @update:model-value="(v: string) => form.bleTagMac = formatMacAddress(v)">
+              <UInput :model-value="form.bleTagMac ?? undefined" placeholder="AA:BB:CC:DD:EE:FF" class="w-full" maxlength="17" @update:model-value="(v: string) => form.bleTagMac = formatMacAddress(v)">
                 <template #leading>
                   <UIcon name="i-lucide-bluetooth" class="w-4 h-4" />
                 </template>

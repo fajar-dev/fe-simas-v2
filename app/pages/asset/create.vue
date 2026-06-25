@@ -65,7 +65,7 @@
                   <p v-else-if="codeStatuses[index] === 'available'" class="text-xs text-green-500">{{ $t('pages.asset.create.codeAvailable') }}</p>
                   <UInput :model-value="entry.bleTagMac" placeholder="AA:BB:CC:DD:EE:FF" class="w-full" maxlength="17" @update:model-value="(v: string) => entry.bleTagMac = formatMacAddress(v)">
                     <template #leading>
-                      <UIcon name="i-lucide-bluetooth" class="w-4 h-4 text-primary" />
+                      <UIcon name="i-lucide-bluetooth" class="w-4 h-4" />
                     </template>
                   </UInput>
                 </div>
@@ -311,7 +311,6 @@ import { employeeService } from '~/services/employee-service'
 import { branchService } from '~/services/branch-service'
 import { locationService } from '~/services/location-service'
 import type { Attachment } from '~/types/attachment'
-import type { SelectMenuItem } from '@nuxt/ui'
 
 const { t } = useI18n()
 
