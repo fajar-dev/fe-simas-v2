@@ -77,6 +77,14 @@
               </div>
             </div>
 
+            <div v-if="asset.bleTagMac" class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.asset.create.bleTagMacLabel') }}</span>
+              <div class="flex items-center gap-1.5">
+                <UIcon name="i-lucide-bluetooth" class="w-4 h-4 text-primary shrink-0" />
+                <span class="text-sm text-neutral-900 font-mono font-medium">{{ asset.bleTagMac }}</span>
+              </div>
+            </div>
+
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.name') }}</span>
               <div class="text-sm text-neutral-900 font-medium truncate" :title="asset.name">
@@ -124,13 +132,6 @@
               <span v-else class="text-sm text-neutral-500">-</span>
             </div>
 
-            <div v-if="asset.bleTagMac" class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">BLE</span>
-              <UBadge color="primary" variant="subtle" class="gap-1">
-                <UIcon name="i-lucide-bluetooth" class="w-3 h-3" />
-                {{ $t('component.asset.detailWrapper.bleTracked') }}
-              </UBadge>
-            </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.brand') }}</span>
