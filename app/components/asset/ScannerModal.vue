@@ -153,6 +153,7 @@ const manualInputRef = ref<any>(null)
 
 const barcode = useBarcodeScanner()
 const nfc = useNfcReader()
+const { playBeep } = useBeep()
 
 function switchTab(tab: string) {
   activeTab.value = tab
@@ -169,6 +170,7 @@ function onManualSubmit() {
   const code = manualCode.value.trim()
   if (!code) return
   manualError.value = null
+  playBeep()
   emit('scanned', code)
   manualCode.value = ''
   if (props.autoClose) open.value = false
@@ -178,6 +180,7 @@ function startNfc() {
   nfc.startScan((serial, text) => {
     const code = text || serial
     if (code) {
+      playBeep()
       emit('scanned', code)
       if (props.autoClose) open.value = false
     }
@@ -208,6 +211,7 @@ watch(() => props.error, (err) => {
 function onDetect(detectedCodes: DetectedBarcode[]) {
   const first = detectedCodes[0]
   if (first?.rawValue) {
+    playBeep()
     emit('scanned', first.rawValue)
     if (props.autoClose) open.value = false
   }

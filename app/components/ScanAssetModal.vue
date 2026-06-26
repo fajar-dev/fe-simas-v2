@@ -140,6 +140,7 @@ const toast = useToast()
 
 const barcode = useBarcodeScanner()
 const nfc = useNfcReader()
+const { playBeep } = useBeep()
 
 const manualInputRef = ref<any>(null)
 
@@ -200,6 +201,7 @@ async function searchByCode(code: string) {
   try {
     const res = await assetService.checkCode(code)
     if (res.success && res.data.exists && res.data.id) {
+      playBeep()
       open.value = false
       navigateTo(`/asset/${res.data.id}`)
     } else {
