@@ -163,7 +163,10 @@ function switchTab(tab: string) {
 function startNfc() {
   nfc.startScan((serial, text) => {
     const code = text || serial
-    if (code) searchByCode(code)
+    if (code) {
+      playBeep()
+      searchByCode(code)
+    }
   })
 }
 
@@ -189,6 +192,7 @@ watch(open, (val) => {
 function onDetect(detectedCodes: DetectedBarcode[]) {
   const first = detectedCodes[0]
   if (first?.rawValue && !isSearching.value) {
+    playBeep()
     searchByCode(first.rawValue)
   }
 }
@@ -201,7 +205,6 @@ async function searchByCode(code: string) {
   try {
     const res = await assetService.checkCode(code)
     if (res.success && res.data.exists && res.data.id) {
-      playBeep()
       open.value = false
       navigateTo(`/asset/${res.data.id}`)
     } else {
