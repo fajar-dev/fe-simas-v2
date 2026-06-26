@@ -104,7 +104,7 @@ const populateForm = () => {
     form.code = props.subCategory.code || ''
     form.name = props.subCategory.name
     form.description = props.subCategory.description || ''
-    form.categoryId = props.subCategory.categoryId
+    form.categoryId = props.subCategory.category?.id || props.subCategory.categoryId
   }
 }
 
@@ -127,9 +127,9 @@ const handleSubmit = async () => {
   }
 }
 
-watch(open, (val) => {
+watch(open, async (val) => {
   if (val) {
-    fetchCategories()
+    await fetchCategories()
     populateForm()
   }
 })

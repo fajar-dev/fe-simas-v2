@@ -102,7 +102,7 @@ const populateForm = () => {
   if (props.location) {
     form.name = props.location.name
     form.description = props.location.description || ''
-    form.branchId = props.location.branchId
+    form.branchId = props.location.branch?.id || props.location.branchId
     form.mistZoneId = props.location.mistZoneId || null
   }
 }
@@ -126,9 +126,9 @@ const handleSubmit = async () => {
   }
 }
 
-watch(open, (val) => {
+watch(open, async (val) => {
   if (val) {
-    fetchBranches()
+    await fetchBranches()
     populateForm()
   }
 })
