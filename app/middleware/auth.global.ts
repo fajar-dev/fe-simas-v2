@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware((to) => {
 
     // Require authentication
     if (!state.token) {
-      return navigateTo('/auth/sign-in')
+      return navigateTo({ path: '/auth/sign-in', query: { redirect: to.fullPath } })
     }
 
 })

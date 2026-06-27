@@ -55,7 +55,8 @@ export class ApiService {
                 localStorage.removeItem('accessToken')
                 localStorage.removeItem('refreshToken')
                 localStorage.removeItem('user')
-                navigateTo('/auth/sign-in')
+                const currentPath = window.location.pathname + window.location.search
+                navigateTo({ path: '/auth/sign-in', query: { redirect: currentPath } })
             }
             }
             return Promise.reject(error)

@@ -146,7 +146,8 @@ export class AuthService {
         
             // Ensure redirect happens
             if (window.location.pathname !== '/auth/sign-in') {
-                navigateTo('/auth/sign-in')
+                const currentPath = window.location.pathname + window.location.search
+                navigateTo({ path: '/auth/sign-in', query: { redirect: currentPath } })
             }
         }
     }

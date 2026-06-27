@@ -128,6 +128,8 @@ const showPassword = ref(false)
 const loading = ref(false)
 const googleLoading = ref(false)
 const toast = useToast()
+const route = useRoute()
+const redirectPath = computed(() => (route.query.redirect as string) || '/')
 
 // Reusable toast notification helper
 const showToast = (type: 'success' | 'error', title: string) => {
@@ -149,7 +151,7 @@ const { isReady, login: triggerGoogleLogin } = useCodeClient({
     try {
       await authService.google(response.code)
       showToast('success', t('pages.auth.signIn.loginSuccess'))
-      navigateTo('/')
+      navigateTo(redirectPath.value)
     } finally {
       googleLoading.value = false
     }
@@ -172,7 +174,7 @@ const handleLogin = async () => {
   try {
     await authService.login(state.email, state.password)
     showToast('success', t('pages.auth.signIn.loginSuccess'))
-    navigateTo('/')
+    navigateTo(redirectPath.value)
   } finally {
     loading.value = false
   }
