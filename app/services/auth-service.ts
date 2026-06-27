@@ -69,7 +69,7 @@ export class AuthService {
             this.setSession(response.data)
             return response.data.data.accessToken
         } catch (error) {
-            this.logout()
+            this.logout(true)
             return null
         }
     }
@@ -121,7 +121,7 @@ export class AuthService {
         }
     }
 
-    async logout() {
+    async logout(preserveRedirect = false) {
         if (typeof window === 'undefined') return
             const accessToken = localStorage.getItem(this.ACCESS_TOKEN_KEY)
 
@@ -146,8 +146,12 @@ export class AuthService {
         
             // Ensure redirect happens
             if (window.location.pathname !== '/auth/sign-in') {
-                const currentPath = window.location.pathname + window.location.search
-                navigateTo({ path: '/auth/sign-in', query: { redirect: currentPath } })
+                if (preserveRedirect) {
+                    const currentPath = window.location.pathname + window.location.search
+                    navigateTo({ path: '/auth/sign-in', query: { redirect: currentPath } })
+                } else {
+                    navigateTo('/auth/sign-in')
+                }
             }
         }
     }
