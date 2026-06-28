@@ -113,6 +113,23 @@
       "minImage": "At least 1 image is required",
       "maxImage": "Maximum 3 images allowed"
     },
+    "auth": {
+      "nusawork": {
+        "title": "Login with Nusawork",
+        "description": "Scan QR Code with NusaWork app",
+        "waiting": "Waiting for scan...",
+        "success": "Scan successful!",
+        "redirecting": "Logging you in...",
+        "expired": "QR Code has expired. Please try again.",
+        "generateFailed": "Failed to generate QR Code. Please try again.",
+        "loginFailed": "Login failed. User may not be registered.",
+        "step1": "Open the Nusawork app on your phone",
+        "step2": "Select the Scan QR menu at the top right of the home screen",
+        "waitingApproval": "Waiting for approval...",
+        "confirmed": "Confirmed",
+        "confirmInstruction": "Please complete the configuration in the app on your phone"
+      }
+    },
     "scanAsset": {
       "barcode": "Barcode",
       "nfc": "NFC",
@@ -528,7 +545,8 @@
         "passwordPlaceholder": "Enter your password",
         "forgotPassword": "Forgot password?",
         "login": "Login",
-        "continueGoogle": "Continue with Google",
+        "continueGoogle": "Login with Google",
+        "continueNusawork": "Login with Nusawork",
         "loginSuccess": "Login success! Welcome.",
         "loginFailed": "Login failed. Please try again.",
         "emailRequired": "Email is required",
