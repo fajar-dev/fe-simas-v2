@@ -96,7 +96,7 @@ const isDeleting = ref(false)
 // Status filter
 const statusFilter = ref('true')
 const statusOptions = computed(() => [
-  { label: t('common.all'), value: '' },
+  { label: t('common.all'), value: 'all' },
   { label: t('common.active'), value: 'true' },
   { label: t('common.inactive'), value: 'false' },
 ])
@@ -117,7 +117,7 @@ const meta = reactive({
 const fetchEmployees = async () => {
   isLoading.value = true
   try {
-    const response = await employeeService.getAll(page.value, perPage.value, search.value, sortBy.value, order.value, statusFilter.value)
+    const response = await employeeService.getAll(page.value, perPage.value, search.value, sortBy.value, order.value, statusFilter.value === 'all' ? '' : statusFilter.value)
     if (response.success) {
       data.value = response.data
       if (response.meta) {
