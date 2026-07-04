@@ -131,6 +131,19 @@
           </USelectMenu>
         </div>
 
+        <!-- BLE Tag Status -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.bleTagStatus') }}</label>
+            <UButton v-if="filters.bleTagStatus" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('bleTagStatus')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
+          </div>
+          <URadioGroup
+            v-model="filters.bleTagStatus"
+            :items="bleTagStatusOptions"
+            orientation="horizontal"
+          />
+        </div>
+
         <USeparator />
 
         <!-- Price Range -->
@@ -304,6 +317,7 @@ const filters = reactive<Record<string, any>>({
   status: [],
   holderStatus: undefined,
   holderId: undefined,
+  bleTagStatus: undefined,
   priceMin: undefined,
   priceMax: undefined,
   purchaseDateFrom: undefined,
@@ -363,6 +377,11 @@ const statusOptions = computed(() => [
 const holderStatusOptions = computed(() => [
   { label: t('component.asset.filterDrawer.hasHolder'), value: 'has_holder' },
   { label: t('component.asset.filterDrawer.noHolder'), value: 'no_holder' },
+])
+
+const bleTagStatusOptions = computed(() => [
+  { label: t('component.asset.filterDrawer.hasBleTag'), value: 'has_ble_tag' },
+  { label: t('component.asset.filterDrawer.noBleTag'), value: 'no_ble_tag' },
 ])
 
 const missingFieldOptions = computed(() => [
@@ -446,6 +465,9 @@ const clearField = (field: string) => {
   if (field === 'holderStatus') {
     filters.holderId = undefined
   }
+  if (field === 'bleTagStatus') {
+    filters.bleTagStatus = undefined
+  }
 }
 
 // Reset all
@@ -457,6 +479,7 @@ const resetAll = () => {
   filters.status = []
   filters.holderStatus = undefined
   filters.holderId = undefined
+  filters.bleTagStatus = undefined
   filters.priceMin = undefined
   filters.priceMax = undefined
   filters.purchaseDateFrom = undefined
@@ -532,6 +555,7 @@ watch(open, (isOpen) => {
     filters.status = init.status || []
     filters.holderStatus = init.holderStatus ?? undefined
     filters.holderId = init.holderId ?? undefined
+    filters.bleTagStatus = init.bleTagStatus ?? undefined
     filters.priceMin = init.priceMin ?? undefined
     filters.priceMax = init.priceMax ?? undefined
     filters.purchaseDateFrom = init.purchaseDateFrom ?? undefined
