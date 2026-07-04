@@ -202,6 +202,29 @@ export class AuthService {
         this.token.value = accessToken
         this.user.value = user
     }
+
+    // ── Nusawork Login ────────────────────────────────────────────────────
+
+    private getBaseUrl(): string {
+        const config = useRuntimeConfig()
+        return config.public.apiUrl as string
+    }
+
+    async generateNusaworkQr(): Promise<ApiResponse<{ token: string; qrCode: string; timeoutMinutes: number; expired: string }>> {
+        const response = await axios.get<ApiResponse<{ token: string; qrCode: string; timeoutMinutes: number; expired: string }>>(`${this.getBaseUrl()}/auth/qrcode/generate`)
+        return response.data
+    }
+
+    async checkNusaworkStatus(token: string): Promise<ApiResponse<{ status: 'waiting' | 'confirmation' | 'success'; panelToken?: string; profile?: any; message?: string }>> {
+        const response = await axios.get<ApiResponse<{ status: 'waiting' | 'confirmation' | 'success'; panelToken?: string; profile?: any; message?: string }>>(`${this.getBaseUrl()}/auth/qrcode/${token}/status`)
+        return response.data
+    }
+
+    async nusaworkLogin(panelToken: string): Promise<AuthResponse> {
+        const response = await axios.post<AuthResponse>(`${this.getBaseUrl()}/auth/qrcode/login`, { panelToken })
+        this.setSession(response.data)
+        return response.data
+    }
 }
 
 export const authService = new AuthService()

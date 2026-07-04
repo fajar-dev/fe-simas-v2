@@ -101,7 +101,7 @@
           variant="ghost"
           icon="i-lucide-history"
           to="/feedback"
-          @click="open = false"
+          @click="() => { open = false }"
         />
         <div class="flex gap-2">
           <UButton
@@ -109,7 +109,7 @@
             color="neutral"
             variant="outline"
             :disabled="saving"
-            @click="open = false"
+            @click="() => { open = false }"
           />
           <UButton
             :label="$t('component.feedbackModal.send')"

@@ -6,6 +6,7 @@ export interface User {
     email: string
     photo: string
     isActive: boolean
+    employee?: {id: number, employeeId: string, name: string} | null
     hasPassword?: boolean
     role?: { id: number; name: string; isSuperAdmin: boolean; permissions: { id: number; key: string }[] } | null
 }

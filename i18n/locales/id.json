@@ -113,6 +113,23 @@
       "minImage": "Minimal 1 gambar diperlukan",
       "maxImage": "Maksimal 3 gambar"
     },
+    "auth": {
+      "nusawork": {
+        "title": "Masuk dengan Nusawork",
+        "description": "Pindai Kode QR dengan aplikasi Nusawork",
+        "waiting": "Menunggu pemindaian...",
+        "success": "Pemindaian berhasil!",
+        "redirecting": "Sedang masuk...",
+        "expired": "QR Code sudah kedaluwarsa. Silakan coba lagi.",
+        "generateFailed": "Gagal membuat QR Code. Silakan coba lagi.",
+        "loginFailed": "Gagal masuk. Pengguna mungkin belum terdaftar.",
+        "step1": "Buka aplikasi Nusawork di ponsel Anda",
+        "step2": "Pilih menu Pindai QR di pojok kanan atas layar beranda",
+        "waitingApproval": "Menunggu persetujuan...",
+        "confirmed": "Terkonfirmasi",
+        "confirmInstruction": "Silakan selesaikan konfigurasi di aplikasi ponsel Anda"
+      }
+    },
     "scanAsset": {
       "barcode": "Barcode",
       "nfc": "NFC",
@@ -124,7 +141,10 @@
       "manualEntry": "Atau masukkan kode manual",
       "typePlaceholder": "Ketik kode aset...",
       "notFound": "Aset \"{code}\" tidak ditemukan",
-      "searchFailed": "Gagal mencari aset"
+      "searchFailed": "Gagal mencari aset",
+      "conventional": "Konvensional",
+      "withAi": "Dengan AI",
+      "aiProcessing": "Memproses dengan AI..."
     },
     "camera": {
       "title": "Ambil Foto",
@@ -528,7 +548,8 @@
         "passwordPlaceholder": "Masukkan password Anda",
         "forgotPassword": "Lupa password?",
         "login": "Masuk",
-        "continueGoogle": "Lanjutkan dengan Google",
+        "continueGoogle": "Masuk dengan Google",
+        "continueNusawork": "Masuk dengan Nusawork",
         "loginSuccess": "Berhasil masuk! Selamat datang.",
         "loginFailed": "Gagal masuk. Silakan coba lagi.",
         "emailRequired": "Email wajib diisi",
@@ -904,6 +925,43 @@
         "confirmMin": "Konfirmasi password minimal 6 karakter",
         "mismatch": "Password tidak cocok"
       }
+    },
+    "book": {
+      "title": "Form Baca Buku",
+      "description": "Peminjaman & pengembalian buku",
+      "borrow": "Pinjam",
+      "return": "Kembalikan",
+      "serialNumber": "Nomor Serial",
+      "serialPlaceholder": "Ketik atau scan nomor serial",
+      "bookTitle": "Judul Buku",
+      "bookTitlePlaceholder": "Otomatis terisi setelah scan",
+      "category": "Kategori",
+      "categoryPlaceholder": "Otomatis terisi setelah scan",
+      "borrowPhoto": "Foto Peminjaman",
+      "borrowPhotoHint": "Ambil foto sebagai bukti peminjaman",
+      "borrowNote": "Catatan",
+      "borrowNotePlaceholder": "Tambahkan catatan (opsional)",
+      "returnPhoto": "Foto Pengembalian",
+      "returnPhotoHint": "Ambil foto buku yang dikembalikan",
+      "openCamera": "Buka Kamera",
+      "borrowBook": "Pinjam Buku",
+      "returnBook": "Kembalikan Buku",
+      "selectBook": "Pilih Buku",
+      "selectBookPlaceholder": "Pilih buku yang sedang Anda pinjam",
+      "goodreadsLink": "Link Goodreads",
+      "goodreadsPlaceholder": "Tempel link buku di Goodreads",
+      "notBookCategory": "Aset ini bukan kategori buku",
+      "alreadyBorrowed": "Buku ini sedang dipinjam oleh seseorang",
+      "holderNotEnabled": "Fitur pemegang tidak aktif untuk aset ini",
+      "assetNotFound": "Aset tidak ditemukan dengan nomor serial ini",
+      "borrowSuccess": "Buku berhasil dipinjam!",
+      "returnSuccess": "Buku berhasil dikembalikan!",
+      "borrowFailed": "Gagal meminjam buku",
+      "returnFailed": "Gagal mengembalikan buku",
+      "noEmployeeLinked": "Akun Anda belum terhubung dengan karyawan. Hubungi admin.",
+      "noBorrowedBooks": "Anda tidak memiliki buku yang sedang dipinjam",
+      "scanning": "Memindai...",
+      "photoRequired": "Foto wajib diisi"
     }
   }
 }
