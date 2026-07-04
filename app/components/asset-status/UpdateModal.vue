@@ -43,7 +43,7 @@
         color="neutral"
         variant="outline"
         :disabled="saving"
-        @click="open = false"
+        @click="() => { open = false }"
       />
       <UButton
         :label="$t('component.assetStatus.updateModal.submit')"

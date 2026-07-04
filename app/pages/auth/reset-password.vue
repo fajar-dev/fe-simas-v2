@@ -61,7 +61,7 @@
                 variant="ghost"
                 :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
                 class="text-neutral-400 hover:text-neutral-600 p-1 hover:bg-transparent cursor-pointer"
-                @click="showPassword = !showPassword"
+                @click="() => { showPassword = !showPassword }"
                 aria-label="Toggle Password Visibility"
               />
             </template>
@@ -83,7 +83,7 @@
                 variant="ghost"
                 :icon="showConfirmPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
                 class="text-neutral-400 hover:text-neutral-600 p-1 hover:bg-transparent cursor-pointer"
-                @click="showConfirmPassword = !showConfirmPassword"
+                @click="() => { showConfirmPassword = !showConfirmPassword }"
                 aria-label="Toggle Confirm Password Visibility"
               />
             </template>

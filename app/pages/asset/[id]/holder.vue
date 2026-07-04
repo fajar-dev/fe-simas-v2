@@ -23,7 +23,7 @@
             variant="solid"
             icon="i-lucide-user-plus"
             :loading="isLoadingActive"
-            @click="showAssignModal = true"
+            @click="() => { showAssignModal = true }"
           >
             {{ $t('pages.asset.holder.assignAsset') }}
           </UButton>
@@ -34,7 +34,7 @@
             variant="solid"
             icon="i-lucide-arrow-left-right"
             :loading="isLoadingActive"
-            @click="showReturnModal = true"
+            @click="() => { showReturnModal = true }"
           >
             {{ $t('pages.asset.holder.returnAsset') }}
           </UButton>

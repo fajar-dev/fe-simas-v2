@@ -37,7 +37,7 @@
             <div>
               <div class="flex justify-between mb-1.5">
                 <label class="text-sm font-medium text-neutral-700">{{ $t('pages.asset.create.assetImage') }}</label>
-                <UButton icon="i-lucide-camera" color="primary" variant="soft" size="xs" @click="showCamera = true">{{ $t('pages.asset.create.takePhoto') }}</UButton>
+                <UButton icon="i-lucide-camera" color="primary" variant="soft" size="xs" @click="() => { showCamera = true }">{{ $t('pages.asset.create.takePhoto') }}</UButton>
               </div>
               <div v-if="previewUrl" class="relative inline-block w-full aspect-square">
                 <NuxtImg :src="previewUrl" class="w-full h-full rounded-lg object-cover border border-neutral-200" />
@@ -68,7 +68,7 @@
                     <UIcon v-else-if="codeStatus === 'exists'" name="i-lucide-circle-x" class="w-4 h-4 text-red-500" />
                   </div>
                 </div>
-                <UButton icon="i-lucide-scan" color="neutral" variant="soft" size="sm" square @click="showCodeScanner = true" title="Scan barcode" />
+                <UButton icon="i-lucide-scan" color="neutral" variant="soft" size="sm" square @click="() => { showCodeScanner = true }" title="Scan barcode" />
               </div>
               <p v-if="codeStatus === 'exists'" class="text-xs text-red-500 mt-1">{{ $t('pages.asset.create.codeExists', { code: form.code }) }}</p>
               <p v-else-if="codeStatus === 'available'" class="text-xs text-green-500 mt-1">{{ $t('pages.asset.create.codeAvailable') }}</p>
@@ -90,14 +90,14 @@
             <UFormField :label="$t('pages.asset.create.categoryLabel')" required>
               <div class="flex items-center gap-2">
                 <USelectMenu v-model="selectedCategory" :items="categoryOptions" searchable :searchable-placeholder="$t('pages.asset.create.searchCategory')" :placeholder="$t('pages.asset.create.selectCategory')" class="w-full" />
-                <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="showAddCategory = true" />
+                <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="() => { showAddCategory = true }" />
               </div>
             </UFormField>
 
             <UFormField :label="$t('pages.asset.create.subCategoryLabel')" name="subCategoryId" required>
               <div class="flex items-center gap-2">
                 <USelectMenu v-model="selectedSubCategory" :items="subCategoryOptions" searchable :searchable-placeholder="$t('pages.asset.create.searchSubCategory')" :placeholder="$t('pages.asset.create.selectSubCategory')" :disabled="!selectedCategoryId || isLoadingSubCategories" class="w-full" />
-                <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="showAddSubCategory = true" />
+                <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="() => { showAddSubCategory = true }" />
               </div>
             </UFormField>
 

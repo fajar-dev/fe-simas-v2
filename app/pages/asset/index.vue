@@ -30,7 +30,7 @@
               variant="outline"
               icon="i-lucide-upload"
               class="flex-1 sm:flex-none justify-center"
-              @click="showImportModal = true"
+              @click="() => { showImportModal = true }"
             >
               {{ $t('pages.asset.index.importAsset') }}
             </UButton>
@@ -64,7 +64,7 @@
               variant="soft"
               icon="i-lucide-filter"
               class="relative flex-1 sm:flex-none justify-center"
-              @click="showFilterDrawer = true"
+              @click="() => { showFilterDrawer = true }"
             >
               {{ $t('pages.asset.index.filter') }}
               <UBadge
@@ -124,7 +124,7 @@
           color="primary"
           variant="solid"
           icon="i-lucide-arrow-left-right"
-          @click="showBulkStatusModal = true"
+          @click="() => { showBulkStatusModal = true }"
         >
           <span class="hidden sm:block">
             {{ $t('pages.asset.index.bulkChangeStatus') }}
@@ -135,7 +135,7 @@
           color="error"
           variant="solid"
           icon="i-lucide-trash"
-          @click="showBulkDeleteModal = true"
+          @click="() => { showBulkDeleteModal = true }"
         >
           <span class="hidden sm:block">
             {{ $t('pages.asset.index.bulkDelete') }}
@@ -145,7 +145,7 @@
           color="neutral"
           variant="ghost"
           icon="i-lucide-x"
-          @click="selectedIds = []"
+          @click="() => { selectedIds = [] }"
         >
         <span class="hidden sm:block">
             {{ $t('pages.asset.index.clearSelection') }}

@@ -109,7 +109,7 @@
     </template>
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
-        <UButton :label="$t('common.close')" @click="open = false" color="neutral" variant="outline" />
+        <UButton :label="$t('common.close')" @click="() => { open = false }" color="neutral" variant="outline" />
         <UButton
           v-if="!importResult"
           color="primary"

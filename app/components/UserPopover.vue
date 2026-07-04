@@ -58,7 +58,7 @@
             icon="i-lucide-user"
             class="w-full justify-start"
             to="/profile"
-            @click="popoverOpen = false"
+            @click="() => { popoverOpen = false }"
           >
             {{ $t('component.userPopover.profile') }}
           </UButton>
@@ -69,7 +69,7 @@
             icon="i-lucide-message-square"
             class="w-full justify-start"
             to="/feedback"
-            @click="popoverOpen = false"
+            @click="() => { popoverOpen = false }"
           >
             {{ $t('component.userPopover.myFeedback') }}
           </UButton>

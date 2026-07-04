@@ -7,7 +7,7 @@
           icon="i-lucide-menu"
           color="neutral"
           variant="ghost"
-          @click="isMobileMenuOpen = true"
+          @click="() => { isMobileMenuOpen = true }"
           aria-label="Open menu"
         />
         <BrandLogo />

@@ -53,7 +53,7 @@
               variant="ghost"
               :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
               class="text-neutral-400 hover:text-neutral-600 p-1 hover:bg-transparent cursor-pointer"
-              @click="showPassword = !showPassword"
+              @click="() => { showPassword = !showPassword }"
               aria-label="Toggle Password Visibility"
             />
           </template>
@@ -104,7 +104,7 @@
           variant="soft"
           color="neutral"
           :disabled="googleLoading || loading"
-          @click="showQrModal = true"
+          @click="() => { showQrModal = true }"
         >
           <template #leading>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 177 109" fill="none">

@@ -20,7 +20,7 @@
       >
         <div 
           class="fixed inset-0 bg-black/40"
-          @click="isMobileMenuOpen = false"
+          @click="() => { isMobileMenuOpen = false }"
         />
       </Transition>
       
@@ -42,7 +42,7 @@
               color="neutral"
               variant="ghost"
               class="text-neutral-600 hover:text-neutral-800"
-              @click="isMobileMenuOpen = false"
+              @click="() => { isMobileMenuOpen = false }"
               aria-label="Close sidebar"
             />
           </div>

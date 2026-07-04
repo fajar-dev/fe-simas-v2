@@ -28,7 +28,7 @@
           
           block
           color="primary"
-          @click="isSubmitted = false"
+          @click="() => { isSubmitted = false }"
         >
           {{ $t('pages.auth.forgotPassword.submit') }}
         </UButton>

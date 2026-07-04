@@ -20,7 +20,7 @@
             color="primary"
             variant="solid"
             icon="i-lucide-map-pin"
-            @click="showAddModal = true"
+            @click="() => { showAddModal = true }"
           >
             {{ $t('pages.asset.location.relocateAsset') }}
           </UButton>

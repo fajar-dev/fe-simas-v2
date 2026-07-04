@@ -26,7 +26,7 @@
           variant="solid"
           icon="i-lucide-plus"
           class="w-full lg:w-auto justify-center"
-          @click="showAddModal = true"
+          @click="() => { showAddModal = true }"
         >
           {{ $t('pages.user.addUser') }}
         </UButton>

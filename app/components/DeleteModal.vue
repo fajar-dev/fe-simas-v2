@@ -27,7 +27,7 @@
             variant="outline"
             
             class="flex-1 justify-center"
-            @click="open = false"
+            @click="() => { open = false }"
           >
             {{ $t('common.cancel') }}
           </UButton>

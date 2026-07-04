@@ -20,7 +20,7 @@
             color="primary"
             variant="solid"
             icon="i-lucide-plus"
-            @click="showAddModal = true"
+            @click="() => { showAddModal = true }"
           >
             {{ $t('pages.asset.maintenance.addMaintenance') }}
           </UButton>
