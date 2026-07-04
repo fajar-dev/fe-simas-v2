@@ -21,6 +21,7 @@
     "date": "Date",
     "note": "Note",
     "photo": "Photo",
+    "all": "All",
     "active": "Active",
     "inactive": "Inactive",
     "showing": "Showing {from} to {to} of {total} results",

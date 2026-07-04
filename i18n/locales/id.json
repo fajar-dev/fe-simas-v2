@@ -21,6 +21,7 @@
     "date": "Tanggal",
     "note": "Catatan",
     "photo": "Foto",
+    "all": "Semua",
     "active": "Aktif",
     "inactive": "Tidak Aktif",
     "showing": "Menampilkan {from} sampai {to} dari {total} data",

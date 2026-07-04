@@ -19,6 +19,9 @@
           :items="limitOptions" 
           class="w-20" 
         />
+
+        <!-- Extra filter controls -->
+        <slot name="filters" />
       </div>
 
       <!-- Custom Top-Right Actions Slot -->

@@ -20,6 +20,13 @@
       :search-placeholder="$t('pages.user.searchPlaceholder')"
       table-class="min-w-[768px]"
     >
+      <template #filters>
+        <USelect
+          v-model="statusFilter"
+          :items="statusOptions"
+          class="w-28"
+        />
+      </template>
       <template #actions v-if="hasPermission('user:create')">
         <UButton
           color="primary"
@@ -86,6 +93,19 @@ const showUpdateModal = ref(false)
 const showDeleteModal = ref(false)
 const isDeleting = ref(false)
 
+// Status filter
+const statusFilter = ref('true')
+const statusOptions = computed(() => [
+  { label: t('common.all'), value: '' },
+  { label: t('common.active'), value: 'true' },
+  { label: t('common.inactive'), value: 'false' },
+])
+
+watch(statusFilter, () => {
+  page.value = 1
+  fetchUsers()
+})
+
 // Pagination meta
 const meta = reactive({
   total: 0,
@@ -97,7 +117,7 @@ const meta = reactive({
 const fetchUsers = async () => {
   isLoading.value = true
   try {
-    const response = await userService.getAll(page.value, perPage.value, search.value, '', sortBy.value, order.value)
+    const response = await userService.getAll(page.value, perPage.value, search.value, statusFilter.value, sortBy.value, order.value)
     if (response.success) {
       data.value = response.data
       if (response.meta) {
