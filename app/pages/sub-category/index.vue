@@ -19,6 +19,13 @@
       :total="meta.total"
       :search-placeholder="$t('pages.subCategory.searchPlaceholder')"
     >
+      <template #filters>
+        <USelect
+          v-model="categoryFilter"
+          :items="categoryOptions"
+          class="w-40"
+        />
+      </template>
       <template #actions v-if="hasPermission('sub-category:create')">
         <UButton
           color="primary"
@@ -49,6 +56,7 @@
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { subCategoryService } from '~/services/sub-category-service'
+import { categoryService } from '~/services/category-service'
 import type { SubCategory } from '~/types/sub-category'
 
 const { t } = useI18n()
@@ -83,6 +91,25 @@ const showUpdateModal = ref(false)
 const showDeleteModal = ref(false)
 const isDeleting = ref(false)
 
+// Category filter
+const categoryFilter = ref('all')
+const categoryOptions = ref<{ label: string; value: string }[]>([{ label: t('common.all'), value: 'all' }])
+
+const fetchCategories = async () => {
+  const res = await categoryService.getList()
+  if (res.success) {
+    categoryOptions.value = [
+      { label: t('common.all'), value: 'all' },
+      ...res.data.map(c => ({ label: c.name, value: String(c.id) }))
+    ]
+  }
+}
+
+watch(categoryFilter, () => {
+  page.value = 1
+  fetchSubCategories()
+})
+
 // Pagination meta
 const meta = reactive({
   total: 0,
@@ -94,7 +121,8 @@ const meta = reactive({
 const fetchSubCategories = async () => {
   isLoading.value = true
   try {
-    const response = await subCategoryService.getAll(page.value, perPage.value, search.value, undefined, sortBy.value, order.value)
+    const catId = categoryFilter.value !== 'all' ? Number(categoryFilter.value) : undefined
+    const response = await subCategoryService.getAll(page.value, perPage.value, search.value, catId, sortBy.value, order.value)
     if (response.success) {
       data.value = response.data
       if (response.meta) {
@@ -233,5 +261,6 @@ const handleDelete = async () => {
 // Initial fetch
 onMounted(() => {
   fetchSubCategories()
+  fetchCategories()
 })
 </script>

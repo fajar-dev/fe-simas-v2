@@ -19,6 +19,13 @@
       :total="meta.total"
       :search-placeholder="$t('pages.location.searchPlaceholder')"
     >
+      <template #filters>
+        <USelect
+          v-model="branchFilter"
+          :items="branchOptions"
+          class="w-40"
+        />
+      </template>
       <template #actions v-if="hasPermission('location:create')">
         <UButton
           color="primary"
@@ -49,6 +56,7 @@
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { locationService } from '~/services/location-service'
+import { branchService } from '~/services/branch-service'
 import type { Location } from '~/types/location'
 
 const { t } = useI18n()
@@ -83,6 +91,25 @@ const showUpdateModal = ref(false)
 const showDeleteModal = ref(false)
 const isDeleting = ref(false)
 
+// Branch filter
+const branchFilter = ref('all')
+const branchOptions = ref<{ label: string; value: string }[]>([{ label: t('common.all'), value: 'all' }])
+
+const fetchBranches = async () => {
+  const res = await branchService.getList()
+  if (res.success) {
+    branchOptions.value = [
+      { label: t('common.all'), value: 'all' },
+      ...res.data.map(b => ({ label: b.name, value: String(b.id) }))
+    ]
+  }
+}
+
+watch(branchFilter, () => {
+  page.value = 1
+  fetchLocations()
+})
+
 // Pagination meta
 const meta = reactive({
   total: 0,
@@ -94,7 +121,8 @@ const meta = reactive({
 const fetchLocations = async () => {
   isLoading.value = true
   try {
-    const response = await locationService.getAll(page.value, perPage.value, search.value, undefined, sortBy.value, order.value)
+    const bId = branchFilter.value !== 'all' ? Number(branchFilter.value) : undefined
+    const response = await locationService.getAll(page.value, perPage.value, search.value, bId, sortBy.value, order.value)
     if (response.success) {
       data.value = response.data
       if (response.meta) {
@@ -235,5 +263,6 @@ const handleDelete = async () => {
 // Initial fetch
 onMounted(() => {
   fetchLocations()
+  fetchBranches()
 })
 </script>
