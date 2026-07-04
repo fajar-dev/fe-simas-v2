@@ -45,12 +45,13 @@
             icon="i-lucide-user"
             size="3xl"
             class="border-2 border-neutral-200 shadow-sm"
+            loading="lazy"
           />
           <div class="text-center">
             <p class="text-base font-bold text-neutral-900">{{ profile.firstName }} {{ profile.lastName }}</p>
             <p class="text-xs text-neutral-600 mt-0.5">{{ profile.email }}</p>
           </div>
-          <UBadge :label="$t('component.auth.nusawork.confirmed')" color="success" variant="subtle" size="md" class="uppercase tracking-wide" />
+          <UBadge :label="$t('component.auth.nusawork.confirmed')" color="success" variant="subtle" size="sm" class="uppercase tracking-wide" />
           <p class="text-xs text-neutral-400 text-center">
             {{ $t('component.auth.nusawork.confirmInstruction') }}
           </p>

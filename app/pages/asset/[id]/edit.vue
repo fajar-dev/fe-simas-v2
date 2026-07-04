@@ -54,6 +54,11 @@
               <input ref="fileInput" type="file" class="hidden" accept="image/*" @change="onFileChange($event, form)" />
               <CameraModal v-model="showCamera" @captured="(file: File) => handleUploadImageFile(file, form)" />
             </div>
+
+            <AttachmentManager
+              v-model="uploadedAssetAttachments"
+              @change="onAssetAttachmentsChanged"
+            />
           </div>
 
           <!-- ═══ Column 2: Details ═══ -->
@@ -218,6 +223,7 @@
 import { assetService } from '~/services/asset-service'
 import { assetSchema } from '~/composables/useAssetForm'
 import type { AssetPayload } from '~/types/asset'
+import type { Attachment } from '~/types/attachment'
 
 const { t } = useI18n()
 
@@ -255,6 +261,11 @@ const {
 // ── State ───────────────────────────────────────────────────────────────────
 const isSubmitting = ref(false)
 const isLoadingAsset = ref(true)
+const uploadedAssetAttachments = ref<Attachment[]>([])
+
+const onAssetAttachmentsChanged = (ids: number[]) => {
+  form.attachmentIds = ids
+}
 
 // ── Code Validation ─────────────────────────────────────────────────────────
 type CodeStatus = 'checking' | 'available' | 'exists' | null
@@ -292,6 +303,7 @@ const form = reactive<AssetPayload>({
   hasHolder: true,
   hasMaintenance: true,
   hasLocation: true,
+  attachmentIds: [],
 })
 
 watch(() => form.code, (newCode) => validateCode(newCode))
@@ -354,6 +366,21 @@ const fetchAssetDetails = async () => {
       form.subCategoryId = asset.subCategory?.id as number
       previewUrl.value = asset.image
       labels.value = (asset.labels || []).map(l => ({ key: l.key, value: l.value }))
+
+      // Load existing attachments
+      if (asset.attachments && asset.attachments.length > 0) {
+        uploadedAssetAttachments.value = asset.attachments.map(a => ({
+          id: a.id,
+          originalName: a.originalName,
+          filename: '',
+          mimeType: a.mimeType,
+          size: a.size,
+          url: a.url,
+          createdAt: '',
+          updatedAt: '',
+        }))
+        form.attachmentIds = asset.attachments.map(a => a.id)
+      }
     }
   } catch {
     navigateTo('/asset')
@@ -366,7 +393,7 @@ const fetchAssetDetails = async () => {
 const handleSubmit = async () => {
   isSubmitting.value = true
   try {
-    const payload = { ...form, labels: getFilteredLabels() }
+    const payload = { ...form, labels: getFilteredLabels(), attachmentIds: form.attachmentIds || null }
     const response = await assetService.update(assetId, payload)
     if (response.success) {
       toast.add({ title: t('pages.asset.edit.success'), color: 'success', icon: 'i-lucide-circle-check' })

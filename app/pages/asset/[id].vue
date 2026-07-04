@@ -54,6 +54,13 @@ watch(assetId, (newId) => {
   }
 })
 
+// Reload when returning from edit page (route path changes but assetId stays the same)
+watch(() => route.path, (newPath, oldPath) => {
+  if (oldPath?.endsWith('/edit') && !newPath.endsWith('/edit')) {
+    loadData()
+  }
+})
+
 if (route.path === `/asset/${assetId.value}` || route.path === `/asset/${assetId.value}/`) {
   navigateTo(`/asset/${assetId.value}/location`, { replace: true })
 }

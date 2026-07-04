@@ -33,6 +33,11 @@
               <CameraModal v-model="showCamera" @captured="(file: File) => handleUploadImageFile(file, form)" />
             </div>
 
+            <AttachmentManager
+              v-model="uploadedAssetAttachments"
+              @change="onAssetAttachmentsChanged"
+            />
+
           </div>
           
           <!-- ═══ Column 2: Details ═══ -->
@@ -373,6 +378,7 @@ const isSubmitting = ref(false)
 const submitMode = ref<'save' | 'another'>('save')
 const uploadedAssignAttachments = ref<Attachment[]>([])
 const uploadedLocationAttachments = ref<Attachment[]>([])
+const uploadedAssetAttachments = ref<Attachment[]>([])
 
 // ── Schema & Form ───────────────────────────────────────────────────────────
 const schema = assetSchema.pick({ categoryId: true, name: true, subCategoryId: true, brand: true, model: true, price: true, purchaseDate: true, description: true })
@@ -391,6 +397,7 @@ const form = reactive<Omit<AssetPayload, 'code' | 'bleTagMac'> & { categoryId: n
   locationDate?: string
   locationNote?: string
   locationAttachmentIds?: number[] | null
+  attachmentIds?: number[] | null
   hasHolder: boolean
   hasMaintenance: boolean
   hasLocation: boolean
@@ -416,6 +423,7 @@ const form = reactive<Omit<AssetPayload, 'code' | 'bleTagMac'> & { categoryId: n
   locationDate: getLocalDatetimeString(),
   locationNote: '',
   locationAttachmentIds: [],
+  attachmentIds: [],
   hasHolder: true,
   hasMaintenance: true,
   hasLocation: true,
@@ -425,6 +433,9 @@ const form = reactive<Omit<AssetPayload, 'code' | 'bleTagMac'> & { categoryId: n
 
 const onAssignAttachmentsChanged = (ids: number[]) => {
   form.assignAttachmentIds = ids
+}
+const onAssetAttachmentsChanged = (ids: number[]) => {
+  form.attachmentIds = ids
 }
 const onLocationAttachmentsChanged = (ids: number[]) => {
   form.locationAttachmentIds = ids
@@ -627,6 +638,7 @@ const resetForm = () => {
     assignAttachmentIds: [],
     branchId: null, locationId: null, locationDate: getLocalDatetimeString(), locationNote: '',
     locationAttachmentIds: [],
+    attachmentIds: [],
     hasHolder: true,
     hasMaintenance: true,
     hasLocation: true,
@@ -641,6 +653,7 @@ const resetForm = () => {
   labels.value = []
   uploadedAssignAttachments.value = []
   uploadedLocationAttachments.value = []
+  uploadedAssetAttachments.value = []
 }
 
 // ── Submit ──────────────────────────────────────────────────────────────────
@@ -684,6 +697,7 @@ const handleSubmit = async () => {
         locationDate: form.hasLocation && form.locationId ? form.locationDate : null,
         locationNote: form.hasLocation && form.locationId ? form.locationNote : null,
         locationAttachmentIds: form.hasLocation && form.locationId ? form.locationAttachmentIds : null,
+        attachmentIds: form.attachmentIds || null,
         status: form.status || null,
         statusNote: form.statusNote || null,
       }

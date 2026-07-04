@@ -85,6 +85,13 @@ export interface Asset {
     name: string
     photo: string | null
   } | null
+  attachments?: {
+    id: number
+    originalName: string
+    mimeType: string
+    size: number
+    url: string
+  }[]
 }
 
 export interface AssetPayload {
@@ -111,6 +118,7 @@ export interface AssetPayload {
   locationDate?: string | null
   locationNote?: string | null
   locationAttachmentIds?: number[] | null
+  attachmentIds?: number[] | null
   status?: string | null
   statusNote?: string | null
 }

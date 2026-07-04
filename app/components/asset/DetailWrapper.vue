@@ -211,6 +211,24 @@
               </div>
             </div>
 
+            <!-- Attachments -->
+            <div v-if="asset.attachments && asset.attachments.length > 0" class="col-span-12 pt-4 border-t border-neutral-100">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">{{ $t('pages.asset.create.attachments') }}</span>
+              <div class="flex flex-wrap gap-2">
+                <a
+                  v-for="att in asset.attachments"
+                  :key="att.id"
+                  :href="att.url"
+                  target="_blank"
+                  class="flex items-center gap-2 px-3 py-2 rounded-lg border border-neutral-200 bg-neutral-50 hover:bg-neutral-100 transition-colors text-sm text-neutral-700 hover:text-neutral-900 no-underline"
+                >
+                  <UIcon :name="getFileIcon(att.mimeType)" class="w-4 h-4 text-primary shrink-0" />
+                  <span class="truncate max-w-48">{{ att.originalName }}</span>
+                  <span class="text-xs text-neutral-400 shrink-0">{{ formatFileSize(att.size) }}</span>
+                </a>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -262,6 +280,21 @@ const { asset, isLoading } = inject('assetState') as {
 }
 
 const { openLightbox } = useLightbox()
+
+function getFileIcon(mimeType: string): string {
+  if (mimeType.startsWith('image/')) return 'i-lucide-image'
+  if (mimeType.startsWith('video/')) return 'i-lucide-video'
+  if (mimeType === 'application/pdf') return 'i-lucide-file-text'
+  if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) return 'i-lucide-file-spreadsheet'
+  if (mimeType.includes('word') || mimeType.includes('document')) return 'i-lucide-file-text'
+  return 'i-lucide-file'
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
 
 const showLogDrawer = ref(false)
 const showStatusModal = ref(false)
