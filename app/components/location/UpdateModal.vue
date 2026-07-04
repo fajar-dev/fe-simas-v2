@@ -28,13 +28,13 @@
           <UTextarea v-model="form.description" :placeholder="$t('common.enterDescription')" class="w-full" :rows="3" />
         </UFormField>
         <UFormField :label="$t('component.location.updateModal.mistZoneIdLabel')" name="mistZoneId">
-          <UInput v-model="form.mistZoneId" placeholder="Enter Mist Zone UUID" class="w-full" />
+          <UInput :model-value="form.mistZoneId ?? undefined" @update:model-value="form.mistZoneId = $event || null" placeholder="Enter Mist Zone UUID" class="w-full" />
         </UFormField>
       </UForm>
     </template>
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
-        <UButton :label="$t('common.cancel')" @click="open = false" color="neutral" variant="outline" />
+        <UButton :label="$t('common.cancel')" @click="() => { open = false }" color="neutral" variant="outline" />
         <UButton
           type="submit"
           form="update-location-form"

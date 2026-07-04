@@ -141,7 +141,10 @@
       "manualEntry": "Atau masukkan kode manual",
       "typePlaceholder": "Ketik kode aset...",
       "notFound": "Aset \"{code}\" tidak ditemukan",
-      "searchFailed": "Gagal mencari aset"
+      "searchFailed": "Gagal mencari aset",
+      "conventional": "Konvensional",
+      "withAi": "Dengan AI",
+      "aiProcessing": "Memproses dengan AI..."
     },
     "camera": {
       "title": "Ambil Foto",
@@ -922,6 +925,43 @@
         "confirmMin": "Konfirmasi password minimal 6 karakter",
         "mismatch": "Password tidak cocok"
       }
+    },
+    "book": {
+      "title": "Form Baca Buku",
+      "description": "Peminjaman & pengembalian buku",
+      "borrow": "Pinjam",
+      "return": "Kembalikan",
+      "serialNumber": "Nomor Serial",
+      "serialPlaceholder": "Ketik atau scan nomor serial",
+      "bookTitle": "Judul Buku",
+      "bookTitlePlaceholder": "Otomatis terisi setelah scan",
+      "category": "Kategori",
+      "categoryPlaceholder": "Otomatis terisi setelah scan",
+      "borrowPhoto": "Foto Peminjaman",
+      "borrowPhotoHint": "Ambil foto sebagai bukti peminjaman",
+      "borrowNote": "Catatan",
+      "borrowNotePlaceholder": "Tambahkan catatan (opsional)",
+      "returnPhoto": "Foto Pengembalian",
+      "returnPhotoHint": "Ambil foto buku yang dikembalikan",
+      "openCamera": "Buka Kamera",
+      "borrowBook": "Pinjam Buku",
+      "returnBook": "Kembalikan Buku",
+      "selectBook": "Pilih Buku",
+      "selectBookPlaceholder": "Pilih buku yang sedang Anda pinjam",
+      "goodreadsLink": "Link Goodreads",
+      "goodreadsPlaceholder": "Tempel link buku di Goodreads",
+      "notBookCategory": "Aset ini bukan kategori buku",
+      "alreadyBorrowed": "Buku ini sedang dipinjam oleh seseorang",
+      "holderNotEnabled": "Fitur pemegang tidak aktif untuk aset ini",
+      "assetNotFound": "Aset tidak ditemukan dengan nomor serial ini",
+      "borrowSuccess": "Buku berhasil dipinjam!",
+      "returnSuccess": "Buku berhasil dikembalikan!",
+      "borrowFailed": "Gagal meminjam buku",
+      "returnFailed": "Gagal mengembalikan buku",
+      "noEmployeeLinked": "Akun Anda belum terhubung dengan karyawan. Hubungi admin.",
+      "noBorrowedBooks": "Anda tidak memiliki buku yang sedang dipinjam",
+      "scanning": "Memindai...",
+      "photoRequired": "Foto wajib diisi"
     }
   }
 }
