@@ -23,7 +23,7 @@
         <USelect
           v-model="branchFilter"
           :items="branchOptions"
-          class="w-52"
+          class="w-full md:w-52"
         />
       </template>
       <template #actions v-if="hasPermission('location:create')">

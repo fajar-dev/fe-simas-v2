@@ -133,6 +133,13 @@ const baseColumns: TableColumn<Category>[] = [
       const desc = row.original.description
       return h('span', { class: 'text-neutral-600' }, desc || '-')
     }
+  },
+  {
+    accessorKey: 'assetCount',
+    header: t('pages.category.columnAssetCount'),
+    cell: ({ row }) => {
+      return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
+    }
   }
 ]
 

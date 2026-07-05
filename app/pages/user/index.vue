@@ -24,7 +24,7 @@
         <USelect
           v-model="statusFilter"
           :items="statusOptions"
-          class="w-28"
+          class="w-full md:w-28"
         />
       </template>
       <template #actions v-if="hasPermission('user:create')">

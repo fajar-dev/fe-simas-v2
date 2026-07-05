@@ -8,6 +8,7 @@ export interface SubCategory {
         id: number
         name: string
     } | null
+    assetCount: number
     createdAt: string
     updatedAt: string
 }

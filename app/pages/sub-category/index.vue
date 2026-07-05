@@ -23,7 +23,7 @@
         <USelect
           v-model="categoryFilter"
           :items="categoryOptions"
-          class="w-40"
+          class="w-full md:w-52"
         />
       </template>
       <template #actions v-if="hasPermission('sub-category:create')">
@@ -169,6 +169,13 @@ const baseColumns: TableColumn<SubCategory>[] = [
     cell: ({ row }) => {
       const desc = row.original.description
       return h('span', { class: 'text-neutral-600' }, desc || '-')
+    }
+  },
+  {
+    accessorKey: 'assetCount',
+    header: t('pages.subCategory.columnAssetCount'),
+    cell: ({ row }) => {
+      return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
     }
   }
 ]
