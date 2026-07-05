@@ -8,6 +8,7 @@ export interface Branch {
     address: string | null
     email: string | null
     phone: string | null
+    assetCount: number
     createdAt: string
     updatedAt: string
 }

@@ -192,6 +192,13 @@ const baseColumns: TableColumn<Employee>[] = [
         () => (isActive ? t('common.active') : t('common.inactive'))
       )
     }
+  },
+  {
+    accessorKey: 'assetCount',
+    header: t('pages.employee.columnAssetCount'),
+    cell: ({ row }) => {
+      return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
+    }
   }
 ]
 

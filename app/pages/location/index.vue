@@ -172,6 +172,13 @@ const baseColumns: TableColumn<Location>[] = [
       if (!zoneId) return h('span', { class: 'text-neutral-500' }, '-')
       return h('span', { class: 'text-neutral-900 ' }, zoneId)
     }
+  },
+  {
+    accessorKey: 'assetCount',
+    header: t('pages.location.columnAssetCount'),
+    cell: ({ row }) => {
+      return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
+    }
   }
 ]
 

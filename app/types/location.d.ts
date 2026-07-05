@@ -13,6 +13,7 @@ export interface Location {
   createdAt: string
   updatedAt: string
   mistZoneId: string | null
+  assetCount: number
 }
 
 export interface LocationPayload {

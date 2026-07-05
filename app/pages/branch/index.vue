@@ -154,6 +154,13 @@ const baseColumns: TableColumn<Branch>[] = [
     cell: ({ row }) => {
       return h('span', { class: 'text-neutral-600' }, row.original.address || '-')
     }
+  },
+  {
+    accessorKey: 'assetCount',
+    header: t('pages.branch.columnAssetCount'),
+    cell: ({ row }) => {
+      return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
+    }
   }
 ]
 

@@ -7,6 +7,7 @@ export interface Employee {
   phone: string
   photo: string | null
   isActive: boolean
+  assetCount: number
   createdAt: string
 }
 
