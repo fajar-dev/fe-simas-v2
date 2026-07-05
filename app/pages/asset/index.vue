@@ -507,6 +507,18 @@ const baseColumns: TableColumn<Asset>[] = [
     }
   },
   {
+    id: 'depreciation',
+    header: sortHeader(t('pages.asset.index.columnDepreciation'), 'bookValue'),
+    cell: ({ row }) => {
+      const dep = row.original.depreciation
+      if (!dep) return h('span', { class: 'text-neutral-500' }, '-')
+      return h('div', { class: 'flex flex-col min-w-0' }, [
+        h('span', { class: 'font-medium text-neutral-900' }, formatCurrency(dep.bookValue)),
+        h('span', { class: 'text-xs text-neutral-500' }, formatCurrency(dep.monthlyDepreciation) + t('pages.asset.index.perMonth'))
+      ])
+    }
+  },
+  {
     id: 'lastStatus',
     header: t('pages.asset.index.columnStatus'),
     cell: ({ row }) => {

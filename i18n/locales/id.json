@@ -189,7 +189,10 @@
         "locationTab": "Lokasi",
         "holderTab": "Pemegang",
         "maintenanceTab": "Pemeliharaan",
-        "bleTracked": "Terlacak BLE"
+        "bleTracked": "Terlacak BLE",
+        "accumulatedDepreciation": "Akumulasi Penyusutan",
+        "bookValue": "Nilai Buku",
+        "depreciationSection": "Penyusutan"
       },
       "filterDrawer": {
         "title": "Filter Lanjutan",
@@ -641,6 +644,8 @@
         "columnActiveHolder": "Pemegang Aktif",
         "columnPrice": "Harga",
         "columnPurchaseDate": "Tanggal Pembelian",
+        "columnDepreciation": "Penyusutan",
+        "perMonth": "/bulan",
         "columnStatus": "Status",
         "columnAction": "Aksi",
         "editAsset": "Edit Aset",
@@ -686,6 +691,11 @@
         "descriptionLabel": "Deskripsi",
         "descriptionPlaceholder": "Deskripsi aset (opsional)",
         "priceLabel": "Harga",
+        "usefulLifeLabel": "Umur Ekonomis",
+        "usefulLifePlaceholder": "cth. 5",
+        "usefulLifeUnit": "Tahun",
+        "monthlyDepreciationLabel": "Penyusutan per Bulan",
+        "depreciationHint": "Jika umur ekonomis diisi, aset akan disusutkan secara otomatis. Harga dan tanggal pembelian wajib diisi.",
         "purchaseDateLabel": "Tanggal Pembelian",
         "brandLabel": "Merek",
         "brandPlaceholder": "Merek (opsional)",

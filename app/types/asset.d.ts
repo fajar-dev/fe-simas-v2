@@ -31,6 +31,12 @@ export interface Asset {
   model: string | null
   bleTagMac: string | null
   image: string | null
+  usefulLife: number | null
+  depreciation: {
+    monthlyDepreciation: number
+    accumulatedDepreciation: number
+    bookValue: number
+  } | null
   subCategory: {
     id: number
     name: string
@@ -109,6 +115,7 @@ export interface AssetPayload {
   hasHolder?: boolean
   hasMaintenance?: boolean
   hasLocation?: boolean
+  usefulLife?: number
 
   employeeId?: number | null
   assignedDate?: string | null

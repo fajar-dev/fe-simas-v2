@@ -107,21 +107,6 @@
             </div>
 
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.price') }}</span>
-              <div class="text-sm text-neutral-900 font-medium truncate" :title="formatCurrency(asset.price)">
-                {{ formatCurrency(asset.price) }}
-              </div>
-            </div>
-
-            <div class="col-span-12 sm:col-span-6 md:col-span-4">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('component.asset.detailWrapper.purchaseDate') }}</span>
-              <div class="text-sm text-neutral-900 font-medium flex items-center gap-2 min-w-0">
-                <span class="truncate" :title="asset.purchaseDate || '-'">{{ asset.purchaseDate || '-' }}</span>
-                <span v-if="asset.age" class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium shrink-0">{{ asset.age }}</span>
-              </div>
-            </div>
-
-            <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.status') }}</span>
               <AssetStatusBadge
                 v-if="asset.lastStatus"
@@ -192,6 +177,53 @@
                   </span>
                 </div>
                 <span v-else>-</span>
+              </div>
+            </div>
+
+            <!-- Depreciation Section -->
+            <div class="col-span-12 pt-4 border-t border-neutral-100">
+              <h4 class="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-4 flex items-center gap-1.5">
+                <UIcon name="i-lucide-trending-down" class="w-3.5 h-3.5" />
+                {{ $t('component.asset.detailWrapper.depreciationSection') }}
+              </h4>
+              <div class="grid grid-cols-12 gap-x-8 gap-y-6">
+                <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                  <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('component.asset.detailWrapper.purchaseDate') }}</span>
+                  <div class="text-sm text-neutral-900 font-medium flex items-center gap-2 min-w-0">
+                    <span class="truncate" :title="asset.purchaseDate || '-'">{{ asset.purchaseDate || '-' }}</span>
+                    <span v-if="asset.age" class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium shrink-0">{{ asset.age }}</span>
+                  </div>
+                </div>
+                <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                  <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.price') }}</span>
+                  <div class="text-sm text-neutral-900 font-medium truncate" :title="formatCurrency(asset.price)">
+                    {{ formatCurrency(asset.price) }}
+                  </div>
+                </div>
+                <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                  <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.asset.create.usefulLifeLabel') }}</span>
+                  <div class="text-sm text-neutral-900 font-medium truncate">
+                    {{ asset.usefulLife ? `${asset.usefulLife} ${$t('pages.asset.create.usefulLifeUnit')}` : '-' }}
+                  </div>
+                </div>
+                <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                  <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.asset.create.monthlyDepreciationLabel') }}</span>
+                  <div class="text-sm text-neutral-900 font-medium truncate">
+                    {{ asset.depreciation ? formatCurrency(asset.depreciation.monthlyDepreciation) : '-' }}
+                  </div>
+                </div>
+                <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                  <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('component.asset.detailWrapper.accumulatedDepreciation') }}</span>
+                  <div class="text-sm font-medium truncate" :class="asset.depreciation ? 'text-red-600' : 'text-neutral-900'">
+                    {{ asset.depreciation ? formatCurrency(asset.depreciation.accumulatedDepreciation) : '-' }}
+                  </div>
+                </div>
+                <div class="col-span-12 sm:col-span-6 md:col-span-4">
+                  <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('component.asset.detailWrapper.bookValue') }}</span>
+                  <div class="text-sm font-semibold truncate" :class="asset.depreciation ? 'text-green-600' : 'text-neutral-900'">
+                    {{ asset.depreciation ? formatCurrency(asset.depreciation.bookValue) : '-' }}
+                  </div>
+                </div>
               </div>
             </div>
 

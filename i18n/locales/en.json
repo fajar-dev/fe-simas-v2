@@ -189,7 +189,10 @@
         "locationTab": "Location",
         "holderTab": "Holder",
         "maintenanceTab": "Maintenance",
-        "bleTracked": "BLE Tracked"
+        "bleTracked": "BLE Tracked",
+        "accumulatedDepreciation": "Accumulated Depreciation",
+        "bookValue": "Book Value",
+        "depreciationSection": "Depreciation"
       },
       "filterDrawer": {
         "title": "Advance Filter",
@@ -632,6 +635,8 @@
         "columnActiveHolder": "Active Holder",
         "columnPrice": "Price",
         "columnPurchaseDate": "Purchase Date",
+        "columnDepreciation": "Depreciation",
+        "perMonth": "/month",
         "columnStatus": "Status",
         "columnAction": "Action",
         "editAsset": "Edit Asset",
@@ -677,6 +682,11 @@
         "descriptionLabel": "Description",
         "descriptionPlaceholder": "Asset description (optional)",
         "priceLabel": "Price",
+        "usefulLifeLabel": "Useful Life",
+        "usefulLifePlaceholder": "e.g. 5",
+        "usefulLifeUnit": "Years",
+        "monthlyDepreciationLabel": "Monthly Depreciation",
+        "depreciationHint": "If useful life is filled, the asset will be depreciated automatically. Price and purchase date are required.",
         "purchaseDateLabel": "Purchase Date",
         "brandLabel": "Brand",
         "brandPlaceholder": "Brand (optional)",

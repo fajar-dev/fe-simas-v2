@@ -103,12 +103,12 @@
 
           <!-- ═══ Column 3: Classification ═══ -->
           <div class="space-y-4">
-            <UFormField :label="$t('pages.asset.create.priceLabel')" name="price">
-              <UInput v-model="priceDisplay" placeholder="0" class="w-full">
-                <template #leading>
-                  <span class="text-neutral-500 text-sm">Rp</span>
-                </template>
-              </UInput>
+            <UFormField :label="$t('pages.asset.create.brandLabel')" name="brand">
+              <UInput v-model="form.brand" :placeholder="$t('pages.asset.create.brandPlaceholder')" class="w-full" />
+            </UFormField>
+
+            <UFormField :label="$t('pages.asset.create.modelLabel')" name="model">
+              <UInput v-model="form.model" :placeholder="$t('pages.asset.create.modelPlaceholder')" class="w-full" />
             </UFormField>
 
             <UFormField :label="$t('pages.asset.create.purchaseDateLabel')" name="purchaseDate">
@@ -124,13 +124,34 @@
               </UInputDate>
             </UFormField>
 
-            <UFormField :label="$t('pages.asset.create.brandLabel')" name="brand">
-              <UInput v-model="form.brand" :placeholder="$t('pages.asset.create.brandPlaceholder')" class="w-full" />
+            <UFormField :label="$t('pages.asset.create.priceLabel')" name="price">
+              <UInput v-model="priceDisplay" placeholder="0" class="w-full">
+                <template #leading>
+                  <span class="text-neutral-500 text-sm">Rp</span>
+                </template>
+              </UInput>
             </UFormField>
 
-            <UFormField :label="$t('pages.asset.create.modelLabel')" name="model">
-              <UInput v-model="form.model" :placeholder="$t('pages.asset.create.modelPlaceholder')" class="w-full" />
-            </UFormField>
+            <div class="grid grid-cols-2 gap-3">
+              <UFormField :label="$t('pages.asset.create.usefulLifeLabel')" name="usefulLife">
+                <UInput v-model.number="form.usefulLife" type="number" min="1" :placeholder="$t('pages.asset.create.usefulLifePlaceholder')" class="w-full">
+                  <template #trailing>
+                    <span class="text-neutral-400 text-xs">{{ $t('pages.asset.create.usefulLifeUnit') }}</span>
+                  </template>
+                </UInput>
+              </UFormField>
+              <UFormField :label="$t('pages.asset.create.monthlyDepreciationLabel')" name="monthlyDepreciation">
+                <UInput :model-value="monthlyDepreciationDisplay" readonly class="w-full bg-neutral-50">
+                  <template #leading>
+                    <span class="text-neutral-500 text-sm">Rp</span>
+                  </template>
+                </UInput>
+              </UFormField>
+            </div>
+            <p class="text-xs text-neutral-400 -mt-2 flex items-start gap-1">
+              <UIcon name="i-lucide-info" class="w-3.5 h-3.5 shrink-0 mt-0.5" />
+              <span>{{ $t('pages.asset.create.depreciationHint') }}</span>
+            </p>
 
 
 
@@ -427,6 +448,7 @@ const form = reactive<Omit<AssetPayload, 'code' | 'bleTagMac'> & { categoryId: n
   hasHolder: true,
   hasMaintenance: true,
   hasLocation: true,
+  usefulLife: undefined,
   status: 'active',
   statusNote: undefined,
 })
@@ -443,6 +465,13 @@ const onLocationAttachmentsChanged = (ids: number[]) => {
 
 const purchaseDateVal = makePurchaseDateComputed(form)
 const priceDisplay = makePriceDisplayComputed(form)
+
+const monthlyDepreciationDisplay = computed(() => {
+  const price = form.price
+  const life = form.usefulLife
+  if (!price || !life || life <= 0) return '-'
+  return (Math.round(price / (life * 12) * 100) / 100).toLocaleString('id-ID', { maximumFractionDigits: 2 })
+})
 
 // ── Category Select ─────────────────────────────────────────────────────────
 const selectedCategory = computed({
@@ -642,6 +671,7 @@ const resetForm = () => {
     hasHolder: true,
     hasMaintenance: true,
     hasLocation: true,
+    usefulLife: undefined,
     status: 'active',
     statusNote: undefined,
   })
@@ -689,6 +719,7 @@ const handleSubmit = async () => {
         hasHolder: form.hasHolder,
         hasMaintenance: form.hasMaintenance,
         hasLocation: form.hasLocation,
+        usefulLife: form.usefulLife || undefined,
         employeeId: form.hasHolder ? (form.employeeId || null) : null,
         assignedDate: form.hasHolder && form.employeeId ? form.assignedDate : null,
         assignNote: form.hasHolder && form.employeeId ? form.assignNote : null,
