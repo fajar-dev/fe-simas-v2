@@ -98,7 +98,7 @@ export const useNavigation = () => {
   const bottomNavItems: NavItem[] = []
 
   const isItemActive = (item: NavItem) => {
-    const itemPath = item.to.split('?')[0]
+    const itemPath = item.to.split('?')[0] ?? item.to
     if (itemPath === '/') {
       return route.path === '/'
     }

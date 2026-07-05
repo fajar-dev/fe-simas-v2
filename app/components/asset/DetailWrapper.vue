@@ -36,6 +36,7 @@
             <span class="hidden sm:inline">{{ $t('component.asset.detailWrapper.activityLog') }}</span>
           </UButton>
           <UButton
+            v-if="hasPermission('asset:print-code')"
             color="info"
             variant="outline"
             icon="i-lucide-qr-code"
@@ -376,6 +377,14 @@ const items = computed(() => {
       to: `/asset/${assetId}/maintenance`
     })
   }
+  if (hasPermission('asset-note:read')) {
+    tabs.push({
+      value: 'note',
+      label: t('component.asset.detailWrapper.noteTab'),
+      icon: 'i-lucide-sticky-note',
+      to: `/asset/${assetId}/note`
+    })
+  }
   return tabs
 })
 
@@ -384,6 +393,7 @@ const activeTab = computed({
     let current: string = 'location'
     if (route.path.endsWith('/holder')) current = 'holder'
     else if (route.path.endsWith('/maintenance')) current = 'maintenance'
+    else if (route.path.endsWith('/note')) current = 'note'
 
     const isAllowed = items.value.some(i => i.value === current)
     if (!isAllowed && items.value.length > 0) {

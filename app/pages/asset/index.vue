@@ -131,6 +131,7 @@
           </span>
         </UButton>
         <UButton
+          v-if="hasPermission('asset:print-code')"
           color="info"
           variant="solid"
           icon="i-lucide-qr-code"
@@ -663,16 +664,25 @@ function getRowItems(row: Row<Asset>) {
     })
   }
 
+  const printActions = hasPermission('asset:print-code') ? [printAction(row)] : []
+
   if (primaryActions.length > 0 && historyActions.length > 0) {
-    return [primaryActions, historyActions, [printAction(row)]]
+    const result = [primaryActions, historyActions]
+    if (printActions.length > 0) result.push(printActions)
+    return result
   }
   if (primaryActions.length > 0) {
-    return [primaryActions, [printAction(row)]]
+    const result = [primaryActions]
+    if (printActions.length > 0) result.push(printActions)
+    return result
   }
   if (historyActions.length > 0) {
-    return [historyActions, [printAction(row)]]
+    const result = [historyActions]
+    if (printActions.length > 0) result.push(printActions)
+    return result
   }
-  return [[printAction(row)]]
+  if (printActions.length > 0) return [printActions]
+  return []
 }
 
 function printAction(row: Row<Asset>) {

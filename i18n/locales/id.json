@@ -198,6 +198,7 @@
         "locationTab": "Lokasi",
         "holderTab": "Pemegang",
         "maintenanceTab": "Pemeliharaan",
+        "noteTab": "Catatan",
         "bleTracked": "Terlacak BLE",
         "accumulatedDepreciation": "Akumulasi Penyusutan",
         "bookValue": "Nilai Buku",
@@ -386,6 +387,31 @@
         "costPlaceholder": "Masukkan nominal pengeluaran",
         "submit": "Simpan Perubahan",
         "success": "Pemeliharaan aset berhasil diperbarui!",
+        "dateRequired": "Tanggal wajib diisi",
+        "noteRequired": "Catatan wajib diisi"
+      }
+    },
+
+    "assetNote": {
+      "addModal": {
+        "title": "Tambah Catatan Aset",
+        "description": "Isi detail untuk mencatat catatan aset baru.",
+        "searchAssets": "Cari aset...",
+        "selectAsset": "Pilih aset",
+        "notePlaceholder": "Masukkan detail catatan",
+        "submit": "Simpan Catatan",
+        "success": "Catatan aset berhasil dicatat!",
+        "dateRequired": "Tanggal wajib diisi",
+        "noteRequired": "Catatan wajib diisi"
+      },
+      "updateModal": {
+        "title": "Edit Catatan Aset",
+        "description": "Perbarui detail catatan aset di bawah ini.",
+        "searchAssets": "Cari aset...",
+        "selectAsset": "Pilih aset",
+        "notePlaceholder": "Masukkan detail catatan",
+        "submit": "Simpan Perubahan",
+        "success": "Catatan aset berhasil diperbarui!",
         "dateRequired": "Tanggal wajib diisi",
         "noteRequired": "Catatan wajib diisi"
       }
@@ -856,6 +882,21 @@
         "deleteRecord": "Hapus Catatan",
         "system": "Sistem",
         "deleteSuccess": "Catatan pemeliharaan aset berhasil dihapus!"
+      },
+      "note": {
+        "title": "Catatan Aset",
+        "searchPlaceholder": "Cari catatan...",
+        "addNote": "Tambah Catatan",
+        "deleteTitle": "Hapus Catatan",
+        "columnNoteDate": "Tanggal Catatan",
+        "columnNotes": "Catatan",
+        "columnAttachments": "Lampiran",
+        "columnCreatedBy": "Dibuat Oleh",
+        "columnAction": "Aksi",
+        "editRecord": "Edit Catatan",
+        "deleteRecord": "Hapus Catatan",
+        "system": "Sistem",
+        "deleteSuccess": "Catatan aset berhasil dihapus!"
       }
     },
     "branch": {

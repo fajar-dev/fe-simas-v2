@@ -11,6 +11,9 @@ export const getActionIcon = (module: string, action: string) => {
     'maintenance:create': 'i-lucide-wrench',
     'maintenance:update': 'i-lucide-refresh-cw',
     'maintenance:delete': 'i-lucide-trash',
+    'note:create': 'i-lucide-sticky-note',
+    'note:update': 'i-lucide-sticky-note',
+    'note:delete': 'i-lucide-trash',
     'status:update': 'i-lucide-activity',
   }
   return icons[key] || 'i-lucide-info'
@@ -27,6 +30,9 @@ export const getActionTheme = (module: string, action: string): { color: BadgeCo
     'maintenance:create': { color: 'success', label: 'Maintenance Created' },
     'maintenance:update': { color: 'warning', label: 'Maintenance Updated' },
     'maintenance:delete': { color: 'error', label: 'Maintenance Deleted' },
+    'note:create': { color: 'success', label: 'Note Created' },
+    'note:update': { color: 'warning', label: 'Note Updated' },
+    'note:delete': { color: 'error', label: 'Note Deleted' },
     'status:update': { color: 'primary', label: 'Status Changed' },
   }
   return themes[key] || { color: 'neutral', label: `${module}:${action}` }

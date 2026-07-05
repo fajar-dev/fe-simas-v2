@@ -198,6 +198,7 @@
         "locationTab": "Location",
         "holderTab": "Holder",
         "maintenanceTab": "Maintenance",
+        "noteTab": "Notes",
         "bleTracked": "BLE Tracked",
         "accumulatedDepreciation": "Accumulated Depreciation",
         "bookValue": "Book Value",
@@ -386,6 +387,31 @@
         "costPlaceholder": "Enter expenditure amount",
         "submit": "Save Changes",
         "success": "Asset maintenance updated successfully!",
+        "dateRequired": "Date is required",
+        "noteRequired": "Note is required"
+      }
+    },
+
+    "assetNote": {
+      "addModal": {
+        "title": "Add Asset Note",
+        "description": "Fill in the details to record a new asset note.",
+        "searchAssets": "Search assets...",
+        "selectAsset": "Select asset",
+        "notePlaceholder": "Enter note details",
+        "submit": "Save Note",
+        "success": "Asset note recorded successfully!",
+        "dateRequired": "Date is required",
+        "noteRequired": "Note is required"
+      },
+      "updateModal": {
+        "title": "Edit Asset Note",
+        "description": "Update the asset note details below.",
+        "searchAssets": "Search assets...",
+        "selectAsset": "Select asset",
+        "notePlaceholder": "Enter note details",
+        "submit": "Save Changes",
+        "success": "Asset note updated successfully!",
         "dateRequired": "Date is required",
         "noteRequired": "Note is required"
       }
@@ -847,6 +873,21 @@
         "deleteRecord": "Delete Record",
         "system": "System",
         "deleteSuccess": "Asset maintenance record deleted successfully!"
+      },
+      "note": {
+        "title": "Asset Notes",
+        "searchPlaceholder": "Search notes...",
+        "addNote": "Add Note",
+        "deleteTitle": "Delete Note Record",
+        "columnNoteDate": "Note Date",
+        "columnNotes": "Notes",
+        "columnAttachments": "Attachments",
+        "columnCreatedBy": "Created By",
+        "columnAction": "Action",
+        "editRecord": "Edit Record",
+        "deleteRecord": "Delete Record",
+        "system": "System",
+        "deleteSuccess": "Asset note record deleted successfully!"
       }
     },
     "branch": {
