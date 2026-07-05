@@ -528,6 +528,7 @@ const baseColumns: TableColumn<Asset>[] = [
         status: status.status,
         note: status.note,
         createdAt: status.createdAt,
+        createdBy: status.createdBy,
       })
     }
   }

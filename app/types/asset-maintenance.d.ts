@@ -5,6 +5,7 @@ export interface AssetMaintenance {
   assetId: number
   date: string
   note: string | null
+  cost: number
   createdAt: string
   updatedAt: string
   asset: {
@@ -24,5 +25,6 @@ export interface AssetMaintenancePayload {
   assetId: number
   date: string
   note?: string
+  cost?: number
   attachmentIds?: number[]
 }

@@ -143,6 +143,14 @@ const baseColumns: TableColumn<AssetMaintenance>[] = [
     }
   },
   {
+    accessorKey: 'cost',
+    header: sortHeader(t('pages.asset.maintenance.columnCost'), 'cost'),
+    cell: ({ row }) => {
+      const cost = row.original.cost ?? 0
+      return h('span', { class: 'text-neutral-900 font-medium tabular-nums' }, `Rp ${Number(cost).toLocaleString('id-ID')}`)
+    }
+  },
+  {
     id: 'attachments',
     header: t('pages.asset.maintenance.columnAttachments'),
     cell: ({ row }) => {

@@ -113,6 +113,7 @@
                 :status="asset.lastStatus.status"
                 :note="asset.lastStatus.note"
                 :created-at="asset.lastStatus.createdAt"
+                :created-by="asset.lastStatus.createdBy"
               />
               <span v-else class="text-sm text-neutral-500">-</span>
             </div>

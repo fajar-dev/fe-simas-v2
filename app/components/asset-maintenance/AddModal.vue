@@ -43,6 +43,15 @@
           <UTextarea v-model="form.note" :placeholder="$t('component.assetMaintenance.addModal.notePlaceholder')" class="w-full" :rows="3" />
         </UFormField>
 
+        <!-- Cost Field -->
+        <UFormField :label="$t('common.cost')" name="cost">
+          <UInput v-model.number="form.cost" type="number" :placeholder="$t('component.assetMaintenance.addModal.costPlaceholder')" class="w-full" min="0" step="1">
+            <template #leading>
+              <span class="text-neutral-400 text-sm">Rp</span>
+            </template>
+          </UInput>
+        </UFormField>
+
         <!-- Reusable Attachment Manager -->
         <AttachmentManager
           v-model="uploadedAttachments"
@@ -99,8 +108,9 @@ const schema = z.object({
 
 const form = reactive<AssetMaintenancePayload>({
   assetId: undefined as unknown as number,
-  date: new Date().toISOString().split('T')[0] || '', // Default to today
+  date: new Date().toISOString().split('T')[0] || '',
   note: '',
+  cost: 0,
   attachmentIds: [],
 })
 
@@ -142,6 +152,7 @@ const resetForm = () => {
   form.assetId = props.lockAssetId ? props.lockAssetId : (undefined as unknown as number)
   form.date = new Date().toISOString().split('T')[0] || ''
   form.note = ''
+  form.cost = 0
   form.attachmentIds = []
   selectedAsset.value = undefined
   uploadedAttachments.value = []
