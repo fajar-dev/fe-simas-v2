@@ -69,15 +69,7 @@ const props = defineProps<{
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ created: [] }>()
 
-const statusOptions = [
-  { label: 'Active', value: 'active' },
-  { label: 'Idle', value: 'idle' },
-  { label: 'Under Repair', value: 'under_repair' },
-  { label: 'Damaged', value: 'damaged' },
-  { label: 'Lost', value: 'lost' },
-  { label: 'Sold', value: 'sold' },
-  { label: 'Disposed', value: 'disposed' },
-]
+const statusOptions = getStatusOptions()
 
 const schema = z.object({
   status: z.string().min(1, t('component.assetStatus.updateModal.statusRequired')),

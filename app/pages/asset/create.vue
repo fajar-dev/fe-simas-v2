@@ -372,15 +372,7 @@ function onCodeScanned(code: string) {
   }
 }
 
-const statusOptions = [
-  { label: 'Active', value: 'active' },
-  { label: 'Idle', value: 'idle' },
-  { label: 'Under Repair', value: 'under_repair' },
-  { label: 'Damaged', value: 'damaged' },
-  { label: 'Lost', value: 'lost' },
-  { label: 'Sold', value: 'sold' },
-  { label: 'Disposed', value: 'disposed' },
-]
+const statusOptions = getStatusOptions()
 
 const {
   toast, isUploading, previewUrl,

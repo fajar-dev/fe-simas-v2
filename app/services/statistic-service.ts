@@ -5,16 +5,20 @@ import type { ApiResponse } from "../types/api"
 export interface StatisticSummary {
     totalAssets: number
     totalPrice: number
+    totalBookValue: number
+    totalDepreciation: number
     totalCategories: number
     totalSubCategories: number
     totalLocations: number
     totalBranches: number
+    totalActiveEmployees: number
 }
 
 export interface ChartGroupItem {
     name: string
     count: number
     totalPrice: number
+    totalBookValue?: number
 }
 
 export interface LabelCountItem {
@@ -22,15 +26,31 @@ export interface LabelCountItem {
     count: number
 }
 
+export interface DepreciationStat {
+    summary: {
+        totalWithDepreciation: number
+        totalMonthlyDepreciation: number
+        totalAccumulatedDepreciation: number
+        totalBookValue: number
+    }
+    statusBreakdown: LabelCountItem[]
+    byCategory: { name: string; originalPrice: number; bookValue: number }[]
+}
+
 export class StatisticService {
     private get authHeaders() {
         return { headers: { Authorization: `Bearer ${useAuth().state.token}` } }
     }
 
-    async getSummary(): Promise<ApiResponse<StatisticSummary>> {
+    private statusQuery(statuses?: string[]): string {
+        if (!statuses?.length) return ""
+        return `?status=${statuses.join(",")}`
+    }
+
+    async getSummary(statuses?: string[]): Promise<ApiResponse<StatisticSummary>> {
         try {
             const response = await apiService.client.get<ApiResponse<StatisticSummary>>(
-                "/statistic/summary",
+                `/statistic/summary${this.statusQuery(statuses)}`,
                 this.authHeaders
             )
             return response.data
@@ -39,10 +59,10 @@ export class StatisticService {
         }
     }
 
-    async getAssetsByCategory(): Promise<ApiResponse<ChartGroupItem[]>> {
+    async getAssetsByCategory(statuses?: string[]): Promise<ApiResponse<ChartGroupItem[]>> {
         try {
             const response = await apiService.client.get<ApiResponse<ChartGroupItem[]>>(
-                "/statistic/assets-by-category",
+                `/statistic/assets-by-category${this.statusQuery(statuses)}`,
                 this.authHeaders
             )
             return response.data
@@ -51,10 +71,10 @@ export class StatisticService {
         }
     }
 
-    async getAssetsByLocation(): Promise<ApiResponse<ChartGroupItem[]>> {
+    async getAssetsByLocation(statuses?: string[]): Promise<ApiResponse<ChartGroupItem[]>> {
         try {
             const response = await apiService.client.get<ApiResponse<ChartGroupItem[]>>(
-                "/statistic/assets-by-location",
+                `/statistic/assets-by-location${this.statusQuery(statuses)}`,
                 this.authHeaders
             )
             return response.data
@@ -63,10 +83,10 @@ export class StatisticService {
         }
     }
 
-    async getAssetsBySubCategory(): Promise<ApiResponse<ChartGroupItem[]>> {
+    async getAssetsBySubCategory(statuses?: string[]): Promise<ApiResponse<ChartGroupItem[]>> {
         try {
             const response = await apiService.client.get<ApiResponse<ChartGroupItem[]>>(
-                "/statistic/assets-by-sub-category",
+                `/statistic/assets-by-sub-category${this.statusQuery(statuses)}`,
                 this.authHeaders
             )
             return response.data
@@ -75,10 +95,10 @@ export class StatisticService {
         }
     }
 
-    async getAssetAging(): Promise<ApiResponse<LabelCountItem[]>> {
+    async getAssetAging(statuses?: string[]): Promise<ApiResponse<LabelCountItem[]>> {
         try {
             const response = await apiService.client.get<ApiResponse<LabelCountItem[]>>(
-                "/statistic/asset-aging",
+                `/statistic/asset-aging${this.statusQuery(statuses)}`,
                 this.authHeaders
             )
             return response.data
@@ -87,10 +107,22 @@ export class StatisticService {
         }
     }
 
-    async getDataQuality(): Promise<ApiResponse<LabelCountItem[]>> {
+    async getDataQuality(statuses?: string[]): Promise<ApiResponse<LabelCountItem[]>> {
         try {
             const response = await apiService.client.get<ApiResponse<LabelCountItem[]>>(
-                "/statistic/data-quality",
+                `/statistic/data-quality${this.statusQuery(statuses)}`,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
+    async getDepreciation(): Promise<ApiResponse<DepreciationStat>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<DepreciationStat>>(
+                "/statistic/depreciation",
                 this.authHeaders
             )
             return response.data

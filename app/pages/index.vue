@@ -4,12 +4,23 @@
     <Header
       :title="$t('pages.dashboard.title')"
       :description="$t('pages.dashboard.description')"
-    />
+    >
+      <template #actions>
+        <USelectMenu
+          v-model="selectedStatuses"
+          :items="statusOptions"
+          multiple
+          value-key="value"
+          :placeholder="$t('pages.dashboard.filterByStatus')"
+          class="w-48"
+        />
+      </template>
+    </Header>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+    <!-- Stats Cards Row 1 -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
       <UCard
-        v-for="stat in stats"
+        v-for="stat in statsRow1"
         :key="stat.key"
         :ui="{ body: 'sm:p-5' }"
       >
@@ -22,7 +33,29 @@
         />
         <p class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">{{ stat.label }}</p>
         <p v-if="!isLoading" class="text-xl font-semibold text-neutral-900 tabular-nums">
-          {{ stat.format ? stat.format(stat.value) : stat.value.toLocaleString('id-ID') }}
+          {{ stat.value.toLocaleString('id-ID') }}
+        </p>
+        <USkeleton v-else class="h-7 w-24" />
+      </UCard>
+    </div>
+
+    <!-- Stats Cards Row 2 (Monetary) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <UCard
+        v-for="stat in statsRow2"
+        :key="stat.key"
+        :ui="{ body: 'sm:p-5' }"
+      >
+        <UAvatar
+          :icon="stat.icon"
+          size="lg"
+          :ui="{ icon: stat.iconClass }"
+          :class="[stat.bgClass, 'mb-3']"
+          loading="lazy"
+        />
+        <p class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">{{ stat.label }}</p>
+        <p v-if="!isLoading" class="text-xl font-semibold text-neutral-900 tabular-nums">
+          {{ stat.format(stat.value) }}
         </p>
         <USkeleton v-else class="h-7 w-24" />
       </UCard>
@@ -66,12 +99,12 @@
         </div>
       </UCard>
 
-      <!-- Price by Category (Bar) -->
+      <!-- Value by Category (Bar) -->
       <UCard class="md:col-span-8">
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.priceByCategory') }}</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.priceByCategoryDesc') }}</p>
+            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.valueByCategory') }}</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.valueByCategoryDesc') }}</p>
           </div>
         </template>
 
@@ -83,14 +116,13 @@
             :data="categoryBarData"
             :categories="categoryBarCategories"
             :height="260"
-            :y-axis="['totalPrice']"
+            :y-axis="['totalPrice', 'totalBookValue']"
             x-axis="name"
             :orientation="Orientation.Horizontal"
             :x-formatter="formatPriceShort"
             :y-formatter="(i: number) => categoryBarData[i]?.name ?? ''"
             :padding="{ top: 0, right: 10, bottom: 0, left: 80 }"
             :radius="4"
-            hide-legend
           />
         </div>
         <div v-else class="flex items-center justify-center h-64 text-sm text-neutral-400">
@@ -137,12 +169,12 @@
         </div>
       </UCard>
 
-      <!-- Price by Location (Bar) -->
+      <!-- Value by Location (Bar) -->
       <UCard class="md:col-span-8">
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.priceByLocation') }}</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.priceByLocationDesc') }}</p>
+            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.valueByLocation') }}</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.valueByLocationDesc') }}</p>
           </div>
         </template>
 
@@ -154,14 +186,13 @@
             :data="locationBarData"
             :categories="locationBarCategories"
             :height="260"
-            :y-axis="['totalPrice']"
+            :y-axis="['totalPrice', 'totalBookValue']"
             x-axis="name"
             :orientation="Orientation.Horizontal"
             :x-formatter="formatPriceShort"
             :y-formatter="(i: number) => locationBarData[i]?.name ?? ''"
             :padding="{ top: 0, right: 10, bottom: 0, left: 80 }"
             :radius="4"
-            hide-legend
           />
         </div>
         <div v-else class="flex items-center justify-center h-64 text-sm text-neutral-400">
@@ -274,6 +305,7 @@
 <script setup lang="ts">
 import { statisticService } from '~/services/statistic-service'
 import type { StatisticSummary, ChartGroupItem, LabelCountItem } from '~/services/statistic-service'
+import { getStatusOptions } from '~/utils/status'
 
 const { t } = useI18n()
 
@@ -288,22 +320,33 @@ const chartColors = [
   '#14b8a6', '#e11d48', '#a855f7', '#eab308', '#0ea5e9',
 ]
 
+// ── Status filter ────────────────────────────────────
+const statusOptions = getStatusOptions()
+const selectedStatuses = ref<string[]>(['active'])
+
 // ── Loading states ───────────────────────────────────
 const isLoading = ref(true)
 const isChartLoading = ref(true)
 
 // ── Summary data ─────────────────────────────────────
 const summary = ref<StatisticSummary>({
-  totalAssets: 0, totalPrice: 0, totalCategories: 0,
-  totalSubCategories: 0, totalLocations: 0, totalBranches: 0,
+  totalAssets: 0, totalPrice: 0, totalBookValue: 0, totalDepreciation: 0,
+  totalCategories: 0, totalSubCategories: 0, totalLocations: 0, totalBranches: 0, totalActiveEmployees: 0,
 })
 
-const stats = computed(() => [
+const statsRow1 = computed(() => [
   { key: 'assets', label: t('pages.dashboard.assets'), icon: 'i-lucide-box', bgClass: 'bg-blue-50', iconClass: 'text-blue-600', value: summary.value.totalAssets },
-  { key: 'price', label: t('pages.dashboard.totalValue'), icon: 'i-lucide-banknote', bgClass: 'bg-emerald-50', iconClass: 'text-emerald-600', value: summary.value.totalPrice, format: (v: number) => `Rp ${v.toLocaleString('id-ID')}` },
   { key: 'categories', label: t('pages.dashboard.categories'), icon: 'i-lucide-list', bgClass: 'bg-violet-50', iconClass: 'text-violet-600', value: summary.value.totalCategories },
   { key: 'subCategories', label: t('pages.dashboard.subCategories'), icon: 'i-lucide-list-tree', bgClass: 'bg-amber-50', iconClass: 'text-amber-600', value: summary.value.totalSubCategories },
+  { key: 'branches', label: t('pages.dashboard.branches'), icon: 'i-lucide-building-2', bgClass: 'bg-teal-50', iconClass: 'text-teal-600', value: summary.value.totalBranches },
   { key: 'locations', label: t('pages.dashboard.locations'), icon: 'i-lucide-map-pin', bgClass: 'bg-rose-50', iconClass: 'text-rose-600', value: summary.value.totalLocations },
+  { key: 'employees', label: t('pages.dashboard.activeEmployees'), icon: 'i-lucide-users', bgClass: 'bg-indigo-50', iconClass: 'text-indigo-600', value: summary.value.totalActiveEmployees },
+])
+
+const statsRow2 = computed(() => [
+  { key: 'price', label: t('pages.dashboard.totalPrice'), icon: 'i-lucide-banknote', bgClass: 'bg-emerald-50', iconClass: 'text-emerald-600', value: summary.value.totalPrice, format: (v: number) => `Rp ${v.toLocaleString('id-ID')}` },
+  { key: 'bookValue', label: t('pages.dashboard.totalBookValue'), icon: 'i-lucide-wallet', bgClass: 'bg-cyan-50', iconClass: 'text-cyan-600', value: summary.value.totalBookValue, format: (v: number) => `Rp ${v.toLocaleString('id-ID')}` },
+  { key: 'depreciation', label: t('pages.dashboard.depreciationValue'), icon: 'i-lucide-trending-down', bgClass: 'bg-red-50', iconClass: 'text-red-600', value: summary.value.totalDepreciation, format: (v: number) => `Rp ${v.toLocaleString('id-ID')}` },
 ])
 
 // ── Chart data ───────────────────────────────────────
@@ -324,9 +367,10 @@ const categoryDonutCategories = computed(() => {
 })
 
 // Category Bar
-const categoryBarData = computed(() => categoryData.value.map(c => ({ name: c.name, totalPrice: c.totalPrice })))
+const categoryBarData = computed(() => categoryData.value.map(c => ({ name: c.name, totalPrice: c.totalPrice, totalBookValue: c.totalBookValue ?? c.totalPrice })))
 const categoryBarCategories = computed(() => ({
-  totalPrice: { name: t('pages.dashboard.totalPrice'), color: '#3b82f6' },
+  totalPrice: { name: t('pages.dashboard.originalPrice'), color: '#3b82f6' },
+  totalBookValue: { name: t('pages.dashboard.bookValue'), color: '#10b981' },
 }))
 
 // Location Donut
@@ -340,9 +384,10 @@ const locationDonutCategories = computed(() => {
 })
 
 // Location Bar
-const locationBarData = computed(() => locationData.value.map(l => ({ name: l.name, totalPrice: l.totalPrice })))
+const locationBarData = computed(() => locationData.value.map(l => ({ name: l.name, totalPrice: l.totalPrice, totalBookValue: l.totalBookValue ?? l.totalPrice })))
 const locationBarCategories = computed(() => ({
-  totalPrice: { name: t('pages.dashboard.totalPrice'), color: '#10b981' },
+  totalPrice: { name: t('pages.dashboard.originalPrice'), color: '#10b981' },
+  totalBookValue: { name: t('pages.dashboard.bookValue'), color: '#f59e0b' },
 }))
 
 // Sub Category Donut
@@ -372,7 +417,8 @@ const qualityBarCategories = computed(() => ({
 const fetchSummary = async () => {
   isLoading.value = true
   try {
-    const res = await statisticService.getSummary()
+    const statuses = selectedStatuses.value.length ? selectedStatuses.value : undefined
+    const res = await statisticService.getSummary(statuses)
     if (res.success) summary.value = res.data
   } finally {
     isLoading.value = false
@@ -382,12 +428,13 @@ const fetchSummary = async () => {
 const fetchCharts = async () => {
   isChartLoading.value = true
   try {
+    const statuses = selectedStatuses.value.length ? selectedStatuses.value : undefined
     const [catRes, locRes, subCatRes, agingRes, qualityRes] = await Promise.all([
-      statisticService.getAssetsByCategory(),
-      statisticService.getAssetsByLocation(),
-      statisticService.getAssetsBySubCategory(),
-      statisticService.getAssetAging(),
-      statisticService.getDataQuality(),
+      statisticService.getAssetsByCategory(statuses),
+      statisticService.getAssetsByLocation(statuses),
+      statisticService.getAssetsBySubCategory(statuses),
+      statisticService.getAssetAging(statuses),
+      statisticService.getDataQuality(statuses),
     ])
     if (catRes.success) categoryData.value = catRes.data
     if (locRes.success) locationData.value = locRes.data
@@ -399,8 +446,16 @@ const fetchCharts = async () => {
   }
 }
 
-onMounted(() => {
+const fetchAll = () => {
   fetchSummary()
   fetchCharts()
+}
+
+watch(selectedStatuses, () => {
+  fetchAll()
+})
+
+onMounted(() => {
+  fetchAll()
 })
 </script>

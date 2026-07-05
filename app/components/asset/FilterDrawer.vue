@@ -379,15 +379,7 @@ const locationOptions = ref<{ label: string; value: number }[]>([])
 const employeeOptions = ref<{ label: string; value: number; avatar?: { src: string } }[]>([])
 const availableLabelKeys = ref<string[]>([])
 
-const statusOptions = computed(() => [
-  { label: t('component.asset.filterDrawer.statusActive'), value: 'active' },
-  { label: t('component.asset.filterDrawer.statusIdle'), value: 'idle' },
-  { label: t('component.asset.filterDrawer.statusUnderRepair'), value: 'under_repair' },
-  { label: t('component.asset.filterDrawer.statusDamaged'), value: 'damaged' },
-  { label: t('component.asset.filterDrawer.statusLost'), value: 'lost' },
-  { label: t('component.asset.filterDrawer.statusSold'), value: 'sold' },
-  { label: t('component.asset.filterDrawer.statusDisposed'), value: 'disposed' },
-])
+const statusOptions = computed(() => getStatusOptions())
 
 const holderStatusOptions = computed(() => [
   { label: t('component.asset.filterDrawer.hasHolder'), value: 'has_holder' },
