@@ -157,7 +157,7 @@ const baseColumns: TableColumn<Branch>[] = [
   },
   {
     accessorKey: 'assetCount',
-    header: t('pages.branch.columnAssetCount'),
+    header: sortHeader(t('pages.branch.columnAssetCount'), 'assetCount'),
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
     }

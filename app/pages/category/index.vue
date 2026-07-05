@@ -136,7 +136,7 @@ const baseColumns: TableColumn<Category>[] = [
   },
   {
     accessorKey: 'assetCount',
-    header: t('pages.category.columnAssetCount'),
+    header: sortHeader(t('pages.category.columnAssetCount'), 'assetCount'),
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
     }
