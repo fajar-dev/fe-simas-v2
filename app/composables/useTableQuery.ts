@@ -33,8 +33,8 @@ export function useTableQuery(onQueryChange: () => void, options: TableQueryOpti
     
     const arrayNumberFields = ['categoryIds', 'subCategoryIds', 'branchIds', 'locationIds']
     const arrayStringFields = ['status', 'missingFields']
-    const numberFields = ['holderId', 'priceMin', 'priceMax']
-    const stringFields = ['holderStatus', 'purchaseDateFrom', 'purchaseDateTo']
+    const numberFields = ['holderId', 'priceMin', 'priceMax', 'usefulLifeYears', 'monthlyDepMin', 'monthlyDepMax', 'accumulatedDepMin', 'accumulatedDepMax', 'bookValueMin', 'bookValueMax']
+    const stringFields = ['holderStatus', 'purchaseDateFrom', 'purchaseDateTo', 'depreciationStatus', 'bleTagStatus', 'usefulLifeOp']
     
     arrayNumberFields.forEach(field => {
       if (query[field] !== undefined && query[field] !== '') {

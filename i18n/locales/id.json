@@ -247,7 +247,14 @@
         "depreciationStatus": "Status Penyusutan",
         "hasDepreciation": "Punya Penyusutan",
         "noDepreciation": "Tidak Punya Penyusutan",
-        "fullyDepreciated": "Sudah Habis Susut"
+        "fullyDepreciated": "Sudah Habis Susut",
+        "usefulLife": "Umur Ekonomis",
+        "operator": "Op",
+        "years": "Tahun",
+        "yearUnit": "thn",
+        "monthlyDepreciation": "Penyusutan per Bulan",
+        "accumulatedDepreciation": "Akumulasi Penyusutan",
+        "bookValue": "Nilai Buku"
       },
       "importModal": {
         "title": "Import Aset",

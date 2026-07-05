@@ -234,6 +234,85 @@
           />
         </div>
 
+        <!-- Useful Life (shown for has_depreciation or fully_depreciated) -->
+        <div v-if="filters.depreciationStatus === 'has_depreciation' || filters.depreciationStatus === 'fully_depreciated'">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.usefulLife') }}</label>
+            <UButton v-if="filters.usefulLifeOp || filters.usefulLifeYears" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('usefulLifeOp'); clearField('usefulLifeYears')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
+          </div>
+          <div class="flex items-center gap-2">
+            <USelectMenu
+              v-model="filters.usefulLifeOp"
+              :items="usefulLifeOpOptions"
+              :placeholder="$t('component.asset.filterDrawer.operator')"
+              value-key="value"
+              class="w-24"
+            />
+            <UInput
+              v-model.number="filters.usefulLifeYears"
+              type="number"
+              :placeholder="$t('component.asset.filterDrawer.years')"
+              class="flex-1"
+              min="0"
+            >
+              <template #trailing>
+                <span class="text-neutral-400 text-sm">{{ $t('component.asset.filterDrawer.yearUnit') }}</span>
+              </template>
+            </UInput>
+          </div>
+        </div>
+
+        <!-- Monthly Depreciation Range (only for has_depreciation) -->
+        <div v-if="filters.depreciationStatus === 'has_depreciation'">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.monthlyDepreciation') }}</label>
+            <UButton v-if="filters.monthlyDepMin || filters.monthlyDepMax" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('monthlyDepMin'); clearField('monthlyDepMax')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+            <UInput v-model="monthlyDepMinDisplay" :placeholder="$t('component.asset.filterDrawer.min')" class="w-full sm:flex-1">
+              <template #leading><span class="text-neutral-500 text-sm">Rp</span></template>
+            </UInput>
+            <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
+            <UInput v-model="monthlyDepMaxDisplay" :placeholder="$t('component.asset.filterDrawer.max')" class="w-full sm:flex-1">
+              <template #leading><span class="text-neutral-500 text-sm">Rp</span></template>
+            </UInput>
+          </div>
+        </div>
+
+        <!-- Accumulated Depreciation Range (only for has_depreciation) -->
+        <div v-if="filters.depreciationStatus === 'has_depreciation'">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.accumulatedDepreciation') }}</label>
+            <UButton v-if="filters.accumulatedDepMin || filters.accumulatedDepMax" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('accumulatedDepMin'); clearField('accumulatedDepMax')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+            <UInput v-model="accDepMinDisplay" :placeholder="$t('component.asset.filterDrawer.min')" class="w-full sm:flex-1">
+              <template #leading><span class="text-neutral-500 text-sm">Rp</span></template>
+            </UInput>
+            <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
+            <UInput v-model="accDepMaxDisplay" :placeholder="$t('component.asset.filterDrawer.max')" class="w-full sm:flex-1">
+              <template #leading><span class="text-neutral-500 text-sm">Rp</span></template>
+            </UInput>
+          </div>
+        </div>
+
+        <!-- Book Value Range (only for has_depreciation) -->
+        <div v-if="filters.depreciationStatus === 'has_depreciation'">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.bookValue') }}</label>
+            <UButton v-if="filters.bookValueMin || filters.bookValueMax" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('bookValueMin'); clearField('bookValueMax')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+            <UInput v-model="bookValueMinDisplay" :placeholder="$t('component.asset.filterDrawer.min')" class="w-full sm:flex-1">
+              <template #leading><span class="text-neutral-500 text-sm">Rp</span></template>
+            </UInput>
+            <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
+            <UInput v-model="bookValueMaxDisplay" :placeholder="$t('component.asset.filterDrawer.max')" class="w-full sm:flex-1">
+              <template #leading><span class="text-neutral-500 text-sm">Rp</span></template>
+            </UInput>
+          </div>
+        </div>
+
         <USeparator />
 
         <!-- Data Quality -->
@@ -338,6 +417,14 @@ const filters = reactive<Record<string, any>>({
   purchaseDateTo: undefined,
   missingFields: [],
   depreciationStatus: undefined,
+  usefulLifeOp: undefined,
+  usefulLifeYears: undefined,
+  monthlyDepMin: undefined,
+  monthlyDepMax: undefined,
+  accumulatedDepMin: undefined,
+  accumulatedDepMax: undefined,
+  bookValueMin: undefined,
+  bookValueMax: undefined,
 })
 
 const purchaseDateFromVal = computed({
@@ -364,6 +451,31 @@ const priceMinDisplay = computed({
 const priceMaxDisplay = computed({
   get: () => formatIndonesianNumber(filters.priceMax),
   set: (val) => { filters.priceMax = parseIndonesianNumber(val) }
+})
+
+const monthlyDepMinDisplay = computed({
+  get: () => formatIndonesianNumber(filters.monthlyDepMin),
+  set: (val) => { filters.monthlyDepMin = parseIndonesianNumber(val) }
+})
+const monthlyDepMaxDisplay = computed({
+  get: () => formatIndonesianNumber(filters.monthlyDepMax),
+  set: (val) => { filters.monthlyDepMax = parseIndonesianNumber(val) }
+})
+const accDepMinDisplay = computed({
+  get: () => formatIndonesianNumber(filters.accumulatedDepMin),
+  set: (val) => { filters.accumulatedDepMin = parseIndonesianNumber(val) }
+})
+const accDepMaxDisplay = computed({
+  get: () => formatIndonesianNumber(filters.accumulatedDepMax),
+  set: (val) => { filters.accumulatedDepMax = parseIndonesianNumber(val) }
+})
+const bookValueMinDisplay = computed({
+  get: () => formatIndonesianNumber(filters.bookValueMin),
+  set: (val) => { filters.bookValueMin = parseIndonesianNumber(val) }
+})
+const bookValueMaxDisplay = computed({
+  get: () => formatIndonesianNumber(filters.bookValueMax),
+  set: (val) => { filters.bookValueMax = parseIndonesianNumber(val) }
 })
 
 // Label filters (separate from main filters, merged on apply)
@@ -403,6 +515,12 @@ const depreciationStatusOptions = computed(() => [
   { label: t('component.asset.filterDrawer.hasDepreciation'), value: 'has_depreciation' },
   { label: t('component.asset.filterDrawer.noDepreciation'), value: 'no_depreciation' },
   { label: t('component.asset.filterDrawer.fullyDepreciated'), value: 'fully_depreciated' },
+])
+
+const usefulLifeOpOptions = computed(() => [
+  { label: '<', value: '<' },
+  { label: '=', value: '=' },
+  { label: '>', value: '>' },
 ])
 
 // Date presets
@@ -481,6 +599,16 @@ const clearField = (field: string) => {
   if (field === 'bleTagStatus') {
     filters.bleTagStatus = undefined
   }
+  if (field === 'depreciationStatus') {
+    filters.usefulLifeOp = undefined
+    filters.usefulLifeYears = undefined
+    filters.monthlyDepMin = undefined
+    filters.monthlyDepMax = undefined
+    filters.accumulatedDepMin = undefined
+    filters.accumulatedDepMax = undefined
+    filters.bookValueMin = undefined
+    filters.bookValueMax = undefined
+  }
 }
 
 // Reset all
@@ -499,6 +627,14 @@ const resetAll = () => {
   filters.purchaseDateTo = undefined
   filters.missingFields = []
   filters.depreciationStatus = undefined
+  filters.usefulLifeOp = undefined
+  filters.usefulLifeYears = undefined
+  filters.monthlyDepMin = undefined
+  filters.monthlyDepMax = undefined
+  filters.accumulatedDepMin = undefined
+  filters.accumulatedDepMax = undefined
+  filters.bookValueMin = undefined
+  filters.bookValueMax = undefined
   labelFilters.value = []
   subCategoryOptions.value = []
   locationOptions.value = []
@@ -576,6 +712,14 @@ watch(open, (isOpen) => {
     filters.purchaseDateTo = init.purchaseDateTo ?? undefined
     filters.missingFields = init.missingFields || []
     filters.depreciationStatus = init.depreciationStatus ?? undefined
+    filters.usefulLifeOp = init.usefulLifeOp ?? undefined
+    filters.usefulLifeYears = init.usefulLifeYears ?? undefined
+    filters.monthlyDepMin = init.monthlyDepMin ?? undefined
+    filters.monthlyDepMax = init.monthlyDepMax ?? undefined
+    filters.accumulatedDepMin = init.accumulatedDepMin ?? undefined
+    filters.accumulatedDepMax = init.accumulatedDepMax ?? undefined
+    filters.bookValueMin = init.bookValueMin ?? undefined
+    filters.bookValueMax = init.bookValueMax ?? undefined
     labelFilters.value = init.labels ? init.labels.map((l: any) => ({ ...l })) : []
 
     fetchCategories()
