@@ -31,7 +31,7 @@ export const useNavigation = () => {
         },
         {
           label: t('nav.assets'),
-          to: '/asset',
+          to: '/asset?status=active',
           icon: 'i-lucide-box',
           permission: 'asset:read'
         },
@@ -98,10 +98,11 @@ export const useNavigation = () => {
   const bottomNavItems: NavItem[] = []
 
   const isItemActive = (item: NavItem) => {
-    if (item.to === '/') {
+    const itemPath = item.to.split('?')[0]
+    if (itemPath === '/') {
       return route.path === '/'
     }
-    return route.path.startsWith(item.to)
+    return route.path.startsWith(itemPath)
   }
 
   return {

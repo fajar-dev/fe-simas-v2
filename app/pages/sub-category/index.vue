@@ -20,9 +20,11 @@
       :search-placeholder="$t('pages.subCategory.searchPlaceholder')"
     >
       <template #filters>
-        <USelect
+        <USelectMenu
           v-model="categoryFilter"
           :items="categoryOptions"
+          value-key="value"
+          :searchable="true"
           class="w-full md:w-52"
         />
       </template>

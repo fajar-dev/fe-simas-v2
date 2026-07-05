@@ -131,6 +131,16 @@
           </span>
         </UButton>
         <UButton
+          color="info"
+          variant="solid"
+          icon="i-lucide-qr-code"
+          @click="openBulkPrintCode"
+        >
+          <span class="hidden sm:block">
+            {{ $t('pages.asset.index.printCode') }}
+          </span>
+        </UButton>
+        <UButton
           v-if="hasPermission('asset:delete')"
           color="error"
           variant="solid"
@@ -205,6 +215,12 @@
       v-model="showImportModal"
       @imported="fetchAssets"
     />
+
+    <!-- Print Code Modal -->
+    <AssetPrintCodeModal
+      v-model="showPrintCodeModal"
+      :assets="printCodeAssets"
+    />
   </div>
 </template>
 
@@ -278,6 +294,8 @@ const showBulkDeleteModal = ref(false)
 const isBulkDeleting = ref(false)
 const showFilterDrawer = ref(false)
 const showImportModal = ref(false)
+const showPrintCodeModal = ref(false)
+const printCodeAssets = ref<Asset[]>([])
 const selectedIds = ref<number[]>([])
 
 const activeFilterCount = computed(() => Object.keys(activeFilters.value).length)
@@ -410,6 +428,20 @@ const baseColumns: TableColumn<Asset>[] = [
     }
   },
   {
+    id: 'lastStatus',
+    header: sortHeader(t('pages.asset.index.columnStatus'), 'lastStatus'),
+    cell: ({ row }) => {
+      const status = row.original.lastStatus
+      if (!status) return h('span', { class: 'text-neutral-500 italic' }, '-')
+      return h(AssetStatusBadge, {
+        status: status.status,
+        note: status.note,
+        createdAt: status.createdAt,
+        createdBy: status.createdBy,
+      })
+    }
+  },
+  {
     id: 'category',
     header: sortHeader(t('pages.asset.index.columnCategory'), 'category'),
     cell: ({ row }) => {
@@ -516,20 +548,6 @@ const baseColumns: TableColumn<Asset>[] = [
         h('span', { class: 'font-medium text-neutral-900' }, formatCurrency(dep.bookValue)),
         h('span', { class: 'text-xs text-neutral-500' }, formatCurrency(dep.monthlyDepreciation) + t('pages.asset.index.perMonth'))
       ])
-    }
-  },
-  {
-    id: 'lastStatus',
-    header: t('pages.asset.index.columnStatus'),
-    cell: ({ row }) => {
-      const status = row.original.lastStatus
-      if (!status) return h('span', { class: 'text-neutral-500 italic' }, '-')
-      return h(AssetStatusBadge, {
-        status: status.status,
-        note: status.note,
-        createdAt: status.createdAt,
-        createdBy: status.createdBy,
-      })
     }
   }
 ]
@@ -646,15 +664,35 @@ function getRowItems(row: Row<Asset>) {
   }
 
   if (primaryActions.length > 0 && historyActions.length > 0) {
-    return [primaryActions, historyActions]
+    return [primaryActions, historyActions, [printAction(row)]]
   }
   if (primaryActions.length > 0) {
-    return [primaryActions]
+    return [primaryActions, [printAction(row)]]
   }
   if (historyActions.length > 0) {
-    return [historyActions]
+    return [historyActions, [printAction(row)]]
   }
-  return []
+  return [[printAction(row)]]
+}
+
+function printAction(row: Row<Asset>) {
+  return {
+    label: t('pages.asset.index.printCode'),
+    icon: 'i-lucide-qr-code',
+    onSelect() {
+      openSinglePrintCode(row.original)
+    }
+  }
+}
+
+const openSinglePrintCode = (asset: Asset) => {
+  printCodeAssets.value = [asset]
+  showPrintCodeModal.value = true
+}
+
+const openBulkPrintCode = () => {
+  printCodeAssets.value = data.value.filter(a => selectedIds.value.includes(a.id))
+  showPrintCodeModal.value = true
 }
 
 // Handle delete

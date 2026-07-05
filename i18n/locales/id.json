@@ -187,6 +187,7 @@
     "asset": {
       "detailWrapper": {
         "activityLog": "Log Aktivitas",
+        "printCode": "Cetak Kode",
         "changeStatus": "Ubah Status",
         "editAsset": "Edit Aset",
         "noImage": "Tidak Ada Gambar",
@@ -201,6 +202,27 @@
         "accumulatedDepreciation": "Akumulasi Penyusutan",
         "bookValue": "Nilai Buku",
         "depreciationSection": "Penyusutan"
+      },
+      "printCodeModal": {
+        "title": "Cetak Kode Aset",
+        "description": "{count} aset dipilih",
+        "codeType": "Jenis Kode",
+        "qrCode": "QR Code",
+        "barcode128": "Barcode 128",
+        "labelSize": "Ukuran Label",
+        "sizeSmall": "Kecil",
+        "sizeMedium": "Sedang",
+        "sizeLarge": "Besar",
+        "columns": "Kolom",
+        "displayOptions": "Opsi Tampilan",
+        "showAssetName": "Tampilkan Nama Aset",
+        "showAssetCode": "Tampilkan Kode Aset",
+        "showCategoryName": "Tampilkan Sub Kategori",
+        "showCutMarks": "Tanda Potong",
+        "preview": "Pratinjau",
+        "totalLabels": "{count} label",
+        "print": "Cetak",
+        "downloadPdf": "Unduh PDF"
       },
       "filterDrawer": {
         "title": "Filter Lanjutan",
@@ -707,7 +729,8 @@
         "bulkDeleteTitle": "Hapus Aset Massal",
         "bulkDeleteDescription": "Apakah Anda yakin ingin menghapus {count} aset yang dipilih? Tindakan ini tidak dapat dibatalkan.",
         "bulkDeleteSuccess": "{count} aset berhasil dihapus!",
-        "bulkDeletePartial": "{deleted} dihapus, {failed} gagal (memiliki dependensi)"
+        "bulkDeletePartial": "{deleted} dihapus, {failed} gagal (memiliki dependensi)",
+        "printCode": "Cetak Kode"
       },
       "create": {
         "title": "Tambah Aset Baru",

@@ -187,6 +187,7 @@
     "asset": {
       "detailWrapper": {
         "activityLog": "Activity Log",
+        "printCode": "Print Code",
         "changeStatus": "Change Status",
         "editAsset": "Edit Asset",
         "noImage": "No Image",
@@ -201,6 +202,27 @@
         "accumulatedDepreciation": "Accumulated Depreciation",
         "bookValue": "Book Value",
         "depreciationSection": "Depreciation"
+      },
+      "printCodeModal": {
+        "title": "Print Asset Code",
+        "description": "{count} asset(s) selected",
+        "codeType": "Code Type",
+        "qrCode": "QR Code",
+        "barcode128": "Barcode 128",
+        "labelSize": "Label Size",
+        "sizeSmall": "Small",
+        "sizeMedium": "Medium",
+        "sizeLarge": "Large",
+        "columns": "Columns",
+        "displayOptions": "Display Options",
+        "showAssetName": "Show Asset Name",
+        "showAssetCode": "Show Asset Code",
+        "showCategoryName": "Show Sub Category",
+        "showCutMarks": "Cut Marks",
+        "preview": "Preview",
+        "totalLabels": "{count} label(s)",
+        "print": "Print",
+        "downloadPdf": "Download PDF"
       },
       "filterDrawer": {
         "title": "Advance Filter",
@@ -698,7 +720,8 @@
         "bulkDeleteTitle": "Bulk Delete Assets",
         "bulkDeleteDescription": "Are you sure you want to delete {count} selected assets? This action cannot be undone.",
         "bulkDeleteSuccess": "{count} asset(s) deleted successfully!",
-        "bulkDeletePartial": "{deleted} deleted, {failed} failed (has dependencies)"
+        "bulkDeletePartial": "{deleted} deleted, {failed} failed (has dependencies)",
+        "printCode": "Print Code"
       },
       "create": {
         "title": "Add New Asset",

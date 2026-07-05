@@ -20,9 +20,11 @@
       :search-placeholder="$t('pages.location.searchPlaceholder')"
     >
       <template #filters>
-        <USelect
+        <USelectMenu
           v-model="branchFilter"
           :items="branchOptions"
+          value-key="value"
+          :searchable="true"
           class="w-full md:w-52"
         />
       </template>

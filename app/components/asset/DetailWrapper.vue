@@ -36,6 +36,14 @@
             <span class="hidden sm:inline">{{ $t('component.asset.detailWrapper.activityLog') }}</span>
           </UButton>
           <UButton
+            color="info"
+            variant="outline"
+            icon="i-lucide-qr-code"
+            @click="() => { showPrintCodeModal = true }"
+          >
+            <span class="hidden sm:inline">{{ $t('component.asset.detailWrapper.printCode') }}</span>
+          </UButton>
+          <UButton
             v-if="hasPermission('asset-status:create')"
             color="primary"
             variant="outline"
@@ -283,6 +291,9 @@
 
     <!-- Status Update Modal -->
     <AssetStatusUpdateModal v-if="asset" v-model="showStatusModal" :asset-id="assetId" @created="onStatusCreated" />
+
+    <!-- Print Code Modal -->
+    <AssetPrintCodeModal v-if="asset" v-model="showPrintCodeModal" :assets="[asset]" />
   </div>
 </template>
 
@@ -331,6 +342,7 @@ function formatFileSize(bytes: number): string {
 
 const showLogDrawer = ref(false)
 const showStatusModal = ref(false)
+const showPrintCodeModal = ref(false)
 
 const { fetchAsset } = inject('assetActions') as { fetchAsset: () => Promise<void> }
 
