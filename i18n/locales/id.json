@@ -235,7 +235,11 @@
         "moreThan1Year": "> 1 Tahun",
         "moreThan2Years": "> 2 Tahun",
         "moreThan3Years": "> 3 Tahun",
-        "moreThan4Years": "> 4 Tahun"
+        "moreThan4Years": "> 4 Tahun",
+        "depreciationStatus": "Status Penyusutan",
+        "hasDepreciation": "Punya Penyusutan",
+        "noDepreciation": "Tidak Punya Penyusutan",
+        "fullyDepreciated": "Sudah Habis Susut"
       },
       "importModal": {
         "title": "Import Aset",

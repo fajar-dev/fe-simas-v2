@@ -235,7 +235,11 @@
         "moreThan1Year": "> 1 Year",
         "moreThan2Years": "> 2 Years",
         "moreThan3Years": "> 3 Years",
-        "moreThan4Years": "> 4 Years"
+        "moreThan4Years": "> 4 Years",
+        "depreciationStatus": "Depreciation Status",
+        "hasDepreciation": "Has Depreciation",
+        "noDepreciation": "No Depreciation",
+        "fullyDepreciated": "Fully Depreciated"
       },
       "importModal": {
         "title": "Import Assets",

@@ -222,6 +222,20 @@
 
         <USeparator />
 
+        <!-- Depreciation Status -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.depreciationStatus') }}</label>
+            <UButton v-if="filters.depreciationStatus" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('depreciationStatus')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
+          </div>
+          <URadioGroup
+            v-model="filters.depreciationStatus"
+            :items="depreciationStatusOptions"
+          />
+        </div>
+
+        <USeparator />
+
         <!-- Data Quality -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
@@ -323,6 +337,7 @@ const filters = reactive<Record<string, any>>({
   purchaseDateFrom: undefined,
   purchaseDateTo: undefined,
   missingFields: [],
+  depreciationStatus: undefined,
 })
 
 const purchaseDateFromVal = computed({
@@ -390,6 +405,12 @@ const missingFieldOptions = computed(() => [
   { label: t('component.asset.filterDrawer.withoutBrand'), value: 'brand' },
   { label: t('component.asset.filterDrawer.withoutModel'), value: 'model' },
   { label: t('component.asset.filterDrawer.withoutPurchaseDate'), value: 'purchaseDate' },
+])
+
+const depreciationStatusOptions = computed(() => [
+  { label: t('component.asset.filterDrawer.hasDepreciation'), value: 'has_depreciation' },
+  { label: t('component.asset.filterDrawer.noDepreciation'), value: 'no_depreciation' },
+  { label: t('component.asset.filterDrawer.fullyDepreciated'), value: 'fully_depreciated' },
 ])
 
 // Date presets
@@ -485,6 +506,7 @@ const resetAll = () => {
   filters.purchaseDateFrom = undefined
   filters.purchaseDateTo = undefined
   filters.missingFields = []
+  filters.depreciationStatus = undefined
   labelFilters.value = []
   subCategoryOptions.value = []
   locationOptions.value = []
@@ -561,6 +583,7 @@ watch(open, (isOpen) => {
     filters.purchaseDateFrom = init.purchaseDateFrom ?? undefined
     filters.purchaseDateTo = init.purchaseDateTo ?? undefined
     filters.missingFields = init.missingFields || []
+    filters.depreciationStatus = init.depreciationStatus ?? undefined
     labelFilters.value = init.labels ? init.labels.map((l: any) => ({ ...l })) : []
 
     fetchCategories()
