@@ -111,10 +111,23 @@
           />
         </div>
 
-        <!-- Active Holder (only if has_holder) -->
+        <!-- Holder Type (only if has_holder) -->
         <div v-if="filters.holderStatus === 'has_holder'">
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.detailWrapper.activeHolder') }}</label>
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.holderType') }}</label>
+            <UButton v-if="filters.holderType" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('holderType')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
+          </div>
+          <URadioGroup
+            v-model="filters.holderType"
+            :items="holderTypeOptions"
+            orientation="horizontal"
+          />
+        </div>
+
+        <!-- Select Holder (only if has_holder and holderType selected) -->
+        <div v-if="filters.holderStatus === 'has_holder' && filters.holderType">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.selectHolder') }}</label>
             <UButton v-if="filters.holderId" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('holderId')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
@@ -409,6 +422,7 @@ const filters = reactive<Record<string, any>>({
   locationIds: [],
   status: [],
   holderStatus: undefined,
+  holderType: undefined,
   holderId: undefined,
   bleTagStatus: undefined,
   priceMin: undefined,
@@ -496,6 +510,11 @@ const statusOptions = computed(() => getStatusOptions())
 const holderStatusOptions = computed(() => [
   { label: t('component.asset.filterDrawer.hasHolder'), value: 'has_holder' },
   { label: t('component.asset.filterDrawer.noHolder'), value: 'no_holder' },
+])
+
+const holderTypeOptions = computed(() => [
+  { label: t('component.asset.filterDrawer.activeHolder'), value: 'active_holder' },
+  { label: t('component.asset.filterDrawer.historicalHolder'), value: 'historical_holder' },
 ])
 
 const bleTagStatusOptions = computed(() => [
@@ -594,6 +613,10 @@ const clearField = (field: string) => {
     locationOptions.value = []
   }
   if (field === 'holderStatus') {
+    filters.holderType = undefined
+    filters.holderId = undefined
+  }
+  if (field === 'holderType') {
     filters.holderId = undefined
   }
   if (field === 'bleTagStatus') {
@@ -619,6 +642,7 @@ const resetAll = () => {
   filters.locationIds = []
   filters.status = []
   filters.holderStatus = undefined
+  filters.holderType = undefined
   filters.holderId = undefined
   filters.bleTagStatus = undefined
   filters.priceMin = undefined
@@ -704,6 +728,7 @@ watch(open, (isOpen) => {
     filters.locationIds = init.locationIds || []
     filters.status = init.status || []
     filters.holderStatus = init.holderStatus ?? undefined
+    filters.holderType = init.holderType ?? undefined
     filters.holderId = init.holderId ?? undefined
     filters.bleTagStatus = init.bleTagStatus ?? undefined
     filters.priceMin = init.priceMin ?? undefined
