@@ -19,6 +19,7 @@ export interface AssetMaintenance {
     photo: string | null
   } | null
   attachments: Attachment[]
+  labels?: { id: number; key: string; value: string }[]
 }
 
 export interface AssetMaintenancePayload {
@@ -27,4 +28,5 @@ export interface AssetMaintenancePayload {
   note?: string
   cost?: number
   attachmentIds?: number[]
+  labels?: { key: string; value: string }[]
 }

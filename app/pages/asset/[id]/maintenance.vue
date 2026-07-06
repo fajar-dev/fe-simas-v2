@@ -14,16 +14,46 @@
         :search-placeholder="$t('pages.asset.maintenance.searchPlaceholder')"
         table-class="min-w-[600px]"
       >
-        <template #actions v-if="hasPermission('asset-maintenance:create')">
-          <UButton
-            class="w-full lg:w-auto justify-center"
-            color="primary"
-            variant="solid"
-            icon="i-lucide-plus"
-            @click="() => { showAddModal = true }"
-          >
-            {{ $t('pages.asset.maintenance.addMaintenance') }}
-          </UButton>
+        <template #actions>
+          <div class="flex flex-row gap-2">
+            <UButton
+              v-if="hasPermission('asset-maintenance:create')"
+              class="w-full lg:w-auto justify-center"
+              color="primary"
+              variant="solid"
+              icon="i-lucide-plus"
+              @click="() => { showAddModal = true }"
+            >
+              {{ $t('pages.asset.maintenance.addMaintenance') }}
+            </UButton>
+            <UPopover>
+              <UButton
+                color="neutral"
+                variant="ghost"
+                icon="i-lucide-table-properties"
+              />
+              <template #content>
+                <div class="p-3 w-48 space-y-2 select-none">
+                  <div class="text-sm font-semibold text-neutral-600 mb-1">
+                    {{ $t('common.customLabels') }}
+                  </div>
+                  <div v-if="availableLabelKeys.length === 0" class="text-xs text-neutral-400 italic">
+                    {{ $t('pages.asset.index.noCustomLabels') }}
+                  </div>
+                  <div v-else class="space-y-1.5 max-h-48 overflow-y-auto">
+                    <div v-for="key in availableLabelKeys" :key="key" class="flex items-center gap-2">
+                      <UCheckbox
+                        :id="`col-${key}`"
+                        :model-value="activeLabelColumns.includes(key)"
+                        :label="key"
+                        @update:model-value="(val: boolean | 'indeterminate') => { if (typeof val === 'boolean') toggleLabelColumn(key, val) }"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </UPopover>
+          </div>
         </template>
       </DataTable>
 
@@ -94,6 +124,10 @@ const showUpdateModal = ref(false)
 const showDeleteModal = ref(false)
 const isDeleting = ref(false)
 
+const availableLabelKeys = ref<string[]>([])
+const activeLabelColumns = ref<string[]>([])
+const LABEL_STORAGE_KEY = 'asset_maintenance_label_columns'
+
 // Pagination meta
 const meta = reactive({
   total: 0,
@@ -123,6 +157,21 @@ const fetchMaintenances = async () => {
     }
   } finally {
     isLoadingLogs.value = false
+  }
+}
+
+const loadLabelKeys = async () => {
+  const res = await assetMaintenanceService.getLabelKeys(assetId)
+  if (res.success) availableLabelKeys.value = res.data
+}
+
+const toggleLabelColumn = (key: string, checked: boolean) => {
+  if (checked) {
+    if (!activeLabelColumns.value.includes(key)) {
+      activeLabelColumns.value.push(key)
+    }
+  } else {
+    activeLabelColumns.value = activeLabelColumns.value.filter(k => k !== key)
   }
 }
 
@@ -193,32 +242,44 @@ const baseColumns: TableColumn<AssetMaintenance>[] = [
         })
       )
     }
-  },
-  {
-    accessorKey: 'createdBy',
-    header: sortHeader(t('pages.asset.maintenance.columnCreatedBy'), 'createdBy'),
-    cell: ({ row }) => {
-      const creator = row.original.createdBy
-      if (creator) {
-        return h('div', { class: 'flex items-center gap-2' }, [
-          h(UAvatar, {
-            src: creator.photo || undefined,
-            alt: creator.name,
-            size: 'xs',
-            class: 'bg-primary-50 text-primary-700',
-            loading: 'lazy'
-          }),
-          h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
-        ])
-      } else {
-        return h('span', { class: 'text-neutral-500 italic text-sm' }, t('pages.asset.maintenance.system'))
-      }
-    }
   }
 ]
 
+const createdByColumn: TableColumn<AssetMaintenance> = {
+  accessorKey: 'createdBy',
+  header: sortHeader(t('pages.asset.maintenance.columnCreatedBy'), 'createdBy'),
+  cell: ({ row }) => {
+    const creator = row.original.createdBy
+    if (creator) {
+      return h('div', { class: 'flex items-center gap-2' }, [
+        h(UAvatar, {
+          src: creator.photo || undefined,
+          alt: creator.name,
+          size: 'xs',
+          class: 'bg-primary-50 text-primary-700',
+          loading: 'lazy'
+        }),
+        h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
+      ])
+    } else {
+      return h('span', { class: 'text-neutral-500 italic text-sm' }, t('pages.asset.maintenance.system'))
+    }
+  }
+}
+
 const columns = computed(() => {
   const list = [...baseColumns]
+  activeLabelColumns.value.forEach(key => {
+    list.push({
+      id: `label:${key}`,
+      header: key,
+      cell: ({ row }: any) => {
+        const label = row.original.labels?.find((l: any) => l.key === key)
+        return h('span', { class: 'text-neutral-600' }, label ? label.value : '-')
+      }
+    })
+  })
+  list.push(createdByColumn)
   if (hasPermission('asset-maintenance:update', 'asset-maintenance:delete')) {
     list.push({
       id: 'actions',
@@ -297,7 +358,14 @@ const handleDelete = async () => {
   }
 }
 
+watch(activeLabelColumns, (val) => {
+  localStorage.setItem(LABEL_STORAGE_KEY, JSON.stringify(val))
+}, { deep: true })
+
 onMounted(() => {
+  const saved = localStorage.getItem(LABEL_STORAGE_KEY)
+  if (saved) activeLabelColumns.value = JSON.parse(saved)
+  loadLabelKeys()
   fetchMaintenances()
 })
 </script>

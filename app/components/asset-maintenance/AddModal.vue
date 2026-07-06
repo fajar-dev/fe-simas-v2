@@ -52,6 +52,24 @@
           </UInput>
         </UFormField>
 
+        <!-- Labels -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-sm font-medium text-neutral-700">{{ $t('common.labels') }}</label>
+            <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addLabel">{{ $t('common.add') }}</UButton>
+          </div>
+          <div v-if="formLabels.length === 0" class="text-sm text-neutral-400 py-3 text-center border border-dashed border-neutral-200 rounded-lg">
+            {{ $t('pages.asset.create.noLabels') }}
+          </div>
+          <div v-else class="space-y-2">
+            <div v-for="(label, index) in formLabels" :key="index" class="flex items-center gap-2">
+              <UInput v-model="label.key" placeholder="Key" class="w-full" />
+              <UInput v-model="label.value" placeholder="Value" class="w-full" />
+              <UButton icon="i-lucide-trash" color="error" variant="soft" size="sm" square @click="formLabels.splice(index, 1)" />
+            </div>
+          </div>
+        </div>
+
         <!-- Reusable Attachment Manager -->
         <AttachmentManager
           v-model="uploadedAttachments"
@@ -99,6 +117,8 @@ const isLoadingAssets = ref(false)
 const assetOptions = ref<{ label: string; value: number }[]>([])
 const selectedAsset = ref<{ label: string; value: number } | undefined>(undefined)
 const uploadedAttachments = ref<Attachment[]>([])
+const formLabels = ref<{ key: string; value: string }[]>([])
+const addLabel = () => formLabels.value.push({ key: '', value: '' })
 
 const schema = z.object({
   assetId: z.number(),
@@ -156,12 +176,14 @@ const resetForm = () => {
   form.attachmentIds = []
   selectedAsset.value = undefined
   uploadedAttachments.value = []
+  formLabels.value = []
 }
 
 const handleSubmit = async () => {
   isSubmitting.value = true
   try {
-    const response = await assetMaintenanceService.create(form)
+    const filteredLabels = formLabels.value.filter(l => l.key.trim() && l.value.trim())
+    const response = await assetMaintenanceService.create({ ...form, labels: filteredLabels })
     if (response.success) {
       toast.add({
         title: t('component.assetMaintenance.addModal.success'),
