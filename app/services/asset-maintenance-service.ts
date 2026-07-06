@@ -81,6 +81,15 @@ export class AssetMaintenanceService {
             return handleServiceError(error)
         }
     }
+
+    async getLabelKeys(assetId?: number): Promise<ApiResponse<string[]>> {
+        let url = `/asset-maintenance/label-keys`
+        if (assetId) url += `?assetId=${assetId}`
+        const response = await apiService.client.get<ApiResponse<string[]>>(
+            url, this.authHeaders
+        )
+        return response.data
+    }
 }
 
 export const assetMaintenanceService = new AssetMaintenanceService()

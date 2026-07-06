@@ -65,7 +65,12 @@
     "model": "Model",
     "createdAt": "Dibuat Pada",
     "updatedAt": "Diperbarui Pada",
-    "submit": "Kirim"
+    "submit": "Kirim",
+    "labels": "Label",
+    "customLabels": "Label Kustom",
+    "addLabel": "Tambah Label",
+    "labelKey": "Kunci",
+    "labelValue": "Nilai"
   },
 
   "nav": {

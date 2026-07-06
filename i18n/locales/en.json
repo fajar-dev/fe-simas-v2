@@ -65,7 +65,12 @@
     "model": "Model",
     "createdAt": "Created At",
     "updatedAt": "Updated At",
-    "submit": "Submit"
+    "submit": "Submit",
+    "labels": "Labels",
+    "customLabels": "Custom Labels",
+    "addLabel": "Add Label",
+    "labelKey": "Key",
+    "labelValue": "Value"
   },
 
   "nav": {
