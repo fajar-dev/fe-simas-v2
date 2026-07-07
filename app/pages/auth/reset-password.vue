@@ -157,7 +157,7 @@ const resetSchema = z.object({
 
 // Validate token on mount
 onMounted(async () => {
-  if (!token.value || !email.value) {
+  if (!token.value) {
     toast.add({
       title: t('pages.auth.resetPassword.backToLogin'),
       icon: 'i-lucide-circle-x',
@@ -168,7 +168,7 @@ onMounted(async () => {
   }
 
   try {
-    await authService.validateResetPassword(email.value, token.value)
+    await authService.validateResetPassword(token.value)
     isValidating.value = false
   } catch {
     toast.add({
