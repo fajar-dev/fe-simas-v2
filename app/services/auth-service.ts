@@ -103,9 +103,9 @@ export class AuthService {
         }
     }
 
-    async validateResetPassword(email: string, token: string): Promise<ApiResponse<null>> {
+    async validateResetPassword(token: string): Promise<ApiResponse<null>> {
         try {
-            const response = await apiService.client.get<ApiResponse<null>>('/auth/validate-reset-token?email=' + email + '&token=' + token)
+            const response = await apiService.client.get<ApiResponse<null>>('/auth/validate-reset-token?token=' + token)
             return response.data
         } catch (error: any) {
             return handleServiceError(error)
