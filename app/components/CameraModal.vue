@@ -68,6 +68,9 @@
 
 <script setup lang="ts">
 const { t } = useI18n()
+const props = defineProps<{
+  watermark?: boolean
+}>()
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ captured: [file: File] }>()
 
@@ -162,7 +165,36 @@ function capture() {
   canvas.width = target
   canvas.height = target
   const ctx = canvas.getContext('2d')
-  if (ctx) ctx.drawImage(video, sx, sy, size, size, 0, 0, target, target)
+  if (ctx) {
+    ctx.drawImage(video, sx, sy, size, size, 0, 0, target, target)
+
+    // Add Watermark if enabled
+    if (props.watermark) {
+      const timestamp = new Date().toLocaleString('id-ID', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      })
+
+      const fontSize = Math.floor(target * 0.035)
+      ctx.font = `bold ${fontSize}px sans-serif`
+      ctx.textAlign = 'right'
+      ctx.textBaseline = 'bottom'
+
+      // Text Shadow for readability
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'
+      ctx.shadowBlur = 4
+      ctx.shadowOffsetX = 2
+      ctx.shadowOffsetY = 2
+
+      // Draw text
+      ctx.fillStyle = 'white'
+      ctx.fillText(timestamp, target - 20, target - 20)
+    }
+  }
 
   canvas.toBlob((blob) => {
     if (!blob) return
