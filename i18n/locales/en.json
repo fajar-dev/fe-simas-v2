@@ -441,6 +441,16 @@
         "description": "Change the status of {count} selected assets",
         "submit": "Change Status",
         "success": "Status updated for {count} assets"
+      },
+      "holderWarning": {
+        "title": "Assets Have Active Holders",
+        "description": "The following assets still have active holders:",
+        "returnCheckbox": "Automatically return assets from active holders",
+        "holder": "Holder"
+      },
+      "notActiveWarning": {
+        "assignHolder": "Cannot assign holder: asset status is not \"active\"",
+        "relocate": "Cannot relocate: asset status is not \"active\""
       }
     },
 

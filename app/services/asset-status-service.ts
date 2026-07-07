@@ -7,12 +7,14 @@ export interface CreateAssetStatusPayload {
     assetId: number
     status: string
     note?: string | null
+    returnActiveHolders?: boolean
 }
 
 export interface BulkCreateAssetStatusPayload {
     assetIds: number[]
     status: string
     note?: string | null
+    returnActiveHolders?: boolean
 }
 
 export class AssetStatusService {

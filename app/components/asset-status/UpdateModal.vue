@@ -34,6 +34,27 @@
             :rows="3"
           />
         </UFormField>
+
+        <!-- Active Holder Warning -->
+        <div v-if="hasActiveHolder" class="rounded-lg border border-amber-200 bg-amber-50 p-3 space-y-2">
+          <div class="flex items-center gap-2 text-amber-700 font-medium text-sm">
+            <UIcon name="i-lucide-alert-triangle" class="size-4 shrink-0" />
+            {{ $t('component.assetStatus.holderWarning.title') }}
+          </div>
+          <div class="text-sm text-amber-600">
+            <div class="flex items-center gap-2 pl-1">
+              <UIcon name="i-lucide-user" class="size-3.5 shrink-0 text-amber-500" />
+              <span>
+                <span class="font-medium">{{ asset.activeHolder?.employee?.name }}</span>
+                <span v-if="asset.activeHolder?.employee?.jobPosition" class="text-amber-500"> — {{ asset.activeHolder.employee.jobPosition }}</span>
+              </span>
+            </div>
+          </div>
+          <label class="flex items-start gap-2 pt-1 cursor-pointer">
+            <UCheckbox v-model="state.returnActiveHolders" />
+            <span class="text-sm text-amber-700">{{ $t('component.assetStatus.holderWarning.returnCheckbox') }}</span>
+          </label>
+        </div>
       </UForm>
     </template>
 
@@ -59,17 +80,20 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import { assetStatusService } from '~/services/asset-status-service'
+import type { Asset } from '~/types/asset'
 
 const { t } = useI18n()
 
 const props = defineProps<{
-  assetId: number
+  asset: Asset
 }>()
 
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ created: [] }>()
 
 const statusOptions = getStatusOptions()
+
+const hasActiveHolder = computed(() => !!props.asset.activeHolder)
 
 const schema = z.object({
   status: z.string().min(1, t('component.assetStatus.updateModal.statusRequired')),
@@ -79,6 +103,7 @@ const schema = z.object({
 const state = reactive({
   status: '',
   note: '',
+  returnActiveHolders: false,
 })
 
 const saving = ref(false)
@@ -88,9 +113,10 @@ const onSubmit = async () => {
   saving.value = true
   try {
     const response = await assetStatusService.create({
-      assetId: props.assetId,
+      assetId: props.asset.id,
       status: state.status!,
       note: state.note || null,
+      returnActiveHolders: state.returnActiveHolders || undefined,
     })
     if (response.success) {
       toast.add({ title: t('component.assetStatus.updateModal.success'), color: 'success', icon: 'i-lucide-circle-check' })
@@ -106,6 +132,7 @@ watch(open, (val) => {
   if (val) {
     state.status = ''
     state.note = ''
+    state.returnActiveHolders = false
   }
 })
 </script>
