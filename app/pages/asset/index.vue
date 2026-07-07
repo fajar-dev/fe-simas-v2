@@ -178,14 +178,14 @@
     <AssetStatusUpdateModal
       v-if="selectedAsset"
       v-model="showStatusModal"
-      :asset-id="selectedAsset.id"
+      :asset="selectedAsset"
       @created="fetchAssets"
     />
 
     <!-- Bulk Change Status Modal -->
     <AssetStatusBulkUpdateModal
       v-model="showBulkStatusModal"
-      :asset-ids="selectedIds"
+      :assets="selectedAssets"
       @created="onBulkStatusCreated"
     />
 
@@ -300,6 +300,7 @@ const printCodeAssets = ref<Asset[]>([])
 const selectedIds = ref<number[]>([])
 
 const activeFilterCount = computed(() => Object.keys(activeFilters.value).length)
+const selectedAssets = computed(() => data.value.filter(a => selectedIds.value.includes(a.id)))
 
 // Pagination meta
 const meta = reactive({

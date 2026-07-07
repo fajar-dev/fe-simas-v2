@@ -441,6 +441,16 @@
         "description": "Ubah status dari {count} aset yang dipilih",
         "submit": "Ubah Status",
         "success": "Status diperbarui untuk {count} aset"
+      },
+      "holderWarning": {
+        "title": "Aset Memiliki Pemegang Aktif",
+        "description": "Aset berikut masih memiliki pemegang aktif:",
+        "returnCheckbox": "Kembalikan aset dari pemegang aktif secara otomatis",
+        "holder": "Pemegang"
+      },
+      "notActiveWarning": {
+        "assignHolder": "Tidak dapat menetapkan pemegang: status aset bukan \"active\"",
+        "relocate": "Tidak dapat merelokasi: status aset bukan \"active\""
       }
     },
 

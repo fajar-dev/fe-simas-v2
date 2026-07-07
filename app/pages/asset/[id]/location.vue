@@ -15,15 +15,21 @@
         table-class="min-w-[600px]"
       >
         <template #actions v-if="hasPermission('asset-location:create')">
-          <UButton
-            class="w-full lg:w-auto justify-center"
-            color="primary"
-            variant="solid"
-            icon="i-lucide-map-pin"
-            @click="() => { showAddModal = true }"
+          <UTooltip
+            :text="isAssetNotActive ? $t('component.assetStatus.notActiveWarning.relocate') : ''"
+            :prevent="!isAssetNotActive"
           >
-            {{ $t('pages.asset.location.relocateAsset') }}
-          </UButton>
+            <UButton
+              class="w-full lg:w-auto justify-center"
+              color="primary"
+              variant="solid"
+              icon="i-lucide-map-pin"
+              :disabled="isAssetNotActive"
+              @click="() => { showAddModal = true }"
+            >
+              {{ $t('pages.asset.location.relocateAsset') }}
+            </UButton>
+          </UTooltip>
         </template>
       </DataTable>
 
@@ -52,6 +58,13 @@ definePageMeta({
 const route = useRoute()
 const assetId = Number(route.params.id)
 const { hasPermission } = useAuth()
+
+// Inject parent asset state to check last status
+const { asset: parentAssetRef } = inject('assetState') as { asset: Ref<import('~/types/asset').Asset | null> }
+const isAssetNotActive = computed(() => {
+  const status = parentAssetRef.value?.lastStatus?.status
+  return !!status && status !== 'active'
+})
 
 const UButton = resolveComponent('UButton')
 const UAvatar = resolveComponent('UAvatar')

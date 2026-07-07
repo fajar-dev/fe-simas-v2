@@ -291,7 +291,7 @@
     <AssetLogDrawer v-model:open="showLogDrawer" :asset-id="assetId" />
 
     <!-- Status Update Modal -->
-    <AssetStatusUpdateModal v-if="asset" v-model="showStatusModal" :asset-id="assetId" @created="onStatusCreated" />
+    <AssetStatusUpdateModal v-if="asset" v-model="showStatusModal" :asset="asset" @created="onStatusCreated" />
 
     <!-- Print Code Modal -->
     <AssetPrintCodeModal v-if="asset" v-model="showPrintCodeModal" :assets="[asset]" />

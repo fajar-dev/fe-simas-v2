@@ -16,17 +16,23 @@
       >
         <template #actions>
           <!-- Context-sensitive action button: Assign if available, Return if assigned -->
-          <UButton
+          <UTooltip
             v-if="!activeHolder && hasPermission('asset-holder:create')"
-            class="w-full lg:w-auto justify-center"
-            color="primary"
-            variant="solid"
-            icon="i-lucide-user-plus"
-            :loading="isLoadingActive"
-            @click="() => { showAssignModal = true }"
+            :text="isAssetNotActive ? $t('component.assetStatus.notActiveWarning.assignHolder') : ''"
+            :prevent="!isAssetNotActive"
           >
-            {{ $t('pages.asset.holder.assignAsset') }}
-          </UButton>
+            <UButton
+              class="w-full lg:w-auto justify-center"
+              color="primary"
+              variant="solid"
+              icon="i-lucide-user-plus"
+              :loading="isLoadingActive"
+              :disabled="isAssetNotActive"
+              @click="() => { showAssignModal = true }"
+            >
+              {{ $t('pages.asset.holder.assignAsset') }}
+            </UButton>
+          </UTooltip>
           <UButton
             v-if="activeHolder && hasPermission('asset-holder:return')"
             class="w-full lg:w-auto justify-center"
@@ -73,6 +79,13 @@ definePageMeta({
 const route = useRoute()
 const assetId = Number(route.params.id)
 const { hasPermission } = useAuth()
+
+// Inject parent asset state to check last status
+const { asset: parentAssetRef } = inject('assetState') as { asset: Ref<import('~/types/asset').Asset | null> }
+const isAssetNotActive = computed(() => {
+  const status = parentAssetRef.value?.lastStatus?.status
+  return !!status && status !== 'active'
+})
 
 const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')
