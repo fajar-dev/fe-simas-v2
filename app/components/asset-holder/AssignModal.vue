@@ -112,10 +112,6 @@ const schema = z.object({
   assignNote: z.string().optional().or(z.literal('')),
 })
 
-const getLocalDatetimeString = () => {
-  return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
-}
-
 const form = reactive({
   assetId: undefined as unknown as number,
   employeeId: undefined as unknown as number,

@@ -396,10 +396,6 @@ const uploadedAssetAttachments = ref<Attachment[]>([])
 // ── Schema & Form ───────────────────────────────────────────────────────────
 const schema = assetSchema.pick({ categoryId: true, name: true, subCategoryId: true, brand: true, model: true, price: true, purchaseDate: true, description: true })
 
-const getLocalDatetimeString = () => {
-  return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
-}
-
 const form = reactive<Omit<AssetPayload, 'code' | 'bleTagMac'> & { categoryId: number } & {
   employeeId?: number | null
   assignedDate?: string

@@ -64,6 +64,22 @@ export const formatFileSize = (bytes: number) => {
   return `${(bytes / Math.pow(1024, i)).toFixed(i === 0 ? 0 : 1)} ${units[i]}`
 }
 
+// Current local time as a datetime-local input value ("YYYY-MM-DDTHH:mm")
+export const getLocalDatetimeString = () => {
+  return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+}
+
+// Icon + NuxtUI badge color for an attachment based on its mime type
+export const getAttachmentBadgeTheme = (mimeType: string): { icon: string, color: BadgeColor } => {
+  if (!mimeType) return { icon: 'i-lucide-file', color: 'neutral' }
+  const type = mimeType.toLowerCase()
+  if (type.startsWith('image/')) return { icon: 'i-lucide-image', color: 'success' }
+  if (type.includes('pdf')) return { icon: 'i-lucide-file-text', color: 'error' }
+  if (type.includes('word') || type.includes('officedocument') || type.includes('excel') || type.includes('sheet') || type.includes('powerpoint') || type.includes('presentation')) return { icon: 'i-lucide-file-text', color: 'primary' }
+  if (type.includes('zip') || type.includes('rar') || type.includes('compressed') || type.includes('tar') || type.includes('gzip')) return { icon: 'i-lucide-archive', color: 'warning' }
+  return { icon: 'i-lucide-file', color: 'neutral' }
+}
+
 // Icon + background classes for an attachment based on its mime type
 export const getAttachmentTheme = (mimeType: string) => {
   const type = (mimeType || '').toLowerCase()
