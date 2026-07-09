@@ -622,10 +622,7 @@
         "submit": "Kirim Link Reset",
         "backToLogin": "Kembali ke Halaman Masuk",
         "success": "Link reset telah dikirim ke email Anda!",
-        "emailRequired": "Email wajib diisi",
-        "checkEmail": "Periksa email Anda",
-        "checkEmailDesc": "Kami telah mengirimkan link reset password ke alamat email Anda. Silakan periksa kotak masuk Anda.",
-        "resend": "Kirim Ulang Email"
+        "emailRequired": "Email wajib diisi"
       },
       "resetPassword": {
         "title": "Reset Password",
@@ -636,16 +633,10 @@
         "confirmPasswordPlaceholder": "Konfirmasi password baru Anda",
         "submit": "Reset Password",
         "success": "Password berhasil direset!",
-        "successTitle": "Password Berhasil Direset",
-        "successDesc": "Anda sekarang dapat masuk dengan password baru Anda.",
-        "signIn": "Masuk",
         "backToLogin": "Kembali ke Halaman Masuk",
         "passwordRequired": "Password wajib diisi",
         "passwordMin": "Password minimal 8 karakter",
-        "confirmRequired": "Silakan konfirmasi password Anda",
-        "passwordMismatch": "Password tidak cocok",
-        "invalidLink": "Link reset password tidak valid atau sudah kedaluwarsa",
-        "validating": "Memvalidasi link reset..."
+        "passwordMismatch": "Password tidak cocok"
       }
     },
     "dashboard": {
