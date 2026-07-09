@@ -89,6 +89,7 @@ const isAssetNotActive = computed(() => {
 
 const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')
+const NuxtLink = resolveComponent('NuxtLink')
 
 // State
 const activeHolder = ref<AssetHolder | null>(null)
@@ -178,6 +179,31 @@ const columns: TableColumn<AssetHolder>[] = [
           h('span', { class: 'text-neutral-500 text-xs' }, employee.employeeId)
         ])
       ])
+    }
+  },
+  {
+    id: 'source',
+    header: t('pages.asset.holder.columnSource'),
+    cell: ({ row }) => {
+      const handover = row.original.handover
+      if (handover) {
+        return h(
+          NuxtLink,
+          { to: `/handover/${handover.id}` },
+          () => h(UBadge, {
+            color: 'primary',
+            variant: 'subtle',
+            icon: 'i-lucide-arrow-left-right',
+            label: t('pages.asset.holder.handoverSource'),
+            class: 'cursor-pointer'
+          })
+        )
+      }
+      return h(UBadge, {
+        color: 'neutral',
+        variant: 'subtle',
+        label: t('pages.asset.holder.manualSource')
+      })
     }
   },
   {

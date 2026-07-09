@@ -864,6 +864,9 @@
         "columnAttachments": "Attachments",
         "columnAssignBy": "Assign By",
         "columnReturnBy": "Return By",
+        "columnSource": "Source",
+        "handoverSource": "Handover",
+        "manualSource": "Manual",
         "system": "System"
       },
       "location": {

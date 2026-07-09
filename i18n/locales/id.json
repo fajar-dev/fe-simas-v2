@@ -873,6 +873,9 @@
         "columnAttachments": "Lampiran",
         "columnAssignBy": "Ditetapkan Oleh",
         "columnReturnBy": "Dikembalikan Oleh",
+        "columnSource": "Sumber",
+        "handoverSource": "Serah Terima",
+        "manualSource": "Manual",
         "system": "Sistem"
       },
       "location": {

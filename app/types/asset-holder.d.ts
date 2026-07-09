@@ -8,6 +8,7 @@ export interface AssetHolder {
   returnedDate: string | null
   assignNote: string | null
   returnNote: string | null
+  handoverId: number | null
   createdAt: string
   updatedAt: string
   asset: {
@@ -33,6 +34,15 @@ export interface AssetHolder {
     id: number
     name: string
     photo: string | null
+  } | null
+  handover: {
+    id: number
+    status: string
+    transactionType: string
+    category: string
+    purpose: string | null
+    estimatedReturnDate: string | null
+    createdAt: string
   } | null
   attachments: Attachment[]
 }
