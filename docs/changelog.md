@@ -6,9 +6,19 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 
 ---
 
-## [Unreleased] — 2026-07-09
+## [Unreleased] — 2026-07-10
 
 ### Added
+- **Serah terima pengembalian (return handover)**: form create kini type-aware — untuk `return`, hanya aset yang active holder-nya = karyawan penyerah terpilih yang bisa dipindai. Halaman detail menampilkan tautan handover asal ("Dikembalikan Dari").
+- **Blokir ubah status saat aset terikat handover**: modal Ubah Status (single & bulk) menampilkan alert merah + submit disabled bila aset dipegang via serah terima atau sedang dalam pending handover; tombol Return manual di-disable untuk holder dari serah terima. Composable baru `usePendingHandoverAssets`.
+- **Redesign halaman detail handover** agar konsisten dengan gaya detail lain (satu `UCard`, grid field standar, chip lampiran, card Items terpisah).
+
+### Changed
+- **Rename `AssetHandover` → `Handover`** (generik untuk reuse modul stok): `handover-service.ts`, `types/handover.d.ts`, namespace i18n `pages.handover` + `nav.handover`, permission `handover:*`, endpoint `/handover`.
+- **Cleanup type response (repo-wide)**: hapus scalar FK bila objek lengkap sudah ada (mis. `.assetId` → `.asset?.id`, `.roleId` → `.role?.id`); holder pakai `assignHandover`/`returnHandover`.
+- **Copy handover digeneralisasi** (bukan khusus aset): judul "Serah Terima Aset" → "Serah Terima" / "Asset Handover" → "Handover", "Scan Aset" → "Scan Barang"/"Scan Item", penyebut "Aset/Asset" → "Barang/Item"; key `form.validation.assetRequired` → `itemRequired`.
+
+### Added (sebelumnya)
 - **Cancel Asset Handover**: aksi batalkan handover pada halaman list (dropdown) & detail — hanya muncul untuk handover `pending` dan bila punya permission `asset-handover:cancel`. Konfirmasi lewat modal `HandoverCancelModal`, plus badge & filter status `cancel`.
 - **Asset Holder — sumber handover**: kolom "Source" pada riwayat holder menandai apakah record berasal dari serah terima (badge tertaut ke detail handover) atau manual.
 - **Asset Holder — disable Assign saat pending handover**: tombol Assign kini di-disable di frontend (dengan tooltip alasan) bila aset sedang dalam handover `pending`, seperti perilaku saat aset tidak aktif.

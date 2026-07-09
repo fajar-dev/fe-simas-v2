@@ -53,8 +53,8 @@ export interface Asset {
   hasLocation: boolean
   activeHolder?: {
     id: number
-    employeeId: number
     assignedDate: string
+    assignHandoverId: number | null
     employee: {
       id: number
       name: string

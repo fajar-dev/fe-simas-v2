@@ -74,7 +74,7 @@
     "users": "Pengguna",
     "roles": "Role",
     "searchAsset": "Cari Aset",
-    "assetHandover": "Serah Terima",
+    "handover": "Serah Terima",
     "feedback": "Feedback",
     "capturing": "Menangkap..."
   },
@@ -413,12 +413,23 @@
         "description": "Aset berikut masih memiliki pemegang aktif:",
         "returnCheckbox": "Kembalikan aset dari pemegang aktif secara otomatis"
       },
+      "handoverHolderBlock": {
+        "title": "Tidak Dapat Mengubah Status",
+        "description": "Aset berikut dipegang lewat serah terima dan harus dikembalikan melalui serah terima pengembalian sebelum statusnya bisa diubah:"
+      },
+      "pendingHandoverBlock": {
+        "title": "Tidak Dapat Mengubah Status",
+        "description": "Aset berikut sedang dalam serah terima yang pending. Selesaikan atau batalkan serah terima tersebut sebelum mengubah statusnya:"
+      },
       "notActiveWarning": {
         "assignHolder": "Tidak dapat menetapkan pemegang: status aset bukan \"active\"",
         "relocate": "Tidak dapat merelokasi: status aset bukan \"active\""
       },
       "pendingHandoverWarning": {
         "assignHolder": "Tidak dapat menetapkan pemegang: aset sedang dalam serah terima yang pending"
+      },
+      "handoverReturnWarning": {
+        "returnAsset": "Aset ini ditetapkan lewat serah terima dan harus dikembalikan melalui serah terima pengembalian"
       }
     },
 
@@ -1050,9 +1061,9 @@
       "noEmployeeLinked": "Akun Anda belum terhubung dengan karyawan. Hubungi admin.",
       "noBorrowedBooks": "Anda tidak memiliki buku yang sedang dipinjam"
     },
-    "assetHandover": {
-      "title": "Serah Terima Aset",
-      "description": "Kelola dokumen serah terima aset",
+    "handover": {
+      "title": "Serah Terima",
+      "description": "Kelola dokumen serah terima",
       "addHandover": "Buat Serah Terima",
       "searchPlaceholder": "Cari...",
       "columnDate": "Tanggal",
@@ -1063,12 +1074,11 @@
       "columnStatus": "Status",
       "columnCreatedBy": "Dibuat Oleh",
       "columnAction": "Aksi",
-      "detailTitle": "Detail Serah Terima Aset",
-      "detailDescription": "Informasi lengkap dokumen serah terima aset.",
-      "docInfo": "Informasi Dokumen",
-      "itemInfo": "Daftar Aset & Penerima",
+      "detailTitle": "Detail Serah Terima",
+      "detailDescription": "Informasi lengkap dokumen serah terima.",
+      "parentHandover": "Dikembalikan Dari",
+      "itemInfo": "Daftar Barang & Penerima",
       "attachments": "Lampiran",
-      "noAttachments": "Tidak ada lampiran",
       "statusPending": "Menunggu Persetujuan",
       "statusApprove": "Disetujui",
       "statusReject": "Ditolak",
@@ -1092,8 +1102,8 @@
         "receivedBy": "Diterima Oleh",
         "receivedByPlaceholder": "Pilih karyawan penerima",
         "validation": {
-          "itemsRequired": "Minimal harus ada satu item aset",
-          "assetRequired": "Aset wajib dipilih",
+          "itemsRequired": "Minimal harus ada satu item",
+          "itemRequired": "Barang wajib dipilih",
           "handedOverByRequired": "Karyawan penyerah wajib dipilih",
           "receivedByRequired": "Karyawan penerima wajib dipilih"
         }
@@ -1103,21 +1113,23 @@
         "return": "Pengembalian"
       },
       "itemForm": {
-        "asset": "Aset",
         "note": "Keterangan",
         "notePlaceholder": "Masukkan keterangan item (opsional)",
         "searchEmployees": "Cari penerima..."
       },
       "scan": {
-        "button": "Scan Aset",
-        "empty": "Belum ada item. Scan aset untuk menambahkan.",
-        "notFound": "Aset tidak ditemukan.",
-        "holderNotEnabled": "Aset ini tidak mendukung fitur pemegang (holder).",
-        "alreadyHasHolder": "Aset ini sudah memiliki pemegang aktif.",
-        "notActive": "Aset ini tidak berstatus aktif.",
-        "alreadyAdded": "Aset ini sudah ditambahkan.",
-        "inPendingHandover": "Aset ini sudah ada di serah terima yang pending.",
-        "added": "Aset ditambahkan."
+        "button": "Scan Barang",
+        "empty": "Belum ada item. Scan barang untuk menambahkan.",
+        "notFound": "Barang tidak ditemukan.",
+        "holderNotEnabled": "Barang ini tidak mendukung fitur pemegang (holder).",
+        "alreadyHasHolder": "Barang ini sudah memiliki pemegang aktif.",
+        "notActive": "Barang ini tidak berstatus aktif.",
+        "alreadyAdded": "Barang ini sudah ditambahkan.",
+        "inPendingHandover": "Barang ini sudah ada di serah terima yang pending.",
+        "selectHandedOverFirst": "Pilih karyawan yang mengembalikan terlebih dahulu.",
+        "notHeld": "Barang ini sedang tidak dipegang siapa pun.",
+        "notHeldByEmployee": "Barang ini tidak dipegang oleh karyawan yang dipilih.",
+        "added": "Barang ditambahkan."
       }
     }
   }

@@ -1,56 +1,92 @@
 <template>
   <div class="space-y-6">
-    <Header :title="$t('pages.assetHandover.createTitle')" :description="$t('pages.assetHandover.createDescription')" />
+    <Header
+      :title="$t('pages.handover.createTitle')"
+      :description="$t('pages.handover.createDescription')"
+    />
 
     <UCard class="w-full">
       <div class="w-full mb-4">
-        <UButton :label="$t('common.back')" to="/handover" color="neutral" icon="i-lucide-arrow-left" variant="link" />
+        <UButton
+          :label="$t('common.back')"
+          to="/handover"
+          color="neutral"
+          icon="i-lucide-arrow-left"
+          variant="link"
+        />
       </div>
 
-      <UForm id="create-handover-form" :schema="schema" :state="form" @submit="handleSubmit">
+      <UForm
+        id="create-handover-form"
+        :schema="schema"
+        :state="form"
+        @submit="handleSubmit"
+      >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
           <!-- ═══ Column 1: Document Metadata ═══ -->
           <div class="space-y-4">
             <!-- Handed Over By Employee Select -->
-            <UFormField :label="$t('pages.assetHandover.form.handedOverBy')" name="handedOverById" required>
+            <UFormField
+              :label="$t('pages.handover.form.handedOverBy')"
+              name="handedOverById"
+              required
+            >
               <USelectMenu
                 v-model="selectedHandingOverEmployee"
                 :items="employeeOptions"
                 :avatar="selectedHandingOverEmployee?.avatar"
                 searchable
-                :searchable-placeholder="$t('pages.assetHandover.itemForm.searchEmployees')"
-                :placeholder="$t('pages.assetHandover.form.handedOverByPlaceholder')"
+                :searchable-placeholder="$t('pages.handover.itemForm.searchEmployees')"
+                :placeholder="$t('pages.handover.form.handedOverByPlaceholder')"
                 :loading="isLoadingEmployees"
                 class="w-full"
               >
                 <template #item="{ item }">
-                  <UAvatar :src="item.avatar?.src" :alt="item.label" size="2xs" loading="lazy" />
+                  <UAvatar
+                    :src="item.avatar?.src"
+                    :alt="item.label"
+                    size="2xs"
+                    loading="lazy"
+                  />
                   <span>{{ item.label }}</span>
                 </template>
               </USelectMenu>
             </UFormField>
 
             <!-- Received By Employee Select -->
-            <UFormField :label="$t('pages.assetHandover.form.receivedBy')" name="receivedById" required>
+            <UFormField
+              :label="$t('pages.handover.form.receivedBy')"
+              name="receivedById"
+              required
+            >
               <USelectMenu
                 v-model="selectedEmployee"
                 :items="employeeOptions"
                 :avatar="selectedEmployee?.avatar"
                 searchable
-                :searchable-placeholder="$t('pages.assetHandover.itemForm.searchEmployees')"
-                :placeholder="$t('pages.assetHandover.form.receivedByPlaceholder')"
+                :searchable-placeholder="$t('pages.handover.itemForm.searchEmployees')"
+                :placeholder="$t('pages.handover.form.receivedByPlaceholder')"
                 :loading="isLoadingEmployees"
                 class="w-full"
               >
                 <template #item="{ item }">
-                  <UAvatar :src="item.avatar?.src" :alt="item.label" size="2xs" loading="lazy" />
+                  <UAvatar
+                    :src="item.avatar?.src"
+                    :alt="item.label"
+                    size="2xs"
+                    loading="lazy"
+                  />
                   <span>{{ item.label }}</span>
                 </template>
               </USelectMenu>
             </UFormField>
 
             <!-- Transaction Type -->
-            <UFormField :label="$t('pages.assetHandover.form.transactionType')" name="transactionType" required>
+            <UFormField
+              :label="$t('pages.handover.form.transactionType')"
+              name="transactionType"
+              required
+            >
               <USelect
                 v-model="form.transactionType"
                 :items="transactionTypeOptions"
@@ -59,8 +95,16 @@
             </UFormField>
 
             <!-- Note -->
-            <UFormField :label="$t('pages.assetHandover.form.note')" name="note">
-              <UTextarea v-model="form.note" :placeholder="$t('pages.assetHandover.form.notePlaceholder')" class="w-full" :rows="3" />
+            <UFormField
+              :label="$t('pages.handover.form.note')"
+              name="note"
+            >
+              <UTextarea
+                v-model="form.note"
+                :placeholder="$t('pages.handover.form.notePlaceholder')"
+                class="w-full"
+                :rows="3"
+              />
             </UFormField>
           </div>
 
@@ -68,8 +112,11 @@
           <div class="space-y-4">
             <div class="flex items-center justify-between border-b border-neutral-100 pb-2">
               <h3 class="text-md font-semibold text-neutral-800 flex items-center gap-1.5">
-                <UIcon name="i-lucide-box" class="text-primary w-5 h-5" />
-                {{ $t('pages.assetHandover.form.items') }}
+                <UIcon
+                  name="i-lucide-box"
+                  class="text-primary w-5 h-5"
+                />
+                {{ $t('pages.handover.form.items') }}
               </h3>
 
               <UButton
@@ -81,7 +128,7 @@
                 :loading="isLookingUp"
                 @click="() => { showScanner = true }"
               >
-                {{ $t('pages.assetHandover.scan.button') }}
+                {{ $t('pages.handover.scan.button') }}
               </UButton>
             </div>
 
@@ -100,11 +147,14 @@
               v-if="form.items.length === 0"
               class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-neutral-200 rounded-lg"
             >
-              <UIcon name="i-lucide-scan-line" class="w-10 h-10 text-neutral-300 mb-3" />
-              <span class="text-sm text-neutral-500 mb-3">{{ $t('pages.assetHandover.scan.empty') }}</span>
+              <UIcon
+                name="i-lucide-scan-line"
+                class="w-10 h-10 text-neutral-300 mb-3"
+              />
+              <span class="text-sm text-neutral-500 mb-3">{{ $t('pages.handover.scan.empty') }}</span>
               <UButton
                 type="button"
-                :label="$t('pages.assetHandover.scan.button')"
+                :label="$t('pages.handover.scan.button')"
                 icon="i-lucide-scan-line"
                 color="neutral"
                 variant="outline"
@@ -115,7 +165,10 @@
             </div>
 
             <!-- Scanned Items Rows -->
-            <div v-else class="space-y-3">
+            <div
+              v-else
+              class="space-y-3"
+            >
               <div
                 v-for="(item, index) in form.items"
                 :key="item.assetId"
@@ -125,7 +178,13 @@
                 <div class="flex items-center justify-between border-b border-neutral-100 pb-2">
                   <div class="flex items-center gap-2 min-w-0">
                     <span class="text-xs font-semibold text-neutral-500 uppercase tracking-wider shrink-0">Item {{ index + 1 }}</span>
-                    <UBadge color="neutral" variant="subtle" size="sm">{{ item.code }}</UBadge>
+                    <UBadge
+                      color="neutral"
+                      variant="subtle"
+                      size="sm"
+                    >
+                      {{ item.code }}
+                    </UBadge>
                   </div>
                   <UButton
                     type="button"
@@ -147,8 +206,14 @@
                     class="w-9 h-9 object-cover rounded-lg border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0"
                     @click="item.image && openLightbox(item.image)"
                   />
-                  <div v-else class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                    <UIcon name="i-lucide-box" class="w-5 h-5 text-primary" />
+                  <div
+                    v-else
+                    class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"
+                  >
+                    <UIcon
+                      name="i-lucide-box"
+                      class="w-5 h-5 text-primary"
+                    />
                   </div>
                   <div class="min-w-0 flex-1">
                     <span class="text-sm font-semibold text-neutral-800 block truncate">{{ item.name }}</span>
@@ -157,8 +222,13 @@
                 </div>
 
                 <!-- Note (Keterangan) -->
-                <UFormField :label="$t('pages.assetHandover.itemForm.note')">
-                  <UTextarea v-model="item.note" :placeholder="$t('pages.assetHandover.itemForm.notePlaceholder')" class="w-full bg-white" :rows="3" />
+                <UFormField :label="$t('pages.handover.itemForm.note')">
+                  <UTextarea
+                    v-model="item.note"
+                    :placeholder="$t('pages.handover.itemForm.notePlaceholder')"
+                    class="w-full bg-white"
+                    :rows="3"
+                  />
                 </UFormField>
               </div>
             </div>
@@ -180,14 +250,18 @@
             color="primary"
             :loading="isSubmitting"
           >
-            {{ $t('pages.assetHandover.form.submit') }}
+            {{ $t('pages.handover.form.submit') }}
           </UButton>
         </div>
       </UForm>
     </UCard>
 
     <!-- Asset Scanner Modal -->
-    <AssetScannerModal v-model="showScanner" :auto-close="true" @scanned="onScanned" />
+    <AssetScannerModal
+      v-model="showScanner"
+      :auto-close="true"
+      @scanned="onScanned"
+    />
 
     <!-- Lightbox Modal -->
     <Lightbox />
@@ -196,7 +270,7 @@
 
 <script setup lang="ts">
 import { z } from 'zod'
-import { assetHandoverService } from '~/services/asset-handover-service'
+import { handoverService } from '~/services/handover-service'
 import { assetService } from '~/services/asset-service'
 import { employeeService } from '~/services/employee-service'
 
@@ -210,21 +284,21 @@ const { openLightbox } = useLightbox()
 
 // Options structures
 const transactionTypeOptions = computed(() =>
-  HANDOVER_TRANSACTION_TYPES.map(v => ({ label: t(`pages.assetHandover.types.${v}`), value: v }))
+  HANDOVER_TRANSACTION_TYPES.map(v => ({ label: t(`pages.handover.types.${v}`), value: v }))
 )
 
 // Form state
 const form = reactive({
-  transactionType: 'assign' as const,
+  transactionType: 'assign' as TransactionType,
   note: '',
   receivedById: undefined as unknown as number,
   handedOverById: undefined as unknown as number,
-  items: [] as { assetId: number; name: string; code: string; image: string | null; note: string }[]
+  items: [] as { assetId: number, name: string, code: string, image: string | null, note: string }[]
 })
 
 // Visual bindings for select menu states
-const selectedEmployee = ref<{ label: string; value: number; avatar?: any } | undefined>(undefined)
-const selectedHandingOverEmployee = ref<{ label: string; value: number; avatar?: any } | undefined>(undefined)
+const selectedEmployee = ref<{ label: string, value: number, avatar?: any } | undefined>(undefined)
+const selectedHandingOverEmployee = ref<{ label: string, value: number, avatar?: any } | undefined>(undefined)
 
 // Monitor employee selections and sync
 watch(selectedEmployee, (val) => {
@@ -244,6 +318,19 @@ const onScanned = (code: string) => {
   lookupAndAddAsset(code)
 }
 
+// Scanned assets depend on the transaction type and (for returns) the returning
+// employee, so reset the item list whenever either changes to avoid mismatches.
+watch(() => form.transactionType, () => {
+  form.items = []
+  lookupError.value = null
+})
+watch(() => form.handedOverById, () => {
+  if (form.transactionType === 'return') {
+    form.items = []
+    lookupError.value = null
+  }
+})
+
 const lookupAndAddAsset = async (rawCode: string) => {
   const serial = rawCode.trim()
   if (!serial || isLookingUp.value) return
@@ -255,14 +342,14 @@ const lookupAndAddAsset = async (rawCode: string) => {
     // Step 1: Check code exists & get ID
     const checkRes = await assetService.checkCode(serial)
     if (!checkRes.success || !checkRes.data?.exists || !checkRes.data?.id) {
-      lookupError.value = t('pages.assetHandover.scan.notFound')
+      lookupError.value = t('pages.handover.scan.notFound')
       return
     }
 
     // Step 2: Get full asset details
     const assetRes = await assetService.getById(checkRes.data.id)
     if (!assetRes.success || !assetRes.data) {
-      lookupError.value = t('pages.assetHandover.scan.notFound')
+      lookupError.value = t('pages.handover.scan.notFound')
       return
     }
 
@@ -270,31 +357,45 @@ const lookupAndAddAsset = async (rawCode: string) => {
 
     // Validate: holder feature must be enabled
     if (!asset.hasHolder) {
-      lookupError.value = t('pages.assetHandover.scan.holderNotEnabled')
+      lookupError.value = t('pages.handover.scan.holderNotEnabled')
       return
     }
 
-    // Validate: must not have active holder
-    if (asset.activeHolder) {
-      lookupError.value = t('pages.assetHandover.scan.alreadyHasHolder')
-      return
-    }
-
-    // Validate: last status must be active
-    if (asset.lastStatus?.status !== 'active') {
-      lookupError.value = t('pages.assetHandover.scan.notActive')
-      return
+    if (form.transactionType === 'return') {
+      // Return: only assets currently held by the returning employee can be scanned.
+      if (!form.handedOverById) {
+        lookupError.value = t('pages.handover.scan.selectHandedOverFirst')
+        return
+      }
+      if (!asset.activeHolder) {
+        lookupError.value = t('pages.handover.scan.notHeld')
+        return
+      }
+      if (asset.activeHolder.employee?.id !== form.handedOverById) {
+        lookupError.value = t('pages.handover.scan.notHeldByEmployee')
+        return
+      }
+    } else {
+      // Assign: only free, active assets can be scanned.
+      if (asset.activeHolder) {
+        lookupError.value = t('pages.handover.scan.alreadyHasHolder')
+        return
+      }
+      if (asset.lastStatus?.status !== 'active') {
+        lookupError.value = t('pages.handover.scan.notActive')
+        return
+      }
     }
 
     // Validate: not already added in this form
-    if (form.items.some((i) => i.assetId === asset.id)) {
-      lookupError.value = t('pages.assetHandover.scan.alreadyAdded')
+    if (form.items.some(i => i.assetId === asset.id)) {
+      lookupError.value = t('pages.handover.scan.alreadyAdded')
       return
     }
 
     // Validate: not tied to a pending handover
     if (pendingHandoverAssetIds.value.has(asset.id)) {
-      lookupError.value = t('pages.assetHandover.scan.inPendingHandover')
+      lookupError.value = t('pages.handover.scan.inPendingHandover')
       return
     }
 
@@ -307,7 +408,7 @@ const lookupAndAddAsset = async (rawCode: string) => {
     })
 
     toast.add({
-      title: t('pages.assetHandover.scan.added'),
+      title: t('pages.handover.scan.added'),
       color: 'success',
       icon: 'i-lucide-circle-check'
     })
@@ -324,18 +425,18 @@ const removeItemRow = (index: number) => {
 const schema = z.object({
   transactionType: z.enum(HANDOVER_TRANSACTION_TYPES),
   note: z.string().optional().or(z.literal('')),
-  receivedById: z.number().int().positive(t('pages.assetHandover.form.validation.receivedByRequired')),
-  handedOverById: z.number().int().positive(t('pages.assetHandover.form.validation.handedOverByRequired')),
+  receivedById: z.number().int().positive(t('pages.handover.form.validation.receivedByRequired')),
+  handedOverById: z.number().int().positive(t('pages.handover.form.validation.handedOverByRequired')),
   items: z.array(
     z.object({
-      assetId: z.number().int().positive(t('pages.assetHandover.form.validation.assetRequired')),
-      note: z.string().optional().nullable(),
+      assetId: z.number().int().positive(t('pages.handover.form.validation.itemRequired')),
+      note: z.string().optional().nullable()
     })
-  ).min(1, t('pages.assetHandover.form.validation.itemsRequired'))
+  ).min(1, t('pages.handover.form.validation.itemsRequired'))
 })
 
 // Dropdown data sourcing
-const employeeOptions = ref<{ label: string; value: number; avatar?: any }[]>([])
+const employeeOptions = ref<{ label: string, value: number, avatar?: any }[]>([])
 const pendingHandoverAssetIds = ref<Set<number>>(new Set())
 
 const isLoadingEmployees = ref(false)
@@ -346,7 +447,7 @@ const loadMasterData = async () => {
   isLoadingEmployees.value = true
   try {
     // 1. Fetch pending handover asset IDs to block them
-    const pendingHandoversRes = await assetHandoverService.getAll(1, 200, '', '', '', 'pending')
+    const pendingHandoversRes = await handoverService.getAll(1, 200, '', '', '', 'pending')
     if (pendingHandoversRes.success && pendingHandoversRes.data) {
       const ids = new Set<number>()
       pendingHandoversRes.data.forEach((h) => {
@@ -363,11 +464,13 @@ const loadMasterData = async () => {
       employeeOptions.value = empRes.data.map(e => ({
         label: `${e.name} (${e.employeeId})`,
         value: e.id,
-        avatar: e.photo ? {
-          src: e.photo,
-          alt: e.name,
-          loading: 'lazy' as const
-        } : undefined
+        avatar: e.photo
+          ? {
+              src: e.photo,
+              alt: e.name,
+              loading: 'lazy' as const
+            }
+          : undefined
       }))
     }
   } finally {
@@ -386,14 +489,14 @@ const handleSubmit = async () => {
       note: form.note || null,
       items: form.items.map(item => ({
         assetId: item.assetId,
-        note: item.note || null,
+        note: item.note || null
       }))
     }
 
-    const response = await assetHandoverService.create(payload)
+    const response = await handoverService.create(payload)
     if (response.success) {
       toast.add({
-        title: t('pages.assetHandover.form.successCreate'),
+        title: t('pages.handover.form.successCreate'),
         color: 'success',
         icon: 'i-lucide-circle-check'
       })

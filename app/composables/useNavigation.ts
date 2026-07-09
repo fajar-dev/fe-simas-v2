@@ -36,10 +36,10 @@ export const useNavigation = () => {
           permission: 'asset:read'
         },
         {
-          label: t('nav.assetHandover'),
+          label: t('nav.handover'),
           to: '/handover',
           icon: 'i-lucide-file-box',
-          permission: 'asset-handover:read'
+          permission: 'handover:read'
         },
       ]
     },

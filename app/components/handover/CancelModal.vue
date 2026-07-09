@@ -15,10 +15,10 @@
           </div>
           <div class="space-y-1.5">
             <h3 class="text-base font-medium text-neutral-900">
-              {{ $t('pages.assetHandover.cancelTitle') }}
+              {{ $t('pages.handover.cancelTitle') }}
             </h3>
             <p class="text-sm text-neutral-600">
-              {{ $t('pages.assetHandover.cancelConfirm') }}
+              {{ $t('pages.handover.cancelConfirm') }}
             </p>
           </div>
         </div>
@@ -39,7 +39,7 @@
             class="flex-1 justify-center"
             @click="$emit('confirm')"
           >
-            {{ $t('pages.assetHandover.cancel') }}
+            {{ $t('pages.handover.cancel') }}
           </UButton>
         </div>
       </UCard>

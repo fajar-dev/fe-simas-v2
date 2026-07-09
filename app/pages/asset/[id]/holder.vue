@@ -4,7 +4,7 @@
       <DataTable
         v-model:search="search"
         v-model:page="page"
-        v-model:perPage="perPage"
+        v-model:per-page="perPage"
         :data="historyData"
         :columns="columns"
         :loading="isLoadingHistory || isLoadingActive"
@@ -33,17 +33,23 @@
               {{ $t('pages.asset.holder.assignAsset') }}
             </UButton>
           </UTooltip>
-          <UButton
+          <UTooltip
             v-if="activeHolder && hasPermission('asset-holder:return')"
-            class="w-full lg:w-auto justify-center"
-            color="error"
-            variant="solid"
-            icon="i-lucide-arrow-left-right"
-            :loading="isLoadingActive"
-            @click="() => { showReturnModal = true }"
+            :text="$t('component.assetStatus.handoverReturnWarning.returnAsset')"
+            :prevent="!isManualReturnDisabled"
           >
-            {{ $t('pages.asset.holder.returnAsset') }}
-          </UButton>
+            <UButton
+              class="w-full lg:w-auto justify-center"
+              color="error"
+              variant="solid"
+              icon="i-lucide-arrow-left-right"
+              :loading="isLoadingActive"
+              :disabled="isManualReturnDisabled"
+              @click="() => { showReturnModal = true }"
+            >
+              {{ $t('pages.asset.holder.returnAsset') }}
+            </UButton>
+          </UTooltip>
         </template>
       </DataTable>
 
@@ -66,7 +72,7 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import { assetHolderService } from '~/services/asset-holder-service'
-import { assetHandoverService } from '~/services/asset-handover-service'
+import { handoverService } from '~/services/handover-service'
 import type { AssetHolder } from '~/types/asset-holder'
 import AssignModal from '~/components/asset-holder/AssignModal.vue'
 import ReturnModal from '~/components/asset-holder/ReturnModal.vue'
@@ -98,6 +104,9 @@ const assignDisabledReason = computed(() => {
   if (isInPendingHandover.value) return t('component.assetStatus.pendingHandoverWarning.assignHolder')
   return ''
 })
+
+// Holders created from an assign handover must be returned via a return handover, not manually.
+const isManualReturnDisabled = computed(() => !!activeHolder.value?.assignHandover)
 
 const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')
@@ -145,7 +154,7 @@ const fetchActiveHolder = async () => {
 const fetchPendingHandover = async () => {
   isLoadingPendingHandover.value = true
   try {
-    const res = await assetHandoverService.getAll(1, 200, '', '', '', 'pending')
+    const res = await handoverService.getAll(1, 200, '', '', '', 'pending')
     if (res.success && res.data) {
       isInPendingHandover.value = res.data.some(h => h.items.some(item => item.asset?.id === assetId))
     }
@@ -211,7 +220,7 @@ const columns: TableColumn<AssetHolder>[] = [
     id: 'source',
     header: t('pages.asset.holder.columnSource'),
     cell: ({ row }) => {
-      const handover = row.original.handover
+      const handover = row.original.assignHandover
       if (handover) {
         return h(
           NuxtLink,
@@ -267,7 +276,7 @@ const columns: TableColumn<AssetHolder>[] = [
       return h(
         'div',
         { class: 'flex flex-wrap gap-2 max-w-sm' },
-        attachments.map(att => {
+        attachments.map((att) => {
           const theme = getAttachmentBadgeTheme(att.mimeType)
           return h(
             'a',

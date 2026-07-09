@@ -166,7 +166,7 @@ const loadAssets = async () => {
       
       // Populate selectedAsset from props.maintenance after assets are loaded
       if (props.maintenance) {
-        const matched = assetOptions.value.find(o => o.value === props.maintenance?.assetId)
+        const matched = assetOptions.value.find(o => o.value === props.maintenance?.asset?.id)
         if (matched) selectedAsset.value = matched
       }
     }
@@ -178,7 +178,7 @@ const loadAssets = async () => {
 const populateForm = () => {
   if (!props.maintenance) return
 
-  form.assetId = props.maintenance.assetId
+  form.assetId = props.maintenance.asset?.id ?? 0
   form.date = props.maintenance.date
   form.note = props.maintenance.note || ''
   form.cost = props.maintenance.cost ?? 0
@@ -187,7 +187,7 @@ const populateForm = () => {
   formLabels.value = (props.maintenance.labels || []).map(l => ({ key: l.key, value: l.value }))
 
   if (!props.lockAssetId) {
-    const matched = assetOptions.value.find(o => o.value === props.maintenance?.assetId)
+    const matched = assetOptions.value.find(o => o.value === props.maintenance?.asset?.id)
     selectedAsset.value = matched || undefined
   }
 }

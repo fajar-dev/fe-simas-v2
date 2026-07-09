@@ -2,13 +2,10 @@ import type { Attachment } from "./attachment"
 
 export interface AssetHolder {
   id: number
-  assetId: number
-  employeeId: number
   assignedDate: string
   returnedDate: string | null
   assignNote: string | null
   returnNote: string | null
-  handoverId: number | null
   createdAt: string
   updatedAt: string
   asset: {
@@ -35,7 +32,14 @@ export interface AssetHolder {
     name: string
     photo: string | null
   } | null
-  handover: {
+  assignHandover: {
+    id: number
+    status: string
+    transactionType: string
+    note: string | null
+    createdAt: string
+  } | null
+  returnHandover: {
     id: number
     status: string
     transactionType: string

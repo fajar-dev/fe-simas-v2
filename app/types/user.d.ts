@@ -6,9 +6,7 @@ export interface User {
   email: string
   photo: string | null
   isActive: boolean
-  roleId?: number
   role?: { id: number; name: string } | null
-  employeeId?: number | null
   employee?: {
     id: number
     name: string

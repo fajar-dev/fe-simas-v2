@@ -2,8 +2,6 @@ import type { Attachment } from "./attachment"
 
 export interface AssetLocation {
   id: number
-  assetId: number
-  locationId: number
   date: string
   note: string | null
   source: string | null

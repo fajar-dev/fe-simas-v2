@@ -74,7 +74,7 @@
     "users": "Users",
     "roles": "Roles",
     "searchAsset": "Search Asset",
-    "assetHandover": "Handover",
+    "handover": "Handover",
     "feedback": "Feedback",
     "capturing": "Capturing..."
   },
@@ -413,12 +413,23 @@
         "description": "The following assets still have active holders:",
         "returnCheckbox": "Automatically return assets from active holders"
       },
+      "handoverHolderBlock": {
+        "title": "Cannot Change Status",
+        "description": "These assets are held via a handover and must be returned through a return handover before their status can change:"
+      },
+      "pendingHandoverBlock": {
+        "title": "Cannot Change Status",
+        "description": "These assets are in a pending handover. Complete or cancel that handover before changing their status:"
+      },
       "notActiveWarning": {
         "assignHolder": "Cannot assign holder: asset status is not \"active\"",
         "relocate": "Cannot relocate: asset status is not \"active\""
       },
       "pendingHandoverWarning": {
         "assignHolder": "Cannot assign holder: asset is in a pending handover"
+      },
+      "handoverReturnWarning": {
+        "returnAsset": "This asset was assigned via a handover and must be returned through a return handover"
       }
     },
 
@@ -1050,9 +1061,9 @@
       "noEmployeeLinked": "Your account is not linked to an employee. Contact admin.",
       "noBorrowedBooks": "You have no borrowed books"
     },
-    "assetHandover": {
-      "title": "Asset Handover",
-      "description": "Manage asset handover",
+    "handover": {
+      "title": "Handover",
+      "description": "Manage handover documents",
       "addHandover": "Create Handover",
       "searchPlaceholder": "Search...",
       "columnDate": "Date",
@@ -1063,12 +1074,11 @@
       "columnStatus": "Status",
       "columnCreatedBy": "Created By",
       "columnAction": "Action",
-      "detailTitle": "Asset Handover Details",
-      "detailDescription": "Detailed information of the asset handover document.",
-      "docInfo": "Document Information",
-      "itemInfo": "Assets & Receivers List",
+      "detailTitle": "Handover Details",
+      "detailDescription": "Detailed information of the handover document.",
+      "parentHandover": "Returned From",
+      "itemInfo": "Items & Receivers",
       "attachments": "Attachments",
-      "noAttachments": "No attachments",
       "statusPending": "Pending Approval",
       "statusApprove": "Approved",
       "statusReject": "Rejected",
@@ -1092,8 +1102,8 @@
         "receivedBy": "Received By",
         "receivedByPlaceholder": "Select receiving employee",
         "validation": {
-          "itemsRequired": "At least one asset item is required",
-          "assetRequired": "Asset selection is required",
+          "itemsRequired": "At least one item is required",
+          "itemRequired": "Item selection is required",
           "handedOverByRequired": "Handover employee is required",
           "receivedByRequired": "Receiver employee is required"
         }
@@ -1103,21 +1113,23 @@
         "return": "Return"
       },
       "itemForm": {
-        "asset": "Asset",
         "note": "Description",
         "notePlaceholder": "Enter item description (optional)",
         "searchEmployees": "Search receiver..."
       },
       "scan": {
-        "button": "Scan Asset",
-        "empty": "No items yet. Scan an asset to add it.",
-        "notFound": "Asset not found.",
-        "holderNotEnabled": "This asset does not support holder assignment.",
-        "alreadyHasHolder": "This asset already has an active holder.",
-        "notActive": "This asset is not in active status.",
-        "alreadyAdded": "This asset has already been added.",
-        "inPendingHandover": "This asset is already in a pending handover.",
-        "added": "Asset added."
+        "button": "Scan Item",
+        "empty": "No items yet. Scan an item to add it.",
+        "notFound": "Item not found.",
+        "holderNotEnabled": "This item does not support holder assignment.",
+        "alreadyHasHolder": "This item already has an active holder.",
+        "notActive": "This item is not in active status.",
+        "alreadyAdded": "This item has already been added.",
+        "inPendingHandover": "This item is already in a pending handover.",
+        "selectHandedOverFirst": "Select the returning employee first.",
+        "notHeld": "This item is not currently held by anyone.",
+        "notHeldByEmployee": "This item is not held by the selected employee.",
+        "added": "Item added."
       }
     }
   }

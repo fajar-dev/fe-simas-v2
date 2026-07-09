@@ -174,8 +174,8 @@ const populateForm = () => {
     form.password = ''
     form.photo = props.user.photo
     form.isActive = props.user.isActive
-    form.roleId = props.user.roleId || props.user.role?.id || null
-    form.employeeId = props.user.employeeId || null
+    form.roleId = props.user.role?.id || null
+    form.employeeId = props.user.employee?.id || null
     previewUrl.value = props.user.photo
   }
 }

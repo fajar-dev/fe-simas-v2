@@ -3,7 +3,7 @@ import type { TransactionType, HandoverStatus } from '../utils/enums'
 
 export type { TransactionType, HandoverStatus }
 
-export interface AssetHandoverItem {
+export interface HandoverItem {
   id: number
   note: string | null
   asset: {
@@ -14,7 +14,7 @@ export interface AssetHandoverItem {
   } | null
 }
 
-export interface AssetHandover {
+export interface Handover {
   id: number
   received: {
     id: number
@@ -33,9 +33,14 @@ export interface AssetHandover {
   transactionType: TransactionType
   status: HandoverStatus
   note: string | null
+  parentHandover: {
+    id: number
+    transactionType: TransactionType
+    status: HandoverStatus
+  } | null
   createdAt: string
   updatedAt: string
-  items: AssetHandoverItem[]
+  items: HandoverItem[]
   attachments: Attachment[]
   createdBy: {
     id: number
@@ -49,7 +54,7 @@ export interface HandoverItemPayload {
   note?: string | null
 }
 
-export interface CreateAssetHandoverPayload {
+export interface CreateHandoverPayload {
   receivedById: number
   handedOverById: number
   date?: string | null

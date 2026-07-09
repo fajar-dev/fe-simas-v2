@@ -2,14 +2,14 @@
   <div class="space-y-6 animate-fade-in">
     <!-- Header with Breadcrumbs and Title -->
     <Header
-      :title="$t('pages.assetHandover.title')"
-      :description="$t('pages.assetHandover.description')"
+      :title="$t('pages.handover.title')"
+      :description="$t('pages.handover.description')"
     >
       <template #breadcrumbs>
         <div class="flex items-center gap-2 text-xs text-neutral-500 mb-2 select-none">
           <NuxtLink to="/" class="hover:text-primary transition-colors">Dashboard</NuxtLink>
           <UIcon name="i-lucide-chevron-right" class="w-3.5 h-3.5 text-neutral-400" />
-          <span class="font-medium text-neutral-700">{{ $t('nav.assetHandover') }}</span>
+          <span class="font-medium text-neutral-700">{{ $t('nav.handover') }}</span>
         </div>
       </template>
     </Header>
@@ -25,7 +25,7 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      :search-placeholder="$t('pages.assetHandover.searchPlaceholder')"
+      :search-placeholder="$t('pages.handover.searchPlaceholder')"
       table-class="min-w-[1000px]"
     >
       <!-- Filter slots -->
@@ -48,7 +48,7 @@
       </template>
 
       <!-- Actions slot -->
-      <template #actions v-if="hasPermission('asset-handover:create')">
+      <template #actions v-if="hasPermission('handover:create')">
         <UButton
           color="primary"
           variant="solid"
@@ -56,7 +56,7 @@
           to="/handover/create"
           class="w-full sm:w-auto justify-center shadow-sm hover:shadow-md transition-all duration-200"
         >
-          {{ $t('pages.assetHandover.addHandover') }}
+          {{ $t('pages.handover.addHandover') }}
         </UButton>
       </template>
     </DataTable>
@@ -73,8 +73,8 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
-import { assetHandoverService } from '~/services/asset-handover-service'
-import type { AssetHandover } from '~/types/asset-handover'
+import { handoverService } from '~/services/handover-service'
+import type { Handover } from '~/types/handover'
 
 definePageMeta({
   layout: 'dashboard'
@@ -91,7 +91,7 @@ const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')
 
 // Query & filter states
-const data = ref<AssetHandover[]>([])
+const data = ref<Handover[]>([])
 const isLoading = ref(false)
 
 const statusFilter = ref('all')
@@ -105,14 +105,14 @@ watch([statusFilter, typeFilter], () => {
 const statusOptions = computed(() => [
   { label: t('common.all'), value: 'all' },
   ...HANDOVER_STATUSES.map(s => ({
-    label: t(`pages.assetHandover.status${s.charAt(0).toUpperCase()}${s.slice(1)}`),
+    label: t(`pages.handover.status${s.charAt(0).toUpperCase()}${s.slice(1)}`),
     value: s
   }))
 ])
 
 const typeOptions = computed(() => [
   { label: t('common.all'), value: 'all' },
-  ...HANDOVER_TRANSACTION_TYPES.map(v => ({ label: t(`pages.assetHandover.types.${v}`), value: v }))
+  ...HANDOVER_TRANSACTION_TYPES.map(v => ({ label: t(`pages.handover.types.${v}`), value: v }))
 ])
 
 // Pagination metadata
@@ -136,7 +136,7 @@ const {
 const fetchHandovers = async () => {
   isLoading.value = true
   try {
-    const response = await assetHandoverService.getAll(
+    const response = await handoverService.getAll(
       page.value,
       perPage.value,
       search.value,
@@ -159,10 +159,10 @@ const fetchHandovers = async () => {
 }
 
 // Columns definition
-const baseColumns: TableColumn<AssetHandover>[] = [
+const baseColumns: TableColumn<Handover>[] = [
   {
     accessorKey: 'id',
-    header: sortHeader(t('pages.assetHandover.columnDocNo'), 'id'),
+    header: sortHeader(t('pages.handover.columnDocNo'), 'id'),
     cell: ({ row }) => {
       const docNo = `#${String(row.original.id)}`
       return h(
@@ -180,7 +180,7 @@ const baseColumns: TableColumn<AssetHandover>[] = [
   },
   {
     accessorKey: 'createdAt',
-    header: sortHeader(t('pages.assetHandover.columnDate'), 'createdAt'),
+    header: sortHeader(t('pages.handover.columnDate'), 'createdAt'),
     cell: ({ row }) => {
       const d = row.original.createdAt
       // Format simple local date
@@ -190,7 +190,7 @@ const baseColumns: TableColumn<AssetHandover>[] = [
   },
   {
     accessorKey: 'handedOver',
-    header: t('pages.assetHandover.columnHandedOverBy'),
+    header: t('pages.handover.columnHandedOverBy'),
     cell: ({ row }) => {
       const person = row.original.handedOver
       if (!person) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
@@ -210,7 +210,7 @@ const baseColumns: TableColumn<AssetHandover>[] = [
   },
   {
     accessorKey: 'received',
-    header: t('pages.assetHandover.columnReceivedBy'),
+    header: t('pages.handover.columnReceivedBy'),
     cell: ({ row }) => {
       const person = row.original.received
       if (!person) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
@@ -230,27 +230,27 @@ const baseColumns: TableColumn<AssetHandover>[] = [
   },
   {
     accessorKey: 'transactionType',
-    header: sortHeader(t('pages.assetHandover.columnType'), 'transactionType'),
+    header: sortHeader(t('pages.handover.columnType'), 'transactionType'),
     cell: ({ row }) => {
-      const label = t(`pages.assetHandover.types.${row.original.transactionType}`)
+      const label = t(`pages.handover.types.${row.original.transactionType}`)
       return h('span', { class: 'text-sm text-neutral-600 font-medium' }, label)
     }
   },
   {
     accessorKey: 'status',
-    header: sortHeader(t('pages.assetHandover.columnStatus'), 'status'),
+    header: sortHeader(t('pages.handover.columnStatus'), 'status'),
     cell: ({ row }) => {
       const s = row.original.status
-      let label = t('pages.assetHandover.statusPending')
+      let label = t('pages.handover.statusPending')
       let col: 'warning' | 'success' | 'error' | 'neutral' = 'warning'
       if (s === 'approve') {
-        label = t('pages.assetHandover.statusApprove')
+        label = t('pages.handover.statusApprove')
         col = 'success'
       } else if (s === 'reject') {
-        label = t('pages.assetHandover.statusReject')
+        label = t('pages.handover.statusReject')
         col = 'error'
       } else if (s === 'cancel') {
-        label = t('pages.assetHandover.statusCancel')
+        label = t('pages.handover.statusCancel')
         col = 'neutral'
       }
       return h(UBadge, { color: col, variant: 'subtle' }, () => label)
@@ -258,7 +258,7 @@ const baseColumns: TableColumn<AssetHandover>[] = [
   },
   {
     accessorKey: 'createdBy',
-    header: t('pages.assetHandover.columnCreatedBy'),
+    header: t('pages.handover.columnCreatedBy'),
     cell: ({ row }) => {
       const creator = row.original.createdBy
       if (!creator) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
@@ -279,7 +279,7 @@ const columns = computed(() => {
   const list = [...baseColumns]
   list.push({
     id: 'actions',
-    header: t('pages.assetHandover.columnAction'),
+    header: t('pages.handover.columnAction'),
     meta: {
       class: {
         td: 'text-right',
@@ -308,7 +308,7 @@ const columns = computed(() => {
   return list
 })
 
-function getRowItems(row: Row<AssetHandover>) {
+function getRowItems(row: Row<Handover>) {
   const handover = row.original
   const actions = []
 
@@ -322,9 +322,9 @@ function getRowItems(row: Row<AssetHandover>) {
   })
 
   // Only pending handovers can be cancelled; once approved it is locked.
-  if (handover.status === 'pending' && hasPermission('asset-handover:cancel')) {
+  if (handover.status === 'pending' && hasPermission('handover:cancel')) {
     actions.push({
-      label: t('pages.assetHandover.cancel'),
+      label: t('pages.handover.cancel'),
       icon: 'i-lucide-ban',
       color: 'warning' as const,
       onSelect() {
@@ -338,7 +338,7 @@ function getRowItems(row: Row<AssetHandover>) {
 }
 
 // Cancel flow
-const selectedHandover = ref<AssetHandover | null>(null)
+const selectedHandover = ref<Handover | null>(null)
 const showCancelModal = ref(false)
 const isCancelling = ref(false)
 
@@ -346,9 +346,9 @@ const handleCancel = async () => {
   if (!selectedHandover.value) return
   isCancelling.value = true
   try {
-    const response = await assetHandoverService.cancel(selectedHandover.value.id)
+    const response = await handoverService.cancel(selectedHandover.value.id)
     if (response.success) {
-      toast.add({ title: t('pages.assetHandover.cancelSuccess'), color: 'success', icon: 'i-lucide-circle-check' })
+      toast.add({ title: t('pages.handover.cancelSuccess'), color: 'success', icon: 'i-lucide-circle-check' })
       showCancelModal.value = false
       await fetchHandovers()
     } else {

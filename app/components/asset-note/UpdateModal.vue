@@ -156,7 +156,7 @@ const loadAssets = async () => {
       
       // Populate selectedAsset from props.note after assets are loaded
       if (props.note) {
-        const matched = assetOptions.value.find(o => o.value === props.note?.assetId)
+        const matched = assetOptions.value.find(o => o.value === props.note?.asset?.id)
         if (matched) selectedAsset.value = matched
       }
     }
@@ -168,7 +168,7 @@ const loadAssets = async () => {
 const populateForm = () => {
   if (!props.note) return
 
-  form.assetId = props.note.assetId
+  form.assetId = props.note.asset?.id ?? 0
   form.date = props.note.date
   form.note = props.note.note || ''
   form.attachmentIds = props.note.attachments?.map(a => a.id) || []
@@ -176,7 +176,7 @@ const populateForm = () => {
   formLabels.value = (props.note.labels || []).map(l => ({ key: l.key, value: l.value }))
 
   if (!props.lockAssetId) {
-    const matched = assetOptions.value.find(o => o.value === props.note?.assetId)
+    const matched = assetOptions.value.find(o => o.value === props.note?.asset?.id)
     selectedAsset.value = matched || undefined
   }
 }
