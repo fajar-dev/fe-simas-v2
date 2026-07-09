@@ -96,22 +96,10 @@
                 </div>
               </div>
 
-              <!-- Category -->
-              <div>
-                <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.assetHandover.form.category') }}</span>
-                <span class="text-sm text-neutral-900 font-medium">{{ $t(`pages.assetHandover.types.${handover.category}`) }}</span>
-              </div>
-
               <!-- Note -->
               <div>
                 <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.assetHandover.form.note') }}</span>
                 <span class="text-sm text-neutral-900 font-medium whitespace-pre-line">{{ handover.note || '-' }}</span>
-              </div>
-
-              <!-- Estimated Return Date -->
-              <div>
-                <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.assetHandover.form.estimatedReturnDate') }}</span>
-                <span class="text-sm text-neutral-900 font-medium">{{ handover.estimatedReturnDate ? formatDateOnly(handover.estimatedReturnDate) : '-' }}</span>
               </div>
             </div>
           </UCard>

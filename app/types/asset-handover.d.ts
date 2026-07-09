@@ -1,8 +1,7 @@
 import type { Attachment } from './attachment'
+import type { TransactionType, HandoverStatus } from '../utils/enums'
 
-export type TransactionType = 'serah_terima' | 'peminjaman' | 'pengembalian'
-export type HandoverCategory = 'inventaris_kantor' | 'aset_program_cicilan'
-export type HandoverStatus = 'pending' | 'approve' | 'reject' | 'cancel'
+export type { TransactionType, HandoverStatus }
 
 export interface AssetHandoverItem {
   id: number
@@ -32,8 +31,6 @@ export interface AssetHandover {
     photo: string | null
   } | null
   transactionType: TransactionType
-  category: HandoverCategory
-  estimatedReturnDate: string | null
   status: HandoverStatus
   note: string | null
   createdAt: string
@@ -57,8 +54,6 @@ export interface CreateAssetHandoverPayload {
   handedOverById: number
   date?: string | null
   transactionType: TransactionType
-  category: HandoverCategory
-  estimatedReturnDate?: string | null
   note?: string | null
   items: HandoverItemPayload[]
 }

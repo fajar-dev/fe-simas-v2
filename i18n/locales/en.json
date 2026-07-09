@@ -416,6 +416,9 @@
       "notActiveWarning": {
         "assignHolder": "Cannot assign holder: asset status is not \"active\"",
         "relocate": "Cannot relocate: asset status is not \"active\""
+      },
+      "pendingHandoverWarning": {
+        "assignHolder": "Cannot assign holder: asset is in a pending handover"
       }
     },
 
@@ -1056,8 +1059,7 @@
       "columnHandedOverBy": "Handed Over By",
       "columnReceivedBy": "Received By",
       "columnDocNo": "Doc No.",
-      "columnType": "Transaction Type",
-      "columnCategory": "Category",
+      "columnType": "Type",
       "columnStatus": "Status",
       "columnCreatedBy": "Created By",
       "columnAction": "Action",
@@ -1079,11 +1081,9 @@
       "createDescription": "Fill out the form below to create a new handover document.",
       "form": {
         "date": "Handover Date",
-        "transactionType": "Transaction Type",
-        "category": "Category",
+        "transactionType": "Type",
         "note": "Note",
         "notePlaceholder": "Enter a note",
-        "estimatedReturnDate": "Estimated Return Date (Optional)",
         "items": "Item List",
         "submit": "Save Document",
         "successCreate": "Handover document created successfully!",
@@ -1099,11 +1099,8 @@
         }
       },
       "types": {
-        "serah_terima": "Handover",
-        "peminjaman": "Loan",
-        "pengembalian": "Return",
-        "inventaris_kantor": "Office Inventory",
-        "aset_program_cicilan": "Installment Program Asset"
+        "assign": "Assign",
+        "return": "Return"
       },
       "itemForm": {
         "asset": "Asset",

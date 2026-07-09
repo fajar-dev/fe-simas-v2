@@ -18,16 +18,16 @@
           <!-- Context-sensitive action button: Assign if available, Return if assigned -->
           <UTooltip
             v-if="!activeHolder && hasPermission('asset-holder:create')"
-            :text="isAssetNotActive ? $t('component.assetStatus.notActiveWarning.assignHolder') : ''"
-            :prevent="!isAssetNotActive"
+            :text="assignDisabledReason"
+            :prevent="!isAssignDisabled"
           >
             <UButton
               class="w-full lg:w-auto justify-center"
               color="primary"
               variant="solid"
               icon="i-lucide-user-plus"
-              :loading="isLoadingActive"
-              :disabled="isAssetNotActive"
+              :loading="isLoadingActive || isLoadingPendingHandover"
+              :disabled="isAssignDisabled"
               @click="() => { showAssignModal = true }"
             >
               {{ $t('pages.asset.holder.assignAsset') }}
@@ -66,6 +66,7 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import { assetHolderService } from '~/services/asset-holder-service'
+import { assetHandoverService } from '~/services/asset-handover-service'
 import type { AssetHolder } from '~/types/asset-holder'
 import AssignModal from '~/components/asset-holder/AssignModal.vue'
 import ReturnModal from '~/components/asset-holder/ReturnModal.vue'
@@ -85,6 +86,17 @@ const { asset: parentAssetRef } = inject('assetState') as { asset: Ref<import('~
 const isAssetNotActive = computed(() => {
   const status = parentAssetRef.value?.lastStatus?.status
   return !!status && status !== 'active'
+})
+
+// Assets tied to a pending handover cannot be assigned a holder (also enforced by the backend).
+const isInPendingHandover = ref(false)
+const isLoadingPendingHandover = ref(false)
+
+const isAssignDisabled = computed(() => isAssetNotActive.value || isInPendingHandover.value)
+const assignDisabledReason = computed(() => {
+  if (isAssetNotActive.value) return t('component.assetStatus.notActiveWarning.assignHolder')
+  if (isInPendingHandover.value) return t('component.assetStatus.pendingHandoverWarning.assignHolder')
+  return ''
 })
 
 const UAvatar = resolveComponent('UAvatar')
@@ -129,6 +141,19 @@ const fetchActiveHolder = async () => {
   }
 }
 
+// Check whether this asset is part of a pending handover (blocks holder assignment)
+const fetchPendingHandover = async () => {
+  isLoadingPendingHandover.value = true
+  try {
+    const res = await assetHandoverService.getAll(1, 200, '', '', '', 'pending')
+    if (res.success && res.data) {
+      isInPendingHandover.value = res.data.some(h => h.items.some(item => item.asset?.id === assetId))
+    }
+  } finally {
+    isLoadingPendingHandover.value = false
+  }
+}
+
 // Fetch holder logs (history) for this asset
 const fetchHistory = async () => {
   isLoadingHistory.value = true
@@ -157,6 +182,7 @@ const fetchHistory = async () => {
 const handleReload = () => {
   fetchActiveHolder()
   fetchHistory()
+  fetchPendingHandover()
 }
 
 // Table columns
@@ -311,5 +337,6 @@ const columns: TableColumn<AssetHolder>[] = [
 onMounted(() => {
   fetchActiveHolder()
   fetchHistory()
+  fetchPendingHandover()
 })
 </script>

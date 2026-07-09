@@ -39,9 +39,7 @@ export interface AssetHolder {
     id: number
     status: string
     transactionType: string
-    category: string
     note: string | null
-    estimatedReturnDate: string | null
     createdAt: string
   } | null
   attachments: Attachment[]

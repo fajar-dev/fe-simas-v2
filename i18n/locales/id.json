@@ -416,6 +416,9 @@
       "notActiveWarning": {
         "assignHolder": "Tidak dapat menetapkan pemegang: status aset bukan \"active\"",
         "relocate": "Tidak dapat merelokasi: status aset bukan \"active\""
+      },
+      "pendingHandoverWarning": {
+        "assignHolder": "Tidak dapat menetapkan pemegang: aset sedang dalam serah terima yang pending"
       }
     },
 
@@ -1056,8 +1059,7 @@
       "columnHandedOverBy": "Diserahkan Oleh",
       "columnReceivedBy": "Diterima Oleh",
       "columnDocNo": "No. Dokumen",
-      "columnType": "Jenis Transaksi",
-      "columnCategory": "Kategori",
+      "columnType": "Tipe",
       "columnStatus": "Status",
       "columnCreatedBy": "Dibuat Oleh",
       "columnAction": "Aksi",
@@ -1079,11 +1081,9 @@
       "createDescription": "Isi formulir berikut untuk membuat dokumen serah terima baru.",
       "form": {
         "date": "Tanggal Serah Terima",
-        "transactionType": "Jenis Transaksi",
-        "category": "Kategori",
+        "transactionType": "Tipe",
         "note": "Catatan",
         "notePlaceholder": "Masukkan catatan",
-        "estimatedReturnDate": "Estimasi Kembali (Opsional)",
         "items": "Daftar Item",
         "submit": "Simpan Dokumen",
         "successCreate": "Dokumen serah terima berhasil dibuat!",
@@ -1099,11 +1099,8 @@
         }
       },
       "types": {
-        "serah_terima": "Serah Terima",
-        "peminjaman": "Peminjaman",
-        "pengembalian": "Pengembalian",
-        "inventaris_kantor": "Inventaris Kantor",
-        "aset_program_cicilan": "Aset Program Cicilan"
+        "assign": "Penetapan",
+        "return": "Pengembalian"
       },
       "itemForm": {
         "asset": "Aset",

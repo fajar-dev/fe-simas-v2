@@ -58,32 +58,9 @@
               />
             </UFormField>
 
-            <!-- Category -->
-            <UFormField :label="$t('pages.assetHandover.form.category')" name="category" required>
-              <USelect
-                v-model="form.category"
-                :items="categoryOptions"
-                class="w-full"
-              />
-            </UFormField>
-
             <!-- Note -->
             <UFormField :label="$t('pages.assetHandover.form.note')" name="note">
               <UTextarea v-model="form.note" :placeholder="$t('pages.assetHandover.form.notePlaceholder')" class="w-full" :rows="3" />
-            </UFormField>
-
-            <!-- Estimated Return Date -->
-            <UFormField :label="$t('pages.assetHandover.form.estimatedReturnDate')" name="estimatedReturnDate">
-              <UInputDate v-model="estimatedReturnDateVal" class="w-full">
-                <template #trailing>
-                  <UPopover>
-                    <UButton icon="i-lucide-calendar" color="neutral" variant="ghost" size="sm" square />
-                    <template #content>
-                      <UCalendar v-model="estimatedReturnDateVal" />
-                    </template>
-                  </UPopover>
-                </template>
-              </UInputDate>
             </UFormField>
           </div>
 
@@ -219,7 +196,6 @@
 
 <script setup lang="ts">
 import { z } from 'zod'
-import { parseDate } from '@internationalized/date'
 import { assetHandoverService } from '~/services/asset-handover-service'
 import { assetService } from '~/services/asset-service'
 import { employeeService } from '~/services/employee-service'
@@ -233,36 +209,17 @@ const toast = useToast()
 const { openLightbox } = useLightbox()
 
 // Options structures
-const transactionTypeOptions = computed(() => [
-  { label: t('pages.assetHandover.types.serah_terima'), value: 'serah_terima' },
-  { label: t('pages.assetHandover.types.peminjaman'), value: 'peminjaman' },
-  { label: t('pages.assetHandover.types.pengembalian'), value: 'pengembalian' },
-])
-
-const categoryOptions = computed(() => [
-  { label: t('pages.assetHandover.types.inventaris_kantor'), value: 'inventaris_kantor' },
-  { label: t('pages.assetHandover.types.aset_program_cicilan'), value: 'aset_program_cicilan' },
-])
+const transactionTypeOptions = computed(() =>
+  HANDOVER_TRANSACTION_TYPES.map(v => ({ label: t(`pages.assetHandover.types.${v}`), value: v }))
+)
 
 // Form state
 const form = reactive({
-  transactionType: 'serah_terima' as const,
-  category: 'inventaris_kantor' as const,
-  estimatedReturnDate: '',
+  transactionType: 'assign' as const,
   note: '',
   receivedById: undefined as unknown as number,
   handedOverById: undefined as unknown as number,
   items: [] as { assetId: number; name: string; code: string; image: string | null; note: string }[]
-})
-
-const estimatedReturnDateVal = computed({
-  get: () => {
-    if (!form.estimatedReturnDate) return undefined
-    try { return parseDate(form.estimatedReturnDate.slice(0, 10)) } catch { return undefined }
-  },
-  set: (val) => {
-    form.estimatedReturnDate = val ? val.toString() : ''
-  }
 })
 
 // Visual bindings for select menu states
@@ -365,9 +322,7 @@ const removeItemRow = (index: number) => {
 
 // Zod schema for form validation
 const schema = z.object({
-  transactionType: z.enum(['serah_terima', 'peminjaman', 'pengembalian']),
-  category: z.enum(['inventaris_kantor', 'aset_program_cicilan']),
-  estimatedReturnDate: z.string().optional().or(z.literal('')),
+  transactionType: z.enum(HANDOVER_TRANSACTION_TYPES),
   note: z.string().optional().or(z.literal('')),
   receivedById: z.number().int().positive(t('pages.assetHandover.form.validation.receivedByRequired')),
   handedOverById: z.number().int().positive(t('pages.assetHandover.form.validation.handedOverByRequired')),
@@ -428,8 +383,6 @@ const handleSubmit = async () => {
       receivedById: form.receivedById,
       handedOverById: form.handedOverById,
       transactionType: form.transactionType,
-      category: form.category,
-      estimatedReturnDate: form.estimatedReturnDate || null,
       note: form.note || null,
       items: form.items.map(item => ({
         assetId: item.assetId,

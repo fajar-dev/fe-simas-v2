@@ -104,17 +104,15 @@ watch([statusFilter, typeFilter], () => {
 
 const statusOptions = computed(() => [
   { label: t('common.all'), value: 'all' },
-  { label: t('pages.assetHandover.statusPending'), value: 'pending' },
-  { label: t('pages.assetHandover.statusApprove'), value: 'approve' },
-  { label: t('pages.assetHandover.statusReject'), value: 'reject' },
-  { label: t('pages.assetHandover.statusCancel'), value: 'cancel' },
+  ...HANDOVER_STATUSES.map(s => ({
+    label: t(`pages.assetHandover.status${s.charAt(0).toUpperCase()}${s.slice(1)}`),
+    value: s
+  }))
 ])
 
 const typeOptions = computed(() => [
   { label: t('common.all'), value: 'all' },
-  { label: t('pages.assetHandover.types.serah_terima'), value: 'serah_terima' },
-  { label: t('pages.assetHandover.types.peminjaman'), value: 'peminjaman' },
-  { label: t('pages.assetHandover.types.pengembalian'), value: 'pengembalian' },
+  ...HANDOVER_TRANSACTION_TYPES.map(v => ({ label: t(`pages.assetHandover.types.${v}`), value: v }))
 ])
 
 // Pagination metadata
@@ -234,19 +232,7 @@ const baseColumns: TableColumn<AssetHandover>[] = [
     accessorKey: 'transactionType',
     header: sortHeader(t('pages.assetHandover.columnType'), 'transactionType'),
     cell: ({ row }) => {
-      const val = row.original.transactionType
-      const label = t(`pages.assetHandover.types.${val}`)
-      const isLoan = val === 'peminjaman'
-      const isReturn = val === 'pengembalian'
-      return h('span', { class: 'text-sm text-neutral-600 font-medium' }, label)
-    }
-  },
-  {
-    accessorKey: 'category',
-    header: sortHeader(t('pages.assetHandover.columnCategory'), 'category'),
-    cell: ({ row }) => {
-      const val = row.original.category
-      const label = t(`pages.assetHandover.types.${val}`)
+      const label = t(`pages.assetHandover.types.${row.original.transactionType}`)
       return h('span', { class: 'text-sm text-neutral-600 font-medium' }, label)
     }
   },
