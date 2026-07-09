@@ -43,3 +43,37 @@ export const formatPriceShort = (tick: number) => {
   if (tick >= 1_000) return `Rp ${(tick / 1_000).toFixed(0)} Rb`
   return `Rp ${tick}`
 }
+
+// Truncate an ISO datetime to "YYYY-MM-DD HH:mm"
+export const formatDateTime = (val: string) => {
+  if (!val) return '-'
+  return val.replace('T', ' ').slice(0, 16)
+}
+
+// Keep only the date part of an ISO datetime ("YYYY-MM-DD")
+export const formatDateOnly = (val: string) => {
+  if (!val) return '-'
+  return val.split('T')[0]
+}
+
+// Human-readable file size
+export const formatFileSize = (bytes: number) => {
+  if (!bytes) return '0 B'
+  const units = ['B', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(1024))
+  return `${(bytes / Math.pow(1024, i)).toFixed(i === 0 ? 0 : 1)} ${units[i]}`
+}
+
+// Icon + background classes for an attachment based on its mime type
+export const getAttachmentTheme = (mimeType: string) => {
+  const type = (mimeType || '').toLowerCase()
+  if (type.startsWith('image/')) return { icon: 'i-lucide-image', bg: 'bg-success/10 text-success' }
+  if (type.includes('pdf')) return { icon: 'i-lucide-file-text', bg: 'bg-error/10 text-error' }
+  if (type.includes('word') || type.includes('officedocument') || type.includes('excel') || type.includes('sheet') || type.includes('powerpoint') || type.includes('presentation')) {
+    return { icon: 'i-lucide-file-text', bg: 'bg-primary/10 text-primary' }
+  }
+  if (type.includes('zip') || type.includes('rar') || type.includes('compressed') || type.includes('tar') || type.includes('gzip')) {
+    return { icon: 'i-lucide-archive', bg: 'bg-warning/10 text-warning' }
+  }
+  return { icon: 'i-lucide-file', bg: 'bg-neutral-100 text-neutral-500' }
+}

@@ -193,8 +193,8 @@
 
     <!-- Modals -->
     <AssetScannerModal v-model="showScanner" :auto-close="true" @scanned="onScanned" />
-    <CameraModal v-model="showBorrowCamera" @captured="onBorrowPhotoCaptured" />
-    <CameraModal v-model="showReturnCamera" @captured="onReturnPhotoCaptured" />
+    <CameraModal watermark v-model="showBorrowCamera" @captured="onBorrowPhotoCaptured" />
+    <CameraModal watermark v-model="showReturnCamera" @captured="onReturnPhotoCaptured" />
   </div>
 </template>
 

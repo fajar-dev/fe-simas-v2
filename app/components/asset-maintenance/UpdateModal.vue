@@ -65,7 +65,7 @@
             <div v-for="(label, index) in formLabels" :key="index" class="flex items-center gap-2">
               <UInput v-model="label.key" placeholder="Key" class="w-full" />
               <UInput v-model="label.value" placeholder="Value" class="w-full" />
-              <UButton icon="i-lucide-trash" color="error" variant="soft" size="sm" square @click="formLabels.splice(index, 1)" />
+              <UButton icon="i-lucide-trash" color="error" variant="soft" size="sm" square @click="() => { formLabels.splice(index, 1) }" />
             </div>
           </div>
         </div>
@@ -119,7 +119,7 @@ const assetOptions = ref<{ label: string; value: number }[]>([])
 const selectedAsset = ref<{ label: string; value: number } | undefined>(undefined)
 const uploadedAttachments = ref<Attachment[]>([])
 const formLabels = ref<{ key: string; value: string }[]>([])
-const addLabel = () => formLabels.value.push({ key: '', value: '' })
+const addLabel = () => { formLabels.value.push({ key: '', value: '' }) }
 
 const schema = z.object({
   assetId: z.number(),

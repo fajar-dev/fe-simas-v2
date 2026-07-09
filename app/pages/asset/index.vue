@@ -331,8 +331,6 @@ const fetchAssets = async () => {
 
 const onApplyFilters = (filters: Record<string, any>) => {
   activeFilters.value = filters
-  page.value = 1
-  fetchAssets()
 }
 
 const handleExport = async () => {

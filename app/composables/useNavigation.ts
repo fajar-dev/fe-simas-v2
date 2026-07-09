@@ -35,6 +35,12 @@ export const useNavigation = () => {
           icon: 'i-lucide-box',
           permission: 'asset:read'
         },
+        {
+          label: t('nav.assetHandover'),
+          to: '/handover',
+          icon: 'i-lucide-file-box',
+          permission: 'asset-handover:read'
+        },
       ]
     },
     {

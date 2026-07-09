@@ -34,7 +34,7 @@ export function useTableQuery(onQueryChange: () => void, options: TableQueryOpti
     const arrayNumberFields = ['categoryIds', 'subCategoryIds', 'branchIds', 'locationIds']
     const arrayStringFields = ['status', 'missingFields']
     const numberFields = ['holderId', 'priceMin', 'priceMax', 'usefulLifeYears', 'monthlyDepMin', 'monthlyDepMax', 'accumulatedDepMin', 'accumulatedDepMax', 'bookValueMin', 'bookValueMax']
-    const stringFields = ['holderStatus', 'holderType', 'purchaseDateFrom', 'purchaseDateTo', 'depreciationStatus', 'bleTagStatus', 'usefulLifeOp']
+    const stringFields = ['holderStatus', 'holderType', 'purchaseDateFrom', 'purchaseDateTo', 'depreciationStatus', 'bleTagStatus', 'usefulLifeOp', 'handoverStatus', 'transactionType']
     
     arrayNumberFields.forEach(field => {
       if (query[field] !== undefined && query[field] !== '') {
@@ -112,16 +112,25 @@ export function useTableQuery(onQueryChange: () => void, options: TableQueryOpti
     }
   }
 
-  // Watch for pagination, sorting and filter changes
-  const watchSources = [page, perPage, sortBy, order] as any[]
-  if (filters) {
-    watchSources.push(filters)
-  }
+  // Watch for pagination and sorting changes
+  const watchSources = [page, perPage, sortBy, order]
 
   watch(watchSources, () => {
     syncToUrl()
     onQueryChange()
-  }, { deep: true })
+  })
+
+  // Watch for filter changes with deep reactive checking
+  if (filters) {
+    watch(filters, () => {
+      if (page.value !== 1) {
+        page.value = 1 // This will trigger the watch(watchSources) since page is in watchSources
+      } else {
+        syncToUrl()
+        onQueryChange()
+      }
+    }, { deep: true })
+  }
 
   // Watch search with debounce
   let searchTimeout: ReturnType<typeof setTimeout>
