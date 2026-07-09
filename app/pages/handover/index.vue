@@ -60,6 +60,13 @@
         </UButton>
       </template>
     </DataTable>
+
+    <!-- Cancel Confirmation Modal -->
+    <HandoverCancelModal
+      v-model="showCancelModal"
+      :loading="isCancelling"
+      @confirm="handleCancel"
+    />
   </div>
 </template>
 
@@ -100,6 +107,7 @@ const statusOptions = computed(() => [
   { label: t('pages.assetHandover.statusPending'), value: 'pending' },
   { label: t('pages.assetHandover.statusApprove'), value: 'approve' },
   { label: t('pages.assetHandover.statusReject'), value: 'reject' },
+  { label: t('pages.assetHandover.statusCancel'), value: 'cancel' },
 ])
 
 const typeOptions = computed(() => [
@@ -248,13 +256,16 @@ const baseColumns: TableColumn<AssetHandover>[] = [
     cell: ({ row }) => {
       const s = row.original.status
       let label = t('pages.assetHandover.statusPending')
-      let col: 'warning' | 'success' | 'error' = 'warning'
+      let col: 'warning' | 'success' | 'error' | 'neutral' = 'warning'
       if (s === 'approve') {
         label = t('pages.assetHandover.statusApprove')
         col = 'success'
       } else if (s === 'reject') {
         label = t('pages.assetHandover.statusReject')
         col = 'error'
+      } else if (s === 'cancel') {
+        label = t('pages.assetHandover.statusCancel')
+        col = 'neutral'
       }
       return h(UBadge, { color: col, variant: 'subtle' }, () => label)
     }
@@ -317,14 +328,49 @@ function getRowItems(row: Row<AssetHandover>) {
 
   // Always can view
   actions.push({
-    label: t('common.detail' as any) || 'Detail',
+    label: t('common.detail'),
     icon: 'i-lucide-eye',
     onSelect() {
       navigateTo(`/handover/${handover.id}`)
     }
   })
 
+  // Only pending handovers can be cancelled; once approved it is locked.
+  if (handover.status === 'pending' && hasPermission('asset-handover:cancel')) {
+    actions.push({
+      label: t('pages.assetHandover.cancel'),
+      icon: 'i-lucide-ban',
+      color: 'warning' as const,
+      onSelect() {
+        selectedHandover.value = handover
+        showCancelModal.value = true
+      }
+    })
+  }
+
   return actions
+}
+
+// Cancel flow
+const selectedHandover = ref<AssetHandover | null>(null)
+const showCancelModal = ref(false)
+const isCancelling = ref(false)
+
+const handleCancel = async () => {
+  if (!selectedHandover.value) return
+  isCancelling.value = true
+  try {
+    const response = await assetHandoverService.cancel(selectedHandover.value.id)
+    if (response.success) {
+      toast.add({ title: t('pages.assetHandover.cancelSuccess'), color: 'success', icon: 'i-lucide-circle-check' })
+      showCancelModal.value = false
+      await fetchHandovers()
+    } else {
+      toast.add({ title: response.message || 'Error occurred', color: 'error', icon: 'i-lucide-circle-alert' })
+    }
+  } finally {
+    isCancelling.value = false
+  }
 }
 
 onMounted(() => {

@@ -2,7 +2,7 @@ import type { Attachment } from './attachment'
 
 export type TransactionType = 'serah_terima' | 'peminjaman' | 'pengembalian'
 export type HandoverCategory = 'inventaris_kantor' | 'aset_program_cicilan'
-export type HandoverStatus = 'pending' | 'approve' | 'reject'
+export type HandoverStatus = 'pending' | 'approve' | 'reject' | 'cancel'
 
 export interface AssetHandoverItem {
   id: number
@@ -58,7 +58,6 @@ export interface CreateAssetHandoverPayload {
   date?: string | null
   transactionType: TransactionType
   category: HandoverCategory
-  purpose?: string | null
   estimatedReturnDate?: string | null
   note?: string | null
   items: HandoverItemPayload[]

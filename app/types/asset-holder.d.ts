@@ -40,7 +40,7 @@ export interface AssetHolder {
     status: string
     transactionType: string
     category: string
-    purpose: string | null
+    note: string | null
     estimatedReturnDate: string | null
     createdAt: string
   } | null

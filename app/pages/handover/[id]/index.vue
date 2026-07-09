@@ -21,14 +21,22 @@
     </UCard>
 
     <template v-else-if="handover">
-      <!-- Top bar: back -->
-      <div class="w-full">
+      <!-- Top bar: back + actions -->
+      <div class="w-full flex items-center justify-between gap-2">
         <UButton
           :label="$t('common.back')"
           to="/handover"
           color="neutral"
           icon="i-lucide-arrow-left"
           variant="link"
+        />
+        <UButton
+          v-if="canCancel"
+          :label="$t('pages.assetHandover.cancel')"
+          color="warning"
+          variant="soft"
+          icon="i-lucide-ban"
+          @click="() => { showCancelModal = true }"
         />
       </div>
 
@@ -94,9 +102,9 @@
                 <span class="text-sm text-neutral-900 font-medium">{{ $t(`pages.assetHandover.types.${handover.category}`) }}</span>
               </div>
 
-              <!-- Purpose -->
+              <!-- Note -->
               <div>
-                <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.assetHandover.form.purpose') }}</span>
+                <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.assetHandover.form.note') }}</span>
                 <span class="text-sm text-neutral-900 font-medium whitespace-pre-line">{{ handover.note || '-' }}</span>
               </div>
 
@@ -216,6 +224,13 @@
       </div>
     </template>
 
+    <!-- Cancel Confirmation Modal -->
+    <HandoverCancelModal
+      v-model="showCancelModal"
+      :loading="isCancelling"
+      @confirm="handleCancel"
+    />
+
     <!-- Lightbox Modal -->
     <Lightbox />
   </div>
@@ -233,9 +248,18 @@ const route = useRoute()
 const { t } = useI18n()
 const toast = useToast()
 const { openLightbox } = useLightbox()
+const { hasPermission } = useAuth()
 
 const handover = ref<AssetHandover | null>(null)
 const isLoading = ref(true)
+
+const showCancelModal = ref(false)
+const isCancelling = ref(false)
+
+// Only pending handovers can be cancelled; once approved it is locked.
+const canCancel = computed(() =>
+  handover.value?.status === 'pending' && hasPermission('asset-handover:cancel')
+)
 
 // Load document details
 const fetchDetail = async () => {
@@ -255,10 +279,11 @@ const fetchDetail = async () => {
 }
 
 // Status badge visual decorations
-const handoverStatusColor = computed<'warning' | 'success' | 'error'>(() => {
+const handoverStatusColor = computed<'warning' | 'success' | 'error' | 'neutral'>(() => {
   const s = handover.value?.status
   if (s === 'approve') return 'success'
   if (s === 'reject') return 'error'
+  if (s === 'cancel') return 'neutral'
   return 'warning'
 })
 
@@ -266,8 +291,27 @@ const handoverStatusLabel = computed(() => {
   const s = handover.value?.status
   if (s === 'approve') return t('pages.assetHandover.statusApprove')
   if (s === 'reject') return t('pages.assetHandover.statusReject')
+  if (s === 'cancel') return t('pages.assetHandover.statusCancel')
   return t('pages.assetHandover.statusPending')
 })
+
+// Cancel a pending handover
+const handleCancel = async () => {
+  if (!handover.value) return
+  isCancelling.value = true
+  try {
+    const response = await assetHandoverService.cancel(handover.value.id)
+    if (response.success) {
+      toast.add({ title: t('pages.assetHandover.cancelSuccess'), color: 'success', icon: 'i-lucide-circle-check' })
+      showCancelModal.value = false
+      await fetchDetail()
+    } else {
+      toast.add({ title: response.message || 'Error occurred', color: 'error', icon: 'i-lucide-circle-alert' })
+    }
+  } finally {
+    isCancelling.value = false
+  }
+}
 
 onMounted(() => {
   fetchDetail()

@@ -61,6 +61,19 @@ export class AssetHandoverService {
       return handleServiceError(error)
     }
   }
+
+  async cancel(id: number): Promise<ApiResponse<AssetHandover>> {
+    try {
+      const response = await apiService.client.post<ApiResponse<AssetHandover>>(
+        `/asset-handover/${id}/cancel`,
+        {},
+        this.authHeaders
+      )
+      return response.data
+    } catch (error: any) {
+      return handleServiceError(error)
+    }
+  }
 }
 
 export const assetHandoverService = new AssetHandoverService()

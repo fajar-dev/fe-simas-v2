@@ -67,9 +67,9 @@
               />
             </UFormField>
 
-            <!-- Purpose -->
-            <UFormField :label="$t('pages.assetHandover.form.purpose')" name="note">
-              <UTextarea v-model="form.note" :placeholder="$t('pages.assetHandover.form.purposePlaceholder')" class="w-full" :rows="3" />
+            <!-- Note -->
+            <UFormField :label="$t('pages.assetHandover.form.note')" name="note">
+              <UTextarea v-model="form.note" :placeholder="$t('pages.assetHandover.form.notePlaceholder')" class="w-full" :rows="3" />
             </UFormField>
 
             <!-- Estimated Return Date -->
