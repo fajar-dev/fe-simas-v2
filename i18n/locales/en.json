@@ -59,7 +59,9 @@
     "model": "Model",
     "submit": "Submit",
     "labels": "Labels",
-    "customLabels": "Custom Labels"
+    "customLabels": "Custom Labels",
+    "actions": "Actions",
+    "edit": "Edit"
   },
 
   "nav": {
@@ -76,7 +78,8 @@
     "searchAsset": "Search Asset",
     "handover": "Handover",
     "feedback": "Feedback",
-    "capturing": "Capturing..."
+    "capturing": "Capturing...",
+    "inventory": "Inventory"
   },
 
   "component": {
@@ -1153,6 +1156,99 @@
         "notHeld": "This item is not currently held by anyone.",
         "notHeldByEmployee": "This item is not held by the selected employee.",
         "added": "Item added."
+      },
+      "itemKind": {
+        "label": "Item Type",
+        "asset": "Asset",
+        "stock": "Stock"
+      },
+      "stock": {
+        "addItem": "Add Item",
+        "empty": "No stock items added yet.",
+        "required": "At least one stock item is required"
+      }
+    },
+    "inventory": {
+      "item": {
+        "title": "Inventory",
+        "description": "Manage inventory items",
+        "add": "Add Inventory",
+        "addTitle": "Add Inventory",
+        "editTitle": "Edit Inventory",
+        "searchPlaceholder": "Search inventory..."
+      },
+      "variant": {
+        "title": "Variant",
+        "manageTitle": "Manage Variants",
+        "empty": "No variants yet.",
+        "add": "Add Variant",
+        "unit": "Unit"
+      },
+      "condition": {
+        "label": "Condition",
+        "new": "New",
+        "used": "Used"
+      },
+      "entry": {
+        "title": "Stock Entry",
+        "description": "Fill in new & used stock per variant",
+        "selectBranch": "Select branch",
+        "selectProduct": "Select product",
+        "pickFirst": "Select a branch and product first.",
+        "noVariants": "This product has no variants.",
+        "success": "Stock saved!",
+        "save": "Save Stock"
+      },
+      "monitor": {
+        "title": "Stock",
+        "description": "Monitor stock across branches",
+        "quantity": "Quantity"
+      },
+      "transfer": {
+        "title": "Stock Transfer",
+        "description": "Move stock between branches",
+        "fromBranch": "From Branch",
+        "toBranch": "To Branch",
+        "selectBranch": "Select branch",
+        "sameBranch": "Source and destination must be different.",
+        "pickFirst": "Select source branch and product first.",
+        "available": "available",
+        "notePlaceholder": "Note (optional)",
+        "submit": "Transfer",
+        "success": "Stock transferred!",
+        "exceedAvailable": "\"{name}\" exceeds available stock"
+      },
+      "detail": {
+        "open": "Open Detail"
+      },
+      "tabs": {
+        "balance": "Variants & Stock",
+        "transfer": "Transfer",
+        "holder": "Assign / Return",
+        "movement": "Movements"
+      },
+      "holder": {
+        "activeOnly": "Active only",
+        "assign": "Assign",
+        "assignTitle": "Assign Stock to Employee",
+        "selectEmployee": "Select employee",
+        "selectVariant": "Select variant",
+        "quantity": "Quantity",
+        "remaining": "Remaining",
+        "return": "Return",
+        "returnTitle": "Return Stock",
+        "returnHint": "Returned stock always comes back as Used stock.",
+        "assignSuccess": "Stock assigned!",
+        "returnSuccess": "Stock returned!",
+        "exceedRemaining": "Exceeds the remaining held quantity"
+      },
+      "movement": {
+        "type": "Type",
+        "entry": "Entry",
+        "transferOut": "Transfer Out",
+        "transferIn": "Transfer In",
+        "assignOut": "Assigned",
+        "returnIn": "Returned"
       }
     }
   }

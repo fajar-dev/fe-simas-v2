@@ -59,7 +59,9 @@
     "model": "Model",
     "submit": "Submit",
     "labels": "Label",
-    "customLabels": "Label Kustom"
+    "customLabels": "Label Kustom",
+    "actions": "Aksi",
+    "edit": "Edit"
   },
 
   "nav": {
@@ -76,7 +78,8 @@
     "searchAsset": "Cari Aset",
     "handover": "Serah Terima",
     "feedback": "Feedback",
-    "capturing": "Menangkap..."
+    "capturing": "Menangkap...",
+    "inventory": "Persediaan"
   },
 
   "component": {
@@ -1153,6 +1156,99 @@
         "notHeld": "Barang ini sedang tidak dipegang siapa pun.",
         "notHeldByEmployee": "Barang ini tidak dipegang oleh karyawan yang dipilih.",
         "added": "Barang ditambahkan."
+      },
+      "itemKind": {
+        "label": "Jenis Item",
+        "asset": "Aset",
+        "stock": "Stok"
+      },
+      "stock": {
+        "addItem": "Tambah Item",
+        "empty": "Belum ada item stok.",
+        "required": "Minimal satu item stok wajib diisi"
+      }
+    },
+    "inventory": {
+      "item": {
+        "title": "Persediaan",
+        "description": "Kelola persediaan",
+        "add": "Tambah Persediaan",
+        "addTitle": "Tambah Persediaan",
+        "editTitle": "Edit Persediaan",
+        "searchPlaceholder": "Cari persediaan..."
+      },
+      "variant": {
+        "title": "Varian",
+        "manageTitle": "Kelola Varian",
+        "empty": "Belum ada varian.",
+        "add": "Tambah Varian",
+        "unit": "Satuan"
+      },
+      "condition": {
+        "label": "Kondisi",
+        "new": "Baru",
+        "used": "Bekas"
+      },
+      "entry": {
+        "title": "Input Stok",
+        "description": "Isi jumlah stok baru & bekas per varian",
+        "selectBranch": "Pilih cabang",
+        "selectProduct": "Pilih produk",
+        "pickFirst": "Pilih cabang dan produk terlebih dahulu.",
+        "noVariants": "Produk ini belum punya varian.",
+        "success": "Stok disimpan!",
+        "save": "Simpan Stok"
+      },
+      "monitor": {
+        "title": "Stok",
+        "description": "Pantau stok lintas cabang",
+        "quantity": "Jumlah"
+      },
+      "transfer": {
+        "title": "Transfer Stok",
+        "description": "Pindahkan stok antar cabang",
+        "fromBranch": "Cabang Asal",
+        "toBranch": "Cabang Tujuan",
+        "selectBranch": "Pilih cabang",
+        "sameBranch": "Cabang asal dan tujuan harus berbeda.",
+        "pickFirst": "Pilih cabang asal dan produk terlebih dahulu.",
+        "available": "tersedia",
+        "notePlaceholder": "Catatan (opsional)",
+        "submit": "Transfer",
+        "success": "Stok berhasil ditransfer!",
+        "exceedAvailable": "\"{name}\" melebihi stok tersedia"
+      },
+      "detail": {
+        "open": "Buka Detail"
+      },
+      "tabs": {
+        "balance": "Varian & Stok",
+        "transfer": "Transfer",
+        "holder": "Assign / Return",
+        "movement": "Pergerakan"
+      },
+      "holder": {
+        "activeOnly": "Hanya aktif",
+        "assign": "Assign",
+        "assignTitle": "Assign Stok ke Karyawan",
+        "selectEmployee": "Pilih karyawan",
+        "selectVariant": "Pilih varian",
+        "quantity": "Jumlah",
+        "remaining": "Sisa",
+        "return": "Return",
+        "returnTitle": "Return Stok",
+        "returnHint": "Stok yang dikembalikan selalu masuk sebagai stok Bekas.",
+        "assignSuccess": "Stok berhasil di-assign!",
+        "returnSuccess": "Stok berhasil dikembalikan!",
+        "exceedRemaining": "Melebihi sisa yang dipegang"
+      },
+      "movement": {
+        "type": "Tipe",
+        "entry": "Input",
+        "transferOut": "Transfer Keluar",
+        "transferIn": "Transfer Masuk",
+        "assignOut": "Di-assign",
+        "returnIn": "Dikembalikan"
       }
     }
   }

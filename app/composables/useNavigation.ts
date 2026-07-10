@@ -41,6 +41,12 @@ export const useNavigation = () => {
           icon: 'i-lucide-file-box',
           permission: 'handover:read'
         },
+        {
+          label: t('nav.inventory'),
+          to: '/inventory',
+          icon: 'i-lucide-layers',
+          permission: 'inventory:read'
+        },
       ]
     },
     {

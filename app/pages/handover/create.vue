@@ -94,6 +94,19 @@
               />
             </UFormField>
 
+            <!-- Item Kind: Asset or Stock -->
+            <UFormField
+              :label="$t('pages.handover.itemKind.label')"
+              name="itemKind"
+              required
+            >
+              <USelect
+                v-model="form.itemKind"
+                :items="itemKindOptions"
+                class="w-full"
+              />
+            </UFormField>
+
             <!-- Note -->
             <UFormField
               :label="$t('pages.handover.form.note')"
@@ -123,6 +136,7 @@
               </h3>
 
               <UButton
+                v-if="form.itemKind === 'asset'"
                 type="button"
                 color="primary"
                 variant="soft"
@@ -135,9 +149,16 @@
               </UButton>
             </div>
 
+            <!-- Stock item builder -->
+            <HandoverStockItems
+              v-if="form.itemKind === 'stock'"
+              v-model="form.stockItems"
+              :transaction-type="form.transactionType"
+            />
+
             <!-- Lookup error -->
             <UAlert
-              v-if="lookupError"
+              v-if="form.itemKind === 'asset' && lookupError"
               color="error"
               variant="soft"
               icon="i-lucide-triangle-alert"
@@ -147,7 +168,7 @@
 
             <!-- Empty state -->
             <div
-              v-if="form.items.length === 0"
+              v-if="form.itemKind === 'asset' && form.items.length === 0"
               class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-neutral-200 rounded-lg"
             >
               <UIcon
@@ -169,7 +190,7 @@
 
             <!-- Scanned Items Rows -->
             <div
-              v-else
+              v-else-if="form.itemKind === 'asset'"
               class="space-y-3"
             >
               <div
@@ -278,6 +299,7 @@ import { handoverFieldService } from '~/services/handover-field-service'
 import { assetService } from '~/services/asset-service'
 import { employeeService } from '~/services/employee-service'
 import type { HandoverField } from '~/types/handover-field'
+import type { HandoverStockRow } from '~/components/handover/StockItems.vue'
 
 definePageMeta({
   layout: 'dashboard'
@@ -295,12 +317,19 @@ const transactionTypeOptions = computed(() =>
 // Form state
 const form = reactive({
   transactionType: 'assign' as TransactionType,
+  itemKind: 'asset' as 'asset' | 'stock',
   note: '',
   receivedById: undefined as unknown as number,
   handedOverById: undefined as unknown as number,
   customFields: {} as Record<string, string | null>,
-  items: [] as { assetId: number, name: string, code: string, image: string | null, note: string }[]
+  items: [] as { assetId: number, name: string, code: string, image: string | null, note: string }[],
+  stockItems: [] as HandoverStockRow[]
 })
+
+const itemKindOptions = computed(() => [
+  { label: t('pages.handover.itemKind.asset'), value: 'asset' },
+  { label: t('pages.handover.itemKind.stock'), value: 'stock' }
+])
 
 // Custom fields configured for the selected transaction type.
 const customFieldDefs = ref<HandoverField[]>([])
@@ -335,9 +364,15 @@ const onScanned = (code: string) => {
 // employee, so reset the item list whenever either changes to avoid mismatches.
 watch(() => form.transactionType, (type) => {
   form.items = []
+  form.stockItems = []
   lookupError.value = null
   form.customFields = {}
   fetchCustomFields(type)
+})
+watch(() => form.itemKind, () => {
+  form.items = []
+  form.stockItems = []
+  lookupError.value = null
 })
 watch(() => form.handedOverById, () => {
   if (form.transactionType === 'return') {
@@ -439,15 +474,20 @@ const removeItemRow = (index: number) => {
 // Zod schema for form validation
 const schema = z.object({
   transactionType: z.enum(HANDOVER_TRANSACTION_TYPES),
+  itemKind: z.enum(['asset', 'stock']),
   note: z.string().optional().or(z.literal('')),
   receivedById: z.number().int().positive(t('pages.handover.form.validation.receivedByRequired')),
   handedOverById: z.number().int().positive(t('pages.handover.form.validation.handedOverByRequired')),
-  items: z.array(
-    z.object({
-      assetId: z.number().int().positive(t('pages.handover.form.validation.itemRequired')),
-      note: z.string().optional().nullable()
-    })
-  ).min(1, t('pages.handover.form.validation.itemsRequired'))
+  items: z.array(z.object({ assetId: z.number().int().positive(), note: z.string().optional().nullable() })).optional(),
+  stockItems: z.array(z.object({ variantId: z.number(), branchId: z.number(), condition: z.enum(['new', 'used']), quantity: z.number().int().min(1) })).optional()
+}).superRefine((data, ctx) => {
+  if (data.itemKind === 'stock') {
+    if (!data.stockItems || data.stockItems.length === 0) {
+      ctx.addIssue({ code: 'custom', path: ['stockItems'], message: t('pages.handover.stock.required') })
+    }
+  } else if (!data.items || data.items.length === 0) {
+    ctx.addIssue({ code: 'custom', path: ['items'], message: t('pages.handover.form.validation.itemsRequired') })
+  }
 })
 
 // Dropdown data sourcing
@@ -504,16 +544,18 @@ const handleSubmit = async () => {
 
   isSubmitting.value = true
   try {
-    const payload = {
+    const payload: any = {
       receivedById: form.receivedById,
       handedOverById: form.handedOverById,
       transactionType: form.transactionType,
+      itemKind: form.itemKind,
       note: form.note || null,
-      customFields: form.customFields,
-      items: form.items.map(item => ({
-        assetId: item.assetId,
-        note: item.note || null
-      }))
+      customFields: form.customFields
+    }
+    if (form.itemKind === 'stock') {
+      payload.stockItems = form.stockItems.map(r => ({ variantId: r.variantId, branchId: r.branchId, condition: r.condition, quantity: r.quantity, note: null }))
+    } else {
+      payload.items = form.items.map(item => ({ assetId: item.assetId, note: item.note || null }))
     }
 
     const response = await handoverService.create(payload)

@@ -221,11 +221,12 @@
               class="w-3.5 h-3.5"
             />
             {{ $t('pages.handover.itemInfo') }}
-            <span class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium normal-case tracking-normal">{{ handover.items.length }}</span>
+            <span class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium normal-case tracking-normal">{{ handover.itemKind === 'stock' ? handover.stockItems.length : handover.items.length }}</span>
           </h4>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <!-- Asset items -->
+        <div v-if="handover.itemKind !== 'stock'" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div
             v-for="item in handover.items"
             :key="item.id"
@@ -267,9 +268,47 @@
             </div>
           </div>
 
-          <!-- Empty items -->
           <div
             v-if="!handover.items.length"
+            class="col-span-full text-center text-sm text-neutral-400 py-8"
+          >
+            {{ $t('common.noData') }}
+          </div>
+        </div>
+
+        <!-- Stock items -->
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div
+            v-for="item in handover.stockItems"
+            :key="item.id"
+            class="border border-neutral-200 rounded-lg p-3 flex flex-col gap-2.5"
+          >
+            <div class="flex items-start gap-3">
+              <div class="w-11 h-11 bg-primary/10 text-primary rounded-lg flex items-center justify-center shrink-0">
+                <UIcon name="i-lucide-layers" class="w-5 h-5" />
+              </div>
+              <div class="min-w-0 flex-1">
+                <span class="text-sm font-semibold text-neutral-900 block truncate">{{ item.variant?.product?.name || '-' }} — {{ item.variant?.name || '-' }}</span>
+                <span class="text-xs text-neutral-500 mt-0.5 block truncate">
+                  {{ item.branch?.name || '-' }} ·
+                  <UBadge :color="item.condition === 'new' ? 'success' : 'warning'" variant="subtle" size="sm">
+                    {{ item.condition === 'new' ? $t('pages.inventory.condition.new') : $t('pages.inventory.condition.used') }}
+                  </UBadge>
+                  · {{ item.quantity }} {{ item.variant?.unit || '' }}
+                </span>
+              </div>
+            </div>
+
+            <div
+              v-if="item.note"
+              class="text-xs text-neutral-600 bg-neutral-50 border border-neutral-100 rounded-lg p-2 whitespace-pre-line"
+            >
+              {{ item.note }}
+            </div>
+          </div>
+
+          <div
+            v-if="!handover.stockItems.length"
             class="col-span-full text-center text-sm text-neutral-400 py-8"
           >
             {{ $t('common.noData') }}
