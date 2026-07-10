@@ -106,6 +106,9 @@
                 :rows="3"
               />
             </UFormField>
+
+            <!-- Configurable custom fields for the selected type -->
+            <HandoverCustomFields v-model="form.customFields" :fields="customFieldDefs" />
           </div>
 
           <!-- ═══ Column 2 & 3: Items Listing ═══ -->
@@ -271,8 +274,10 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import { handoverService } from '~/services/handover-service'
+import { handoverFieldService } from '~/services/handover-field-service'
 import { assetService } from '~/services/asset-service'
 import { employeeService } from '~/services/employee-service'
+import type { HandoverField } from '~/types/handover-field'
 
 definePageMeta({
   layout: 'dashboard'
@@ -293,8 +298,16 @@ const form = reactive({
   note: '',
   receivedById: undefined as unknown as number,
   handedOverById: undefined as unknown as number,
+  customFields: {} as Record<string, string | null>,
   items: [] as { assetId: number, name: string, code: string, image: string | null, note: string }[]
 })
+
+// Custom fields configured for the selected transaction type.
+const customFieldDefs = ref<HandoverField[]>([])
+const fetchCustomFields = async (type: TransactionType) => {
+  const res = await handoverFieldService.getByType(type)
+  customFieldDefs.value = res.success && res.data ? res.data : []
+}
 
 // Visual bindings for select menu states
 const selectedEmployee = ref<{ label: string, value: number, avatar?: any } | undefined>(undefined)
@@ -320,9 +333,11 @@ const onScanned = (code: string) => {
 
 // Scanned assets depend on the transaction type and (for returns) the returning
 // employee, so reset the item list whenever either changes to avoid mismatches.
-watch(() => form.transactionType, () => {
+watch(() => form.transactionType, (type) => {
   form.items = []
   lookupError.value = null
+  form.customFields = {}
+  fetchCustomFields(type)
 })
 watch(() => form.handedOverById, () => {
   if (form.transactionType === 'return') {
@@ -480,6 +495,13 @@ const loadMasterData = async () => {
 
 // Handle form submit
 const handleSubmit = async () => {
+  // Client-side check for required custom fields (server enforces too).
+  const missing = customFieldDefs.value.find(f => f.required && !form.customFields[f.key])
+  if (missing) {
+    toast.add({ title: t('pages.handover.fieldSettings.requiredMissing', { label: missing.label }), color: 'error', icon: 'i-lucide-circle-alert' })
+    return
+  }
+
   isSubmitting.value = true
   try {
     const payload = {
@@ -487,6 +509,7 @@ const handleSubmit = async () => {
       handedOverById: form.handedOverById,
       transactionType: form.transactionType,
       note: form.note || null,
+      customFields: form.customFields,
       items: form.items.map(item => ({
         assetId: item.assetId,
         note: item.note || null
@@ -517,5 +540,6 @@ const handleSubmit = async () => {
 
 onMounted(() => {
   loadMasterData()
+  fetchCustomFields(form.transactionType)
 })
 </script>

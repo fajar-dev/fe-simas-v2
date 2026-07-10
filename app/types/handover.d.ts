@@ -1,4 +1,5 @@
 import type { Attachment } from './attachment'
+import type { HandoverCustomField } from './handover-field'
 import type { TransactionType, HandoverStatus } from '../utils/enums'
 
 export type { TransactionType, HandoverStatus }
@@ -33,6 +34,7 @@ export interface Handover {
   transactionType: TransactionType
   status: HandoverStatus
   note: string | null
+  customFields: HandoverCustomField[]
   parentHandover: {
     id: number
     transactionType: TransactionType
@@ -60,6 +62,7 @@ export interface CreateHandoverPayload {
   date?: string | null
   transactionType: TransactionType
   note?: string | null
+  customFields?: Record<string, string | number | null>
   items: HandoverItemPayload[]
 }
 

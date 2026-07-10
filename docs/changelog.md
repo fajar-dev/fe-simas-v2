@@ -9,6 +9,7 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 ## [Unreleased] — 2026-07-10
 
 ### Added
+- **Custom field handover**: tombol gear (ikon `i-lucide-settings`) di samping "Buat Serah Terima" membuka modal pengaturan (tab Assign/Return) untuk membangun field custom — tipe text/number/date/datetime/select/radio, opsi custom, required (validasi Zod, alert error inline). Di form create, field muncul sesuai tipe transaksi yang dipilih (required tampil asterisk merah seperti form lain) dan nilainya di-snapshot ke handover; ditampilkan di halaman detail. Ukuran modal disamakan dengan modal lain (`sm:max-w-md`).
 - **Serah terima pengembalian (return handover)**: form create kini type-aware — untuk `return`, hanya aset yang active holder-nya = karyawan penyerah terpilih yang bisa dipindai. Halaman detail menampilkan tautan handover asal ("Dikembalikan Dari").
 - **Blokir ubah status saat aset terikat handover**: modal Ubah Status (single & bulk) menampilkan alert merah + submit disabled bila aset dipegang via serah terima atau sedang dalam pending handover; tombol Return manual di-disable untuk holder dari serah terima. Composable baru `usePendingHandoverAssets`.
 - **Redesign halaman detail handover** agar konsisten dengan gaya detail lain (satu `UCard`, grid field standar, chip lampiran, card Items terpisah).

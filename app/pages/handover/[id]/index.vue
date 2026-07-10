@@ -176,6 +176,16 @@
             </div>
           </div>
 
+          <!-- Custom fields snapshot -->
+          <div
+            v-for="field in handover.customFields"
+            :key="field.key"
+            class="col-span-12 sm:col-span-6 md:col-span-4"
+          >
+            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ field.label }}</span>
+            <div class="text-sm text-neutral-900 font-medium">{{ field.value || '-' }}</div>
+          </div>
+
           <!-- Attachments (full width) -->
           <div
             v-if="handover.attachments?.length"

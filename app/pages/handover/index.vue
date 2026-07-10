@@ -48,18 +48,34 @@
       </template>
 
       <!-- Actions slot -->
-      <template #actions v-if="hasPermission('handover:create')">
-        <UButton
-          color="primary"
-          variant="solid"
-          icon="i-lucide-plus"
-          to="/handover/create"
-          class="w-full sm:w-auto justify-center shadow-sm hover:shadow-md transition-all duration-200"
-        >
-          {{ $t('pages.handover.addHandover') }}
-        </UButton>
+      <template #actions v-if="hasPermission('handover:create') || hasPermission('handover-field:manage')">
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <UTooltip v-if="hasPermission('handover-field:manage')" :text="$t('pages.handover.fieldSettings.title')">
+            <UButton
+              color="neutral"
+              variant="subtle"
+              icon="i-lucide-settings"
+              square
+              aria-label="Custom fields"
+              @click="() => { showFieldSettings = true }"
+            />
+          </UTooltip>
+          <UButton
+            v-if="hasPermission('handover:create')"
+            color="primary"
+            variant="solid"
+            icon="i-lucide-plus"
+            to="/handover/create"
+            class="flex-1 sm:flex-none justify-center shadow-sm hover:shadow-md transition-all duration-200"
+          >
+            {{ $t('pages.handover.addHandover') }}
+          </UButton>
+        </div>
       </template>
     </DataTable>
+
+    <!-- Custom Field Settings Modal -->
+    <HandoverFieldSettingsModal v-model="showFieldSettings" />
 
     <!-- Cancel Confirmation Modal -->
     <HandoverCancelModal
@@ -341,6 +357,7 @@ function getRowItems(row: Row<Handover>) {
 const selectedHandover = ref<Handover | null>(null)
 const showCancelModal = ref(false)
 const isCancelling = ref(false)
+const showFieldSettings = ref(false)
 
 const handleCancel = async () => {
   if (!selectedHandover.value) return
