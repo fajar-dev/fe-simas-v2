@@ -1,15 +1,5 @@
 <template>
   <div class="space-y-4">
-    <div class="flex items-center justify-end">
-      <UButton
-        v-if="canTransfer"
-        icon="i-lucide-arrow-left-right"
-        color="primary"
-        :label="$t('pages.inventory.transfer.submit')"
-        @click="() => { showModal = true }"
-      />
-    </div>
-
     <DataTable
       v-model:page="page"
       v-model:perPage="perPage"
@@ -21,7 +11,17 @@
       :total="meta.total"
       :searchable="false"
       table-class="min-w-[820px]"
-    />
+    >
+      <template #actions>
+        <UButton
+          v-if="canTransfer"
+          icon="i-lucide-arrow-left-right"
+          color="primary"
+          :label="$t('pages.inventory.transfer.submit')"
+          @click="() => { showModal = true }"
+        />
+      </template>
+    </DataTable>
 
     <InventoryTransferModal v-model="showModal" :inventory-id="inventoryId" @done="fetchTransfers" />
   </div>
@@ -40,7 +40,6 @@ const inventoryId = Number(route.params.id)
 const canTransfer = useAuth().hasPermission('inventory-stock:transfer')
 
 const UIcon = resolveComponent('UIcon')
-const UBadge = resolveComponent('UBadge')
 
 const data = ref<InventoryStockTransfer[]>([])
 const isLoading = ref(false)
@@ -74,7 +73,7 @@ const columns: TableColumn<InventoryStockTransfer>[] = [
   { id: 'items', header: t('pages.inventory.variant.title'), cell: ({ row }) => h('div', { class: 'flex flex-col gap-1' }, (row.original.items || []).map(it =>
     h('div', { class: 'flex items-center gap-2 text-sm' }, [
       h('span', { class: 'text-neutral-900' }, it.variant?.name || '-'),
-      h(UBadge, { color: it.condition === 'new' ? 'success' : 'warning', variant: 'subtle', size: 'sm' }, () => it.condition === 'new' ? t('pages.inventory.condition.new') : t('pages.inventory.condition.used')),
+      h('span', { class: it.condition === 'new' ? 'text-emerald-600' : 'text-amber-600' }, it.condition === 'new' ? t('pages.inventory.condition.new') : t('pages.inventory.condition.used')),
       h('span', { class: 'font-semibold text-neutral-700' }, `× ${it.quantity}`)
     ])
   )) },
