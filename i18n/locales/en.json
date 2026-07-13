@@ -1239,7 +1239,7 @@
       "tabs": {
         "balance": "Variants & Stock",
         "transfer": "Transfer",
-        "holder": "Assign / Return"
+        "holder": "Assignment / Return"
       },
       "holder": {
         "activeOnly": "Active only",
@@ -1261,8 +1261,8 @@
         "entry": "Entry",
         "transferOut": "Transfer Out",
         "transferIn": "Transfer In",
-        "assignOut": "Assigned",
-        "returnIn": "Returned"
+        "assignOut": "Assignment",
+        "returnIn": "Return"
       },
       "unit": {
         "label": "Unit",

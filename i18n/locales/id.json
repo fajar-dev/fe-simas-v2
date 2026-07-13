@@ -1239,20 +1239,20 @@
       "tabs": {
         "balance": "Varian & Stok",
         "transfer": "Transfer",
-        "holder": "Assign / Return"
+        "holder": "Penetapan / Pengembalian"
       },
       "holder": {
         "activeOnly": "Hanya aktif",
-        "assign": "Assign",
-        "assignTitle": "Assign Stok ke Karyawan",
+        "assign": "Penetapan",
+        "assignTitle": "Penetapan Stok ke Karyawan",
         "selectEmployee": "Pilih karyawan",
         "selectVariant": "Pilih varian",
         "quantity": "Jumlah",
         "remaining": "Sisa",
-        "return": "Return",
-        "returnTitle": "Return Stok",
+        "return": "Pengembalian",
+        "returnTitle": "Pengembalian Stok",
         "returnHint": "Stok yang dikembalikan selalu masuk sebagai stok Bekas.",
-        "assignSuccess": "Stok berhasil di-assign!",
+        "assignSuccess": "Stok berhasil ditetapkan!",
         "returnSuccess": "Stok berhasil dikembalikan!",
         "exceedRemaining": "Melebihi sisa yang dipegang"
       },
@@ -1261,8 +1261,8 @@
         "entry": "Input",
         "transferOut": "Transfer Keluar",
         "transferIn": "Transfer Masuk",
-        "assignOut": "Di-assign",
-        "returnIn": "Dikembalikan"
+        "assignOut": "Penetapan",
+        "returnIn": "Pengembalian"
       },
       "unit": {
         "label": "Satuan",
