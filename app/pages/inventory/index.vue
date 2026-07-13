@@ -37,8 +37,8 @@
       </template>
     </DataTable>
 
-    <InventoryVariantManagerModal v-model="showVariantModal" :product="selectedProduct" @changed="fetchProducts" />
-    <DeleteModal v-model="showDeleteModal" :item-name="selectedProduct?.name" :loading="deleting" @confirm="confirmDelete" />
+    <InventoryVariantManagerModal v-model="showVariantModal" :inventory="selectedItem" @changed="fetchItems" />
+    <DeleteModal v-model="showDeleteModal" :item-name="selectedItem?.name" :loading="deleting" @confirm="confirmDelete" />
     <!-- Lightbox Modal -->
     <Lightbox />
   </div>
@@ -66,7 +66,7 @@ const data = ref<Inventory[]>([])
 const isLoading = ref(false)
 const meta = reactive({ total: 0, from: 0, to: 0 })
 
-const selectedProduct = ref<Inventory | null>(null)
+const selectedItem = ref<Inventory | null>(null)
 const showVariantModal = ref(false)
 const showDeleteModal = ref(false)
 const deleting = ref(false)
@@ -74,9 +74,9 @@ const deleting = ref(false)
 const availableLabelKeys = ref<string[]>([])
 const activeLabelColumns = ref<string[]>([])
 
-const { search, page, perPage, sortBy, order, sortHeader } = useTableQuery(() => fetchProducts(), { defaultSortBy: 'createdAt', defaultOrder: 'DESC' })
+const { search, page, perPage, sortBy, order, sortHeader } = useTableQuery(() => fetchItems(), { defaultSortBy: 'createdAt', defaultOrder: 'DESC' })
 
-const fetchProducts = async () => {
+const fetchItems = async () => {
   isLoading.value = true
   try {
     const res = await inventoryService.getAll(page.value, perPage.value, search.value, sortBy.value, order.value)
@@ -169,34 +169,34 @@ const columns = computed<TableColumn<Inventory>[]>(() => {
 })
 
 function getRowItems(row: Row<Inventory>) {
-  const product = row.original
+  const item = row.original
   const items: any[] = [{
     label: t('pages.inventory.detail.open'),
     icon: 'i-lucide-eye',
-    onSelect() { navigateTo(`/inventory/${product.id}`) }
+    onSelect() { navigateTo(`/inventory/${item.id}`) }
   }, {
     label: t('pages.inventory.variant.manageTitle'),
     icon: 'i-lucide-layers',
-    onSelect() { selectedProduct.value = product; showVariantModal.value = true }
+    onSelect() { selectedItem.value = item; showVariantModal.value = true }
   }]
   if (hasPermission('inventory:update')) {
-    items.push({ label: t('common.edit'), icon: 'i-lucide-edit-3', onSelect() { navigateTo(`/inventory/${product.id}/edit`) } })
+    items.push({ label: t('common.edit'), icon: 'i-lucide-edit-3', onSelect() { navigateTo(`/inventory/${item.id}/edit`) } })
   }
   if (hasPermission('inventory:delete')) {
-    items.push({ label: t('common.delete'), icon: 'i-lucide-trash-2', color: 'error' as const, onSelect() { selectedProduct.value = product; showDeleteModal.value = true } })
+    items.push({ label: t('common.delete'), icon: 'i-lucide-trash-2', color: 'error' as const, onSelect() { selectedItem.value = item; showDeleteModal.value = true } })
   }
   return items
 }
 
 const confirmDelete = async () => {
-  if (!selectedProduct.value) return
+  if (!selectedItem.value) return
   deleting.value = true
   try {
-    const res = await inventoryService.remove(selectedProduct.value.id)
+    const res = await inventoryService.remove(selectedItem.value.id)
     if (res.success) {
       toast.add({ title: t('common.delete'), color: 'success', icon: 'i-lucide-circle-check' })
       showDeleteModal.value = false
-      fetchProducts()
+      fetchItems()
     } else {
       toast.add({ title: res.message || 'Error occurred', color: 'error', icon: 'i-lucide-circle-alert' })
     }
@@ -208,7 +208,7 @@ const confirmDelete = async () => {
 onMounted(async () => {
   const saved = localStorage.getItem('inventory_label_columns')
   if (saved) { try { activeLabelColumns.value = JSON.parse(saved) } catch { /* ignore */ } }
-  fetchProducts()
+  fetchItems()
   const keys = await inventoryService.getLabelKeys()
   if (keys.success && keys.data) availableLabelKeys.value = keys.data
 })

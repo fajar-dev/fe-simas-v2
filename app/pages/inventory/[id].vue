@@ -17,7 +17,7 @@ const router = useRouter()
 const inventoryId = computed(() => Number(route.params.id))
 const isEdit = computed(() => route.path.endsWith('/edit'))
 
-const product = ref<Inventory | null>(null)
+const item = ref<Inventory | null>(null)
 const isLoading = ref(true)
 
 const loadData = async () => {
@@ -25,7 +25,7 @@ const loadData = async () => {
   try {
     const res = await inventoryService.getById(inventoryId.value)
     if (res.success) {
-      product.value = res.data
+      item.value = res.data
     } else {
       router.push('/inventory')
     }
@@ -36,8 +36,8 @@ const loadData = async () => {
   }
 }
 
-provide('inventoryState', { product, isLoading })
-provide('inventoryActions', { fetchProduct: loadData })
+provide('inventoryState', { item, isLoading })
+provide('inventoryActions', { fetchItem: loadData })
 
 onMounted(() => { if (!isEdit.value) loadData() })
 

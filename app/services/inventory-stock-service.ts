@@ -59,6 +59,7 @@ export class InventoryStockService {
   async getMovements(page = 1, perPage = 20, filters: { inventoryId?: number; branchId?: number; variantId?: number; condition?: StockCondition; type?: string } = {}): Promise<ApiResponse<InventoryStockMovement[]>> {
     try {
       let url = `/inventory/stock/movement?page=${page}&limit=${perPage}`
+      if (filters.inventoryId) url += `&inventoryId=${filters.inventoryId}`
       if (filters.branchId) url += `&branchId=${filters.branchId}`
       if (filters.variantId) url += `&variantId=${filters.variantId}`
       if (filters.condition) url += `&condition=${filters.condition}`

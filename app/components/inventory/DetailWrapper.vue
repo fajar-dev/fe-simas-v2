@@ -1,20 +1,41 @@
 <template>
   <div class="space-y-6">
-    <Header :title="product?.name || ''" :description="product?.code || ''" />
+    <Header :title="item?.name || ''" :description="item?.code || ''" />
 
-    <UCard v-if="isLoading" class="w-full">
-      <div class="grid grid-cols-1 sm:grid-cols-12 gap-6">
-        <div v-for="i in 6" :key="i" class="col-span-12 sm:col-span-4 space-y-2">
-          <USkeleton class="h-3 w-1/4" />
-          <USkeleton class="h-5 w-3/4" />
+  <UCard v-if="isLoading" class="w-full">
+      <div class="w-full mb-4">
+        <USkeleton class="h-8 w-20" />
+      </div>
+      <!-- Loading Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-8 items-start">
+        <USkeleton class="w-full aspect-[8/5] rounded-lg sm:col-span-4" />
+        <div class="min-w-0 w-full grid grid-cols-12 gap-6 sm:col-span-8">
+          <div v-for="i in 9" :key="i" class="col-span-12 sm:col-span-6 md:col-span-4 space-y-2">
+            <USkeleton class="h-3 w-1/4" />
+            <USkeleton class="h-5 w-3/4" />
+          </div>
+          <!-- Loading Description -->
+          <div class="col-span-12 pt-4 border-t border-neutral-100 space-y-2">
+            <USkeleton class="h-3 w-24" />
+            <USkeleton class="h-12 w-full" />
+          </div>
         </div>
       </div>
     </UCard>
 
-    <UCard v-else-if="product" class="w-full">
+    <UCard v-else-if="item" class="w-full">
       <div class="w-full mb-4 flex items-center justify-between">
         <UButton :label="$t('common.back')" color="neutral" icon="i-lucide-arrow-left" variant="link" @click="() => { navigateTo('/inventory') }" />
         <div class="flex items-center gap-2">
+          <UButton
+            v-if="hasPermission('inventory-stock:read')"
+            color="neutral"
+            variant="outline"
+            icon="i-lucide-history"
+            @click="() => { showLogDrawer = true }"
+          >
+            <span class="hidden sm:inline">{{ $t('component.inventory.logDrawer.title') }}</span>
+          </UButton>
           <UButton
             v-if="hasPermission('inventory-variant:read')"
             color="neutral"
@@ -28,7 +49,7 @@
             v-if="hasPermission('inventory:update')"
             color="primary"
             icon="i-lucide-edit"
-            @click="() => { navigateTo(`/inventory/${product!.id}/edit`) }"
+            @click="() => { navigateTo(`/inventory/${item!.id}/edit`) }"
           >
             <span class="hidden sm:inline">{{ $t('pages.inventory.item.editTitle') }}</span>
           </UButton>
@@ -37,11 +58,12 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-12 gap-8 items-start">
         <!-- Photo -->
-        <div v-if="product.image" class="w-full aspect-[8/7] overflow-hidden rounded-lg border border-neutral-200 sm:col-span-4">
-          <NuxtImg :src="product.image" :alt="product.name" class="w-full h-full object-cover" />
+        <div v-if="item.image" class="relative w-full aspect-[8/7] cursor-pointer overflow-hidden rounded-lg border border-neutral-200 group sm:col-span-4" @click="openLightbox(item.image)">
+          <NuxtImg :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
         </div>
         <div v-else class="w-full aspect-[8/7] flex flex-col items-center justify-center bg-neutral-50 border border-neutral-200 rounded-lg text-neutral-400 sm:col-span-4">
-          <UIcon name="i-lucide-package" class="w-8 h-8 mb-1" />
+          <UIcon name="i-lucide-package" class="w-8 h-8 text-neutral-400 mb-1" />
+          <span class="text-xs text-neutral-500 font-medium">{{ $t('component.asset.detailWrapper.noImage') }}</span>
         </div>
 
         <!-- Info -->
@@ -49,54 +71,54 @@
           <div class="grid grid-cols-12 gap-x-8 gap-y-6">
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.code') }}</span>
-              <div class="text-sm text-neutral-900 font-medium truncate">{{ product.code || '-' }}</div>
+              <div class="text-sm text-neutral-900 font-medium truncate">{{ item.code || '-' }}</div>
             </div>
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.inventory.unit.label') }}</span>
-              <div class="text-sm text-neutral-900 font-medium">{{ product.unit || '-' }}</div>
+              <div class="text-sm text-neutral-900 font-medium">{{ item.unit || '-' }}</div>
             </div>
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.status') }}</span>
-              <UBadge :color="product.isActive ? 'success' : 'neutral'" variant="subtle">
-                {{ product.isActive ? $t('common.active') : $t('common.inactive') }}
+              <UBadge :color="item.isActive ? 'success' : 'neutral'" variant="subtle">
+                {{ item.isActive ? $t('common.active') : $t('common.inactive') }}
               </UBadge>
             </div>
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.category') }}</span>
-              <div class="text-sm text-neutral-900 font-medium truncate">{{ product.category?.name || '-' }}</div>
+              <div class="text-sm text-neutral-900 font-medium truncate">{{ item.category?.name || '-' }}</div>
             </div>
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.subCategory') }}</span>
-              <div class="text-sm text-neutral-900 font-medium truncate">{{ product.subCategory?.name || '-' }}</div>
+              <div class="text-sm text-neutral-900 font-medium truncate">{{ item.subCategory?.name || '-' }}</div>
             </div>
 
             <!-- Created by -->
             <div class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.createdBy') }}</span>
-              <div v-if="product.createdBy" class="flex items-center gap-2 min-w-0">
-                <UAvatar :src="product.createdBy.photo || undefined" :alt="product.createdBy.name" size="xs" class="bg-primary-50 text-primary-700 shrink-0" />
-                <span class="text-sm text-neutral-900 font-medium truncate">{{ product.createdBy.name }}</span>
+              <div v-if="item.createdBy" class="flex items-center gap-2 min-w-0">
+                <UAvatar :src="item.createdBy.photo || undefined" :alt="item.createdBy.name" size="xs" class="bg-primary-50 text-primary-700 shrink-0" />
+                <span class="text-sm text-neutral-900 font-medium truncate">{{ item.createdBy.name }}</span>
               </div>
               <span v-else class="text-sm text-neutral-500">-</span>
             </div>
 
             <!-- Labels -->
-            <div v-for="label in product.labels" :key="label.id || label.key" class="col-span-12 sm:col-span-6 md:col-span-4">
+            <div v-for="label in item.labels" :key="label.id || label.key" class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1 truncate">{{ label.key }}</span>
               <div class="text-sm text-neutral-900 font-medium truncate">{{ label.value }}</div>
             </div>
 
             <div class="col-span-12 pt-4 border-t border-neutral-100">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.description') }}</span>
-              <div class="text-sm text-neutral-700">{{ product.description || '-' }}</div>
+              <div class="text-sm text-neutral-700">{{ item.description || '-' }}</div>
             </div>
 
             <!-- Attachments -->
-            <div v-if="product.attachments && product.attachments.length" class="col-span-12 pt-4 border-t border-neutral-100">
+            <div v-if="item.attachments && item.attachments.length" class="col-span-12 pt-4 border-t border-neutral-100">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">{{ $t('component.attachment.title') }}</span>
               <div class="flex flex-wrap gap-2">
                 <a
-                  v-for="att in product.attachments"
+                  v-for="att in item.attachments"
                   :key="att.id"
                   :href="att.url"
                   target="_blank"
@@ -113,13 +135,17 @@
       </div>
     </UCard>
 
-    <UTabs v-model="activeTab" :items="items" variant="link" class="gap-4" />
+    <UTabs v-model="activeTab" :items="tabItems" variant="link" class="gap-4" />
+
+    <!-- Lightbox Modal -->
+    <Lightbox />
 
     <div class="w-full mt-4">
       <slot />
     </div>
 
-    <InventoryVariantManagerModal v-model="showVariantModal" :product="product" @changed="onProductSaved" />
+    <InventoryVariantManagerModal v-model="showVariantModal" :inventory="item" @changed="onItemSaved" />
+    <InventoryLogDrawer v-model:open="showLogDrawer" :inventory-id="inventoryId" />
   </div>
 </template>
 
@@ -130,16 +156,18 @@ import type { Inventory } from '~/types/inventory'
 const { t } = useI18n()
 const route = useRoute()
 const { hasPermission } = useAuth()
+const { openLightbox } = useLightbox()
 const inventoryId = Number(route.params.id)
 
-const { product, isLoading } = inject('inventoryState') as { product: Ref<Inventory | null>; isLoading: Ref<boolean> }
-const { fetchProduct } = inject('inventoryActions') as { fetchProduct: () => Promise<void> }
+const { item, isLoading } = inject('inventoryState') as { item: Ref<Inventory | null>; isLoading: Ref<boolean> }
+const { fetchItem } = inject('inventoryActions') as { fetchItem: () => Promise<void> }
 
 const showVariantModal = ref(false)
+const showLogDrawer = ref(false)
 
-const onProductSaved = async () => { await fetchProduct() }
+const onItemSaved = async () => { await fetchItem() }
 
-const items = computed(() => {
+const tabItems = computed(() => {
   const tabs: TabsItem[] = []
   if (hasPermission('inventory-stock:read')) {
     tabs.push({ value: 'balance', label: t('pages.inventory.tabs.balance'), icon: 'i-lucide-layers', to: `/inventory/${inventoryId}/balance` })
@@ -149,7 +177,6 @@ const items = computed(() => {
   }
   if (hasPermission('inventory-stock:read')) {
     tabs.push({ value: 'holder', label: t('pages.inventory.tabs.holder'), icon: 'i-lucide-users', to: `/inventory/${inventoryId}/holder` })
-    tabs.push({ value: 'movement', label: t('pages.inventory.tabs.movement'), icon: 'i-lucide-history', to: `/inventory/${inventoryId}/movement` })
   }
   return tabs
 })
@@ -159,11 +186,10 @@ const activeTab = computed({
     let current = 'balance'
     if (route.path.endsWith('/transfer')) current = 'transfer'
     else if (route.path.endsWith('/holder')) current = 'holder'
-    else if (route.path.endsWith('/movement')) current = 'movement'
     return current
   },
   set(val) {
-    const target = items.value.find(i => i.value === val)?.to
+    const target = tabItems.value.find(i => i.value === val)?.to
     if (typeof target === 'string' && route.path !== target) navigateTo(target)
   }
 })

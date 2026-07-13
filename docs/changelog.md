@@ -8,6 +8,11 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 
 ## [Unreleased] — 2026-07-10
 
+### Changed
+- **Pergerakan → Log Aktivitas (drawer)**: tab **Pergerakan** dihapus; kini ada tombol **Log Aktivitas** di header detail item yang membuka **drawer** timeline (bergaya seperti log aktivitas asset) berisi seluruh pergerakan stok item (tipe, varian, kondisi, jumlah, cabang, catatan, lampiran, pembuat) dengan infinite-scroll. Perbaikan: `getMovements` kini benar-benar memfilter per `inventoryId`.
+- **Log Aktivitas tanpa badge**: judul aksi pada drawer log (item **dan** asset) memakai teks berwarna polos (emerald/red/amber/sky/primary), bukan `UBadge`.
+- **Refactor sisa penamaan `product` → `inventory`/`item`**: variabel & prop di FE (`selectedProduct`/`fetchProducts` → `selectedItem`/`fetchItems`, prop `product` → `inventory` pada `VariantManagerModal`, `product*` → `inventory*` pada `handover/StockItems`, key i18n `entry.selectProduct` → `entry.selectInventory` + redaksi "product" → "item").
+
 ### Added
 - **Tab Transfer = riwayat + form transfer**: tab **Transfer** kini menampilkan **tabel riwayat transfer** (tanggal, cabang asal → tujuan, item + kondisi + qty, catatan, pembuat, lampiran). Tombol **Transfer** membuka modal `TransferModal` (pilih cabang asal/tujuan, baris varian dibatasi stok tersedia, catatan, `AttachmentManager`) dengan **validasi Zod** — jumlah tidak boleh melebihi stok tersedia & cabang asal ≠ tujuan.
 - **Lampiran & Dibuat Oleh pada Inventory**: halaman create/edit punya `AttachmentManager` (upload lampiran, seperti asset); halaman detail menampilkan **Dibuat Oleh** (avatar + nama) dan daftar **lampiran** (chip link file).

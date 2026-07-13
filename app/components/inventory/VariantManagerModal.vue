@@ -2,7 +2,7 @@
   <UModal
     v-model:open="open"
     :title="$t('pages.inventory.variant.manageTitle')"
-    :description="product?.name || ''"
+    :description="inventory?.name || ''"
     :ui="{ content: 'sm:max-w-lg', overlay: 'bg-black/40' }"
   >
     <template #body>
@@ -49,7 +49,7 @@ import type { Inventory, InventoryVariant } from '~/types/inventory'
 const { t } = useI18n()
 const toast = useToast()
 
-const props = defineProps<{ product?: Inventory | null }>()
+const props = defineProps<{ inventory?: Inventory | null }>()
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ changed: [] }>()
 
@@ -65,10 +65,10 @@ const schema = z.object({
 const form = reactive({ name: '', code: '' })
 
 const fetchVariants = async () => {
-  if (!props.product) return
+  if (!props.inventory) return
   isLoading.value = true
   try {
-    const res = await inventoryVariantService.getByInventory(props.product.id)
+    const res = await inventoryVariantService.getByInventory(props.inventory.id)
     variants.value = res.success && res.data ? res.data : []
   } finally {
     isLoading.value = false
@@ -76,10 +76,10 @@ const fetchVariants = async () => {
 }
 
 const add = async () => {
-  if (!props.product) return
+  if (!props.inventory) return
   adding.value = true
   try {
-    const res = await inventoryVariantService.create({ inventoryId: props.product.id, name: form.name, code: form.code || null })
+    const res = await inventoryVariantService.create({ inventoryId: props.inventory.id, name: form.name, code: form.code || null })
     if (res.success) {
       form.name = ''; form.code = ''
       await fetchVariants()

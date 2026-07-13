@@ -293,6 +293,17 @@
       }
     },
 
+    "inventory": {
+      "logDrawer": {
+        "title": "Log Aktivitas",
+        "description": "Riwayat seluruh aktivitas stok untuk item ini.",
+        "system": "Sistem",
+        "noLogs": "Belum ada aktivitas",
+        "noLogsDesc": "Pergerakan stok untuk item ini akan tampil di sini.",
+        "endOfHistory": "Akhir riwayat aktivitas"
+      }
+    },
+
     "assetHolder": {
       "assignModal": {
         "title": "Tetapkan Aset",
@@ -1197,9 +1208,9 @@
         "title": "Input Stok",
         "description": "Isi jumlah stok baru & bekas per varian",
         "selectBranch": "Pilih cabang",
-        "selectProduct": "Pilih produk",
-        "pickFirst": "Pilih cabang dan produk terlebih dahulu.",
-        "noVariants": "Produk ini belum punya varian.",
+        "selectInventory": "Pilih item",
+        "pickFirst": "Pilih cabang dan item terlebih dahulu.",
+        "noVariants": "Item ini belum punya varian.",
         "success": "Stok disimpan!",
         "save": "Simpan Stok"
       },
@@ -1215,7 +1226,7 @@
         "toBranch": "Cabang Tujuan",
         "selectBranch": "Pilih cabang",
         "sameBranch": "Cabang asal dan tujuan harus berbeda.",
-        "pickFirst": "Pilih cabang asal dan produk terlebih dahulu.",
+        "pickFirst": "Pilih cabang asal dan item terlebih dahulu.",
         "available": "tersedia",
         "notePlaceholder": "Catatan (opsional)",
         "submit": "Transfer",
@@ -1228,8 +1239,7 @@
       "tabs": {
         "balance": "Varian & Stok",
         "transfer": "Transfer",
-        "holder": "Assign / Return",
-        "movement": "Pergerakan"
+        "holder": "Assign / Return"
       },
       "holder": {
         "activeOnly": "Hanya aktif",

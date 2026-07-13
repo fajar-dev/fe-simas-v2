@@ -293,6 +293,17 @@
       }
     },
 
+    "inventory": {
+      "logDrawer": {
+        "title": "Activity Log",
+        "description": "History of all stock activity for this item.",
+        "system": "System",
+        "noLogs": "No activity yet",
+        "noLogsDesc": "Stock movements for this item will appear here.",
+        "endOfHistory": "End of activity history"
+      }
+    },
+
     "assetHolder": {
       "assignModal": {
         "title": "Assign Asset",
@@ -1197,9 +1208,9 @@
         "title": "Stock Entry",
         "description": "Fill in new & used stock per variant",
         "selectBranch": "Select branch",
-        "selectProduct": "Select product",
-        "pickFirst": "Select a branch and product first.",
-        "noVariants": "This product has no variants.",
+        "selectInventory": "Select item",
+        "pickFirst": "Select a branch and item first.",
+        "noVariants": "This item has no variants.",
         "success": "Stock saved!",
         "save": "Save Stock"
       },
@@ -1215,7 +1226,7 @@
         "toBranch": "To Branch",
         "selectBranch": "Select branch",
         "sameBranch": "Source and destination must be different.",
-        "pickFirst": "Select source branch and product first.",
+        "pickFirst": "Select source branch and item first.",
         "available": "available",
         "notePlaceholder": "Note (optional)",
         "submit": "Transfer",
@@ -1228,8 +1239,7 @@
       "tabs": {
         "balance": "Variants & Stock",
         "transfer": "Transfer",
-        "holder": "Assign / Return",
-        "movement": "Movements"
+        "holder": "Assign / Return"
       },
       "holder": {
         "activeOnly": "Active only",
