@@ -1,15 +1,25 @@
 <template>
-  <div class="overflow-x-auto">
-    <UTable
-      :data="flatRows"
-      :columns="columns"
-      :loading="isLoading"
-      :ui="{
-        th: 'bg-neutral-50 py-2',
-        td: 'py-2 border-b border-neutral-100'
-      }"
-      class="min-w-[480px] border border-neutral-200 rounded-md"
-    />
+  <div class="space-y-3">
+    <div v-if="canAdd" class="flex justify-end">
+      <UButton icon="i-lucide-plus" color="primary" @click="() => { showAddModal = true }">
+        {{ $t('pages.inventory.addStock.button') }}
+      </UButton>
+    </div>
+
+    <div class="overflow-x-auto">
+      <UTable
+        :data="flatRows"
+        :columns="columns"
+        :loading="isLoading"
+        :ui="{
+          th: 'bg-neutral-50 py-2',
+          td: 'py-2 border-b border-neutral-100'
+        }"
+        class="min-w-[480px] border border-neutral-200 rounded-md"
+      />
+    </div>
+
+    <InventoryAddStockModal v-model="showAddModal" :inventory-id="inventoryId" @done="fetchBalances" />
   </div>
 </template>
 
@@ -23,7 +33,11 @@ definePageMeta({ layout: 'dashboard' })
 
 const { t } = useI18n()
 const route = useRoute()
+const { hasPermission } = useAuth()
 const inventoryId = Number(route.params.id)
+
+const canAdd = hasPermission('inventory-stock:entry')
+const showAddModal = ref(false)
 
 const UIcon = resolveComponent('UIcon')
 

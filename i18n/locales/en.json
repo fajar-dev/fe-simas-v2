@@ -1269,6 +1269,17 @@
       "edit": {
         "title": "Edit Inventory",
         "success": "Inventory updated!"
+      },
+      "addStock": {
+        "button": "Add Stock",
+        "title": "Add Stock",
+        "description": "Add incoming quantities to a branch's on-hand",
+        "current": "Current",
+        "submit": "Add",
+        "success": "Stock added!",
+        "items": "Items",
+        "addRow": "Add Row",
+        "noRows": "No rows yet. Add a branch and variant."
       }
     }
   }

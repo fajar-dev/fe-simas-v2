@@ -31,6 +31,7 @@ const route = useRoute()
 const inventoryId = Number(route.params.id)
 
 const UBadge = resolveComponent('UBadge')
+const UIcon = resolveComponent('UIcon')
 
 const data = ref<InventoryStockMovement[]>([])
 const isLoading = ref(false)
@@ -91,7 +92,14 @@ const columns: TableColumn<InventoryStockMovement>[] = [
     const q = row.original.quantity
     return h('span', { class: q < 0 ? 'font-semibold text-red-600' : 'font-semibold text-green-600' }, q > 0 ? `+${q}` : `${q}`)
   } },
-  { accessorKey: 'createdBy', header: t('common.system'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.createdBy?.name || '-') }
+  { accessorKey: 'createdBy', header: t('common.system'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.createdBy?.name || '-') },
+  { id: 'attachments', header: '', cell: ({ row }) => {
+    const atts = row.original.attachments || []
+    if (!atts.length) return h('span', { class: 'text-neutral-300' }, '-')
+    return h('div', { class: 'flex items-center gap-1.5' }, atts.map(a =>
+      h('a', { href: a.url, target: '_blank', rel: 'noopener', title: a.originalName, class: 'text-neutral-500 hover:text-primary' },
+        h(UIcon, { name: 'i-lucide-paperclip', class: 'w-4 h-4' }))))
+  } }
 ]
 
 onMounted(fetchMovements)

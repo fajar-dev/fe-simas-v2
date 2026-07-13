@@ -22,6 +22,13 @@ export class InventoryStockService {
     } catch (error: any) { return handleServiceError(error) }
   }
 
+  async addStock(payload: { inventoryId: number; note?: string | null; attachmentIds?: number[]; items: { branchId: number; variantId: number; new: number; used: number }[] }): Promise<ApiResponse<InventoryStockBalance[]>> {
+    try {
+      const res = await apiService.client.post<ApiResponse<InventoryStockBalance[]>>(`/inventory/stock/add`, payload, this.authHeaders)
+      return res.data
+    } catch (error: any) { return handleServiceError(error) }
+  }
+
   async getBalances(page = 1, perPage = 20, filters: { branchId?: number; inventoryId?: number; variantId?: number; condition?: StockCondition } = {}): Promise<ApiResponse<InventoryStockBalance[]>> {
     try {
       let url = `/inventory/stock?page=${page}&limit=${perPage}`

@@ -9,6 +9,7 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 ## [Unreleased] — 2026-07-10
 
 ### Added
+- **Modal Tambah Stok** di tab **Stok**: baris **nested** (pilih **cabang** + **varian** + jumlah Baru/Bekas), bisa **multi-baris → multi-cabang multi-varian**; **catatan** pakai `UTextarea`; **lampiran** pakai `AttachmentManager` (pola sama seperti asset). Tab **Pergerakan** menampilkan ikon lampiran (link file) untuk movement stock-in.
 - **Item Inventory selengkap Asset + create/edit sebagai halaman**: daftar `/inventory` kini menampilkan **foto, kategori, subkategori, satuan**, dan **kolom custom-label dinamis** (popover toggle). Create/edit tidak lagi modal tapi **halaman** 3 kolom (Kolom 1 foto, Kolom 2 konten, Kolom 3 varian) — upload foto + kamera, kategori/subkategori dengan **tambah-inline** (`CategoryAddModal`/`SubCategoryAddModal`), satuan (select), label repeater. Di create, tiap **varian** bisa langsung diisi **stok awal per cabang × kondisi** (baru/bekas). Satuan pindah ke level item (varian tak lagi punya unit).
 
 ### Changed

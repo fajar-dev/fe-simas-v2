@@ -1,3 +1,5 @@
+import type { Attachment } from './attachment'
+
 export type StockCondition = 'new' | 'used'
 
 export interface InventoryLabelItem {
@@ -107,6 +109,7 @@ export interface InventoryStockMovement {
   branch: { id: number; name: string } | null
   variant: { id: number; name: string; inventory: { id: number; name: string } | null } | null
   createdBy: { id: number; name: string; photo: string | null } | null
+  attachments: Attachment[]
 }
 
 export interface InventoryStockHolding {

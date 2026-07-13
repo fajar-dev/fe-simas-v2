@@ -1269,6 +1269,17 @@
       "edit": {
         "title": "Edit Persediaan",
         "success": "Persediaan berhasil diperbarui!"
+      },
+      "addStock": {
+        "button": "Tambah Stok",
+        "title": "Tambah Stok",
+        "description": "Tambah jumlah masuk ke stok cabang",
+        "current": "Saat ini",
+        "submit": "Tambah",
+        "success": "Stok berhasil ditambahkan!",
+        "items": "Item",
+        "addRow": "Tambah Baris",
+        "noRows": "Belum ada baris. Tambah cabang & varian."
       }
     }
   }
