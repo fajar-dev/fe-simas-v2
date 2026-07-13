@@ -8,25 +8,25 @@ export class InventoryStockService {
     return { headers: { Authorization: `Bearer ${useAuth().state.token}` } }
   }
 
-  async getEntryTemplate(branchId: number, productId: number): Promise<ApiResponse<InventoryStockEntryRow[]>> {
+  async getEntryTemplate(branchId: number, inventoryId: number): Promise<ApiResponse<InventoryStockEntryRow[]>> {
     try {
-      const res = await apiService.client.get<ApiResponse<InventoryStockEntryRow[]>>(`/inventory/stock/entry-template?branchId=${branchId}&productId=${productId}`, this.authHeaders)
+      const res = await apiService.client.get<ApiResponse<InventoryStockEntryRow[]>>(`/inventory/stock/entry-template?branchId=${branchId}&inventoryId=${inventoryId}`, this.authHeaders)
       return res.data
     } catch (error: any) { return handleServiceError(error) }
   }
 
-  async entry(payload: { branchId: number; productId: number; items: { variantId: number; new: number; used: number }[] }): Promise<ApiResponse<InventoryStockBalance[]>> {
+  async entry(payload: { branchId: number; inventoryId: number; items: { variantId: number; new: number; used: number }[] }): Promise<ApiResponse<InventoryStockBalance[]>> {
     try {
       const res = await apiService.client.post<ApiResponse<InventoryStockBalance[]>>(`/inventory/stock/entry`, payload, this.authHeaders)
       return res.data
     } catch (error: any) { return handleServiceError(error) }
   }
 
-  async getBalances(page = 1, perPage = 20, filters: { branchId?: number; productId?: number; variantId?: number; condition?: StockCondition } = {}): Promise<ApiResponse<InventoryStockBalance[]>> {
+  async getBalances(page = 1, perPage = 20, filters: { branchId?: number; inventoryId?: number; variantId?: number; condition?: StockCondition } = {}): Promise<ApiResponse<InventoryStockBalance[]>> {
     try {
       let url = `/inventory/stock?page=${page}&limit=${perPage}`
       if (filters.branchId) url += `&branchId=${filters.branchId}`
-      if (filters.productId) url += `&productId=${filters.productId}`
+      if (filters.inventoryId) url += `&inventoryId=${filters.inventoryId}`
       if (filters.variantId) url += `&variantId=${filters.variantId}`
       if (filters.condition) url += `&condition=${filters.condition}`
       const res = await apiService.client.get<ApiResponse<InventoryStockBalance[]>>(url, this.authHeaders)
@@ -41,7 +41,7 @@ export class InventoryStockService {
     } catch (error: any) { return handleServiceError(error) }
   }
 
-  async getMovements(page = 1, perPage = 20, filters: { productId?: number; branchId?: number; variantId?: number; condition?: StockCondition; type?: string } = {}): Promise<ApiResponse<InventoryStockMovement[]>> {
+  async getMovements(page = 1, perPage = 20, filters: { inventoryId?: number; branchId?: number; variantId?: number; condition?: StockCondition; type?: string } = {}): Promise<ApiResponse<InventoryStockMovement[]>> {
     try {
       let url = `/inventory/stock/movement?page=${page}&limit=${perPage}`
       if (filters.branchId) url += `&branchId=${filters.branchId}`
@@ -53,10 +53,10 @@ export class InventoryStockService {
     } catch (error: any) { return handleServiceError(error) }
   }
 
-  async getHoldings(page = 1, perPage = 20, filters: { productId?: number; branchId?: number; variantId?: number; employeeId?: number; active?: boolean } = {}): Promise<ApiResponse<InventoryStockHolding[]>> {
+  async getHoldings(page = 1, perPage = 20, filters: { inventoryId?: number; branchId?: number; variantId?: number; employeeId?: number; active?: boolean } = {}): Promise<ApiResponse<InventoryStockHolding[]>> {
     try {
       let url = `/inventory/stock/holding?page=${page}&limit=${perPage}`
-      if (filters.productId) url += `&productId=${filters.productId}`
+      if (filters.inventoryId) url += `&inventoryId=${filters.inventoryId}`
       if (filters.branchId) url += `&branchId=${filters.branchId}`
       if (filters.variantId) url += `&variantId=${filters.variantId}`
       if (filters.employeeId) url += `&employeeId=${filters.employeeId}`

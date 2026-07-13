@@ -288,7 +288,7 @@
                 <UIcon name="i-lucide-layers" class="w-5 h-5" />
               </div>
               <div class="min-w-0 flex-1">
-                <span class="text-sm font-semibold text-neutral-900 block truncate">{{ item.variant?.product?.name || '-' }} — {{ item.variant?.name || '-' }}</span>
+                <span class="text-sm font-semibold text-neutral-900 block truncate">{{ item.variant?.inventory?.name || '-' }} — {{ item.variant?.name || '-' }}</span>
                 <span class="text-xs text-neutral-500 mt-0.5 block truncate">
                   {{ item.branch?.name || '-' }} ·
                   <UBadge :color="item.condition === 'new' ? 'success' : 'warning'" variant="subtle" size="sm">

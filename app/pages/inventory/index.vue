@@ -13,18 +13,34 @@
       :to="meta.to"
       :total="meta.total"
       :search-placeholder="$t('pages.inventory.item.searchPlaceholder')"
-      table-class="min-w-[720px]"
+      table-class="min-w-[860px]"
     >
-      <template #actions v-if="hasPermission('inventory:create')">
-        <UButton color="primary" variant="solid" icon="i-lucide-plus" class="w-full sm:w-auto justify-center" @click="openCreate">
-          {{ $t('pages.inventory.item.add') }}
-        </UButton>
+      <template #actions>
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <UButton v-if="hasPermission('inventory:create')" color="primary" variant="solid" icon="i-lucide-plus" class="flex-1 sm:flex-none justify-center" @click="() => { navigateTo('/inventory/create') }">
+            {{ $t('pages.inventory.item.add') }}
+          </UButton>
+          <UPopover v-if="availableLabelKeys.length">
+            <UButton color="neutral" variant="ghost" icon="i-lucide-table-properties" />
+            <template #content>
+              <div class="p-3 w-48 space-y-2 select-none">
+                <div class="text-sm font-semibold text-neutral-600 mb-1">{{ $t('pages.inventory.item.labels') }}</div>
+                <div class="space-y-1.5 max-h-48 overflow-y-auto">
+                  <div v-for="key in availableLabelKeys" :key="key" class="flex items-center gap-2">
+                    <UCheckbox :model-value="activeLabelColumns.includes(key)" :label="key" @update:model-value="(v: boolean | 'indeterminate') => toggleLabelColumn(key, v === true)" />
+                  </div>
+                </div>
+              </div>
+            </template>
+          </UPopover>
+        </div>
       </template>
     </DataTable>
 
-    <InventoryModal v-model="showProductModal" :product="selectedProduct" @saved="fetchProducts" />
     <InventoryVariantManagerModal v-model="showVariantModal" :product="selectedProduct" @changed="fetchProducts" />
     <DeleteModal v-model="showDeleteModal" :item-name="selectedProduct?.name" :loading="deleting" @confirm="confirmDelete" />
+    <!-- Lightbox Modal -->
+    <Lightbox />
   </div>
 </template>
 
@@ -39,8 +55,11 @@ definePageMeta({ layout: 'dashboard' })
 const { t } = useI18n()
 const { hasPermission } = useAuth()
 const toast = useToast()
+const { openLightbox } = useLightbox()
 
 const UButton = resolveComponent('UButton')
+const NuxtImg = resolveComponent('NuxtImg')
+const UBadge = resolveComponent('UBadge')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 const data = ref<Inventory[]>([])
@@ -48,10 +67,12 @@ const isLoading = ref(false)
 const meta = reactive({ total: 0, from: 0, to: 0 })
 
 const selectedProduct = ref<Inventory | null>(null)
-const showProductModal = ref(false)
 const showVariantModal = ref(false)
 const showDeleteModal = ref(false)
 const deleting = ref(false)
+
+const availableLabelKeys = ref<string[]>([])
+const activeLabelColumns = ref<string[]>([])
 
 const { search, page, perPage, sortBy, order, sortHeader } = useTableQuery(() => fetchProducts(), { defaultSortBy: 'createdAt', defaultOrder: 'DESC' })
 
@@ -68,23 +89,75 @@ const fetchProducts = async () => {
   }
 }
 
-const openCreate = () => { selectedProduct.value = null; showProductModal.value = true }
+const toggleLabelColumn = (key: string, on: boolean) => {
+  activeLabelColumns.value = on
+    ? [...activeLabelColumns.value, key]
+    : activeLabelColumns.value.filter(k => k !== key)
+  localStorage.setItem('inventory_label_columns', JSON.stringify(activeLabelColumns.value))
+}
 
-const baseColumns: TableColumn<Inventory>[] = [
-  {
+const columns = computed<TableColumn<Inventory>[]>(() => {
+  const list: TableColumn<Inventory>[] = [
+    {
     accessorKey: 'name',
     header: sortHeader(t('common.name'), 'name'),
-    cell: ({ row }) => h('span', {
-      class: 'font-medium text-neutral-900 cursor-pointer hover:underline',
-      onClick: () => navigateTo(`/inventory/${row.original.id}`)
-    }, row.original.name)
-  },
-  { accessorKey: 'code', header: sortHeader(t('common.code'), 'code'), cell: ({ row }) => h('span', { class: 'text-neutral-600' }, row.original.code || '-') },
-  { accessorKey: 'description', header: t('common.description'), cell: ({ row }) => h('span', { class: 'text-neutral-500 truncate max-w-xs block' }, row.original.description || '-') }
-]
+    cell: ({ row }) => {
+      const img = row.original.image
+      const imageEl = img
+        ? h(NuxtImg, {
+            src: img,
+            alt: row.original.name,
+            class: 'w-10 h-10 object-cover rounded-md border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0',
+            onClick: (e: Event) => {
+              e.stopPropagation()
+              openLightbox(img)
+            }
+          })
+        : h('div', { class: 'w-10 h-10 bg-neutral-100 rounded-md flex items-center justify-center border border-neutral-200 shrink-0' }, [
+            h('span', { class: 'text-neutral-400 text-xs' }, 'N/A')
+          ])
 
-const columns = computed(() => {
-  const list = [...baseColumns]
+      const textEl = h('div', { class: 'flex flex-col min-w-0' }, [
+        h('span', { 
+          class: 'font-semibold cursor-pointer hover:underline truncate',
+          onClick: (e: Event) => {
+            e.stopPropagation()
+            navigateTo(`/inventory/${row.original.id}`)
+          }
+        }, row.original.name),
+        h('span', { class: 'text-xs text-neutral-500' }, row.original.code || '-')
+      ])
+
+      return h('div', { class: 'flex items-center gap-3' }, [imageEl, textEl])
+    }
+  },
+    // {
+    //   id: 'photo',
+    //   header: '',
+    //   meta: { class: { td: 'w-14', th: 'w-14' } },
+    //   cell: ({ row }) => h(UAvatar, { src: row.original.image || undefined, alt: row.original.name, icon: 'i-lucide-package', size: 'md', class: 'bg-neutral-100 text-neutral-400' })
+    // },
+    // {
+    //   accessorKey: 'name',
+    //   header: sortHeader(t('common.name'), 'name'),
+    //   cell: ({ row }) => h('div', {}, [
+    //     h('span', { class: 'font-medium text-neutral-900 cursor-pointer hover:underline block', onClick: () => navigateTo(`/inventory/${row.original.id}`) }, row.original.name),
+    //     h('span', { class: 'text-xs text-neutral-500' }, row.original.code || '-')
+    //   ])
+    // },
+    { accessorKey: 'category', header: t('common.category'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.category?.name || '-') },
+    { accessorKey: 'subCategory', header: t('common.subCategory'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.subCategory?.name || '-') },
+    { accessorKey: 'unit', header: t('pages.inventory.unit.label'), cell: ({ row }) => h(UBadge, { color: 'neutral', variant: 'subtle' }, () => row.original.unit || '-') },
+  ]
+
+  for (const key of activeLabelColumns.value) {
+    list.push({
+      id: `label:${key}`,
+      header: key,
+      cell: ({ row }) => h('span', { class: 'text-neutral-600' }, row.original.labels?.find(l => l.key === key)?.value || '-')
+    })
+  }
+
   list.push({
     id: 'actions',
     header: t('common.actions'),
@@ -107,7 +180,7 @@ function getRowItems(row: Row<Inventory>) {
     onSelect() { selectedProduct.value = product; showVariantModal.value = true }
   }]
   if (hasPermission('inventory:update')) {
-    items.push({ label: t('common.edit'), icon: 'i-lucide-edit-3', onSelect() { selectedProduct.value = product; showProductModal.value = true } })
+    items.push({ label: t('common.edit'), icon: 'i-lucide-edit-3', onSelect() { navigateTo(`/inventory/${product.id}/edit`) } })
   }
   if (hasPermission('inventory:delete')) {
     items.push({ label: t('common.delete'), icon: 'i-lucide-trash-2', color: 'error' as const, onSelect() { selectedProduct.value = product; showDeleteModal.value = true } })
@@ -132,5 +205,11 @@ const confirmDelete = async () => {
   }
 }
 
-onMounted(fetchProducts)
+onMounted(async () => {
+  const saved = localStorage.getItem('inventory_label_columns')
+  if (saved) { try { activeLabelColumns.value = JSON.parse(saved) } catch { /* ignore */ } }
+  fetchProducts()
+  const keys = await inventoryService.getLabelKeys()
+  if (keys.success && keys.data) availableLabelKeys.value = keys.data
+})
 </script>

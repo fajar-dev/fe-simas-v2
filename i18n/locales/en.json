@@ -1175,7 +1175,9 @@
         "add": "Add Inventory",
         "addTitle": "Add Inventory",
         "editTitle": "Edit Inventory",
-        "searchPlaceholder": "Search inventory..."
+        "searchPlaceholder": "Search inventory...",
+        "photo": "Photo",
+        "labels": "Custom Labels"
       },
       "variant": {
         "title": "Variant",
@@ -1249,6 +1251,24 @@
         "transferIn": "Transfer In",
         "assignOut": "Assigned",
         "returnIn": "Returned"
+      },
+      "unit": {
+        "label": "Unit",
+        "placeholder": "Select unit"
+      },
+      "create": {
+        "title": "Add Inventory",
+        "description": "Create an item with variants and initial stock",
+        "noPhoto": "No photo",
+        "noLabels": "No labels yet.",
+        "noVariants": "No variants yet. Add one to set its initial stock.",
+        "variantName": "Variant name",
+        "initialStock": "Initial stock",
+        "success": "Inventory created!"
+      },
+      "edit": {
+        "title": "Edit Inventory",
+        "success": "Inventory updated!"
       }
     }
   }

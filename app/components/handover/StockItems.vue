@@ -3,7 +3,7 @@
     <!-- Add row form -->
     <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 space-y-3">
       <UFormField :label="$t('pages.inventory.item.title')">
-        <USelectMenu v-model="draft.productId" :items="productOptions" value-key="value" searchable :placeholder="$t('pages.inventory.entry.selectProduct')" class="w-full" @update:model-value="onProductChange" />
+        <USelectMenu v-model="draft.inventoryId" :items="productOptions" value-key="value" searchable :placeholder="$t('pages.inventory.entry.selectProduct')" class="w-full" @update:model-value="onProductChange" />
       </UFormField>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <UFormField :label="$t('pages.inventory.variant.title')">
@@ -75,8 +75,8 @@ const conditionOptions = computed(() => [
   { label: t('pages.inventory.condition.used'), value: 'used' }
 ])
 
-const draft = reactive<{ productId?: number, variantId?: number, branchId?: number, condition: StockCondition, quantity: number }>({
-  productId: undefined, variantId: undefined, branchId: undefined, condition: 'new', quantity: 1
+const draft = reactive<{ inventoryId?: number, variantId?: number, branchId?: number, condition: StockCondition, quantity: number }>({
+  inventoryId: undefined, variantId: undefined, branchId: undefined, condition: 'new', quantity: 1
 })
 
 const canAdd = computed(() => !!draft.variantId && !!draft.branchId && Number(draft.quantity) >= 1)
@@ -84,8 +84,8 @@ const canAdd = computed(() => !!draft.variantId && !!draft.branchId && Number(dr
 const onProductChange = async () => {
   draft.variantId = undefined
   variantOptions.value = []
-  if (!draft.productId) return
-  const res = await inventoryVariantService.getByProduct(draft.productId)
+  if (!draft.inventoryId) return
+  const res = await inventoryVariantService.getByInventory(draft.inventoryId)
   if (res.success && res.data) variantOptions.value = res.data.map(x => ({ label: `${x.name}${x.code ? ` (${x.code})` : ''}`, value: x.id }))
 }
 
@@ -96,7 +96,7 @@ const addRow = () => {
     branchId: draft.branchId,
     condition: props.transactionType === 'return' ? 'used' : draft.condition,
     quantity: Number(draft.quantity),
-    productName: productOptions.value.find(p => p.value === draft.productId)?.label || '-',
+    productName: productOptions.value.find(p => p.value === draft.inventoryId)?.label || '-',
     variantName: variantOptions.value.find(v => v.value === draft.variantId)?.label || '-',
     branchName: branchOptions.value.find(b => b.value === draft.branchId)?.label || '-'
   }]

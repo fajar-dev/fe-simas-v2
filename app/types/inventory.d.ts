@@ -1,38 +1,64 @@
 export type StockCondition = 'new' | 'used'
 
+export interface InventoryLabelItem {
+  id?: number
+  key: string
+  value: string
+}
+
 export interface Inventory {
   id: number
   code: string | null
   name: string
   description: string | null
+  image: string | null
+  unit: string
   isActive: boolean
+  category: { id: number; name: string } | null
+  subCategory: { id: number; name: string } | null
+  labels: InventoryLabelItem[]
   createdAt: string
   updatedAt: string
   createdBy: { id: number; name: string; photo: string | null } | null
+}
+
+export interface InventoryInitialStock {
+  branchId: number
+  new: number
+  used: number
+}
+
+export interface InventoryVariantInput {
+  name: string
+  code?: string | null
+  initialStock?: InventoryInitialStock[]
 }
 
 export interface InventoryPayload {
   code?: string | null
   name: string
   description?: string | null
+  image?: string | null
+  unit?: string | null
+  subCategoryId?: number | null
   isActive?: boolean
+  labels?: { key: string; value: string }[]
+  variants?: InventoryVariantInput[]
 }
 
 export interface InventoryVariant {
   id: number
-  productId: number
+  inventoryId: number
   name: string
   code: string | null
-  unit: string
   isActive: boolean
-  product?: { id: number; name: string; code: string | null } | null
+  inventory?: { id: number; name: string; code: string | null } | null
 }
 
 export interface InventoryVariantPayload {
-  productId: number
+  inventoryId: number
   name: string
   code?: string | null
-  unit?: string
   isActive?: boolean
 }
 
@@ -57,7 +83,7 @@ export interface InventoryStockBalance {
     name: string
     code: string | null
     unit: string
-    product: { id: number; name: string; code: string | null } | null
+    inventory: { id: number; name: string; code: string | null } | null
   } | null
 }
 
@@ -79,7 +105,7 @@ export interface InventoryStockMovement {
   note: string | null
   createdAt: string
   branch: { id: number; name: string } | null
-  variant: { id: number; name: string; product: { id: number; name: string } | null } | null
+  variant: { id: number; name: string; inventory: { id: number; name: string } | null } | null
   createdBy: { id: number; name: string; photo: string | null } | null
 }
 
@@ -102,7 +128,7 @@ export interface InventoryStockHolding {
     name: string
     code: string | null
     unit: string
-    product: { id: number; name: string; code: string | null } | null
+    inventory: { id: number; name: string; code: string | null } | null
   } | null
 }
 

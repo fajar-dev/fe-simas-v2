@@ -28,31 +28,59 @@
             v-if="hasPermission('inventory:update')"
             color="primary"
             icon="i-lucide-edit"
-            @click="() => { showProductModal = true }"
+            @click="() => { navigateTo(`/inventory/${product!.id}/edit`) }"
           >
             <span class="hidden sm:inline">{{ $t('pages.inventory.item.editTitle') }}</span>
           </UButton>
         </div>
       </div>
 
-      <div class="grid grid-cols-12 gap-x-8 gap-y-6">
-        <div class="col-span-12 sm:col-span-6 md:col-span-4">
-          <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.code') }}</span>
-          <div class="text-sm text-neutral-900 font-medium truncate">{{ product.code || '-' }}</div>
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-8 items-start">
+        <!-- Photo -->
+        <div v-if="product.image" class="w-full aspect-[8/7] overflow-hidden rounded-lg border border-neutral-200 sm:col-span-4">
+          <NuxtImg :src="product.image" :alt="product.name" class="w-full h-full object-cover" />
         </div>
-        <div class="col-span-12 sm:col-span-6 md:col-span-4">
-          <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.name') }}</span>
-          <div class="text-sm text-neutral-900 font-medium truncate">{{ product.name }}</div>
+        <div v-else class="w-full aspect-[8/7] flex flex-col items-center justify-center bg-neutral-50 border border-neutral-200 rounded-lg text-neutral-400 sm:col-span-4">
+          <UIcon name="i-lucide-package" class="w-8 h-8 mb-1" />
         </div>
-        <div class="col-span-12 sm:col-span-6 md:col-span-4">
-          <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.status') }}</span>
-          <UBadge :color="product.isActive ? 'success' : 'neutral'" variant="subtle">
-            {{ product.isActive ? $t('common.active') : $t('common.inactive') }}
-          </UBadge>
-        </div>
-        <div class="col-span-12 pt-4 border-t border-neutral-100">
-          <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.description') }}</span>
-          <div class="text-sm text-neutral-700">{{ product.description || '-' }}</div>
+
+        <!-- Info -->
+        <div class="min-w-0 w-full sm:col-span-8">
+          <div class="grid grid-cols-12 gap-x-8 gap-y-6">
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.code') }}</span>
+              <div class="text-sm text-neutral-900 font-medium truncate">{{ product.code || '-' }}</div>
+            </div>
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.inventory.unit.label') }}</span>
+              <div class="text-sm text-neutral-900 font-medium">{{ product.unit || '-' }}</div>
+            </div>
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.status') }}</span>
+              <UBadge :color="product.isActive ? 'success' : 'neutral'" variant="subtle">
+                {{ product.isActive ? $t('common.active') : $t('common.inactive') }}
+              </UBadge>
+            </div>
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.category') }}</span>
+              <div class="text-sm text-neutral-900 font-medium truncate">{{ product.category?.name || '-' }}</div>
+            </div>
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.subCategory') }}</span>
+              <div class="text-sm text-neutral-900 font-medium truncate">{{ product.subCategory?.name || '-' }}</div>
+            </div>
+
+            <!-- Labels -->
+            <div v-for="label in product.labels" :key="label.id || label.key" class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1 truncate">{{ label.key }}</span>
+              <div class="text-sm text-neutral-900 font-medium truncate">{{ label.value }}</div>
+            </div>
+
+            <div class="col-span-12 pt-4 border-t border-neutral-100">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.description') }}</span>
+              <div class="text-sm text-neutral-700">{{ product.description || '-' }}</div>
+            </div>
+          </div>
         </div>
       </div>
     </UCard>
@@ -63,7 +91,6 @@
       <slot />
     </div>
 
-    <InventoryModal v-model="showProductModal" :product="product" @saved="onProductSaved" />
     <InventoryVariantManagerModal v-model="showVariantModal" :product="product" @changed="onProductSaved" />
   </div>
 </template>
@@ -75,12 +102,11 @@ import type { Inventory } from '~/types/inventory'
 const { t } = useI18n()
 const route = useRoute()
 const { hasPermission } = useAuth()
-const productId = Number(route.params.id)
+const inventoryId = Number(route.params.id)
 
 const { product, isLoading } = inject('inventoryState') as { product: Ref<Inventory | null>; isLoading: Ref<boolean> }
 const { fetchProduct } = inject('inventoryActions') as { fetchProduct: () => Promise<void> }
 
-const showProductModal = ref(false)
 const showVariantModal = ref(false)
 
 const onProductSaved = async () => { await fetchProduct() }
@@ -88,14 +114,14 @@ const onProductSaved = async () => { await fetchProduct() }
 const items = computed(() => {
   const tabs: TabsItem[] = []
   if (hasPermission('inventory-stock:read')) {
-    tabs.push({ value: 'balance', label: t('pages.inventory.tabs.balance'), icon: 'i-lucide-layers', to: `/inventory/${productId}/balance` })
+    tabs.push({ value: 'balance', label: t('pages.inventory.tabs.balance'), icon: 'i-lucide-layers', to: `/inventory/${inventoryId}/balance` })
   }
   if (hasPermission('inventory-stock:transfer')) {
-    tabs.push({ value: 'transfer', label: t('pages.inventory.tabs.transfer'), icon: 'i-lucide-arrow-left-right', to: `/inventory/${productId}/transfer` })
+    tabs.push({ value: 'transfer', label: t('pages.inventory.tabs.transfer'), icon: 'i-lucide-arrow-left-right', to: `/inventory/${inventoryId}/transfer` })
   }
   if (hasPermission('inventory-stock:read')) {
-    tabs.push({ value: 'holder', label: t('pages.inventory.tabs.holder'), icon: 'i-lucide-users', to: `/inventory/${productId}/holder` })
-    tabs.push({ value: 'movement', label: t('pages.inventory.tabs.movement'), icon: 'i-lucide-history', to: `/inventory/${productId}/movement` })
+    tabs.push({ value: 'holder', label: t('pages.inventory.tabs.holder'), icon: 'i-lucide-users', to: `/inventory/${inventoryId}/holder` })
+    tabs.push({ value: 'movement', label: t('pages.inventory.tabs.movement'), icon: 'i-lucide-history', to: `/inventory/${inventoryId}/movement` })
   }
   return tabs
 })

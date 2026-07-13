@@ -23,7 +23,7 @@ definePageMeta({ layout: 'dashboard' })
 
 const { t } = useI18n()
 const route = useRoute()
-const productId = Number(route.params.id)
+const inventoryId = Number(route.params.id)
 
 const UIcon = resolveComponent('UIcon')
 
@@ -151,7 +151,7 @@ function buildTree(balances: Awaited<ReturnType<typeof inventoryStockService.get
 const fetchBalances = async () => {
   isLoading.value = true
   try {
-    const res = await inventoryStockService.getBalances(1, 500, { productId })
+    const res = await inventoryStockService.getBalances(1, 500, { inventoryId })
     tree.value = res.success ? buildTree(res.data) : []
   } finally {
     isLoading.value = false

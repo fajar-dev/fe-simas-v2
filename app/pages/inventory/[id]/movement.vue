@@ -28,7 +28,7 @@ definePageMeta({ layout: 'dashboard' })
 
 const { t } = useI18n()
 const route = useRoute()
-const productId = Number(route.params.id)
+const inventoryId = Number(route.params.id)
 
 const UBadge = resolveComponent('UBadge')
 
@@ -63,7 +63,7 @@ const fetchMovements = async () => {
   isLoading.value = true
   try {
     const res = await inventoryStockService.getMovements(page.value, perPage.value, {
-      productId,
+      inventoryId,
       type: typeFilter.value === 'all' ? undefined : typeFilter.value
     })
     if (res.success && res.data) {

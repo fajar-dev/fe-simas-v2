@@ -25,6 +25,24 @@ export class InventoryService {
     } catch (error: any) { return handleServiceError(error) }
   }
 
+  async getLabelKeys(): Promise<ApiResponse<string[]>> {
+    try {
+      const res = await apiService.client.get<ApiResponse<string[]>>(`/inventory/label-keys`, this.authHeaders)
+      return res.data
+    } catch (error: any) { return handleServiceError(error) }
+  }
+
+  async uploadImage(file: File): Promise<ApiResponse<{ path: string }>> {
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      const res = await apiService.client.post<ApiResponse<{ path: string }>>(`/upload?type=inventory`, formData, {
+        headers: { Authorization: `Bearer ${useAuth().state.token}`, "Content-Type": "multipart/form-data" }
+      })
+      return res.data
+    } catch (error: any) { return handleServiceError(error) }
+  }
+
   async getById(id: number): Promise<ApiResponse<Inventory>> {
     try {
       const res = await apiService.client.get<ApiResponse<Inventory>>(`/inventory/${id}`, this.authHeaders)

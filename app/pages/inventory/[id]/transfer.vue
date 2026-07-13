@@ -73,7 +73,7 @@ definePageMeta({ layout: 'dashboard' })
 const { t } = useI18n()
 const toast = useToast()
 const route = useRoute()
-const productId = Number(route.params.id)
+const inventoryId = Number(route.params.id)
 
 interface Row { variantId: number, name: string, unit: string, new: number, used: number, transferNew: number, transferUsed: number }
 
@@ -93,7 +93,7 @@ const loadRows = async () => {
   if (!fromBranchId.value) { rows.value = []; return }
   isLoading.value = true
   try {
-    const res = await inventoryStockService.getEntryTemplate(fromBranchId.value, productId)
+    const res = await inventoryStockService.getEntryTemplate(fromBranchId.value, inventoryId)
     rows.value = (res.success && res.data ? res.data : []).map(r => ({ variantId: r.variantId, name: r.name, unit: r.unit, new: r.new, used: r.used, transferNew: 0, transferUsed: 0 }))
   } finally {
     isLoading.value = false

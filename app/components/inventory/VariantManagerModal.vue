@@ -21,24 +21,21 @@
         >
           <div class="flex-1 min-w-0">
             <div class="text-sm font-medium text-neutral-900 truncate">{{ variant.name }}</div>
-            <div class="text-xs text-neutral-500">{{ variant.code || '-' }} · {{ variant.unit }}</div>
+            <div class="text-xs text-neutral-500">{{ variant.code || '-' }}</div>
           </div>
           <UButton color="error" variant="ghost" icon="i-lucide-trash-2" square size="sm" :loading="deletingId === variant.id" @click="remove(variant.id)" />
         </div>
       </div>
 
       <!-- Add form -->
-      <UForm :schema="schema" :state="form" class="mt-4 pt-4 border-t border-neutral-100 grid grid-cols-1 sm:grid-cols-3 gap-2 items-end" @submit="add">
-        <UFormField :label="$t('common.name')" name="name" class="sm:col-span-1" required>
+      <UForm :schema="schema" :state="form" class="mt-4 pt-4 border-t border-neutral-100 grid grid-cols-1 sm:grid-cols-2 gap-2 items-end" @submit="add">
+        <UFormField :label="$t('common.name')" name="name" required>
           <UInput v-model="form.name" class="w-full" />
         </UFormField>
         <UFormField :label="$t('common.code')" name="code">
           <UInput v-model="form.code" class="w-full" />
         </UFormField>
-        <UFormField :label="$t('pages.inventory.variant.unit')" name="unit">
-          <UInput v-model="form.unit" placeholder="pcs" class="w-full" />
-        </UFormField>
-        <UButton :label="$t('pages.inventory.variant.add')" color="primary" icon="i-lucide-plus" type="submit" :loading="adding" class="sm:col-span-3 justify-center" />
+        <UButton :label="$t('pages.inventory.variant.add')" color="primary" icon="i-lucide-plus" type="submit" :loading="adding" class="sm:col-span-2 justify-center" />
       </UForm>
     </template>
   </UModal>
@@ -63,16 +60,15 @@ const deletingId = ref<number | null>(null)
 
 const schema = z.object({
   name: z.string().trim().min(1, t('common.nameRequired')),
-  code: z.string().optional().or(z.literal('')),
-  unit: z.string().optional().or(z.literal(''))
+  code: z.string().optional().or(z.literal(''))
 })
-const form = reactive({ name: '', code: '', unit: '' })
+const form = reactive({ name: '', code: '' })
 
 const fetchVariants = async () => {
   if (!props.product) return
   isLoading.value = true
   try {
-    const res = await inventoryVariantService.getByProduct(props.product.id)
+    const res = await inventoryVariantService.getByInventory(props.product.id)
     variants.value = res.success && res.data ? res.data : []
   } finally {
     isLoading.value = false
@@ -83,9 +79,9 @@ const add = async () => {
   if (!props.product) return
   adding.value = true
   try {
-    const res = await inventoryVariantService.create({ productId: props.product.id, name: form.name, code: form.code || null, unit: form.unit || 'pcs' })
+    const res = await inventoryVariantService.create({ inventoryId: props.product.id, name: form.name, code: form.code || null })
     if (res.success) {
-      form.name = ''; form.code = ''; form.unit = ''
+      form.name = ''; form.code = ''
       await fetchVariants()
       emit('changed')
     } else {

@@ -1175,7 +1175,9 @@
         "add": "Tambah Persediaan",
         "addTitle": "Tambah Persediaan",
         "editTitle": "Edit Persediaan",
-        "searchPlaceholder": "Cari persediaan..."
+        "searchPlaceholder": "Cari persediaan...",
+        "photo": "Foto",
+        "labels": "Label Kustom"
       },
       "variant": {
         "title": "Varian",
@@ -1249,6 +1251,24 @@
         "transferIn": "Transfer Masuk",
         "assignOut": "Di-assign",
         "returnIn": "Dikembalikan"
+      },
+      "unit": {
+        "label": "Satuan",
+        "placeholder": "Pilih satuan"
+      },
+      "create": {
+        "title": "Tambah Persediaan",
+        "description": "Buat item beserta varian dan stok awal",
+        "noPhoto": "Tidak ada foto",
+        "noLabels": "Belum ada label.",
+        "noVariants": "Belum ada varian. Tambahkan untuk mengisi stok awal.",
+        "variantName": "Nama varian",
+        "initialStock": "Stok awal",
+        "success": "Persediaan berhasil dibuat!"
+      },
+      "edit": {
+        "title": "Edit Persediaan",
+        "success": "Persediaan berhasil diperbarui!"
       }
     }
   }

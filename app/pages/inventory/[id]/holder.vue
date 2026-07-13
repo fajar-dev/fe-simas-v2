@@ -22,7 +22,7 @@
       table-class="min-w-[800px]"
     />
 
-    <InventoryAssignModal v-model="showAssignModal" :product-id="productId" @done="fetchHoldings" />
+    <InventoryAssignModal v-model="showAssignModal" :inventory-id="inventoryId" @done="fetchHoldings" />
     <InventoryReturnModal v-model="showReturnModal" :holding="selectedHolding" @done="fetchHoldings" />
   </div>
 </template>
@@ -38,7 +38,7 @@ definePageMeta({ layout: 'dashboard' })
 const { t } = useI18n()
 const { hasPermission } = useAuth()
 const route = useRoute()
-const productId = Number(route.params.id)
+const inventoryId = Number(route.params.id)
 
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
@@ -60,7 +60,7 @@ watch([page, perPage], () => fetchHoldings())
 const fetchHoldings = async () => {
   isLoading.value = true
   try {
-    const res = await inventoryStockService.getHoldings(page.value, perPage.value, { productId, active: activeOnly.value || undefined })
+    const res = await inventoryStockService.getHoldings(page.value, perPage.value, { inventoryId, active: activeOnly.value || undefined })
     if (res.success && res.data) {
       data.value = res.data
       if (res.meta) { meta.total = res.meta.total; meta.from = res.meta.from; meta.to = res.meta.to }
@@ -80,7 +80,7 @@ const columns = computed<TableColumn<InventoryStockHolding>[]>(() => {
     ]) },
     { accessorKey: 'variant', header: t('pages.inventory.variant.title'), cell: ({ row }) => h('div', {}, [
       h('span', { class: 'text-neutral-900 block' }, row.original.variant?.name || '-'),
-      h('span', { class: 'text-xs text-neutral-500' }, row.original.variant?.product?.name || '-')
+      h('span', { class: 'text-xs text-neutral-500' }, row.original.variant?.inventory?.name || '-')
     ]) },
     { accessorKey: 'branch', header: t('common.branch'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.branch?.name || '-') },
     { accessorKey: 'conditionAssigned', header: t('pages.inventory.condition.label'), cell: ({ row }) => {

@@ -12,7 +12,7 @@ definePageMeta({ layout: 'dashboard' })
 
 const route = useRoute()
 const router = useRouter()
-const productId = computed(() => Number(route.params.id))
+const inventoryId = computed(() => Number(route.params.id))
 
 const product = ref<Inventory | null>(null)
 const isLoading = ref(true)
@@ -20,7 +20,7 @@ const isLoading = ref(true)
 const loadData = async () => {
   isLoading.value = true
   try {
-    const res = await inventoryService.getById(productId.value)
+    const res = await inventoryService.getById(inventoryId.value)
     if (res.success) {
       product.value = res.data
     } else {
@@ -38,9 +38,9 @@ provide('inventoryActions', { fetchProduct: loadData })
 
 onMounted(loadData)
 
-watch(productId, (id) => { if (id) loadData() })
+watch(inventoryId, (id) => { if (id) loadData() })
 
-if (route.path === `/inventory/${productId.value}` || route.path === `/inventory/${productId.value}/`) {
-  navigateTo(`/inventory/${productId.value}/balance`, { replace: true })
+if (route.path === `/inventory/${inventoryId.value}` || route.path === `/inventory/${inventoryId.value}/`) {
+  navigateTo(`/inventory/${inventoryId.value}/balance`, { replace: true })
 }
 </script>

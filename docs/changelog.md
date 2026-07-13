@@ -9,6 +9,12 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 ## [Unreleased] — 2026-07-10
 
 ### Added
+- **Item Inventory selengkap Asset + create/edit sebagai halaman**: daftar `/inventory` kini menampilkan **foto, kategori, subkategori, satuan**, dan **kolom custom-label dinamis** (popover toggle). Create/edit tidak lagi modal tapi **halaman** 3 kolom (Kolom 1 foto, Kolom 2 konten, Kolom 3 varian) — upload foto + kamera, kategori/subkategori dengan **tambah-inline** (`CategoryAddModal`/`SubCategoryAddModal`), satuan (select), label repeater. Di create, tiap **varian** bisa langsung diisi **stok awal per cabang × kondisi** (baru/bekas). Satuan pindah ke level item (varian tak lagi punya unit).
+
+### Changed
+- **Refactor key/relasi `product` → `inventory`** di FE: tipe & service (`getByProduct` → `getByInventory`, `productId` → `inventoryId`, sub-objek `variant.product` → `variant.inventory`) agar konsisten dengan entity `Inventory`.
+
+### Added (Inventory — batch awal)
 - **Menu Inventory (Persediaan)**: satu menu `Inventory`/`Persediaan` bergaya seperti Asset — daftar item master (`/inventory`) yang dibuka ke halaman detail bertab: **Stok** (tabel expandable cabang → varian → kondisi baru/bekas via `UTable`), **Transfer** antar cabang, **Assign/Return**, dan **Pergerakan** (ledger). Kelola varian & edit item dari header detail. Service `inventory-service`, `inventory-variant-service`, `inventory-stock-service`; tipe di `types/inventory.d.ts`.
 - **Assign & Return stok ke karyawan**: modal Assign (pilih karyawan, varian, cabang, kondisi, qty) & Return (dibatasi sisa yang dipegang) di tab Assign/Return; stok yang dikembalikan selalu jadi kondisi *bekas*.
 - **Handover stok**: form Buat Serah Terima kini punya toggle **Jenis Item (Aset / Stok)**; saat Stok, builder item stok (item = varian + cabang + kondisi + qty). Halaman detail handover merender baris stok bila `itemKind = stock`.

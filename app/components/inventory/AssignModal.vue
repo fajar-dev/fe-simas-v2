@@ -47,7 +47,7 @@ import type { StockCondition } from '~/types/inventory'
 const { t } = useI18n()
 const toast = useToast()
 
-const props = defineProps<{ productId: number }>()
+const props = defineProps<{ inventoryId: number }>()
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ done: [] }>()
 
@@ -74,7 +74,7 @@ const state = reactive<{ employeeId?: number, variantId?: number, branchId?: num
 
 const load = async () => {
   const [v, b, e] = await Promise.all([
-    inventoryVariantService.getByProduct(props.productId),
+    inventoryVariantService.getByInventory(props.inventoryId),
     branchService.getList(),
     employeeService.getList(true)
   ])

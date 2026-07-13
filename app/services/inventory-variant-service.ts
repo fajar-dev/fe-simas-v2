@@ -8,9 +8,9 @@ export class InventoryVariantService {
     return { headers: { Authorization: `Bearer ${useAuth().state.token}` } }
   }
 
-  async getByProduct(productId: number): Promise<ApiResponse<InventoryVariant[]>> {
+  async getByInventory(inventoryId: number): Promise<ApiResponse<InventoryVariant[]>> {
     try {
-      const res = await apiService.client.get<ApiResponse<InventoryVariant[]>>(`/inventory-variant?productId=${productId}`, this.authHeaders)
+      const res = await apiService.client.get<ApiResponse<InventoryVariant[]>>(`/inventory-variant?inventoryId=${inventoryId}`, this.authHeaders)
       return res.data
     } catch (error: any) { return handleServiceError(error) }
   }
@@ -22,7 +22,7 @@ export class InventoryVariantService {
     } catch (error: any) { return handleServiceError(error) }
   }
 
-  async update(id: number, payload: Omit<InventoryVariantPayload, 'productId'>): Promise<ApiResponse<InventoryVariant>> {
+  async update(id: number, payload: Omit<InventoryVariantPayload, 'inventoryId'>): Promise<ApiResponse<InventoryVariant>> {
     try {
       const res = await apiService.client.put<ApiResponse<InventoryVariant>>(`/inventory-variant/${id}`, payload, this.authHeaders)
       return res.data

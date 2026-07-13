@@ -28,7 +28,7 @@ export interface HandoverStockItem {
     name: string
     code: string | null
     unit: string
-    product: { id: number; name: string; code: string | null } | null
+    inventory: { id: number; name: string; code: string | null } | null
   } | null
 }
 

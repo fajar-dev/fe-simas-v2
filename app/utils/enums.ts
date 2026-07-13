@@ -10,3 +10,7 @@ export type TransactionType = typeof HANDOVER_TRANSACTION_TYPES[number]
 /** Asset handover approval status. */
 export const HANDOVER_STATUSES = ['pending', 'approve', 'reject', 'cancel'] as const
 export type HandoverStatus = typeof HANDOVER_STATUSES[number]
+
+/** Suggested units of measure for an inventory item (free-text; powers the select). */
+export const INVENTORY_UNITS = ['Pcs', 'Unit', 'Box', 'Pack', 'Set', 'Roll', 'Meter', 'Cm', 'Kg', 'Gram', 'Liter', 'Lusin', 'Rim'] as const
+export type InventoryUnit = typeof INVENTORY_UNITS[number]
