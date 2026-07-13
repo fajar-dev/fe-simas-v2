@@ -13,19 +13,20 @@
       :to="meta.to"
       :total="meta.total"
       :search-placeholder="$t('pages.inventory.item.searchPlaceholder')"
-      table-class="min-w-[860px]"
+      table-class="min-w-[1000px]"
     >
       <template #actions>
         <div class="flex items-center gap-2 w-full sm:w-auto">
           <UButton v-if="hasPermission('inventory:create')" color="primary" variant="solid" icon="i-lucide-plus" class="flex-1 sm:flex-none justify-center" @click="() => { navigateTo('/inventory/create') }">
             {{ $t('pages.inventory.item.add') }}
           </UButton>
-          <UPopover v-if="availableLabelKeys.length">
+          <UPopover>
             <UButton color="neutral" variant="ghost" icon="i-lucide-table-properties" />
             <template #content>
               <div class="p-3 w-48 space-y-2 select-none">
                 <div class="text-sm font-semibold text-neutral-600 mb-1">{{ $t('pages.inventory.item.labels') }}</div>
-                <div class="space-y-1.5 max-h-48 overflow-y-auto">
+                <div v-if="availableLabelKeys.length === 0" class="text-xs text-neutral-400 italic">{{ $t('pages.inventory.item.noCustomLabels') }}</div>
+                <div v-else class="space-y-1.5 max-h-48 overflow-y-auto">
                   <div v-for="key in availableLabelKeys" :key="key" class="flex items-center gap-2">
                     <UCheckbox :model-value="activeLabelColumns.includes(key)" :label="key" @update:model-value="(v: boolean | 'indeterminate') => toggleLabelColumn(key, v === true)" />
                   </div>
@@ -99,6 +100,12 @@ const toggleLabelColumn = (key: string, on: boolean) => {
 const columns = computed<TableColumn<Inventory>[]>(() => {
   const list: TableColumn<Inventory>[] = [
     {
+      id: 'no',
+      header: t('pages.inventory.item.columnNo'),
+      meta: { class: { td: 'w-12 text-neutral-500', th: 'w-12' } },
+      cell: ({ row }) => h('span', { class: 'text-neutral-500' }, (page.value - 1) * perPage.value + row.index + 1)
+    },
+    {
     accessorKey: 'name',
     header: sortHeader(t('common.name'), 'name'),
     cell: ({ row }) => {
@@ -131,23 +138,11 @@ const columns = computed<TableColumn<Inventory>[]>(() => {
       return h('div', { class: 'flex items-center gap-3' }, [imageEl, textEl])
     }
   },
-    // {
-    //   id: 'photo',
-    //   header: '',
-    //   meta: { class: { td: 'w-14', th: 'w-14' } },
-    //   cell: ({ row }) => h(UAvatar, { src: row.original.image || undefined, alt: row.original.name, icon: 'i-lucide-package', size: 'md', class: 'bg-neutral-100 text-neutral-400' })
-    // },
-    // {
-    //   accessorKey: 'name',
-    //   header: sortHeader(t('common.name'), 'name'),
-    //   cell: ({ row }) => h('div', {}, [
-    //     h('span', { class: 'font-medium text-neutral-900 cursor-pointer hover:underline block', onClick: () => navigateTo(`/inventory/${row.original.id}`) }, row.original.name),
-    //     h('span', { class: 'text-xs text-neutral-500' }, row.original.code || '-')
-    //   ])
-    // },
-    { accessorKey: 'category', header: t('common.category'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.category?.name || '-') },
-    { accessorKey: 'subCategory', header: t('common.subCategory'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.subCategory?.name || '-') },
-    { accessorKey: 'unit', header: t('pages.inventory.unit.label'), cell: ({ row }) => h(UBadge, { color: 'neutral', variant: 'subtle' }, () => row.original.unit || '-') },
+    { accessorKey: 'category', header: sortHeader(t('common.category'), 'category'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.category?.name || '-') },
+    { accessorKey: 'subCategory', header: sortHeader(t('common.subCategory'), 'subCategory'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.subCategory?.name || '-') },
+    { accessorKey: 'unit', header: sortHeader(t('pages.inventory.unit.label'), 'unit', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h(UBadge, { color: 'neutral', variant: 'subtle' }, () => row.original.unit || '-') },
+    { accessorKey: 'variantCount', header: sortHeader(t('pages.inventory.item.columnVariantCount'), 'variantCount', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-neutral-700 font-medium' }, row.original.variantCount ?? 0) },
+    { accessorKey: 'balanceCount', header: sortHeader(t('pages.inventory.item.columnBalanceCount'), 'balanceCount', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-neutral-700 font-medium' }, row.original.balanceCount ?? 0) },
   ]
 
   for (const key of activeLabelColumns.value) {

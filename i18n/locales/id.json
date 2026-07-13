@@ -755,7 +755,7 @@
         "imageHint": "PNG, JPG maksimal 2MB",
         "uploading": "Mengunggah...",
         "codeLabel": "Kode",
-        "scan": "Scan",
+        "scan": "Pindai Massal",
         "addCode": "Tambah Kode",
         "codePlaceholder": "cth. AST-001",
         "duplicateCode": "Kode duplikat dalam daftar",
@@ -1190,7 +1190,11 @@
         "editTitle": "Edit Persediaan",
         "searchPlaceholder": "Cari persediaan...",
         "photo": "Foto",
-        "labels": "Label Kustom"
+        "labels": "Label Kustom",
+        "noCustomLabels": "Tidak ada label kustom",
+        "columnNo": "No",
+        "columnVariantCount": "Varian",
+        "columnBalanceCount": "Balance"
       },
       "variant": {
         "title": "Varian",
@@ -1237,9 +1241,12 @@
         "open": "Buka Detail"
       },
       "tabs": {
-        "balance": "Varian & Stok",
+        "balance": "Balance",
         "transfer": "Transfer",
         "holder": "Penetapan / Pengembalian"
+      },
+      "stock": {
+        "overviewTitle": "Varian & Stok"
       },
       "holder": {
         "activeOnly": "Hanya aktif",
@@ -1270,12 +1277,19 @@
       },
       "create": {
         "title": "Tambah Persediaan",
-        "description": "Buat item beserta varian dan stok awal",
+        "description": "Buat item beserta variannya",
+        "namePlaceholder": "cth. Kertas A4",
         "noPhoto": "Tidak ada foto",
         "noLabels": "Belum ada label.",
-        "noVariants": "Belum ada varian. Tambahkan untuk mengisi stok awal.",
+        "noVariants": "Belum ada varian.",
         "variantName": "Nama varian",
-        "initialStock": "Stok awal",
+        "variantNameRequired": "Nama varian wajib diisi",
+        "variantCodeMax": "Kode maksimal 50 karakter",
+        "categoryRequired": "Kategori wajib diisi",
+        "subCategoryRequired": "Sub kategori wajib diisi",
+        "unitRequired": "Satuan wajib diisi",
+        "scan": "Pindai",
+        "multiScan": "Pindai Massal",
         "success": "Persediaan berhasil dibuat!"
       },
       "edit": {

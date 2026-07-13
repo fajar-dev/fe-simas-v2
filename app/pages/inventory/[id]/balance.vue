@@ -1,33 +1,30 @@
 <template>
-  <div class="space-y-3">
-    <div v-if="canAdd" class="flex justify-end">
-      <UButton icon="i-lucide-plus" color="primary" @click="() => { showAddModal = true }">
-        {{ $t('pages.inventory.addStock.button') }}
-      </UButton>
-    </div>
+  <div class="space-y-4">
+    <DataTable
+      v-model:page="page"
+      v-model:perPage="perPage"
+      :data="data"
+      :columns="columns"
+      :loading="isLoading"
+      :from="meta.from"
+      :to="meta.to"
+      :total="meta.total"
+      :searchable="false"
+      table-class="min-w-[820px]"
+    >
+      <template #actions>
+        <UButton v-if="canAdd" icon="i-lucide-plus" color="primary" :label="$t('pages.inventory.addStock.button')" @click="() => { showAddModal = true }" />
+      </template>
+    </DataTable>
 
-    <div class="overflow-x-auto">
-      <UTable
-        :data="flatRows"
-        :columns="columns"
-        :loading="isLoading"
-        :ui="{
-          th: 'bg-neutral-50 py-2',
-          td: 'py-2 border-b border-neutral-100'
-        }"
-        class="min-w-[480px] border border-neutral-200 rounded-md"
-      />
-    </div>
-
-    <InventoryAddStockModal v-model="showAddModal" :inventory-id="inventoryId" @done="fetchBalances" />
+    <InventoryAddStockModal v-model="showAddModal" :inventory-id="inventoryId" @done="onAdded" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import type { Row } from '@tanstack/vue-table'
 import { inventoryStockService } from '~/services/inventory-stock-service'
-import type { StockCondition } from '~/types/inventory'
+import type { InventoryStockMovement } from '~/types/inventory'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -35,142 +32,73 @@ const { t } = useI18n()
 const route = useRoute()
 const { hasPermission } = useAuth()
 const inventoryId = Number(route.params.id)
-
 const canAdd = hasPermission('inventory-stock:entry')
+
+const stockOverview = inject('inventoryStock', null) as { refresh: () => void } | null
+
+const UAvatar = resolveComponent('UAvatar')
+const UBadge = resolveComponent('UBadge')
+
+const data = ref<InventoryStockMovement[]>([])
+const isLoading = ref(false)
+const meta = reactive({ total: 0, from: 0, to: 0 })
+const page = ref(1)
+const perPage = ref(10)
 const showAddModal = ref(false)
 
-const UIcon = resolveComponent('UIcon')
+watch([page, perPage], () => { fetchHistory() })
 
-type Condition = { condition: StockCondition, quantity: number }
-type Variant = { variantId: number, name: string, unit: string, total: number, conditions: Condition[] }
-type Branch = { branchId: number, name: string, total: number, variants: Variant[] }
-
-type FlatRow = {
-  key: string
-  kind: 'branch' | 'variant' | 'condition'
-  depth: number
-  label: string
-  unit?: string
-  condition?: StockCondition
-  qty: number
-  canExpand: boolean
-  isOpen: boolean
-  onToggle?: () => void
-}
-
-const tree = ref<Branch[]>([])
-const isLoading = ref(false)
-const openBranches = ref<Set<number>>(new Set())
-const openVariants = ref<Set<string>>(new Set())
-
-const toggleBranch = (id: number) => {
-  const s = new Set(openBranches.value)
-  s.has(id) ? s.delete(id) : s.add(id)
-  openBranches.value = s
-}
-const toggleVariant = (key: string) => {
-  const s = new Set(openVariants.value)
-  s.has(key) ? s.delete(key) : s.add(key)
-  openVariants.value = s
-}
-
-/** Only the currently-visible rows, in display order (expansion handled manually). */
-const flatRows = computed<FlatRow[]>(() => {
-  const out: FlatRow[] = []
-  for (const b of tree.value) {
-    const bOpen = openBranches.value.has(b.branchId)
-    out.push({ key: `b${b.branchId}`, kind: 'branch', depth: 0, label: b.name, qty: b.total, canExpand: b.variants.length > 0, isOpen: bOpen, onToggle: () => toggleBranch(b.branchId) })
-    if (!bOpen) continue
-    for (const v of b.variants) {
-      const vk = `${b.branchId}:${v.variantId}`
-      const vOpen = openVariants.value.has(vk)
-      out.push({ key: `v${vk}`, kind: 'variant', depth: 1, label: v.name, unit: v.unit, qty: v.total, canExpand: true, isOpen: vOpen, onToggle: () => toggleVariant(vk) })
-      if (!vOpen) continue
-      for (const c of v.conditions) {
-        out.push({ key: `c${vk}:${c.condition}`, kind: 'condition', depth: 2, label: c.condition === 'new' ? t('pages.inventory.condition.new') : t('pages.inventory.condition.used'), condition: c.condition, unit: v.unit, qty: c.quantity, canExpand: false, isOpen: false })
-      }
-    }
-  }
-  return out
-})
-
-function renderName(row: FlatRow) {
-  const lead = row.canExpand
-    ? h(UIcon, { name: row.isOpen ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right', class: 'w-4 h-4 text-neutral-400 shrink-0' })
-    : h('span', { class: 'w-4 shrink-0' })
-
-  let label: any
-  if (row.kind === 'branch') {
-    label = h('span', { class: 'font-semibold text-neutral-900' }, row.label)
-  } else if (row.kind === 'variant') {
-    label = h('span', { class: 'flex items-baseline gap-1.5' }, [
-      h('span', { class: 'font-medium text-neutral-800' }, row.label),
-      h('span', { class: 'text-xs text-neutral-400' }, row.unit)
-    ])
-  } else {
-    label = h('span', { class: `text-sm ${row.condition === 'new' ? 'text-emerald-600' : 'text-amber-600'}` }, row.label)
-  }
-
-  return h('div', {
-    class: ['flex items-center gap-2', row.canExpand ? 'cursor-pointer select-none' : ''],
-    style: { paddingLeft: `${row.depth * 22}px` },
-    onClick: row.onToggle
-  }, [lead, label])
-}
-
-function renderQty(row: FlatRow) {
-  if (row.kind === 'condition') return h('span', { class: 'text-sm text-neutral-600' }, `${row.qty} ${row.unit}`)
-  if (row.kind === 'variant') return h('span', { class: 'text-sm font-medium text-neutral-800' }, `${row.qty} ${row.unit}`)
-  return h('span', { class: 'text-sm font-semibold text-neutral-900' }, String(row.qty))
-}
-
-const columns: TableColumn<FlatRow>[] = [
-  {
-    accessorKey: 'label',
-    header: () => `${t('common.branch')} / ${t('pages.inventory.variant.title')}`,
-    cell: ({ row }: { row: Row<FlatRow> }) => renderName(row.original)
-  },
-  {
-    accessorKey: 'qty',
-    header: () => t('pages.inventory.monitor.quantity'),
-    meta: { class: { td: 'text-right w-40', th: 'text-right w-40' } },
-    cell: ({ row }: { row: Row<FlatRow> }) => renderQty(row.original)
-  }
-]
-
-/** Flatten branch × variant × condition balance rows into a nested tree. */
-function buildTree(balances: Awaited<ReturnType<typeof inventoryStockService.getBalances>>['data']): Branch[] {
-  const byBranch = new Map<number, { node: Branch, variants: Map<number, Variant> }>()
-  for (const r of balances ?? []) {
-    if (!r.branch || !r.variant) continue
-    let b = byBranch.get(r.branch.id)
-    if (!b) {
-      b = { node: { branchId: r.branch.id, name: r.branch.name, total: 0, variants: [] }, variants: new Map() }
-      byBranch.set(r.branch.id, b)
-    }
-    let v = b.variants.get(r.variant.id)
-    if (!v) {
-      v = { variantId: r.variant.id, name: r.variant.name, unit: r.variant.unit, total: 0, conditions: [{ condition: 'new', quantity: 0 }, { condition: 'used', quantity: 0 }] }
-      b.variants.set(r.variant.id, v)
-      b.node.variants.push(v)
-    }
-    const cond = v.conditions.find(c => c.condition === r.condition)
-    if (cond) cond.quantity += r.quantity
-    v.total += r.quantity
-    b.node.total += r.quantity
-  }
-  return Array.from(byBranch.values(), b => b.node)
-}
-
-const fetchBalances = async () => {
+const fetchHistory = async () => {
   isLoading.value = true
   try {
-    const res = await inventoryStockService.getBalances(1, 500, { inventoryId })
-    tree.value = res.success ? buildTree(res.data) : []
+    // Stock additions are "entry" movements (stock-in).
+    const res = await inventoryStockService.getMovements(page.value, perPage.value, { inventoryId, type: 'entry' })
+    if (res.success && res.data) {
+      data.value = res.data
+      if (res.meta) { meta.total = res.meta.total; meta.from = res.meta.from; meta.to = res.meta.to }
+    }
   } finally {
     isLoading.value = false
   }
 }
 
-onMounted(fetchBalances)
+const onAdded = () => {
+  fetchHistory()
+  stockOverview?.refresh()
+}
+
+const columns: TableColumn<InventoryStockMovement>[] = [
+  { accessorKey: 'createdAt', header: t('common.date'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, new Date(row.original.createdAt).toLocaleString()) },
+  { accessorKey: 'variant', header: t('pages.inventory.variant.title'), cell: ({ row }) => h('span', { class: 'text-neutral-900 font-medium' }, row.original.variant?.name || '-') },
+  { accessorKey: 'branch', header: t('common.branch'), cell: ({ row }) => h('span', { class: 'text-neutral-700 text-sm' }, row.original.branch?.name || '-') },
+  { accessorKey: 'condition', header: t('pages.inventory.condition.label'), cell: ({ row }) => {
+    const c = row.original.condition
+    return h('span', { class: c === 'new' ? 'text-emerald-600 text-sm' : 'text-amber-600 text-sm' }, c === 'new' ? t('pages.inventory.condition.new') : t('pages.inventory.condition.used'))
+  } },
+  { accessorKey: 'quantity', header: t('pages.inventory.monitor.quantity'), cell: ({ row }) => {
+    const q = row.original.quantity
+    return h('span', { class: 'font-semibold text-emerald-600' }, q > 0 ? `+${q}` : `${q}`)
+  } },
+  { accessorKey: 'note', header: t('common.note'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.note || '-') },
+  { accessorKey: 'createdBy', header: t('common.createdBy'), cell: ({ row }) => {
+    const creator = row.original.createdBy
+    if (!creator) return h('span', { class: 'text-neutral-500 italic text-sm' }, t('common.system'))
+    return h('div', { class: 'flex items-center gap-2' }, [
+      h(UAvatar, { src: creator.photo || undefined, alt: creator.name, size: 'xs', class: 'bg-primary-50 text-primary-700', loading: 'lazy' }),
+      h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
+    ])
+  } },
+  { id: 'attachments', header: t('component.attachment.title'), cell: ({ row }) => {
+    const atts = row.original.attachments || []
+    if (!atts.length) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+    return h('div', { class: 'flex flex-wrap gap-2 max-w-sm' }, atts.map((att) => {
+      const theme = getAttachmentBadgeTheme(att.mimeType)
+      return h('a', { href: att.url, target: '_blank', rel: 'noopener', class: 'cursor-pointer inline-block max-w-[160px]' }, [
+        h(UBadge, { color: theme.color, variant: 'subtle', icon: theme.icon, label: att.originalName, class: 'max-w-full truncate' })
+      ])
+    }))
+  } }
+]
+
+onMounted(fetchHistory)
 </script>

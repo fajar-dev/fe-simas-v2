@@ -755,7 +755,7 @@
         "imageHint": "PNG, JPG up to 2MB",
         "uploading": "Uploading...",
         "codeLabel": "Code",
-        "scan": "Scan",
+        "scan": "Multi Scan",
         "addCode": "Add Code",
         "codePlaceholder": "e.g. AST-001",
         "duplicateCode": "Duplicate code in the list",
@@ -1190,7 +1190,11 @@
         "editTitle": "Edit Inventory",
         "searchPlaceholder": "Search inventory...",
         "photo": "Photo",
-        "labels": "Custom Labels"
+        "labels": "Custom Labels",
+        "noCustomLabels": "No custom labels found",
+        "columnNo": "No",
+        "columnVariantCount": "Variants",
+        "columnBalanceCount": "Balance"
       },
       "variant": {
         "title": "Variant",
@@ -1237,9 +1241,12 @@
         "open": "Open Detail"
       },
       "tabs": {
-        "balance": "Variants & Stock",
+        "balance": "Balance",
         "transfer": "Transfer",
         "holder": "Assignment / Return"
+      },
+      "stock": {
+        "overviewTitle": "Variants & Stock"
       },
       "holder": {
         "activeOnly": "Active only",
@@ -1270,12 +1277,19 @@
       },
       "create": {
         "title": "Add Inventory",
-        "description": "Create an item with variants and initial stock",
+        "description": "Create an item with its variants",
+        "namePlaceholder": "e.g. A4 Paper",
         "noPhoto": "No photo",
         "noLabels": "No labels yet.",
-        "noVariants": "No variants yet. Add one to set its initial stock.",
+        "noVariants": "No variants yet.",
         "variantName": "Variant name",
-        "initialStock": "Initial stock",
+        "variantNameRequired": "Variant name is required",
+        "variantCodeMax": "Code must be at most 50 characters",
+        "categoryRequired": "Category is required",
+        "subCategoryRequired": "Sub category is required",
+        "unitRequired": "Unit is required",
+        "scan": "Scan",
+        "multiScan": "Multi Scan",
         "success": "Inventory created!"
       },
       "edit": {

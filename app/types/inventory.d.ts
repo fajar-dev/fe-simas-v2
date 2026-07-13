@@ -20,6 +20,8 @@ export interface Inventory {
   subCategory: { id: number; name: string } | null
   labels: InventoryLabelItem[]
   attachments: Attachment[]
+  variantCount?: number
+  balanceCount?: number
   createdAt: string
   updatedAt: string
   createdBy: { id: number; name: string; photo: string | null } | null

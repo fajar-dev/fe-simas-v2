@@ -143,13 +143,14 @@ export function useTableQuery(onQueryChange: () => void, options: TableQueryOpti
     }, 300)
   })
 
-  const sortHeader = (label: string, column: string) => {
+  const sortHeader = (label: string, column: string, align: 'start' | 'center' | 'end' = 'start') => {
     return () => {
       const isActive = sortBy.value === column
       const upColor = isActive && order.value === 'ASC' ? 'text-primary' : 'text-neutral-300'
       const downColor = isActive && order.value === 'DESC' ? 'text-primary' : 'text-neutral-300'
+      const justifyClass = align === 'center' ? 'justify-center' : align === 'end' ? 'justify-end' : ''
       return h('div', {
-        class: 'flex items-center gap-1 cursor-pointer select-none hover:text-primary transition-colors',
+        class: `flex items-center gap-1 cursor-pointer select-none hover:text-primary transition-colors ${justifyClass}`.trim(),
         onClick: () => toggleSort(column)
       }, [
         h('span', label),

@@ -40,6 +40,8 @@ const inventoryId = Number(route.params.id)
 const canTransfer = useAuth().hasPermission('inventory-stock:transfer')
 
 const UIcon = resolveComponent('UIcon')
+const UAvatar = resolveComponent('UAvatar')
+const UBadge = resolveComponent('UBadge')
 
 const data = ref<InventoryStockTransfer[]>([])
 const isLoading = ref(false)
@@ -78,13 +80,23 @@ const columns: TableColumn<InventoryStockTransfer>[] = [
     ])
   )) },
   { accessorKey: 'note', header: t('common.note'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.note || '-') },
-  { accessorKey: 'createdBy', header: t('common.createdBy'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.createdBy?.name || '-') },
-  { id: 'attachments', header: '', cell: ({ row }) => {
+  { accessorKey: 'createdBy', header: t('common.createdBy'), cell: ({ row }) => {
+    const creator = row.original.createdBy
+    if (!creator) return h('span', { class: 'text-neutral-500 italic text-sm' }, t('common.system'))
+    return h('div', { class: 'flex items-center gap-2' }, [
+      h(UAvatar, { src: creator.photo || undefined, alt: creator.name, size: 'xs', class: 'bg-primary-50 text-primary-700', loading: 'lazy' }),
+      h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
+    ])
+  } },
+  { id: 'attachments', header: t('component.attachment.title'), cell: ({ row }) => {
     const atts = row.original.attachments || []
-    if (!atts.length) return h('span', { class: 'text-neutral-300' }, '-')
-    return h('div', { class: 'flex items-center gap-1.5' }, atts.map(a =>
-      h('a', { href: a.url, target: '_blank', rel: 'noopener', title: a.originalName, class: 'text-neutral-500 hover:text-primary' },
-        h(UIcon, { name: 'i-lucide-paperclip', class: 'w-4 h-4' }))))
+    if (!atts.length) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+    return h('div', { class: 'flex flex-wrap gap-2 max-w-sm' }, atts.map((att) => {
+      const theme = getAttachmentBadgeTheme(att.mimeType)
+      return h('a', { href: att.url, target: '_blank', rel: 'noopener', class: 'cursor-pointer inline-block max-w-[160px]' }, [
+        h(UBadge, { color: theme.color, variant: 'subtle', icon: theme.icon, label: att.originalName, class: 'max-w-full truncate' })
+      ])
+    }))
   } }
 ]
 

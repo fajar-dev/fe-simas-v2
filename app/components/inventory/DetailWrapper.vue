@@ -113,6 +113,12 @@
               <div class="text-sm text-neutral-700">{{ item.description || '-' }}</div>
             </div>
 
+            <!-- Variants -->
+            <div class="col-span-12 pt-4 border-t border-neutral-100">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.inventory.stock.overviewTitle') }}</span>
+              <InventoryStockOverview v-if="item && hasPermission('inventory-stock:read')" :inventory-id="inventoryId" :refresh-key="stockKey" />
+            </div>
+
             <!-- Attachments -->
             <div v-if="item.attachments && item.attachments.length" class="col-span-12 pt-4 border-t border-neutral-100">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">{{ $t('component.attachment.title') }}</span>
@@ -134,6 +140,8 @@
         </div>
       </div>
     </UCard>
+
+    <!-- Variant & stock overview -->
 
     <UTabs v-model="activeTab" :items="tabItems" variant="link" class="gap-4" />
 
@@ -165,12 +173,17 @@ const { fetchItem } = inject('inventoryActions') as { fetchItem: () => Promise<v
 const showVariantModal = ref(false)
 const showLogDrawer = ref(false)
 
-const onItemSaved = async () => { await fetchItem() }
+// Bumped to force the stock overview to refetch (e.g. after adding stock, or switching tabs).
+const stockKey = ref(0)
+provide('inventoryStock', { refresh: () => { stockKey.value++ } })
+watch(() => route.path, () => { stockKey.value++ })
+
+const onItemSaved = async () => { await fetchItem(); stockKey.value++ }
 
 const tabItems = computed(() => {
   const tabs: TabsItem[] = []
   if (hasPermission('inventory-stock:read')) {
-    tabs.push({ value: 'balance', label: t('pages.inventory.tabs.balance'), icon: 'i-lucide-layers', to: `/inventory/${inventoryId}/balance` })
+    tabs.push({ value: 'balance', label: t('pages.inventory.tabs.balance'), icon: 'i-lucide-package', to: `/inventory/${inventoryId}/balance` })
   }
   if (hasPermission('inventory-stock:transfer')) {
     tabs.push({ value: 'transfer', label: t('pages.inventory.tabs.transfer'), icon: 'i-lucide-arrow-left-right', to: `/inventory/${inventoryId}/transfer` })
