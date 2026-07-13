@@ -62,7 +62,8 @@
     "customLabels": "Custom Labels",
     "actions": "Actions",
     "edit": "Edit",
-    "createdBy": "Created By"
+    "createdBy": "Created By",
+    "validationError": "Validation failed"
   },
 
   "nav": {

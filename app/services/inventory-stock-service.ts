@@ -1,6 +1,6 @@
 import { apiService } from "./api-service"
 import { handleServiceError } from "../composables/error-helper"
-import type { InventoryStockBalance, InventoryStockEntryRow, InventoryStockTransferItem, StockCondition, InventoryStockMovement, InventoryStockHolding, InventoryStockAssignItem, InventoryStockReturnItem } from "../types/inventory"
+import type { InventoryStockBalance, InventoryStockEntryRow, InventoryStockTransferItem, InventoryStockTransfer, StockCondition, InventoryStockMovement, InventoryStockHolding, InventoryStockAssignItem, InventoryStockReturnItem } from "../types/inventory"
 import type { ApiResponse } from "../types/api"
 
 export class InventoryStockService {
@@ -41,9 +41,17 @@ export class InventoryStockService {
     } catch (error: any) { return handleServiceError(error) }
   }
 
-  async transfer(payload: { fromBranchId: number; toBranchId: number; note?: string | null; items: InventoryStockTransferItem[] }): Promise<ApiResponse<{ referenceId: string }>> {
+  async transfer(payload: { fromBranchId: number; toBranchId: number; note?: string | null; attachmentIds?: number[]; items: InventoryStockTransferItem[] }): Promise<ApiResponse<{ referenceId: string; transferId: number }>> {
     try {
-      const res = await apiService.client.post<ApiResponse<{ referenceId: string }>>(`/inventory/stock/transfer`, payload, this.authHeaders)
+      const res = await apiService.client.post<ApiResponse<{ referenceId: string; transferId: number }>>(`/inventory/stock/transfer`, payload, this.authHeaders)
+      return res.data
+    } catch (error: any) { return handleServiceError(error) }
+  }
+
+  async getTransfers(page = 1, perPage = 20, filters: { inventoryId: number }): Promise<ApiResponse<InventoryStockTransfer[]>> {
+    try {
+      const url = `/inventory/stock/transfer?inventoryId=${filters.inventoryId}&page=${page}&limit=${perPage}`
+      const res = await apiService.client.get<ApiResponse<InventoryStockTransfer[]>>(url, this.authHeaders)
       return res.data
     } catch (error: any) { return handleServiceError(error) }
   }

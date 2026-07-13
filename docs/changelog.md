@@ -9,6 +9,7 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 ## [Unreleased] — 2026-07-10
 
 ### Added
+- **Tab Transfer = riwayat + form transfer**: tab **Transfer** kini menampilkan **tabel riwayat transfer** (tanggal, cabang asal → tujuan, item + kondisi + qty, catatan, pembuat, lampiran). Tombol **Transfer** membuka modal `TransferModal` (pilih cabang asal/tujuan, baris varian dibatasi stok tersedia, catatan, `AttachmentManager`) dengan **validasi Zod** — jumlah tidak boleh melebihi stok tersedia & cabang asal ≠ tujuan.
 - **Lampiran & Dibuat Oleh pada Inventory**: halaman create/edit punya `AttachmentManager` (upload lampiran, seperti asset); halaman detail menampilkan **Dibuat Oleh** (avatar + nama) dan daftar **lampiran** (chip link file).
 
 ### Fixed

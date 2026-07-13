@@ -1,140 +1,93 @@
 <template>
-  <UCard class="w-full">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <UFormField :label="$t('pages.inventory.transfer.fromBranch')" required>
-        <USelectMenu v-model="fromBranchId" :items="branchOptions" value-key="value" :placeholder="$t('pages.inventory.transfer.selectBranch')" class="w-full" />
-      </UFormField>
-      <UFormField :label="$t('pages.inventory.transfer.toBranch')" required>
-        <USelectMenu v-model="toBranchId" :items="branchOptions" value-key="value" :placeholder="$t('pages.inventory.transfer.selectBranch')" class="w-full" />
-      </UFormField>
+  <div class="space-y-4">
+    <div class="flex items-center justify-end">
+      <UButton
+        v-if="canTransfer"
+        icon="i-lucide-arrow-left-right"
+        color="primary"
+        :label="$t('pages.inventory.transfer.submit')"
+        @click="() => { showModal = true }"
+      />
     </div>
 
-    <UAlert v-if="sameBranch" color="error" variant="soft" icon="i-lucide-triangle-alert" :title="$t('pages.inventory.transfer.sameBranch')" class="mt-4" />
+    <DataTable
+      v-model:page="page"
+      v-model:perPage="perPage"
+      :data="data"
+      :columns="columns"
+      :loading="isLoading"
+      :from="meta.from"
+      :to="meta.to"
+      :total="meta.total"
+      :searchable="false"
+      table-class="min-w-[820px]"
+    />
 
-    <div class="mt-6">
-      <div v-if="isLoading" class="space-y-2">
-        <USkeleton v-for="i in 3" :key="i" class="h-10 w-full" />
-      </div>
-      <div v-else-if="!fromBranchId" class="text-center text-sm text-neutral-400 py-10 border-2 border-dashed border-neutral-200 rounded-lg">
-        {{ $t('pages.inventory.transfer.selectBranch') }}
-      </div>
-      <div v-else-if="rows.length === 0" class="text-center text-sm text-neutral-400 py-10 border-2 border-dashed border-neutral-200 rounded-lg">
-        {{ $t('pages.inventory.entry.noVariants') }}
-      </div>
-      <div v-else class="overflow-x-auto">
-        <table class="w-full min-w-[640px] text-sm">
-          <thead>
-            <tr class="text-left text-xs font-semibold text-neutral-400 uppercase tracking-wider border-b border-neutral-200">
-              <th class="py-2 pr-3">{{ $t('pages.inventory.variant.title') }}</th>
-              <th class="py-2 px-3">{{ $t('pages.inventory.condition.new') }} ({{ $t('pages.inventory.transfer.available') }})</th>
-              <th class="py-2 px-3">{{ $t('pages.inventory.condition.used') }} ({{ $t('pages.inventory.transfer.available') }})</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in rows" :key="row.variantId" class="border-b border-neutral-100">
-              <td class="py-2 pr-3">
-                <div class="font-medium text-neutral-900">{{ row.name }}</div>
-                <div class="text-xs text-neutral-500">{{ row.unit }}</div>
-              </td>
-              <td class="py-2 px-3">
-                <div class="flex items-center gap-2">
-                  <UInput v-model.number="row.transferNew" type="number" :min="0" :max="row.new" class="w-24" :disabled="row.new === 0" />
-                  <span class="text-xs text-neutral-400">/ {{ row.new }}</span>
-                </div>
-              </td>
-              <td class="py-2 px-3">
-                <div class="flex items-center gap-2">
-                  <UInput v-model.number="row.transferUsed" type="number" :min="0" :max="row.used" class="w-24" :disabled="row.used === 0" />
-                  <span class="text-xs text-neutral-400">/ {{ row.used }}</span>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <template #footer>
-      <div class="flex items-center justify-between gap-3 w-full">
-        <UInput v-model="note" :placeholder="$t('pages.inventory.transfer.notePlaceholder')" class="flex-1 max-w-md" />
-        <UButton :label="$t('pages.inventory.transfer.submit')" color="primary" icon="i-lucide-arrow-left-right" :loading="saving" :disabled="!canSubmit" @click="submit" />
-      </div>
-    </template>
-  </UCard>
+    <InventoryTransferModal v-model="showModal" :inventory-id="inventoryId" @done="fetchTransfers" />
+  </div>
 </template>
 
 <script setup lang="ts">
+import type { TableColumn } from '@nuxt/ui'
 import { inventoryStockService } from '~/services/inventory-stock-service'
-import { branchService } from '~/services/branch-service'
-import type { InventoryStockTransferItem } from '~/types/inventory'
+import type { InventoryStockTransfer } from '~/types/inventory'
 
 definePageMeta({ layout: 'dashboard' })
 
 const { t } = useI18n()
-const toast = useToast()
 const route = useRoute()
 const inventoryId = Number(route.params.id)
+const canTransfer = useAuth().hasPermission('inventory-stock:transfer')
 
-interface Row { variantId: number, name: string, unit: string, new: number, used: number, transferNew: number, transferUsed: number }
+const UIcon = resolveComponent('UIcon')
+const UBadge = resolveComponent('UBadge')
 
-const branchOptions = ref<{ label: string, value: number }[]>([])
-const fromBranchId = ref<number | undefined>(undefined)
-const toBranchId = ref<number | undefined>(undefined)
-const note = ref('')
-const rows = ref<Row[]>([])
+const data = ref<InventoryStockTransfer[]>([])
 const isLoading = ref(false)
-const saving = ref(false)
+const meta = reactive({ total: 0, from: 0, to: 0 })
+const page = ref(1)
+const perPage = ref(10)
+const showModal = ref(false)
 
-const sameBranch = computed(() => !!fromBranchId.value && fromBranchId.value === toBranchId.value)
-const hasQty = computed(() => rows.value.some(r => (Number(r.transferNew) || 0) > 0 || (Number(r.transferUsed) || 0) > 0))
-const canSubmit = computed(() => !!fromBranchId.value && !!toBranchId.value && !sameBranch.value && hasQty.value)
+watch([page, perPage], () => { fetchTransfers() })
 
-const loadRows = async () => {
-  if (!fromBranchId.value) { rows.value = []; return }
+const fetchTransfers = async () => {
   isLoading.value = true
   try {
-    const res = await inventoryStockService.getEntryTemplate(fromBranchId.value, inventoryId)
-    rows.value = (res.success && res.data ? res.data : []).map(r => ({ variantId: r.variantId, name: r.name, unit: r.unit, new: r.new, used: r.used, transferNew: 0, transferUsed: 0 }))
+    const res = await inventoryStockService.getTransfers(page.value, perPage.value, { inventoryId })
+    if (res.success && res.data) {
+      data.value = res.data
+      if (res.meta) { meta.total = res.meta.total; meta.from = res.meta.from; meta.to = res.meta.to }
+    }
   } finally {
     isLoading.value = false
   }
 }
 
-watch(fromBranchId, loadRows)
+const columns: TableColumn<InventoryStockTransfer>[] = [
+  { accessorKey: 'createdAt', header: t('common.date'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, new Date(row.original.createdAt).toLocaleString()) },
+  { id: 'route', header: t('pages.inventory.transfer.title'), cell: ({ row }) => h('div', { class: 'flex items-center gap-2 text-sm' }, [
+    h('span', { class: 'text-neutral-700' }, row.original.fromBranch?.name || '-'),
+    h(UIcon, { name: 'i-lucide-arrow-right', class: 'w-4 h-4 text-neutral-400' }),
+    h('span', { class: 'text-neutral-900 font-medium' }, row.original.toBranch?.name || '-')
+  ]) },
+  { id: 'items', header: t('pages.inventory.variant.title'), cell: ({ row }) => h('div', { class: 'flex flex-col gap-1' }, (row.original.items || []).map(it =>
+    h('div', { class: 'flex items-center gap-2 text-sm' }, [
+      h('span', { class: 'text-neutral-900' }, it.variant?.name || '-'),
+      h(UBadge, { color: it.condition === 'new' ? 'success' : 'warning', variant: 'subtle', size: 'sm' }, () => it.condition === 'new' ? t('pages.inventory.condition.new') : t('pages.inventory.condition.used')),
+      h('span', { class: 'font-semibold text-neutral-700' }, `× ${it.quantity}`)
+    ])
+  )) },
+  { accessorKey: 'note', header: t('common.note'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.note || '-') },
+  { accessorKey: 'createdBy', header: t('common.createdBy'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.createdBy?.name || '-') },
+  { id: 'attachments', header: '', cell: ({ row }) => {
+    const atts = row.original.attachments || []
+    if (!atts.length) return h('span', { class: 'text-neutral-300' }, '-')
+    return h('div', { class: 'flex items-center gap-1.5' }, atts.map(a =>
+      h('a', { href: a.url, target: '_blank', rel: 'noopener', title: a.originalName, class: 'text-neutral-500 hover:text-primary' },
+        h(UIcon, { name: 'i-lucide-paperclip', class: 'w-4 h-4' }))))
+  } }
+]
 
-const submit = async () => {
-  if (!fromBranchId.value || !toBranchId.value) return
-  const items: InventoryStockTransferItem[] = []
-  for (const r of rows.value) {
-    const n = Number(r.transferNew) || 0
-    const u = Number(r.transferUsed) || 0
-    if (n > r.new || u > r.used) {
-      toast.add({ title: t('pages.inventory.transfer.exceedAvailable', { name: r.name }), color: 'error', icon: 'i-lucide-circle-alert' })
-      return
-    }
-    if (n > 0) items.push({ variantId: r.variantId, condition: 'new', quantity: n })
-    if (u > 0) items.push({ variantId: r.variantId, condition: 'used', quantity: u })
-  }
-  saving.value = true
-  try {
-    const res = await inventoryStockService.transfer({ fromBranchId: fromBranchId.value, toBranchId: toBranchId.value, note: note.value || null, items })
-    if (res.success) {
-      toast.add({ title: t('pages.inventory.transfer.success'), color: 'success', icon: 'i-lucide-circle-check' })
-      note.value = ''
-      await loadRows()
-    } else {
-      toast.add({ title: res.message || 'Error occurred', color: 'error', icon: 'i-lucide-circle-alert' })
-    }
-  } finally {
-    saving.value = false
-  }
-}
-
-onMounted(async () => {
-  const b = await branchService.getList()
-  if (b.success && b.data) {
-    branchOptions.value = b.data.map(x => ({ label: x.name, value: x.id }))
-    if (b.data.length > 0) fromBranchId.value = b.data[0]!.id
-  }
-})
+onMounted(fetchTransfers)
 </script>

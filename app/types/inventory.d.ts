@@ -97,6 +97,23 @@ export interface InventoryStockTransferItem {
   quantity: number
 }
 
+/** A persisted transfer document (history row). */
+export interface InventoryStockTransfer {
+  id: number
+  note: string | null
+  createdAt: string
+  fromBranch: { id: number; name: string } | null
+  toBranch: { id: number; name: string } | null
+  createdBy: { id: number; name: string; photo: string | null } | null
+  items: {
+    id: number
+    condition: StockCondition
+    quantity: number
+    variant: { id: number; name: string; code: string | null; inventory: { id: number; name: string } | null } | null
+  }[]
+  attachments: Attachment[]
+}
+
 export type StockMovementType = 'entry' | 'adjustment' | 'transfer_out' | 'transfer_in' | 'assign_out' | 'return_in'
 
 export interface InventoryStockMovement {

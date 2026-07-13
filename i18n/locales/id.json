@@ -62,7 +62,8 @@
     "customLabels": "Label Kustom",
     "actions": "Aksi",
     "edit": "Edit",
-    "createdBy": "Dibuat Oleh"
+    "createdBy": "Dibuat Oleh",
+    "validationError": "Validasi gagal"
   },
 
   "nav": {
