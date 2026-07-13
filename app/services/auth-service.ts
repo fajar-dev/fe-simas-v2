@@ -225,6 +225,16 @@ export class AuthService {
         this.setSession(response.data)
         return response.data
     }
+
+    async nusaworkPasswordLogin(email: string, password: string): Promise<AuthResponse> {
+        try {
+            const response = await apiService.client.post<AuthResponse>('/auth/nusawork-login', { email, password })
+            this.setSession(response.data)
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
 }
 
 export const authService = new AuthService()

@@ -1183,8 +1183,8 @@
     },
     "inventory": {
       "item": {
-        "title": "Inventory",
-        "description": "Manage inventory items",
+        "title": "Inventory Management",
+        "description": "Manage inventory items and company stock",
         "add": "Add Inventory",
         "addTitle": "Add Inventory",
         "editTitle": "Edit Inventory",

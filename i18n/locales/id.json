@@ -1183,8 +1183,8 @@
     },
     "inventory": {
       "item": {
-        "title": "Persediaan",
-        "description": "Kelola persediaan",
+        "title": "Manajemen Persediaan",
+        "description": "Kelola persediaan dan stok perusahaan",
         "add": "Tambah Persediaan",
         "addTitle": "Tambah Persediaan",
         "editTitle": "Edit Persediaan",

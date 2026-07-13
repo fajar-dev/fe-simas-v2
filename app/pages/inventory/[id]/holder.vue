@@ -1,13 +1,5 @@
 <template>
   <div class="space-y-4">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-      <div class="flex items-center gap-2">
-        <USwitch v-model="activeOnly" :label="$t('pages.inventory.holder.activeOnly')" @update:model-value="fetchHoldings" />
-      </div>
-      <UButton v-if="hasPermission('inventory-stock:assign')" color="primary" icon="i-lucide-user-plus" @click="openAssign">
-        {{ $t('pages.inventory.holder.assign') }}
-      </UButton>
-    </div>
 
     <DataTable
       v-model:page="page"
@@ -20,7 +12,16 @@
       :total="meta.total"
       :searchable="false"
       table-class="min-w-[800px]"
-    />
+    >
+      <template #filters>
+        <USwitch v-model="activeOnly" :label="$t('pages.inventory.holder.activeOnly')" @update:model-value="fetchHoldings" />
+      </template>
+      <template #actions>
+        <UButton v-if="hasPermission('inventory-stock:assign')" color="primary" icon="i-lucide-user-plus" @click="openAssign">
+          {{ $t('pages.inventory.holder.assign') }}
+        </UButton>
+    </template>
+    </DataTable>
 
     <InventoryAssignModal v-model="showAssignModal" :inventory-id="inventoryId" @done="fetchHoldings" />
     <InventoryReturnModal v-model="showReturnModal" :holding="selectedHolding" @done="fetchHoldings" />

@@ -25,7 +25,7 @@
               {{ $t('pages.profile.information') }}
             </a>
           </NuxtLink>
-          <NuxtLink 
+          <!-- <NuxtLink 
             to="/profile/password"
             custom
             v-slot="{ href, navigate, isActive }"
@@ -38,7 +38,7 @@
             >
               {{ $t('pages.profile.password') }}
             </a>
-          </NuxtLink>
+          </NuxtLink> -->
         </div>
       </div>
 

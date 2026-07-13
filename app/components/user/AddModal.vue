@@ -50,9 +50,9 @@
         <UFormField :label="$t('common.email')" name="email" required>
           <UInput v-model="form.email" type="email" :placeholder="$t('component.user.addModal.emailPlaceholder')" class="w-full" />
         </UFormField>
-        <UFormField :label="$t('component.user.addModal.password')" name="password">
+        <!-- <UFormField :label="$t('component.user.addModal.password')" name="password">
           <UInput v-model="form.password" type="password" :placeholder="$t('component.user.addModal.passwordPlaceholder')" class="w-full" />
-        </UFormField>
+        </UFormField> -->
         <UFormField :label="$t('common.status')" name="isActive">
           <div class="flex items-center gap-2">
             <USwitch v-model="form.isActive" />

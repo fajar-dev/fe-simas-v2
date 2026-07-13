@@ -31,14 +31,14 @@
 
       <!-- Password Input Container -->
       <UFormField :label="$t('pages.auth.signIn.passwordLabel')" name="password" class="w-full" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
-        <template #hint>
+        <!-- <template #hint>
           <NuxtLink
             to="/auth/forgot-password"
             class="text-sm font-medium text-primary"
           >
             {{ $t('pages.auth.signIn.forgotPassword') }}
           </NuxtLink>
-        </template>
+        </template> -->
         <UInput
           id="password"
           v-model="state.password"
@@ -207,7 +207,7 @@ const handleGoogleLogin = () => {
 const handleLogin = async () => {
   loading.value = true
   try {
-    await authService.login(state.email, state.password)
+    await authService.nusaworkPasswordLogin(state.email, state.password)
     showToast('success', t('pages.auth.signIn.loginSuccess'))
     navigateTo(redirectPath.value)
   } finally {
