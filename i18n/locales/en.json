@@ -61,7 +61,8 @@
     "labels": "Labels",
     "customLabels": "Custom Labels",
     "actions": "Actions",
-    "edit": "Edit"
+    "edit": "Edit",
+    "createdBy": "Created By"
   },
 
   "nav": {

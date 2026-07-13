@@ -61,7 +61,8 @@
     "labels": "Label",
     "customLabels": "Label Kustom",
     "actions": "Aksi",
-    "edit": "Edit"
+    "edit": "Edit",
+    "createdBy": "Dibuat Oleh"
   },
 
   "nav": {

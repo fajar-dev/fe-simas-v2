@@ -39,6 +39,8 @@
               <input ref="fileInput" type="file" class="hidden" accept="image/*" @change="onFileChange">
               <CameraModal v-model="showCamera" @captured="onCaptured" />
             </div>
+
+            <AttachmentManager v-model="attachments" @change="(ids) => { attachmentIds = ids }" />
           </div>
 
           <!-- ═══ Column 2: Identity ═══ -->
@@ -105,6 +107,7 @@ import { z } from 'zod'
 import { inventoryService } from '~/services/inventory-service'
 import { categoryService } from '~/services/category-service'
 import { subCategoryService } from '~/services/sub-category-service'
+import type { Attachment } from '~/types/attachment'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -138,6 +141,9 @@ const unitOptions = INVENTORY_UNITS.map(u => ({ label: u as string, value: u as 
 const availableLabelKeys = ref<string[]>([])
 const labels = ref<{ key: string, value: string }[]>([])
 const addLabel = () => { labels.value.push({ key: '', value: '' }) }
+
+const attachments = ref<Attachment[]>([])
+const attachmentIds = ref<number[]>([])
 
 const isLoading = ref(true)
 const isSubmitting = ref(false)
@@ -198,6 +204,7 @@ const onSubmit = async () => {
       unit: form.unit || 'Pcs',
       subCategoryId: form.subCategoryId ?? null,
       labels: labels.value.filter(l => l.key.trim() && l.value.trim()),
+      attachmentIds: attachmentIds.value,
     })
     if (res.success) {
       toast.add({ title: t('pages.inventory.edit.success'), color: 'success', icon: 'i-lucide-circle-check' })
@@ -224,6 +231,8 @@ onMounted(async () => {
     form.subCategoryId = it.subCategory?.id
     previewUrl.value = it.image
     labels.value = (it.labels || []).map(l => ({ key: l.key, value: l.value }))
+    attachments.value = it.attachments || []
+    attachmentIds.value = (it.attachments || []).map(a => a.id)
 
     if (it.category?.id) {
       suppressCategoryWatch.value = true

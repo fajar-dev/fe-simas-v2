@@ -19,6 +19,7 @@ export interface Inventory {
   category: { id: number; name: string } | null
   subCategory: { id: number; name: string } | null
   labels: InventoryLabelItem[]
+  attachments: Attachment[]
   createdAt: string
   updatedAt: string
   createdBy: { id: number; name: string; photo: string | null } | null
@@ -46,6 +47,7 @@ export interface InventoryPayload {
   isActive?: boolean
   labels?: { key: string; value: string }[]
   variants?: InventoryVariantInput[]
+  attachmentIds?: number[]
 }
 
 export interface InventoryVariant {

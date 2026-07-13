@@ -32,6 +32,8 @@
               <input ref="fileInput" type="file" class="hidden" accept="image/*" @change="onFileChange">
               <CameraModal v-model="showCamera" @captured="onCaptured" />
             </div>
+
+            <AttachmentManager v-model="attachments" @change="(ids) => { attachmentIds = ids }" />
           </div>
 
           <!-- ═══ Column 2: Content ═══ -->
@@ -134,6 +136,7 @@ import { categoryService } from '~/services/category-service'
 import { subCategoryService } from '~/services/sub-category-service'
 import { branchService } from '~/services/branch-service'
 import type { InventoryVariantInput } from '~/types/inventory'
+import type { Attachment } from '~/types/attachment'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -194,6 +197,9 @@ const availableLabelKeys = ref<string[]>([])
 const labels = ref<{ key: string, value: string }[]>([])
 const addLabel = () => { labels.value.push({ key: '', value: '' }) }
 
+const attachments = ref<Attachment[]>([])
+const attachmentIds = ref<number[]>([])
+
 interface VariantRow { name: string, code: string, stock: Record<number, { new: number, used: number }> }
 const variants = ref<VariantRow[]>([])
 const makeStock = () => Object.fromEntries(branchList.value.map(b => [b.id, { new: 0, used: 0 }]))
@@ -244,6 +250,7 @@ const onSubmit = async () => {
       subCategoryId: form.subCategoryId ?? null,
       labels: labels.value.filter(l => l.key.trim() && l.value.trim()),
       variants: payloadVariants,
+      attachmentIds: attachmentIds.value,
     })
     if (res.success) {
       toast.add({ title: t('pages.inventory.create.success'), color: 'success', icon: 'i-lucide-circle-check' })

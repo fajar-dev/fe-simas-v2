@@ -1,5 +1,7 @@
 <template>
-  <InventoryDetailWrapper>
+  <!-- Edit is a standalone full page; the detail wrapper (header + tabs) is only for the tab views. -->
+  <NuxtPage v-if="isEdit" />
+  <InventoryDetailWrapper v-else>
     <NuxtPage />
   </InventoryDetailWrapper>
 </template>
@@ -13,6 +15,7 @@ definePageMeta({ layout: 'dashboard' })
 const route = useRoute()
 const router = useRouter()
 const inventoryId = computed(() => Number(route.params.id))
+const isEdit = computed(() => route.path.endsWith('/edit'))
 
 const product = ref<Inventory | null>(null)
 const isLoading = ref(true)
@@ -36,11 +39,11 @@ const loadData = async () => {
 provide('inventoryState', { product, isLoading })
 provide('inventoryActions', { fetchProduct: loadData })
 
-onMounted(loadData)
+onMounted(() => { if (!isEdit.value) loadData() })
 
-watch(inventoryId, (id) => { if (id) loadData() })
+watch(inventoryId, (id) => { if (id && !isEdit.value) loadData() })
 
-if (route.path === `/inventory/${inventoryId.value}` || route.path === `/inventory/${inventoryId.value}/`) {
+if (!isEdit.value && (route.path === `/inventory/${inventoryId.value}` || route.path === `/inventory/${inventoryId.value}/`)) {
   navigateTo(`/inventory/${inventoryId.value}/balance`, { replace: true })
 }
 </script>

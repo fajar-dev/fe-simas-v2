@@ -70,6 +70,16 @@
               <div class="text-sm text-neutral-900 font-medium truncate">{{ product.subCategory?.name || '-' }}</div>
             </div>
 
+            <!-- Created by -->
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.createdBy') }}</span>
+              <div v-if="product.createdBy" class="flex items-center gap-2 min-w-0">
+                <UAvatar :src="product.createdBy.photo || undefined" :alt="product.createdBy.name" size="xs" class="bg-primary-50 text-primary-700 shrink-0" />
+                <span class="text-sm text-neutral-900 font-medium truncate">{{ product.createdBy.name }}</span>
+              </div>
+              <span v-else class="text-sm text-neutral-500">-</span>
+            </div>
+
             <!-- Labels -->
             <div v-for="label in product.labels" :key="label.id || label.key" class="col-span-12 sm:col-span-6 md:col-span-4">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1 truncate">{{ label.key }}</span>
@@ -79,6 +89,24 @@
             <div class="col-span-12 pt-4 border-t border-neutral-100">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.description') }}</span>
               <div class="text-sm text-neutral-700">{{ product.description || '-' }}</div>
+            </div>
+
+            <!-- Attachments -->
+            <div v-if="product.attachments && product.attachments.length" class="col-span-12 pt-4 border-t border-neutral-100">
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">{{ $t('component.attachment.title') }}</span>
+              <div class="flex flex-wrap gap-2">
+                <a
+                  v-for="att in product.attachments"
+                  :key="att.id"
+                  :href="att.url"
+                  target="_blank"
+                  rel="noopener"
+                  class="flex items-center gap-2 px-3 py-2 rounded-lg border border-neutral-200 bg-neutral-50 hover:bg-neutral-100 transition-colors text-sm text-neutral-700 hover:text-neutral-900 no-underline"
+                >
+                  <UIcon name="i-lucide-paperclip" class="w-4 h-4 text-primary shrink-0" />
+                  <span class="truncate max-w-48">{{ att.originalName }}</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
