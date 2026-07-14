@@ -1201,7 +1201,9 @@
         "manageTitle": "Manage Variants",
         "empty": "No variants yet.",
         "add": "Add Variant",
-        "unit": "Unit"
+        "unit": "Unit",
+        "codePlaceholder": "Scan or type code",
+        "saveSuccess": "Variants saved"
       },
       "condition": {
         "label": "Condition",

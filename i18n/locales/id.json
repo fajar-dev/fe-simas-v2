@@ -1201,7 +1201,9 @@
         "manageTitle": "Kelola Varian",
         "empty": "Belum ada varian.",
         "add": "Tambah Varian",
-        "unit": "Satuan"
+        "unit": "Satuan",
+        "codePlaceholder": "Pindai atau ketik kode",
+        "saveSuccess": "Varian tersimpan"
       },
       "condition": {
         "label": "Kondisi",

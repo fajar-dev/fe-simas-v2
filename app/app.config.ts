@@ -16,5 +16,20 @@ export default defineAppConfig({
         size: 'lg'
       }
     },
+    selectMenu: {
+      defaultVariants: {
+        size: 'lg'
+      }
+    },
+    select: {
+      defaultVariants: {
+        size: 'lg'
+      }
+    },
+    textarea: {
+      defaultVariants: {
+        size: 'lg'
+      }
+    }
   }
 })

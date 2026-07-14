@@ -36,6 +36,8 @@ export interface InventoryInitialStock {
 export interface InventoryVariantInput {
   name: string
   code?: string | null
+  image?: string | null
+  description?: string | null
   initialStock?: InventoryInitialStock[]
 }
 
@@ -57,6 +59,8 @@ export interface InventoryVariant {
   inventoryId: number
   name: string
   code: string | null
+  image: string | null
+  description: string | null
   isActive: boolean
   inventory?: { id: number; name: string; code: string | null } | null
 }
@@ -65,6 +69,8 @@ export interface InventoryVariantPayload {
   inventoryId: number
   name: string
   code?: string | null
+  image?: string | null
+  description?: string | null
   isActive?: boolean
 }
 
