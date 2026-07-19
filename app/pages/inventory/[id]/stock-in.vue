@@ -23,8 +23,8 @@
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import { inventoryStockService } from '~/services/inventory-stock-service'
-import type { InventoryStockMovement } from '~/types/inventory'
+import { inventoryStockInService } from '~/services/inventory-stock-in-service'
+import type { InventoryStockIn } from '~/types/inventory'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -39,7 +39,7 @@ const stockOverview = inject('inventoryStock', null) as { refresh: () => void } 
 const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')
 
-const data = ref<InventoryStockMovement[]>([])
+const data = ref<InventoryStockIn[]>([])
 const isLoading = ref(false)
 const meta = reactive({ total: 0, from: 0, to: 0 })
 const page = ref(1)
@@ -51,8 +51,7 @@ watch([page, perPage], () => { fetchHistory() })
 const fetchHistory = async () => {
   isLoading.value = true
   try {
-    // Stock additions are "entry" movements (stock-in).
-    const res = await inventoryStockService.getMovements(page.value, perPage.value, { inventoryId, type: 'entry' })
+    const res = await inventoryStockInService.getAll(page.value, perPage.value, { inventoryId })
     if (res.success && res.data) {
       data.value = res.data
       if (res.meta) { meta.total = res.meta.total; meta.from = res.meta.from; meta.to = res.meta.to }
@@ -67,18 +66,16 @@ const onAdded = () => {
   stockOverview?.refresh()
 }
 
-const columns: TableColumn<InventoryStockMovement>[] = [
+const columns: TableColumn<InventoryStockIn>[] = [
   { accessorKey: 'createdAt', header: t('common.date'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, new Date(row.original.createdAt).toLocaleString()) },
-  { accessorKey: 'variant', header: t('pages.inventory.variant.title'), cell: ({ row }) => h('span', { class: 'text-neutral-900 font-medium' }, row.original.variant?.name || '-') },
-  { accessorKey: 'branch', header: t('common.branch'), cell: ({ row }) => h('span', { class: 'text-neutral-700 text-sm' }, row.original.branch?.name || '-') },
-  { accessorKey: 'condition', header: t('pages.inventory.condition.label'), cell: ({ row }) => {
-    const c = row.original.condition
-    return h('span', { class: c === 'new' ? 'text-emerald-600 text-sm' : 'text-amber-600 text-sm' }, c === 'new' ? t('pages.inventory.condition.new') : t('pages.inventory.condition.used'))
-  } },
-  { accessorKey: 'quantity', header: t('pages.inventory.monitor.quantity'), cell: ({ row }) => {
-    const q = row.original.quantity
-    return h('span', { class: 'font-semibold text-emerald-600' }, q > 0 ? `+${q}` : `${q}`)
-  } },
+  { id: 'items', header: t('pages.inventory.variant.title'), cell: ({ row }) => h('div', { class: 'flex flex-col gap-1' }, (row.original.items || []).map(it =>
+    h('div', { class: 'flex items-center gap-2 text-sm' }, [
+      h('span', { class: 'text-neutral-900' }, it.variant?.name || '-'),
+      it.branch?.name ? h('span', { class: 'text-neutral-500' }, `@ ${it.branch.name}`) : null,
+      h('span', { class: it.condition === 'new' ? 'text-emerald-600' : 'text-amber-600' }, it.condition === 'new' ? t('pages.inventory.condition.new') : t('pages.inventory.condition.used')),
+      h('span', { class: 'font-semibold text-emerald-600' }, it.quantity > 0 ? `+${it.quantity}` : `${it.quantity}`)
+    ])
+  )) },
   { accessorKey: 'note', header: t('common.note'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.note || '-') },
   { accessorKey: 'createdBy', header: t('common.createdBy'), cell: ({ row }) => {
     const creator = row.original.createdBy

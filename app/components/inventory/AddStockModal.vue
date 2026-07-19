@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { inventoryStockService } from '~/services/inventory-stock-service'
+import { inventoryStockInService } from '~/services/inventory-stock-in-service'
 import { inventoryVariantService } from '~/services/inventory-variant-service'
 import { branchService } from '~/services/branch-service'
 import type { Attachment } from '~/types/attachment'
@@ -89,7 +89,7 @@ const submit = async () => {
   if (items.length === 0) return
   saving.value = true
   try {
-    const res = await inventoryStockService.addStock({ inventoryId: props.inventoryId, note: note.value || null, attachmentIds: attachmentIds.value, items })
+    const res = await inventoryStockInService.create({ inventoryId: props.inventoryId, note: note.value || null, attachmentIds: attachmentIds.value, items })
     if (res.success) {
       toast.add({ title: t('pages.inventory.addStock.success'), color: 'success', icon: 'i-lucide-circle-check' })
       emit('done')

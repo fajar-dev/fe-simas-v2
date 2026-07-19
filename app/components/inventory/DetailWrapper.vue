@@ -172,7 +172,7 @@ const onItemSaved = async () => { await fetchItem(); stockKey.value++ }
 const tabItems = computed(() => {
   const tabs: TabsItem[] = []
   if (hasPermission('inventory-stock:read')) {
-    tabs.push({ value: 'balance', label: t('pages.inventory.tabs.balance'), icon: 'i-lucide-package', to: `/inventory/${inventoryId}/balance` })
+    tabs.push({ value: 'stock-in', label: t('pages.inventory.tabs.stockIn'), icon: 'i-lucide-package', to: `/inventory/${inventoryId}/stock-in` })
   }
   if (hasPermission('inventory-stock:transfer')) {
     tabs.push({ value: 'transfer', label: t('pages.inventory.tabs.transfer'), icon: 'i-lucide-arrow-left-right', to: `/inventory/${inventoryId}/transfer` })
@@ -185,7 +185,7 @@ const tabItems = computed(() => {
 
 const activeTab = computed({
   get() {
-    let current = 'balance'
+    let current = 'stock-in'
     if (route.path.endsWith('/transfer')) current = 'transfer'
     else if (route.path.endsWith('/holder')) current = 'holder'
     return current

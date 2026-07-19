@@ -84,6 +84,7 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import { inventoryStockService } from '~/services/inventory-stock-service'
+import { inventoryStockTransferService } from '~/services/inventory-stock-transfer-service'
 import { branchService } from '~/services/branch-service'
 import type { Attachment } from '~/types/attachment'
 import type { InventoryStockTransferItem } from '~/types/inventory'
@@ -173,7 +174,7 @@ const submit = async () => {
 
   saving.value = true
   try {
-    const res = await inventoryStockService.transfer({
+    const res = await inventoryStockTransferService.create({
       fromBranchId: fromBranchId.value,
       toBranchId: toBranchId.value,
       note: note.value || null,

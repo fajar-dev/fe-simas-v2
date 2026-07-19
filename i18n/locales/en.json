@@ -65,7 +65,6 @@
     "createdBy": "Created By",
     "validationError": "Validation failed"
   },
-
   "nav": {
     "dashboard": "Dashboard",
     "assets": "Assets",
@@ -83,7 +82,6 @@
     "capturing": "Capturing...",
     "inventory": "Inventory"
   },
-
   "component": {
     "deleteModal": {
       "description": "Are you sure you want to delete {name}?",
@@ -168,7 +166,6 @@
       "selectHint": "Select any documents, images, or PDFs",
       "uploading": "Uploading files..."
     },
-
     "asset": {
       "detailWrapper": {
         "activityLog": "Activity Log",
@@ -292,18 +289,7 @@
         "manualPlaceholder": "Enter asset code..."
       }
     },
-
-    "inventory": {
-      "logDrawer": {
-        "title": "Activity Log",
-        "description": "History of all stock activity for this item.",
-        "system": "System",
-        "noLogs": "No activity yet",
-        "noLogsDesc": "Stock movements for this item will appear here.",
-        "endOfHistory": "End of activity history"
-      }
-    },
-
+    "inventory": {},
     "assetHolder": {
       "assignModal": {
         "title": "Assign Asset",
@@ -334,7 +320,6 @@
         "dateRequired": "Return date is required"
       }
     },
-
     "assetLocation": {
       "addModal": {
         "title": "Relocate Asset",
@@ -355,7 +340,6 @@
         "dateRequired": "Date is required"
       }
     },
-
     "assetMaintenance": {
       "addModal": {
         "title": "Add Asset Maintenance",
@@ -382,7 +366,6 @@
         "noteRequired": "Note is required"
       }
     },
-
     "assetNote": {
       "addModal": {
         "title": "Add Asset Note",
@@ -407,7 +390,6 @@
         "noteRequired": "Note is required"
       }
     },
-
     "assetStatus": {
       "updateModal": {
         "title": "Update Asset Status",
@@ -448,7 +430,6 @@
         "returnAsset": "This asset was assigned via a handover and must be returned through a return handover"
       }
     },
-
     "branch": {
       "addModal": {
         "title": "Add Branch",
@@ -472,7 +453,6 @@
         "emailInvalid": "Invalid email format"
       }
     },
-
     "category": {
       "addModal": {
         "title": "Add Category",
@@ -488,7 +468,6 @@
         "success": "Category updated successfully!"
       }
     },
-
     "subCategory": {
       "addModal": {
         "title": "Add Sub Category",
@@ -510,7 +489,6 @@
         "categoryRequired": "Category is required"
       }
     },
-
     "employee": {
       "addModal": {
         "title": "Add Employee",
@@ -548,7 +526,6 @@
         "phoneRequired": "Phone is required"
       }
     },
-
     "location": {
       "addModal": {
         "title": "Add Location",
@@ -572,7 +549,6 @@
         "mistZoneIdLabel": "Mist Zone ID"
       }
     },
-
     "role": {
       "addModal": {
         "title": "Add Role",
@@ -591,7 +567,6 @@
         "success": "Role updated successfully!"
       }
     },
-
     "user": {
       "addModal": {
         "title": "Add User",
@@ -626,7 +601,6 @@
       }
     }
   },
-
   "pages": {
     "auth": {
       "signIn": {
@@ -1243,7 +1217,7 @@
         "open": "Open Detail"
       },
       "tabs": {
-        "balance": "Balance",
+        "stockIn": "Stock In",
         "transfer": "Transfer",
         "holder": "Assignment / Return"
       },
@@ -1264,14 +1238,6 @@
         "assignSuccess": "Stock assigned!",
         "returnSuccess": "Stock returned!",
         "exceedRemaining": "Exceeds the remaining held quantity"
-      },
-      "movement": {
-        "type": "Type",
-        "entry": "Entry",
-        "transferOut": "Transfer Out",
-        "transferIn": "Transfer In",
-        "assignOut": "Assignment",
-        "returnIn": "Return"
       },
       "unit": {
         "label": "Unit",

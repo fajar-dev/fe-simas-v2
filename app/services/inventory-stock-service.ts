@@ -1,6 +1,6 @@
 import { apiService } from "./api-service"
 import { handleServiceError } from "../composables/error-helper"
-import type { InventoryStockBalance, InventoryStockEntryRow, InventoryStockTransferItem, InventoryStockTransfer, StockCondition, InventoryStockMovement, InventoryStockHolding, InventoryStockAssignItem, InventoryStockReturnItem } from "../types/inventory"
+import type { InventoryStockBalance, InventoryStockEntryRow, StockCondition, InventoryStockHolding, InventoryStockAssignItem, InventoryStockReturnItem } from "../types/inventory"
 import type { ApiResponse } from "../types/api"
 
 export class InventoryStockService {
@@ -22,13 +22,6 @@ export class InventoryStockService {
     } catch (error: any) { return handleServiceError(error) }
   }
 
-  async addStock(payload: { inventoryId: number; note?: string | null; attachmentIds?: number[]; items: { branchId: number; variantId: number; new: number; used: number }[] }): Promise<ApiResponse<InventoryStockBalance[]>> {
-    try {
-      const res = await apiService.client.post<ApiResponse<InventoryStockBalance[]>>(`/inventory/stock/add`, payload, this.authHeaders)
-      return res.data
-    } catch (error: any) { return handleServiceError(error) }
-  }
-
   async getBalances(page = 1, perPage = 20, filters: { branchId?: number; inventoryId?: number; variantId?: number; condition?: StockCondition } = {}): Promise<ApiResponse<InventoryStockBalance[]>> {
     try {
       let url = `/inventory/stock?page=${page}&limit=${perPage}`
@@ -37,34 +30,6 @@ export class InventoryStockService {
       if (filters.variantId) url += `&variantId=${filters.variantId}`
       if (filters.condition) url += `&condition=${filters.condition}`
       const res = await apiService.client.get<ApiResponse<InventoryStockBalance[]>>(url, this.authHeaders)
-      return res.data
-    } catch (error: any) { return handleServiceError(error) }
-  }
-
-  async transfer(payload: { fromBranchId: number; toBranchId: number; note?: string | null; attachmentIds?: number[]; items: InventoryStockTransferItem[] }): Promise<ApiResponse<{ referenceId: string; transferId: number }>> {
-    try {
-      const res = await apiService.client.post<ApiResponse<{ referenceId: string; transferId: number }>>(`/inventory/stock/transfer`, payload, this.authHeaders)
-      return res.data
-    } catch (error: any) { return handleServiceError(error) }
-  }
-
-  async getTransfers(page = 1, perPage = 20, filters: { inventoryId: number }): Promise<ApiResponse<InventoryStockTransfer[]>> {
-    try {
-      const url = `/inventory/stock/transfer?inventoryId=${filters.inventoryId}&page=${page}&limit=${perPage}`
-      const res = await apiService.client.get<ApiResponse<InventoryStockTransfer[]>>(url, this.authHeaders)
-      return res.data
-    } catch (error: any) { return handleServiceError(error) }
-  }
-
-  async getMovements(page = 1, perPage = 20, filters: { inventoryId?: number; branchId?: number; variantId?: number; condition?: StockCondition; type?: string } = {}): Promise<ApiResponse<InventoryStockMovement[]>> {
-    try {
-      let url = `/inventory/stock/movement?page=${page}&limit=${perPage}`
-      if (filters.inventoryId) url += `&inventoryId=${filters.inventoryId}`
-      if (filters.branchId) url += `&branchId=${filters.branchId}`
-      if (filters.variantId) url += `&variantId=${filters.variantId}`
-      if (filters.condition) url += `&condition=${filters.condition}`
-      if (filters.type) url += `&type=${filters.type}`
-      const res = await apiService.client.get<ApiResponse<InventoryStockMovement[]>>(url, this.authHeaders)
       return res.data
     } catch (error: any) { return handleServiceError(error) }
   }

@@ -44,6 +44,6 @@ onMounted(() => { if (!isEdit.value) loadData() })
 watch(inventoryId, (id) => { if (id && !isEdit.value) loadData() })
 
 if (!isEdit.value && (route.path === `/inventory/${inventoryId.value}` || route.path === `/inventory/${inventoryId.value}/`)) {
-  navigateTo(`/inventory/${inventoryId.value}/balance`, { replace: true })
+  navigateTo(`/inventory/${inventoryId.value}/stock-in`, { replace: true })
 }
 </script>

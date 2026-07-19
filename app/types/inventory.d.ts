@@ -122,20 +122,20 @@ export interface InventoryStockTransfer {
   attachments: Attachment[]
 }
 
-export type StockMovementType = 'entry' | 'adjustment' | 'transfer_out' | 'transfer_in' | 'assign_out' | 'return_in'
-
-export interface InventoryStockMovement {
+/** A stock-in document (incoming stock) — header + line items, like a transfer. */
+export interface InventoryStockIn {
   id: number
-  type: StockMovementType
-  condition: StockCondition
-  quantity: number
-  balanceAfter: number | null
-  referenceId: string | null
   note: string | null
   createdAt: string
-  branch: { id: number; name: string } | null
-  variant: { id: number; name: string; inventory: { id: number; name: string } | null } | null
   createdBy: { id: number; name: string; photo: string | null } | null
+  items: {
+    id: number
+    condition: StockCondition
+    quantity: number
+    balanceAfter: number | null
+    branch: { id: number; name: string } | null
+    variant: { id: number; name: string; code: string | null; inventory: { id: number; name: string } | null } | null
+  }[]
   attachments: Attachment[]
 }
 

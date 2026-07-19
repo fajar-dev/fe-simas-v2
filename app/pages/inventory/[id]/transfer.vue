@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import { inventoryStockService } from '~/services/inventory-stock-service'
+import { inventoryStockTransferService } from '~/services/inventory-stock-transfer-service'
 import type { InventoryStockTransfer } from '~/types/inventory'
 
 definePageMeta({ layout: 'dashboard' })
@@ -55,7 +55,7 @@ watch([page, perPage], () => { fetchTransfers() })
 const fetchTransfers = async () => {
   isLoading.value = true
   try {
-    const res = await inventoryStockService.getTransfers(page.value, perPage.value, { inventoryId })
+    const res = await inventoryStockTransferService.getAll(page.value, perPage.value, { inventoryId })
     if (res.success && res.data) {
       data.value = res.data
       if (res.meta) { meta.total = res.meta.total; meta.from = res.meta.from; meta.to = res.meta.to }
