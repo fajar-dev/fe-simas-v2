@@ -289,7 +289,19 @@
         "manualPlaceholder": "Enter asset code..."
       }
     },
-    "inventory": {},
+    "inventory": {
+      "detailWrapper": {
+        "activityLog": "Activity Log"
+      },
+      "logDrawer": {
+        "title": "Activity Log",
+        "description": "History of all actions performed on this item.",
+        "system": "System",
+        "noLogs": "No activity logs found",
+        "noLogsDesc": "Actions performed on this item will appear here.",
+        "endOfHistory": "End of activity history"
+      }
+    },
     "assetHolder": {
       "assignModal": {
         "title": "Assign Asset",

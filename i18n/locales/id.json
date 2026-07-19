@@ -289,7 +289,19 @@
         "manualPlaceholder": "Masukkan kode aset..."
       }
     },
-    "inventory": {},
+    "inventory": {
+      "detailWrapper": {
+        "activityLog": "Log Aktivitas"
+      },
+      "logDrawer": {
+        "title": "Log Aktivitas",
+        "description": "Riwayat semua tindakan yang dilakukan pada item ini.",
+        "system": "Sistem",
+        "noLogs": "Tidak ada log aktivitas",
+        "noLogsDesc": "Tindakan yang dilakukan pada item ini akan muncul di sini.",
+        "endOfHistory": "Akhir riwayat aktivitas"
+      }
+    },
     "assetHolder": {
       "assignModal": {
         "title": "Tetapkan Aset",

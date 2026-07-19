@@ -15,6 +15,13 @@ export const getActionIcon = (module: string, action: string) => {
     'note:update': 'i-lucide-sticky-note',
     'note:delete': 'i-lucide-trash',
     'status:update': 'i-lucide-activity',
+    'inventory:create': 'i-lucide-plus',
+    'inventory:update': 'i-lucide-edit-3',
+    'stock:entry': 'i-lucide-settings-2',
+    'stock:stock_in': 'i-lucide-package-plus',
+    'stock:transfer': 'i-lucide-arrow-left-right',
+    'stock:assign': 'i-lucide-user-plus',
+    'stock:return': 'i-lucide-user-minus',
   }
   return icons[key] || 'i-lucide-info'
 }
@@ -34,6 +41,13 @@ export const getActionTheme = (module: string, action: string): { color: BadgeCo
     'note:update': { color: 'warning', label: 'Note Updated' },
     'note:delete': { color: 'error', label: 'Note Deleted' },
     'status:update': { color: 'primary', label: 'Status Changed' },
+    'inventory:create': { color: 'success', label: 'Item Created' },
+    'inventory:update': { color: 'neutral', label: 'Item Updated' },
+    'stock:entry': { color: 'neutral', label: 'Stock Entry' },
+    'stock:stock_in': { color: 'success', label: 'Stock In' },
+    'stock:transfer': { color: 'primary', label: 'Transfer' },
+    'stock:assign': { color: 'primary', label: 'Assigned' },
+    'stock:return': { color: 'warning', label: 'Returned' },
   }
   return themes[key] || { color: 'neutral', label: `${module}:${action}` }
 }
