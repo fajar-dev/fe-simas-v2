@@ -28,15 +28,6 @@
         <UButton :label="$t('common.back')" color="neutral" icon="i-lucide-arrow-left" variant="link" @click="() => { navigateTo('/inventory') }" />
         <div class="flex items-center gap-2">
           <UButton
-            v-if="hasPermission('inventory-stock:read')"
-            color="neutral"
-            variant="outline"
-            icon="i-lucide-history"
-            @click="() => { showLogDrawer = true }"
-          >
-            <span class="hidden sm:inline">{{ $t('component.inventory.logDrawer.title') }}</span>
-          </UButton>
-          <UButton
             v-if="hasPermission('inventory-variant:read')"
             color="neutral"
             variant="outline"
@@ -153,7 +144,6 @@
     </div>
 
     <InventoryVariantManagerModal v-model="showVariantModal" :inventory="item" @changed="onItemSaved" />
-    <InventoryLogDrawer v-model:open="showLogDrawer" :inventory-id="inventoryId" />
   </div>
 </template>
 
@@ -171,7 +161,6 @@ const { item, isLoading } = inject('inventoryState') as { item: Ref<Inventory | 
 const { fetchItem } = inject('inventoryActions') as { fetchItem: () => Promise<void> }
 
 const showVariantModal = ref(false)
-const showLogDrawer = ref(false)
 
 // Bumped to force the stock overview to refetch (e.g. after adding stock, or switching tabs).
 const stockKey = ref(0)
