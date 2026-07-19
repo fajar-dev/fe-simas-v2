@@ -6,19 +6,19 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 
 ---
 
-## [Unreleased] — 2026-07-10
+## [Unreleased] — 2026-07-19
 
 ### Changed
 - **Kelola Varian jadi nested form**: modal Kelola Varian bukan lagi daftar read-only + form tambah terpisah, melainkan **nested form** — tiap varian bisa **ditambah, diedit, dihapus** langsung inline (gambar, nama, kode+scan, deskripsi), lalu **Simpan** mempersist semuanya sekaligus (create/update/delete) dan me-refresh. Validasi Zod (`rows.N.name`), layout gambar-kiri / nama-atas / kode-bawah.
 - **Gambar & deskripsi pada varian**: Kelola Varian dan create Persediaan kini punya field **gambar** (upload per varian) & **deskripsi**; ditampilkan & dikirim ke API. Kode varian pakai placeholder "Pindai atau ketik kode" agar konsisten; perbaikan uploader gambar per-varian (label-based, tidak bentrok dengan foto item).
 - **Default ukuran input `lg`** untuk `selectMenu`/`select`/`textarea` (app.config).
 - **Daftar Persediaan diperkaya**: tabel list menambah kolom **No**, **Varian** (`variantCount`), dan **Balance** (`balanceCount` = total stok on-hand); semua kolom data kini bisa **di-sort** (nama, kategori, subkategori, satuan, varian, balance). Tombol **label kustom** (checklist) selalu tampil dengan empty-state "Tidak ada label kustom", konsisten dengan asset.
-- **Tab Balance & overview stok**: tabel varian & stok (expandable cabang→varian→kondisi) dipindah ke **detail wrapper**; tab-nya (label **Balance**) kini berisi **riwayat penambahan stok** (DataTable, tombol Tambah Stok, kolom pembuat avatar & lampiran badge).
+- **Tab Balance → Stock In**: tabel varian & stok (expandable cabang→varian→kondisi) dipindah ke **detail wrapper**; tab **Stock In** (dulu "Balance") kini berisi **riwayat dokumen stock-in** (tanggal, item per varian/cabang/kondisi, catatan, pembuat, lampiran) — bergaya sama seperti tab Transfer, ganti dari daftar movement per-baris.
 - **Create Persediaan**: hapus input **stok awal** (create hanya menambah varian); nama & kode varian pakai **validasi Zod** inline. Tambah tombol **Scan** di sebelah kode item & tiap kode varian, plus **Pindai Massal** (multi-scan menambah varian) memakai `AssetScannerModal`. Kategori, subkategori, & satuan kini **wajib** (asterisk + Zod). Placeholder nama/deskripsi disamakan dengan create asset. Tombol multi-scan pada create **asset** ikut diberi teks "Pindai Massal".
 - **Kolom Dibuat Oleh & lampiran pada riwayat transfer**: pakai avatar + nama (fallback "Sistem") dan badge lampiran berwarna sesuai tipe file, konsisten dengan tabel asset.
 - **Istilah Penetapan / Pengembalian**: label Assign/Return pada Inventory diselaraskan dengan handover — tab & log aktivitas (id) memakai **Penetapan/Pengembalian** (bukan lagi "Di-assign/Dikembalikan"), tombol & judul modal ikut disesuaikan; en memakai bentuk kata benda **Assignment/Return**.
-- **Pergerakan → Log Aktivitas (drawer)**: tab **Pergerakan** dihapus; kini ada tombol **Log Aktivitas** di header detail item yang membuka **drawer** timeline (bergaya seperti log aktivitas asset) berisi seluruh pergerakan stok item (tipe, varian, kondisi, jumlah, cabang, catatan, lampiran, pembuat) dengan infinite-scroll. Perbaikan: `getMovements` kini benar-benar memfilter per `inventoryId`.
-- **Log Aktivitas tanpa badge**: judul aksi pada drawer log (item **dan** asset) memakai teks berwarna polos (emerald/red/amber/sky/primary), bukan `UBadge`.
+- **Hapus drawer Log Aktivitas stok**: tombol & drawer timeline pergerakan stok (yang sempat menggantikan tab Pergerakan) dihapus — riwayatnya sudah tercakup lengkap di tab **Stock In**, **Transfer**, dan **Assign/Return**, jadi ledger flat terpisah tidak diperlukan lagi.
+- **Service inventory-stock dipecah**: `inventory-stock-transfer-service.ts` & `inventory-stock-in-service.ts` baru (mengikuti pola `asset-holder-service.ts`), memanggil endpoint top-level `/inventory-stock-transfer` & `/inventory-stock-in` (konsisten dengan backend yang memisahkan modulnya dari `inventory-stock`); `inventory-stock-service.ts` kini hanya menangani balance/entry/holding/assign/return.
 - **Refactor sisa penamaan `product` → `inventory`/`item`**: variabel & prop di FE (`selectedProduct`/`fetchProducts` → `selectedItem`/`fetchItems`, prop `product` → `inventory` pada `VariantManagerModal`, `product*` → `inventory*` pada `handover/StockItems`, key i18n `entry.selectProduct` → `entry.selectInventory` + redaksi "product" → "item").
 
 ### Added
