@@ -37,7 +37,7 @@
           </UButton>
           <UButton
             v-if="hasPermission('inventory-variant:read')"
-            color="neutral"
+            color="primary"
             variant="outline"
             icon="i-lucide-layers"
             @click="() => { showVariantModal = true }"
