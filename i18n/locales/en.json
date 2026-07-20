@@ -63,8 +63,7 @@
     "actions": "Actions",
     "edit": "Edit",
     "createdBy": "Created By",
-    "validationError": "Validation failed",
-    "itemsCount": "{count} item | {count} items"
+    "validationError": "Validation failed"
   },
   "nav": {
     "dashboard": "Dashboard",

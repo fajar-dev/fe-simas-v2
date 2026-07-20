@@ -89,24 +89,23 @@ const itemColumns: TableColumn<TransferItem>[] = [
 ]
 
 const columns: TableColumn<InventoryStockTransfer>[] = [
+  { id: 'expand', header: '', meta: { class: { td: 'w-8', th: 'w-8' } }, cell: ({ row }) => {
+    const items = row.original.items || []
+    if (items.length === 0) return null
+    return h('button', {
+      type: 'button',
+      class: 'flex items-center justify-center text-neutral-500 hover:text-neutral-900 cursor-pointer',
+      onClick: () => row.toggleExpanded()
+    }, [
+      h(UIcon, { name: row.getIsExpanded() ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right', class: 'w-4 h-4' })
+    ])
+  } },
   { accessorKey: 'createdAt', header: t('common.date'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, new Date(row.original.createdAt).toLocaleString()) },
   { id: 'route', header: t('pages.inventory.transfer.title'), cell: ({ row }) => h('div', { class: 'flex items-center gap-2 text-sm' }, [
     h('span', { class: 'text-neutral-700' }, row.original.fromBranch?.name || '-'),
     h(UIcon, { name: 'i-lucide-arrow-right', class: 'w-4 h-4 text-neutral-400' }),
     h('span', { class: 'text-neutral-900 font-medium' }, row.original.toBranch?.name || '-')
   ]) },
-  { id: 'items', header: t('pages.inventory.variant.title'), cell: ({ row }) => {
-    const items = row.original.items || []
-    if (items.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
-    return h('button', {
-      type: 'button',
-      class: 'flex items-center gap-1.5 text-sm text-neutral-600 hover:text-neutral-900 cursor-pointer',
-      onClick: () => row.toggleExpanded()
-    }, [
-      h(UIcon, { name: row.getIsExpanded() ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right', class: 'w-4 h-4 text-neutral-400 shrink-0' }),
-      h('span', {}, t('common.itemsCount', { count: items.length }))
-    ])
-  } },
   { accessorKey: 'note', header: t('common.note'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.note || '-') },
   { accessorKey: 'createdBy', header: t('common.createdBy'), cell: ({ row }) => {
     const creator = row.original.createdBy
