@@ -42,6 +42,7 @@ const canTransfer = useAuth().hasPermission('inventory-stock:transfer')
 const UIcon = resolveComponent('UIcon')
 const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')
+const InventoryItemsExpandCell = resolveComponent('InventoryItemsExpandCell')
 
 const data = ref<InventoryStockTransfer[]>([])
 const isLoading = ref(false)
@@ -72,13 +73,14 @@ const columns: TableColumn<InventoryStockTransfer>[] = [
     h(UIcon, { name: 'i-lucide-arrow-right', class: 'w-4 h-4 text-neutral-400' }),
     h('span', { class: 'text-neutral-900 font-medium' }, row.original.toBranch?.name || '-')
   ]) },
-  { id: 'items', header: t('pages.inventory.variant.title'), cell: ({ row }) => h('div', { class: 'flex flex-col gap-1' }, (row.original.items || []).map(it =>
-    h('div', { class: 'flex items-center gap-2 text-sm' }, [
-      h('span', { class: 'text-neutral-900' }, it.variant?.name || '-'),
-      h('span', { class: it.condition === 'new' ? 'text-emerald-600' : 'text-amber-600' }, it.condition === 'new' ? t('pages.inventory.condition.new') : t('pages.inventory.condition.used')),
-      h('span', { class: 'font-semibold text-neutral-700' }, `× ${it.quantity}`)
-    ])
-  )) },
+  { id: 'items', header: t('pages.inventory.variant.title'), cell: ({ row }) => h(InventoryItemsExpandCell, {
+    items: (row.original.items || []).map(it => ({
+      key: it.id,
+      variantName: it.variant?.name || '-',
+      condition: it.condition,
+      quantityLabel: `× ${it.quantity}`,
+    }))
+  }) },
   { accessorKey: 'note', header: t('common.note'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.note || '-') },
   { accessorKey: 'createdBy', header: t('common.createdBy'), cell: ({ row }) => {
     const creator = row.original.createdBy

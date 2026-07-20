@@ -38,6 +38,7 @@ const stockOverview = inject('inventoryStock', null) as { refresh: () => void } 
 
 const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')
+const InventoryItemsExpandCell = resolveComponent('InventoryItemsExpandCell')
 
 const data = ref<InventoryStockIn[]>([])
 const isLoading = ref(false)
@@ -68,14 +69,16 @@ const onAdded = () => {
 
 const columns: TableColumn<InventoryStockIn>[] = [
   { accessorKey: 'createdAt', header: t('common.date'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, new Date(row.original.createdAt).toLocaleString()) },
-  { id: 'items', header: t('pages.inventory.variant.title'), cell: ({ row }) => h('div', { class: 'flex flex-col gap-1' }, (row.original.items || []).map(it =>
-    h('div', { class: 'flex items-center gap-2 text-sm' }, [
-      h('span', { class: 'text-neutral-900' }, it.variant?.name || '-'),
-      it.branch?.name ? h('span', { class: 'text-neutral-500' }, `@ ${it.branch.name}`) : null,
-      h('span', { class: it.condition === 'new' ? 'text-emerald-600' : 'text-amber-600' }, it.condition === 'new' ? t('pages.inventory.condition.new') : t('pages.inventory.condition.used')),
-      h('span', { class: 'font-semibold text-emerald-600' }, it.quantity > 0 ? `+${it.quantity}` : `${it.quantity}`)
-    ])
-  )) },
+  { id: 'items', header: t('pages.inventory.variant.title'), cell: ({ row }) => h(InventoryItemsExpandCell, {
+    items: (row.original.items || []).map(it => ({
+      key: it.id,
+      variantName: it.variant?.name || '-',
+      branchName: it.branch?.name,
+      condition: it.condition,
+      quantityLabel: it.quantity > 0 ? `+${it.quantity}` : `${it.quantity}`,
+      quantityClass: 'font-semibold text-emerald-600',
+    }))
+  }) },
   { accessorKey: 'note', header: t('common.note'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.note || '-') },
   { accessorKey: 'createdBy', header: t('common.createdBy'), cell: ({ row }) => {
     const creator = row.original.createdBy

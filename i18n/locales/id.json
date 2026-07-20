@@ -63,7 +63,8 @@
     "actions": "Aksi",
     "edit": "Edit",
     "createdBy": "Dibuat Oleh",
-    "validationError": "Validasi gagal"
+    "validationError": "Validasi gagal",
+    "itemsCount": "{count} item"
   },
   "nav": {
     "dashboard": "Dashboard",
