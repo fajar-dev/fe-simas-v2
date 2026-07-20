@@ -3,6 +3,7 @@
     <DataTable
       v-model:page="page"
       v-model:perPage="perPage"
+      v-model:expanded="expanded"
       :data="data"
       :columns="columns"
       :loading="isLoading"
@@ -19,6 +20,15 @@
           color="primary"
           :label="$t('pages.inventory.transfer.submit')"
           @click="() => { showModal = true }"
+        />
+      </template>
+
+      <template #expanded="{ row }">
+        <UTable
+          :data="row.original.items || []"
+          :columns="itemColumns"
+          :ui="{ th: 'bg-neutral-50 py-2', td: 'py-2' }"
+          class="border border-neutral-200 rounded-md"
         />
       </template>
     </DataTable>
@@ -42,7 +52,6 @@ const canTransfer = useAuth().hasPermission('inventory-stock:transfer')
 const UIcon = resolveComponent('UIcon')
 const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')
-const InventoryItemsExpandCell = resolveComponent('InventoryItemsExpandCell')
 
 const data = ref<InventoryStockTransfer[]>([])
 const isLoading = ref(false)
@@ -50,6 +59,7 @@ const meta = reactive({ total: 0, from: 0, to: 0 })
 const page = ref(1)
 const perPage = ref(10)
 const showModal = ref(false)
+const expanded = ref<Record<string, boolean>>({})
 
 watch([page, perPage], () => { fetchTransfers() })
 
@@ -59,12 +69,24 @@ const fetchTransfers = async () => {
     const res = await inventoryStockTransferService.getAll(page.value, perPage.value, { inventoryId })
     if (res.success && res.data) {
       data.value = res.data
+      expanded.value = {}
       if (res.meta) { meta.total = res.meta.total; meta.from = res.meta.from; meta.to = res.meta.to }
     }
   } finally {
     isLoading.value = false
   }
 }
+
+// Columns for the nested per-transfer item table shown in the expanded row.
+type TransferItem = NonNullable<InventoryStockTransfer['items']>[number]
+const itemColumns: TableColumn<TransferItem>[] = [
+  { id: 'variant', header: t('pages.inventory.variant.title'), cell: ({ row }) => h('span', { class: 'text-neutral-900 text-sm' }, row.original.variant?.name || '-') },
+  { id: 'condition', header: t('pages.inventory.condition.label'), cell: ({ row }) => {
+    const c = row.original.condition
+    return h('span', { class: c === 'new' ? 'text-emerald-600 text-sm' : 'text-amber-600 text-sm' }, c === 'new' ? t('pages.inventory.condition.new') : t('pages.inventory.condition.used'))
+  } },
+  { id: 'quantity', header: t('pages.inventory.monitor.quantity'), cell: ({ row }) => h('span', { class: 'font-semibold text-neutral-700 text-sm' }, `× ${row.original.quantity}`) },
+]
 
 const columns: TableColumn<InventoryStockTransfer>[] = [
   { accessorKey: 'createdAt', header: t('common.date'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, new Date(row.original.createdAt).toLocaleString()) },
@@ -73,14 +95,18 @@ const columns: TableColumn<InventoryStockTransfer>[] = [
     h(UIcon, { name: 'i-lucide-arrow-right', class: 'w-4 h-4 text-neutral-400' }),
     h('span', { class: 'text-neutral-900 font-medium' }, row.original.toBranch?.name || '-')
   ]) },
-  { id: 'items', header: t('pages.inventory.variant.title'), cell: ({ row }) => h(InventoryItemsExpandCell, {
-    items: (row.original.items || []).map(it => ({
-      key: it.id,
-      variantName: it.variant?.name || '-',
-      condition: it.condition,
-      quantityLabel: `× ${it.quantity}`,
-    }))
-  }) },
+  { id: 'items', header: t('pages.inventory.variant.title'), cell: ({ row }) => {
+    const items = row.original.items || []
+    if (items.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+    return h('button', {
+      type: 'button',
+      class: 'flex items-center gap-1.5 text-sm text-neutral-600 hover:text-neutral-900 cursor-pointer',
+      onClick: () => row.toggleExpanded()
+    }, [
+      h(UIcon, { name: row.getIsExpanded() ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right', class: 'w-4 h-4 text-neutral-400 shrink-0' }),
+      h('span', {}, t('common.itemsCount', { count: items.length }))
+    ])
+  } },
   { accessorKey: 'note', header: t('common.note'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.note || '-') },
   { accessorKey: 'createdBy', header: t('common.createdBy'), cell: ({ row }) => {
     const creator = row.original.createdBy

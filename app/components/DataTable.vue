@@ -36,16 +36,22 @@
 
     <!-- Table -->
     <div class="overflow-x-auto">
-      <UTable 
-        :data="data" 
+      <UTable
+        v-model:expanded="expanded"
+        :expanded-options="{ getRowCanExpand: () => true }"
+        :data="data"
         :columns="columns"
         :loading="loading"
-        :ui="{ 
-          th: 'bg-neutral-50 py-2.5', 
-          td: 'text-neutral-900 py-3' 
+        :ui="{
+          th: 'bg-neutral-50 py-2.5',
+          td: 'text-neutral-900 py-3'
         }"
-        :class="['border border-neutral-200 rounded-md', tableClass]" 
-      />
+        :class="['border border-neutral-200 rounded-md', tableClass]"
+      >
+        <template #expanded="{ row }">
+          <slot name="expanded" :row="row" />
+        </template>
+      </UTable>
     </div>
 
     <!-- Pagination -->
@@ -66,6 +72,7 @@ import type { TableColumn } from '@nuxt/ui'
 const search = defineModel<string>('search', { default: '' })
 const page = defineModel<number>('page', { default: 1 })
 const perPage = defineModel<number>('perPage', { default: 10 })
+const expanded = defineModel<Record<string, boolean>>('expanded', { default: () => ({}) })
 
 withDefaults(defineProps<{
   columns: TableColumn<any>[]
