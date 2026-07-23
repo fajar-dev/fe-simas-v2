@@ -1254,7 +1254,7 @@
         "type": "Type",
         "typeEmployee": "To employee",
         "typeOther": "Other (non-employee)",
-        "typeHint": "Choose \"Other\" for stock that leaves without going to a specific employee (consumed, disposed, sold, etc.) — it won't be returnable."
+        "typeHint": "Turn off for stock that leaves without going to a specific employee (consumed, disposed, sold, etc.) — it won't be returnable."
       },
       "unit": {
         "label": "Unit",

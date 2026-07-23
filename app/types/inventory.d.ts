@@ -1,7 +1,6 @@
 import type { Attachment } from './attachment'
 
 export type StockCondition = 'new' | 'used'
-export type StockOutType = 'employee' | 'other'
 
 export interface InventoryLabelItem {
   id?: number
@@ -162,7 +161,7 @@ export interface InventoryStockOutLineItem {
 /** A stock-out document — header + line items, like a stock-in document. */
 export interface InventoryStockOut {
   id: number
-  type: StockOutType
+  isEmployee: boolean
   assignedDate: string
   assignNote: string | null
   assignHandoverId: number | null

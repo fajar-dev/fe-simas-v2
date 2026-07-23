@@ -1254,7 +1254,7 @@
         "type": "Tipe",
         "typeEmployee": "Ke karyawan",
         "typeOther": "Lainnya (bukan karyawan)",
-        "typeHint": "Pilih \"Lainnya\" untuk stok yang keluar tanpa ditujukan ke karyawan tertentu (dipakai, dibuang, dijual, dll.) — tidak bisa dikembalikan."
+        "typeHint": "Matikan untuk stok yang keluar tanpa ditujukan ke karyawan tertentu (dipakai, dibuang, dijual, dll.) — tidak bisa dikembalikan."
       },
       "unit": {
         "label": "Satuan",

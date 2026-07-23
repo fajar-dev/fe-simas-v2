@@ -133,8 +133,8 @@ const columns = computed<TableColumn<InventoryStockOut>[]>(() => {
       ])
     } },
     { accessorKey: 'assignedDate', header: t('common.date'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, new Date(row.original.assignedDate).toLocaleString()) },
-    { accessorKey: 'type', header: t('pages.inventory.stockOut.type'), cell: ({ row }) => {
-      const isEmployee = row.original.type === 'employee'
+    { accessorKey: 'isEmployee', header: t('pages.inventory.stockOut.type'), cell: ({ row }) => {
+      const isEmployee = row.original.isEmployee
       return h(UBadge, { color: isEmployee ? 'info' : 'neutral', variant: 'subtle' }, () => isEmployee ? t('pages.inventory.stockOut.typeEmployee') : t('pages.inventory.stockOut.typeOther'))
     } },
     { accessorKey: 'employee', header: t('common.employee'), cell: ({ row }) => row.original.employee

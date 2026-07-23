@@ -1,6 +1,6 @@
 import { apiService } from "./api-service"
 import { handleServiceError } from "../composables/error-helper"
-import type { StockOutType, InventoryStockOut, InventoryStockAssignItem, InventoryStockReturnItem } from "../types/inventory"
+import type { InventoryStockOut, InventoryStockAssignItem, InventoryStockReturnItem } from "../types/inventory"
 import type { ApiResponse } from "../types/api"
 
 export class InventoryStockOutService {
@@ -21,7 +21,7 @@ export class InventoryStockOutService {
     } catch (error: any) { return handleServiceError(error) }
   }
 
-  async assign(payload: { type: StockOutType; employeeId?: number | null; note?: string | null; attachmentIds?: number[]; items: InventoryStockAssignItem[] }): Promise<ApiResponse<InventoryStockOut>> {
+  async assign(payload: { isEmployee: boolean; employeeId?: number | null; note?: string | null; attachmentIds?: number[]; items: InventoryStockAssignItem[] }): Promise<ApiResponse<InventoryStockOut>> {
     try {
       const res = await apiService.client.post<ApiResponse<InventoryStockOut>>(`/inventory-stock-out`, payload, this.authHeaders)
       return res.data

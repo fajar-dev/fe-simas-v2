@@ -8,11 +8,11 @@
     <template #body>
       <div class="space-y-4">
         <UFormField :label="$t('pages.inventory.stockOut.type')" required>
-          <URadioGroup v-model="type" :items="typeOptions" orientation="horizontal" />
+          <USwitch v-model="isEmployee" :label="$t('pages.inventory.stockOut.typeEmployee')" />
           <p class="text-xs text-neutral-500 mt-1">{{ $t('pages.inventory.stockOut.typeHint') }}</p>
         </UFormField>
 
-        <UFormField v-if="type === 'employee'" :label="$t('common.employee')" required>
+        <UFormField v-if="isEmployee" :label="$t('common.employee')" required>
           <USelectMenu v-model="employeeId" :items="employeeOptions" value-key="value" searchable :placeholder="$t('pages.inventory.stockOut.selectEmployee')" class="w-full" />
         </UFormField>
 
@@ -88,7 +88,7 @@ import { inventoryStockService } from '~/services/inventory-stock-service'
 import { branchService } from '~/services/branch-service'
 import { employeeService } from '~/services/employee-service'
 import type { Attachment } from '~/types/attachment'
-import type { StockOutType, InventoryStockAssignItem } from '~/types/inventory'
+import type { InventoryStockAssignItem } from '~/types/inventory'
 
 const { t } = useI18n()
 const toast = useToast()
@@ -105,28 +105,23 @@ const employeeOptions = ref<{ label: string, value: number }[]>([])
 const branchOptions = ref<{ label: string, value: number }[]>([])
 const rows = ref<Row[]>([])
 
-const type = ref<StockOutType>('employee')
+const isEmployee = ref(true)
 const employeeId = ref<number | undefined>(undefined)
 const branchId = ref<number | undefined>(undefined)
 const note = ref('')
 const attachments = ref<Attachment[]>([])
 const attachmentIds = ref<number[]>([])
 
-const typeOptions = computed(() => [
-  { label: t('pages.inventory.stockOut.typeEmployee'), value: 'employee' },
-  { label: t('pages.inventory.stockOut.typeOther'), value: 'other' }
-])
-
 const hasQty = computed(() => rows.value.some(r => (Number(r.assignNew) || 0) > 0 || (Number(r.assignUsed) || 0) > 0))
 const canSubmit = computed(() => {
   if (!branchId.value || !hasQty.value) return false
-  if (type.value === 'employee' && !employeeId.value) return false
+  if (isEmployee.value && !employeeId.value) return false
   return true
 })
 
 // Zod: quantities must be positive integers not exceeding what's available.
 const schema = z.object({
-  type: z.enum(['employee', 'other']),
+  isEmployee: z.boolean(),
   employeeId: z.number().optional(),
   branchId: z.number({ message: t('pages.inventory.transfer.selectBranch') }),
   items: z.array(z.object({
@@ -137,7 +132,7 @@ const schema = z.object({
     available: z.number()
   })).min(1)
 }).superRefine((d, ctx) => {
-  if (d.type === 'employee' && !d.employeeId) {
+  if (d.isEmployee && !d.employeeId) {
     ctx.addIssue({ code: 'custom', message: t('pages.inventory.stockOut.selectEmployee'), path: ['employeeId'] })
   }
   d.items.forEach((it, idx) => {
@@ -187,7 +182,7 @@ const submit = async () => {
     }
   }
 
-  const parsed = schema.safeParse({ type: type.value, employeeId: employeeId.value, branchId: branchId.value, items: validationItems })
+  const parsed = schema.safeParse({ isEmployee: isEmployee.value, employeeId: employeeId.value, branchId: branchId.value, items: validationItems })
   if (!parsed.success) {
     toast.add({ title: parsed.error.issues[0]?.message || t('common.validationError'), color: 'error', icon: 'i-lucide-circle-alert' })
     return
@@ -196,8 +191,8 @@ const submit = async () => {
   saving.value = true
   try {
     const res = await inventoryStockOutService.assign({
-      type: type.value,
-      employeeId: type.value === 'employee' ? employeeId.value : null,
+      isEmployee: isEmployee.value,
+      employeeId: isEmployee.value ? employeeId.value : null,
       note: note.value || null,
       attachmentIds: attachmentIds.value,
       items
@@ -216,7 +211,7 @@ const submit = async () => {
 
 watch(open, async (val) => {
   if (val) {
-    type.value = 'employee'
+    isEmployee.value = true
     employeeId.value = undefined
     branchId.value = undefined
     note.value = ''
