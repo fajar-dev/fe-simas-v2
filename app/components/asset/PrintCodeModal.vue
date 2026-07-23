@@ -125,8 +125,28 @@ import * as pdfjsLib from 'pdfjs-dist'
 import pdfjsWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import type { Asset } from '~/types/asset'
 
-// Set pdf.js worker from local package
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorkerUrl
+// pdf.js always loads its worker as an ES module (`new Worker(src, { type: 'module' })`),
+// which browsers reject unless the response has a JS/module MIME type. Some static hosts
+// serve .mjs as application/octet-stream, which silently falls back to pdf.js's slow
+// single-threaded "fake worker". Re-wrapping the script in a Blob with an explicit JS
+// type sidesteps the host's Content-Type header entirely, since blob: URLs carry their
+// own type.
+let pdfWorkerReady: Promise<void> | null = null
+const ensurePdfWorker = () => {
+  if (!pdfWorkerReady) {
+    pdfWorkerReady = fetch(pdfjsWorkerUrl)
+      .then(res => res.blob())
+      .then((blob) => {
+        const jsBlob = new Blob([blob], { type: 'text/javascript' })
+        pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(jsBlob)
+      })
+      .catch(() => {
+        // Fall back to the direct URL; pdf.js itself will fall back to the fake worker if this fails too.
+        pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorkerUrl
+      })
+  }
+  return pdfWorkerReady
+}
 
 const { t } = useI18n()
 
@@ -305,6 +325,7 @@ let debounceTimer: ReturnType<typeof setTimeout>
 const generatePreview = async () => {
   isGenerating.value = true
   try {
+    await ensurePdfWorker()
     currentPdf = await buildPdf()
     const data = currentPdf.output('arraybuffer')
     const pdfDoc = await pdfjsLib.getDocument({ data }).promise

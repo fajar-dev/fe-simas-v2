@@ -68,6 +68,16 @@ export default defineNuxtConfig({
 
   pwa: {
     registerType: 'autoUpdate',
+    workbox: {
+      // With `ssr: false` + full static generate, the precache manifest is
+      // built before Nitro finishes prerendering, so `/` never ends up in
+      // it. The module then defaults `navigateFallback` to `/` anyway,
+      // which makes the SW throw `non-precached-url` trying to bind a
+      // NavigationRoute to a URL that was never cached. Explicitly
+      // disabling it (rather than leaving it unset, which re-triggers the
+      // same default) avoids registering that broken route.
+      navigateFallback: undefined,
+    },
     manifest: {
       name: "SIMAS",
       short_name: "SIMAS",
