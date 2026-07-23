@@ -8,6 +8,9 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 
 ## [Unreleased] — 2026-07-23
 
+### Changed (Stock Out)
+- **Tab Assign/Return jadi "Stock Out" bertipe**: tab (`holder.vue` → `stock-out.vue`, route `/inventory/[id]/stock-out`) diganti nama jadi **Stock Out**; modal Assign kini punya pilihan **Tipe** ("Ke karyawan" / "Lainnya (bukan karyawan)") — memilih "Lainnya" menyembunyikan field Karyawan (tak wajib diisi), untuk stok yang keluar tanpa tujuan karyawan spesifik (dipakai, dibuang, dijual, dll.) dan tidak bisa dikembalikan. Tabel menambah kolom **Tipe** (badge); tombol Return tetap otomatis tersembunyi untuk baris tanpa sisa (termasuk semua baris tipe "Lainnya").
+
 ### Fixed
 - **Service worker error di build static (`non-precached-url` untuk `/`)**: dengan `ssr:false` + `nuxi generate`, precache manifest dibuat sebelum Nitro selesai prerender, jadi `/` tidak pernah ikut ter-cache — tapi `@vite-pwa/nuxt` tetap mendaftarkan `NavigationRoute` ke `/` (default `navigateFallback`), yang melempar error tersebut saat SW diaktifkan. `pwa.workbox.navigateFallback` di-set eksplisit ke `undefined` agar route tersebut tidak didaftarkan.
 - **PDF preview di modal Print Code gagal load worker (`Setting up fake worker`, MIME `application/octet-stream`) setelah deploy static**: pdf.js selalu memuat worker-nya sebagai ES module (`type: 'module'`), yang ditolak browser bila host static menyajikan `.mjs` dengan Content-Type salah. Worker script kini di-`fetch` lalu dibungkus ulang jadi `Blob` dengan type `text/javascript` eksplisit sebelum dijadikan `workerSrc` — Blob URL punya type sendiri, jadi tidak bergantung pada header server.
