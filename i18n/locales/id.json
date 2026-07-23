@@ -1231,15 +1231,15 @@
       "tabs": {
         "stockIn": "Stok Masuk",
         "transfer": "Transfer",
-        "holder": "Penetapan / Pengembalian"
+        "holder": "Stok Keluar"
       },
       "stock": {
         "overviewTitle": "Varian & Stok"
       },
-      "holder": {
+      "stockOut": {
         "activeOnly": "Hanya aktif",
-        "assign": "Penetapan",
-        "assignTitle": "Penetapan Stok ke Karyawan",
+        "assign": "Stok Keluar",
+        "assignTitle": "Keluarkan Stok",
         "selectEmployee": "Pilih karyawan",
         "selectVariant": "Pilih varian",
         "quantity": "Jumlah",
@@ -1247,9 +1247,13 @@
         "return": "Pengembalian",
         "returnTitle": "Pengembalian Stok",
         "returnHint": "Stok yang dikembalikan selalu masuk sebagai stok Bekas.",
-        "assignSuccess": "Stok berhasil ditetapkan!",
+        "assignSuccess": "Stok berhasil dikeluarkan!",
         "returnSuccess": "Stok berhasil dikembalikan!",
-        "exceedRemaining": "Melebihi sisa yang dipegang"
+        "exceedRemaining": "Melebihi sisa yang dipegang",
+        "type": "Tipe",
+        "typeEmployee": "Ke karyawan",
+        "typeOther": "Lainnya (bukan karyawan)",
+        "typeHint": "Pilih \"Lainnya\" untuk stok yang keluar tanpa ditujukan ke karyawan tertentu (dipakai, dibuang, dijual, dll.) — tidak bisa dikembalikan."
       },
       "unit": {
         "label": "Satuan",

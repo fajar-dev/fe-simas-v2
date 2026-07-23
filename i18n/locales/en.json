@@ -1231,15 +1231,15 @@
       "tabs": {
         "stockIn": "Stock In",
         "transfer": "Transfer",
-        "holder": "Assignment / Return"
+        "holder": "Stock Out"
       },
       "stock": {
         "overviewTitle": "Variants & Stock"
       },
-      "holder": {
+      "stockOut": {
         "activeOnly": "Active only",
-        "assign": "Assign",
-        "assignTitle": "Assign Stock to Employee",
+        "assign": "Stock Out",
+        "assignTitle": "Take Stock Out",
         "selectEmployee": "Select employee",
         "selectVariant": "Select variant",
         "quantity": "Quantity",
@@ -1247,9 +1247,13 @@
         "return": "Return",
         "returnTitle": "Return Stock",
         "returnHint": "Returned stock always comes back as Used stock.",
-        "assignSuccess": "Stock assigned!",
+        "assignSuccess": "Stock taken out!",
         "returnSuccess": "Stock returned!",
-        "exceedRemaining": "Exceeds the remaining held quantity"
+        "exceedRemaining": "Exceeds the remaining held quantity",
+        "type": "Type",
+        "typeEmployee": "To employee",
+        "typeOther": "Other (non-employee)",
+        "typeHint": "Choose \"Other\" for stock that leaves without going to a specific employee (consumed, disposed, sold, etc.) — it won't be returnable."
       },
       "unit": {
         "label": "Unit",
