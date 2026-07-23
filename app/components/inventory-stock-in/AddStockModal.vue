@@ -3,46 +3,64 @@
     v-model:open="open"
     :title="$t('pages.inventory.addStock.title')"
     :description="$t('pages.inventory.addStock.description')"
-    :ui="{ content: 'sm:max-w-md', overlay: 'bg-black/40', footer: 'justify-end' }"
+    :ui="{ content: 'sm:max-w-lg', overlay: 'bg-black/40', footer: 'justify-end' }"
   >
     <template #body>
       <div class="space-y-4">
-        <!-- Rows: branch × variant × qty -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('pages.inventory.addStock.items') }}</label>
-            <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addRow">{{ $t('pages.inventory.addStock.addRow') }}</UButton>
-          </div>
+        <UFormField :label="$t('common.branch')" required>
+          <USelectMenu v-model="branchId" :items="branchOptions" value-key="value" searchable :placeholder="$t('pages.inventory.transfer.selectBranch')" class="w-full" />
+        </UFormField>
 
-          <div v-if="rows.length === 0" class="text-sm text-neutral-400 py-6 text-center border-2 border-dashed border-neutral-200 rounded-lg">
-            {{ $t('pages.inventory.addStock.noRows') }}
-          </div>
+        <!-- Rows: variant × new/used (current on-hand shown for context) -->
+        <div class="space-y-1.5">
+          <label class="text-sm font-medium text-neutral-700">{{ $t('pages.inventory.variant.title') }}</label>
 
-          <div v-for="(row, i) in rows" :key="i" class="p-3 rounded-lg border border-neutral-200 space-y-2">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <USelectMenu v-model="row.branchId" :items="branchOptions" value-key="value" searchable :placeholder="$t('pages.inventory.transfer.selectBranch')" size="sm" class="w-full" />
-              <div class="flex items-center gap-2">
-                <USelectMenu v-model="row.variantId" :items="variantOptions" value-key="value" searchable :placeholder="$t('pages.inventory.stockOut.selectVariant')" size="sm" class="w-full" />
-                <UButton icon="i-lucide-trash" color="error" variant="soft" size="xs" square @click="() => { rows.splice(i, 1) }" />
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-              <UFormField :label="$t('pages.inventory.condition.new')" size="xs">
-                <UInput v-model.number="row.new" type="number" :min="0" size="sm" class="w-full" />
-              </UFormField>
-              <UFormField :label="$t('pages.inventory.condition.used')" size="xs">
-                <UInput v-model.number="row.used" type="number" :min="0" size="sm" class="w-full" />
-              </UFormField>
-            </div>
+          <div v-if="isLoading" class="space-y-2">
+            <USkeleton v-for="i in 3" :key="i" class="h-9 w-full" />
+          </div>
+          <div v-else-if="!branchId" class="text-sm text-neutral-400 py-6 text-center border-2 border-dashed border-neutral-200 rounded-lg">
+            {{ $t('pages.inventory.transfer.pickFirst') }}
+          </div>
+          <div v-else-if="rows.length === 0" class="text-sm text-neutral-400 py-6 text-center border-2 border-dashed border-neutral-200 rounded-lg">
+            {{ $t('pages.inventory.entry.noVariants') }}
+          </div>
+          <div v-else class="overflow-x-auto">
+            <table class="w-full min-w-[420px] text-sm">
+              <thead>
+                <tr class="text-left text-xs font-semibold text-neutral-400 uppercase tracking-wider border-b border-neutral-200">
+                  <th class="py-2 pr-3">{{ $t('pages.inventory.variant.title') }}</th>
+                  <th class="py-2 px-2">{{ $t('pages.inventory.condition.new') }}</th>
+                  <th class="py-2 px-2">{{ $t('pages.inventory.condition.used') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in rows" :key="row.variantId" class="border-b border-neutral-100">
+                  <td class="py-2 pr-3">
+                    <div class="font-medium text-neutral-900">{{ row.name }}</div>
+                    <div v-if="row.code" class="text-xs text-neutral-500">{{ row.code }}</div>
+                  </td>
+                  <td class="py-2 px-2">
+                    <div class="flex items-center gap-1.5">
+                      <UInput v-model.number="row.addNew" type="number" :min="0" size="sm" class="w-20" />
+                      <span class="text-xs text-neutral-400">{{ $t('pages.inventory.addStock.current') }}: {{ row.new }}</span>
+                    </div>
+                  </td>
+                  <td class="py-2 px-2">
+                    <div class="flex items-center gap-1.5">
+                      <UInput v-model.number="row.addUsed" type="number" :min="0" size="sm" class="w-20" />
+                      <span class="text-xs text-neutral-400">{{ $t('pages.inventory.addStock.current') }}: {{ row.used }}</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <!-- Note -->
         <UFormField :label="$t('common.note')">
           <UTextarea v-model="note" :placeholder="$t('pages.inventory.transfer.notePlaceholder')" :rows="2" class="w-full" />
         </UFormField>
 
-        <!-- Attachments -->
         <AttachmentManager v-model="attachments" @change="(ids) => { attachmentIds = ids }" />
       </div>
     </template>
@@ -56,7 +74,7 @@
 
 <script setup lang="ts">
 import { inventoryStockInService } from '~/services/inventory-stock-in-service'
-import { inventoryVariantService } from '~/services/inventory-variant-service'
+import { inventoryStockService } from '~/services/inventory-stock-service'
 import { branchService } from '~/services/branch-service'
 import type { Attachment } from '~/types/attachment'
 
@@ -67,26 +85,41 @@ const props = defineProps<{ inventoryId: number }>()
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ done: [] }>()
 
-interface Row { branchId?: number, variantId?: number, new: number, used: number }
+interface Row { variantId: number, name: string, code: string | null, new: number, used: number, addNew: number, addUsed: number }
 
 const branchOptions = ref<{ label: string, value: number }[]>([])
-const variantOptions = ref<{ label: string, value: number }[]>([])
+const branchId = ref<number | undefined>(undefined)
 const rows = ref<Row[]>([])
+const isLoading = ref(false)
 const note = ref('')
 const attachments = ref<Attachment[]>([])
 const attachmentIds = ref<number[]>([])
 const saving = ref(false)
 
-const defaultBranch = () => (branchOptions.value.length === 1 ? branchOptions.value[0]!.value : undefined)
-const addRow = () => { rows.value.push({ branchId: defaultBranch(), variantId: undefined, new: 0, used: 0 }) }
+const hasQty = computed(() => rows.value.some(r => (Number(r.addNew) || 0) > 0 || (Number(r.addUsed) || 0) > 0))
+const canSubmit = computed(() => !!branchId.value && hasQty.value)
 
-const canSubmit = computed(() => rows.value.some(r => r.branchId && r.variantId && ((Number(r.new) || 0) > 0 || (Number(r.used) || 0) > 0)))
+const loadRows = async () => {
+  if (!branchId.value) { rows.value = []; return }
+  isLoading.value = true
+  try {
+    const res = await inventoryStockService.getEntryTemplate(branchId.value, props.inventoryId)
+    rows.value = (res.success && res.data ? res.data : []).map(r => ({ variantId: r.variantId, name: r.name, code: r.code, new: r.new, used: r.used, addNew: 0, addUsed: 0 }))
+  } finally {
+    isLoading.value = false
+  }
+}
+
+watch(branchId, loadRows)
 
 const submit = async () => {
+  if (!branchId.value) return
+
   const items = rows.value
-    .filter(r => r.branchId && r.variantId && ((Number(r.new) || 0) > 0 || (Number(r.used) || 0) > 0))
-    .map(r => ({ branchId: r.branchId!, variantId: r.variantId!, new: Number(r.new) || 0, used: Number(r.used) || 0 }))
+    .filter(r => (Number(r.addNew) || 0) > 0 || (Number(r.addUsed) || 0) > 0)
+    .map(r => ({ branchId: branchId.value!, variantId: r.variantId, new: Number(r.addNew) || 0, used: Number(r.addUsed) || 0 }))
   if (items.length === 0) return
+
   saving.value = true
   try {
     const res = await inventoryStockInService.create({ inventoryId: props.inventoryId, note: note.value || null, attachmentIds: attachmentIds.value, items })
@@ -104,14 +137,17 @@ const submit = async () => {
 
 watch(open, async (val) => {
   if (val) {
+    branchId.value = undefined
     note.value = ''
     attachments.value = []
     attachmentIds.value = []
     rows.value = []
-    const [b, v] = await Promise.all([branchService.getList(), inventoryVariantService.getByInventory(props.inventoryId)])
-    if (b.success && b.data) branchOptions.value = b.data.map(x => ({ label: x.name, value: x.id }))
-    if (v.success && v.data) variantOptions.value = v.data.map(x => ({ label: `${x.name}${x.code ? ` (${x.code})` : ''}`, value: x.id }))
-    addRow()
+    const b = await branchService.getList()
+    if (b.success && b.data) {
+      branchOptions.value = b.data.map(x => ({ label: x.name, value: x.id }))
+      branchId.value = b.data.length === 1 ? b.data[0]!.id : undefined
+    }
+    if (branchId.value) await loadRows()
   }
 })
 </script>
