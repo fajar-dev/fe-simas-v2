@@ -162,6 +162,7 @@ export interface InventoryStockOut {
     unit: string
     inventory: { id: number; name: string; code: string | null } | null
   } | null
+  attachments: Attachment[]
 }
 
 export interface InventoryStockAssignItem {

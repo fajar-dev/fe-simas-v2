@@ -1240,6 +1240,7 @@
         "activeOnly": "Active only",
         "assign": "Stock Out",
         "assignTitle": "Take Stock Out",
+        "assignDescription": "Take stock out of a branch, to an employee or elsewhere",
         "selectEmployee": "Select employee",
         "selectVariant": "Select variant",
         "quantity": "Quantity",

@@ -2,6 +2,7 @@
   <UModal
     v-model:open="open"
     :title="$t('pages.inventory.stockOut.assignTitle')"
+    :description="$t('pages.inventory.stockOut.assignDescription')"
     :ui="{ content: 'sm:max-w-lg', overlay: 'bg-black/40', footer: 'justify-end' }"
   >
     <template #body>
@@ -66,8 +67,10 @@
         </div>
 
         <UFormField :label="$t('common.note')">
-          <UTextarea v-model="note" class="w-full" :rows="2" />
+          <UTextarea v-model="note" :placeholder="$t('pages.inventory.transfer.notePlaceholder')" class="w-full" :rows="2" />
         </UFormField>
+
+        <AttachmentManager v-model="attachments" @change="(ids) => { attachmentIds = ids }" />
       </div>
     </template>
 
@@ -84,6 +87,7 @@ import { inventoryStockOutService } from '~/services/inventory-stock-out-service
 import { inventoryStockService } from '~/services/inventory-stock-service'
 import { branchService } from '~/services/branch-service'
 import { employeeService } from '~/services/employee-service'
+import type { Attachment } from '~/types/attachment'
 import type { StockOutType, InventoryStockAssignItem } from '~/types/inventory'
 
 const { t } = useI18n()
@@ -105,6 +109,8 @@ const type = ref<StockOutType>('employee')
 const employeeId = ref<number | undefined>(undefined)
 const branchId = ref<number | undefined>(undefined)
 const note = ref('')
+const attachments = ref<Attachment[]>([])
+const attachmentIds = ref<number[]>([])
 
 const typeOptions = computed(() => [
   { label: t('pages.inventory.stockOut.typeEmployee'), value: 'employee' },
@@ -193,6 +199,7 @@ const submit = async () => {
       type: type.value,
       employeeId: type.value === 'employee' ? employeeId.value : null,
       note: note.value || null,
+      attachmentIds: attachmentIds.value,
       items
     })
     if (res.success) {
@@ -213,6 +220,8 @@ watch(open, async (val) => {
     employeeId.value = undefined
     branchId.value = undefined
     note.value = ''
+    attachments.value = []
+    attachmentIds.value = []
     rows.value = []
     await load()
   }
