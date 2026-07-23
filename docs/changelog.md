@@ -9,6 +9,7 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 ## [Unreleased] — 2026-07-23
 
 ### Changed (Stock Out)
+- **Komponen & service Stock Out dipisah, seperti Asset**: `AssignModal.vue`/`ReturnModal.vue` pindah dari `components/inventory/` ke folder sendiri `components/inventory-stock-out/` (persis seperti `components/asset-holder/` terpisah dari `components/asset/`); halaman `stock-out.vue` kini meng-import keduanya secara eksplisit (bukan lewat auto-import prefix), sama seperti `asset/[id]/holder.vue`. Service baru `inventory-stock-out-service.ts` (mengikuti pola `inventory-stock-transfer-service.ts`) menangani list/assign/return lewat endpoint top-level `/inventory-stock-out`; `inventory-stock-service.ts` kini hanya menangani balance/entry.
 - **Tab Assign/Return jadi "Stock Out" bertipe**: tab (`holder.vue` → `stock-out.vue`, route `/inventory/[id]/stock-out`) diganti nama jadi **Stock Out**; modal Assign kini punya pilihan **Tipe** ("Ke karyawan" / "Lainnya (bukan karyawan)") — memilih "Lainnya" menyembunyikan field Karyawan (tak wajib diisi), untuk stok yang keluar tanpa tujuan karyawan spesifik (dipakai, dibuang, dijual, dll.) dan tidak bisa dikembalikan. Tabel menambah kolom **Tipe** (badge); tombol Return tetap otomatis tersembunyi untuk baris tanpa sisa (termasuk semua baris tipe "Lainnya").
 
 ### Fixed
