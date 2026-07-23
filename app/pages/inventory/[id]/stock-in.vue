@@ -27,13 +27,14 @@
       </template>
     </DataTable>
 
-    <InventoryAddStockModal v-model="showAddModal" :inventory-id="inventoryId" @done="onAdded" />
+    <AddStockModal v-model="showAddModal" :inventory-id="inventoryId" @done="onAdded" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import { inventoryStockInService } from '~/services/inventory-stock-in-service'
+import AddStockModal from '~/components/inventory-stock-in/AddStockModal.vue'
 import type { InventoryStockIn } from '~/types/inventory'
 
 definePageMeta({ layout: 'dashboard' })

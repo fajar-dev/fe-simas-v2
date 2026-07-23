@@ -33,13 +33,14 @@
       </template>
     </DataTable>
 
-    <InventoryTransferModal v-model="showModal" :inventory-id="inventoryId" @done="fetchTransfers" />
+    <TransferModal v-model="showModal" :inventory-id="inventoryId" @done="fetchTransfers" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import { inventoryStockTransferService } from '~/services/inventory-stock-transfer-service'
+import TransferModal from '~/components/inventory-stock-transfer/TransferModal.vue'
 import type { InventoryStockTransfer } from '~/types/inventory'
 
 definePageMeta({ layout: 'dashboard' })
