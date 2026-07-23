@@ -6,7 +6,11 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 
 ---
 
-## [Unreleased] — 2026-07-19
+## [Unreleased] — 2026-07-23
+
+### Fixed
+- **Service worker error di build static (`non-precached-url` untuk `/`)**: dengan `ssr:false` + `nuxi generate`, precache manifest dibuat sebelum Nitro selesai prerender, jadi `/` tidak pernah ikut ter-cache — tapi `@vite-pwa/nuxt` tetap mendaftarkan `NavigationRoute` ke `/` (default `navigateFallback`), yang melempar error tersebut saat SW diaktifkan. `pwa.workbox.navigateFallback` di-set eksplisit ke `undefined` agar route tersebut tidak didaftarkan.
+- **PDF preview di modal Print Code gagal load worker (`Setting up fake worker`, MIME `application/octet-stream`) setelah deploy static**: pdf.js selalu memuat worker-nya sebagai ES module (`type: 'module'`), yang ditolak browser bila host static menyajikan `.mjs` dengan Content-Type salah. Worker script kini di-`fetch` lalu dibungkus ulang jadi `Blob` dengan type `text/javascript` eksplisit sebelum dijadikan `workerSrc` — Blob URL punya type sendiri, jadi tidak bergantung pada header server.
 
 ### Changed
 - **Kelola Varian jadi nested form**: modal Kelola Varian bukan lagi daftar read-only + form tambah terpisah, melainkan **nested form** — tiap varian bisa **ditambah, diedit, dihapus** langsung inline (gambar, nama, kode+scan, deskripsi), lalu **Simpan** mempersist semuanya sekaligus (create/update/delete) dan me-refresh. Validasi Zod (`rows.N.name`), layout gambar-kiri / nama-atas / kode-bawah.
