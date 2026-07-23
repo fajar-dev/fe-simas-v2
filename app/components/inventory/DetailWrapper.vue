@@ -188,7 +188,7 @@ const tabItems = computed(() => {
     tabs.push({ value: 'transfer', label: t('pages.inventory.tabs.transfer'), icon: 'i-lucide-arrow-left-right', to: `/inventory/${inventoryId}/transfer` })
   }
   if (hasPermission('inventory-stock:read')) {
-    tabs.push({ value: 'holder', label: t('pages.inventory.tabs.holder'), icon: 'i-lucide-users', to: `/inventory/${inventoryId}/holder` })
+    tabs.push({ value: 'stock-out', label: t('pages.inventory.tabs.holder'), icon: 'i-lucide-package-minus', to: `/inventory/${inventoryId}/stock-out` })
   }
   return tabs
 })
@@ -197,7 +197,7 @@ const activeTab = computed({
   get() {
     let current = 'stock-in'
     if (route.path.endsWith('/transfer')) current = 'transfer'
-    else if (route.path.endsWith('/holder')) current = 'holder'
+    else if (route.path.endsWith('/stock-out')) current = 'stock-out'
     return current
   },
   set(val) {

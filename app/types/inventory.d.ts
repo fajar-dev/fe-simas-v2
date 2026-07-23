@@ -1,6 +1,7 @@
 import type { Attachment } from './attachment'
 
 export type StockCondition = 'new' | 'used'
+export type StockOutType = 'employee' | 'other'
 
 export interface InventoryLabelItem {
   id?: number
@@ -139,8 +140,9 @@ export interface InventoryStockIn {
   attachments: Attachment[]
 }
 
-export interface InventoryStockHolding {
+export interface InventoryStockOut {
   id: number
+  type: StockOutType
   conditionAssigned: StockCondition
   quantity: number
   quantityReturned: number

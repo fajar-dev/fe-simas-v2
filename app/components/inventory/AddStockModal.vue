@@ -22,7 +22,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <USelectMenu v-model="row.branchId" :items="branchOptions" value-key="value" searchable :placeholder="$t('pages.inventory.transfer.selectBranch')" size="sm" class="w-full" />
               <div class="flex items-center gap-2">
-                <USelectMenu v-model="row.variantId" :items="variantOptions" value-key="value" searchable :placeholder="$t('pages.inventory.holder.selectVariant')" size="sm" class="w-full" />
+                <USelectMenu v-model="row.variantId" :items="variantOptions" value-key="value" searchable :placeholder="$t('pages.inventory.stockOut.selectVariant')" size="sm" class="w-full" />
                 <UButton icon="i-lucide-trash" color="error" variant="soft" size="xs" square @click="() => { rows.splice(i, 1) }" />
               </div>
             </div>

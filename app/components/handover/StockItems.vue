@@ -7,7 +7,7 @@
       </UFormField>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <UFormField :label="$t('pages.inventory.variant.title')">
-          <USelectMenu v-model="draft.variantId" :items="variantOptions" value-key="value" :placeholder="$t('pages.inventory.holder.selectVariant')" class="w-full" />
+          <USelectMenu v-model="draft.variantId" :items="variantOptions" value-key="value" :placeholder="$t('pages.inventory.stockOut.selectVariant')" class="w-full" />
         </UFormField>
         <UFormField :label="$t('common.branch')">
           <USelectMenu v-model="draft.branchId" :items="branchOptions" value-key="value" :placeholder="$t('pages.inventory.transfer.selectBranch')" class="w-full" />
@@ -17,7 +17,7 @@
         <UFormField v-if="transactionType === 'assign'" :label="$t('pages.inventory.condition.label')">
           <USelect v-model="draft.condition" :items="conditionOptions" value-key="value" class="w-full" />
         </UFormField>
-        <UFormField :label="$t('pages.inventory.holder.quantity')">
+        <UFormField :label="$t('pages.inventory.stockOut.quantity')">
           <UInput v-model.number="draft.quantity" type="number" :min="1" class="w-full" />
         </UFormField>
       </div>
