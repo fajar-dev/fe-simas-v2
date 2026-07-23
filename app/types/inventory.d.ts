@@ -140,20 +140,15 @@ export interface InventoryStockIn {
   attachments: Attachment[]
 }
 
-export interface InventoryStockOut {
+export interface InventoryStockOutLineItem {
   id: number
-  type: StockOutType
   conditionAssigned: StockCondition
   quantity: number
   quantityReturned: number
   quantityRemaining: number
-  assignedDate: string
   returnedDate: string | null
-  assignNote: string | null
   returnNote: string | null
-  assignHandoverId: number | null
   returnHandoverId: number | null
-  employee: { id: number; name: string; employeeId: string } | null
   branch: { id: number; name: string } | null
   variant: {
     id: number
@@ -162,6 +157,19 @@ export interface InventoryStockOut {
     unit: string
     inventory: { id: number; name: string; code: string | null } | null
   } | null
+}
+
+/** A stock-out document — header + line items, like a stock-in document. */
+export interface InventoryStockOut {
+  id: number
+  type: StockOutType
+  assignedDate: string
+  assignNote: string | null
+  assignHandoverId: number | null
+  employee: { id: number; name: string; employeeId: string } | null
+  createdAt: string
+  createdBy: { id: number; name: string; photo: string | null } | null
+  items: InventoryStockOutLineItem[]
   attachments: Attachment[]
 }
 

@@ -5,23 +5,23 @@
     :ui="{ content: 'sm:max-w-md', overlay: 'bg-black/40', footer: 'justify-end' }"
   >
     <template #body>
-      <div v-if="holding" class="space-y-4">
+      <div v-if="item" class="space-y-4">
         <div class="grid grid-cols-2 gap-3 text-sm">
           <div>
             <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.employee') }}</span>
-            <span class="text-neutral-900 font-medium">{{ holding.employee?.name || '-' }}</span>
+            <span class="text-neutral-900 font-medium">{{ employee?.name || '-' }}</span>
           </div>
           <div>
             <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.inventory.variant.title') }}</span>
-            <span class="text-neutral-900 font-medium">{{ holding.variant?.name || '-' }}</span>
+            <span class="text-neutral-900 font-medium">{{ item.variant?.name || '-' }}</span>
           </div>
           <div>
             <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.branch') }}</span>
-            <span class="text-neutral-900 font-medium">{{ holding.branch?.name || '-' }}</span>
+            <span class="text-neutral-900 font-medium">{{ item.branch?.name || '-' }}</span>
           </div>
           <div>
             <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.inventory.stockOut.remaining') }}</span>
-            <span class="text-neutral-900 font-medium">{{ holding.quantityRemaining }} {{ holding.variant?.unit || '' }}</span>
+            <span class="text-neutral-900 font-medium">{{ item.quantityRemaining }} {{ item.variant?.unit || '' }}</span>
           </div>
         </div>
 
@@ -29,10 +29,10 @@
 
         <UForm id="stock-return-form" :schema="schema" :state="state" class="space-y-4 w-full" @submit="onSubmit">
           <UFormField :label="$t('pages.inventory.stockOut.quantity')" name="quantity" required>
-            <UInput v-model.number="state.quantity" type="number" :min="1" :max="holding.quantityRemaining" class="w-full" />
+            <UInput v-model.number="state.quantity" type="number" :min="1" :max="item.quantityRemaining" class="w-full" />
           </UFormField>
           <UFormField :label="$t('common.note')" name="note">
-            <UTextarea v-model="state.note" class="w-full" :rows="2" />
+            <UTextarea v-model="state.note" :placeholder="$t('pages.inventory.transfer.notePlaceholder')" class="w-full" :rows="2" />
           </UFormField>
         </UForm>
       </div>
@@ -48,32 +48,32 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import { inventoryStockOutService } from '~/services/inventory-stock-out-service'
-import type { InventoryStockOut } from '~/types/inventory'
+import type { InventoryStockOutLineItem } from '~/types/inventory'
 
 const { t } = useI18n()
 const toast = useToast()
 
-const props = defineProps<{ holding: InventoryStockOut | null }>()
+const props = defineProps<{ employee: { id: number; name: string; employeeId: string } | null | undefined, item: InventoryStockOutLineItem | null }>()
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ done: [] }>()
 
 const saving = ref(false)
 
 const schema = computed(() => z.object({
-  quantity: z.number().int().min(1).max(props.holding?.quantityRemaining ?? 1, t('pages.inventory.stockOut.exceedRemaining')),
+  quantity: z.number().int().min(1).max(props.item?.quantityRemaining ?? 1, t('pages.inventory.stockOut.exceedRemaining')),
   note: z.string().optional().or(z.literal(''))
 }))
 
 const state = reactive<{ quantity: number, note: string }>({ quantity: 1, note: '' })
 
 const onSubmit = async () => {
-  if (!props.holding?.variant || !props.holding.branch || !props.holding.employee) return
+  if (!props.item?.variant || !props.item.branch || !props.employee) return
   saving.value = true
   try {
     const res = await inventoryStockOutService.returnStock({
-      employeeId: props.holding.employee.id,
+      employeeId: props.employee.id,
       note: state.note || null,
-      items: [{ variantId: props.holding.variant.id, branchId: props.holding.branch.id, quantity: Number(state.quantity) }]
+      items: [{ variantId: props.item.variant.id, branchId: props.item.branch.id, quantity: Number(state.quantity) }]
     })
     if (res.success) {
       toast.add({ title: t('pages.inventory.stockOut.returnSuccess'), color: 'success', icon: 'i-lucide-circle-check' })
@@ -88,6 +88,6 @@ const onSubmit = async () => {
 }
 
 watch(open, (val) => {
-  if (val) { state.quantity = props.holding?.quantityRemaining ?? 1; state.note = '' }
+  if (val) { state.quantity = props.item?.quantityRemaining ?? 1; state.note = '' }
 })
 </script>

@@ -21,9 +21,9 @@ export class InventoryStockOutService {
     } catch (error: any) { return handleServiceError(error) }
   }
 
-  async assign(payload: { type: StockOutType; employeeId?: number | null; note?: string | null; attachmentIds?: number[]; items: InventoryStockAssignItem[] }): Promise<ApiResponse<InventoryStockOut[]>> {
+  async assign(payload: { type: StockOutType; employeeId?: number | null; note?: string | null; attachmentIds?: number[]; items: InventoryStockAssignItem[] }): Promise<ApiResponse<InventoryStockOut>> {
     try {
-      const res = await apiService.client.post<ApiResponse<InventoryStockOut[]>>(`/inventory-stock-out`, payload, this.authHeaders)
+      const res = await apiService.client.post<ApiResponse<InventoryStockOut>>(`/inventory-stock-out`, payload, this.authHeaders)
       return res.data
     } catch (error: any) { return handleServiceError(error) }
   }
