@@ -23,15 +23,17 @@
     </template>
     </DataTable>
 
-    <InventoryAssignModal v-model="showAssignModal" :inventory-id="inventoryId" @done="fetchStockOuts" />
-    <InventoryReturnModal v-model="showReturnModal" :holding="selectedStockOut" @done="fetchStockOuts" />
+    <AssignModal v-model="showAssignModal" :inventory-id="inventoryId" @done="fetchStockOuts" />
+    <ReturnModal v-model="showReturnModal" :holding="selectedStockOut" @done="fetchStockOuts" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
-import { inventoryStockService } from '~/services/inventory-stock-service'
+import { inventoryStockOutService } from '~/services/inventory-stock-out-service'
+import AssignModal from '~/components/inventory-stock-out/AssignModal.vue'
+import ReturnModal from '~/components/inventory-stock-out/ReturnModal.vue'
 import type { InventoryStockOut } from '~/types/inventory'
 
 definePageMeta({ layout: 'dashboard' })
@@ -61,7 +63,7 @@ watch([page, perPage], () => fetchStockOuts())
 const fetchStockOuts = async () => {
   isLoading.value = true
   try {
-    const res = await inventoryStockService.getStockOuts(page.value, perPage.value, { inventoryId, active: activeOnly.value || undefined })
+    const res = await inventoryStockOutService.getAll(page.value, perPage.value, { inventoryId, active: activeOnly.value || undefined })
     if (res.success && res.data) {
       data.value = res.data
       if (res.meta) { meta.total = res.meta.total; meta.from = res.meta.from; meta.to = res.meta.to }

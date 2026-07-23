@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import { z } from 'zod'
-import { inventoryStockService } from '~/services/inventory-stock-service'
+import { inventoryStockOutService } from '~/services/inventory-stock-out-service'
 import type { InventoryStockOut } from '~/types/inventory'
 
 const { t } = useI18n()
@@ -70,7 +70,7 @@ const onSubmit = async () => {
   if (!props.holding?.variant || !props.holding.branch || !props.holding.employee) return
   saving.value = true
   try {
-    const res = await inventoryStockService.returnStock({
+    const res = await inventoryStockOutService.returnStock({
       employeeId: props.holding.employee.id,
       note: state.note || null,
       items: [{ variantId: props.holding.variant.id, branchId: props.holding.branch.id, quantity: Number(state.quantity) }]

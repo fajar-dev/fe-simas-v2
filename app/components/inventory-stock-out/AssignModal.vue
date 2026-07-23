@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
 import { z } from 'zod'
-import { inventoryStockService } from '~/services/inventory-stock-service'
+import { inventoryStockOutService } from '~/services/inventory-stock-out-service'
 import { inventoryVariantService } from '~/services/inventory-variant-service'
 import { branchService } from '~/services/branch-service'
 import { employeeService } from '~/services/employee-service'
@@ -101,7 +101,7 @@ const onSubmit = async () => {
   if (state.type === 'employee' && !state.employeeId) return
   saving.value = true
   try {
-    const res = await inventoryStockService.assign({
+    const res = await inventoryStockOutService.assign({
       type: state.type,
       employeeId: state.type === 'employee' ? state.employeeId : null,
       note: state.note || null,
