@@ -8,11 +8,25 @@ export class InventoryService {
     return { headers: { Authorization: `Bearer ${useAuth().state.token}` } }
   }
 
-  async getAll(page = 1, perPage = 10, q = '', sortBy = '', order = ''): Promise<ApiResponse<Inventory[]>> {
+  async getAll(page = 1, perPage = 10, q = '', sortBy = '', order = '', filters: Record<string, any> = {}): Promise<ApiResponse<Inventory[]>> {
     try {
       let url = `/inventory?page=${page}&limit=${perPage}&q=${encodeURIComponent(q)}`
       if (sortBy) url += `&sortBy=${encodeURIComponent(sortBy)}`
       if (order) url += `&order=${encodeURIComponent(order)}`
+      for (const [key, value] of Object.entries(filters)) {
+        if (value === undefined || value === null || value === '') continue
+        if (key === 'labels' && Array.isArray(value)) {
+          for (const label of value) {
+            if (label.key && label.value) {
+              url += `&label.${encodeURIComponent(label.key)}=${encodeURIComponent(label.value)}`
+            }
+          }
+        } else if (Array.isArray(value) && value.length > 0) {
+          url += `&${key}=${value.join(',')}`
+        } else if (!Array.isArray(value)) {
+          url += `&${key}=${encodeURIComponent(value)}`
+        }
+      }
       const res = await apiService.client.get<ApiResponse<Inventory[]>>(url, this.authHeaders)
       return res.data
     } catch (error: any) { return handleServiceError(error) }

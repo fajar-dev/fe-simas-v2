@@ -45,6 +45,10 @@
           <UButton v-if="hasPermission('inventory:create')" color="primary" variant="solid" icon="i-lucide-plus" class="flex-1 sm:flex-none justify-center" @click="() => { navigateTo('/inventory/create') }">
             {{ $t('pages.inventory.item.add') }}
           </UButton>
+          <UButton color="neutral" variant="soft" icon="i-lucide-filter" class="relative flex-1 sm:flex-none justify-center" @click="() => { showFilterDrawer = true }">
+            {{ $t('pages.inventory.item.filter') }}
+            <UBadge v-if="activeFilterCount > 0" :label="String(activeFilterCount)" color="primary" size="sm" variant="solid" />
+          </UButton>
           <UPopover>
             <UButton color="neutral" variant="ghost" icon="i-lucide-table-properties" />
             <template #content>
@@ -67,6 +71,13 @@
     <DeleteModal v-model="showDeleteModal" :item-name="selectedItem?.name" :loading="deleting" @confirm="confirmDelete" />
     <!-- Lightbox Modal -->
     <Lightbox />
+
+    <!-- Filter Drawer -->
+    <InventoryFilterDrawer
+      v-model:open="showFilterDrawer"
+      :initial-filters="activeFilters"
+      @apply="onApplyFilters"
+    />
   </div>
 </template>
 
@@ -204,12 +215,20 @@ const deleting = ref(false)
 const availableLabelKeys = ref<string[]>([])
 const activeLabelColumns = ref<string[]>([])
 
-const { search, page, perPage, sortBy, order, sortHeader } = useTableQuery(() => fetchItems(), { syncUrl: true, defaultSortBy: 'createdAt', defaultOrder: 'DESC' })
+const showFilterDrawer = ref(false)
+const activeFilters = ref<Record<string, any>>({})
+const activeFilterCount = computed(() => Object.keys(activeFilters.value).length)
+
+const onApplyFilters = (filters: Record<string, any>) => {
+  activeFilters.value = filters
+}
+
+const { search, page, perPage, sortBy, order, sortHeader } = useTableQuery(() => fetchItems(), { syncUrl: true, defaultSortBy: 'createdAt', defaultOrder: 'DESC', filters: activeFilters })
 
 const fetchItems = async () => {
   isLoading.value = true
   try {
-    const res = await inventoryService.getAll(page.value, perPage.value, search.value, sortBy.value, order.value)
+    const res = await inventoryService.getAll(page.value, perPage.value, search.value, sortBy.value, order.value, activeFilters.value)
     if (res.success && res.data) {
       data.value = res.data
       expanded.value = {}

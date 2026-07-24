@@ -32,9 +32,9 @@ export function useTableQuery(onQueryChange: () => void, options: TableQueryOpti
     const parsedFilters: Record<string, any> = {}
     
     const arrayNumberFields = ['categoryIds', 'subCategoryIds', 'branchIds', 'locationIds']
-    const arrayStringFields = ['status', 'missingFields']
-    const numberFields = ['holderId', 'priceMin', 'priceMax', 'usefulLifeYears', 'monthlyDepMin', 'monthlyDepMax', 'accumulatedDepMin', 'accumulatedDepMax', 'bookValueMin', 'bookValueMax']
-    const stringFields = ['holderStatus', 'holderType', 'purchaseDateFrom', 'purchaseDateTo', 'depreciationStatus', 'bleTagStatus', 'usefulLifeOp', 'handoverStatus', 'transactionType']
+    const arrayStringFields = ['status', 'missingFields', 'units']
+    const numberFields = ['holderId', 'priceMin', 'priceMax', 'usefulLifeYears', 'monthlyDepMin', 'monthlyDepMax', 'accumulatedDepMin', 'accumulatedDepMax', 'bookValueMin', 'bookValueMax', 'newStockMin', 'newStockMax', 'usedStockMin', 'usedStockMax']
+    const stringFields = ['holderStatus', 'holderType', 'purchaseDateFrom', 'purchaseDateTo', 'depreciationStatus', 'bleTagStatus', 'usefulLifeOp', 'handoverStatus', 'transactionType', 'variantStatus', 'isActive']
     
     arrayNumberFields.forEach(field => {
       if (query[field] !== undefined && query[field] !== '') {

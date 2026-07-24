@@ -302,6 +302,32 @@
         "noLogs": "No activity logs found",
         "noLogsDesc": "Actions performed on this item will appear here.",
         "endOfHistory": "End of activity history"
+      },
+      "filterDrawer": {
+        "title": "Advance Filter",
+        "description": "Narrow down your inventory list",
+        "clear": "Clear",
+        "allCategories": "All Categories",
+        "allSubCategories": "All Sub Categories",
+        "allUnits": "All Units",
+        "status": "Status",
+        "variantStatus": "Variant Status",
+        "hasVariants": "Has Variants",
+        "noVariants": "No Variants",
+        "newStockRange": "New Stock Range",
+        "usedStockRange": "Used Stock Range",
+        "min": "Min",
+        "max": "Max",
+        "dataQuality": "Data Quality",
+        "allComplete": "All Complete",
+        "withoutImage": "Without Image",
+        "withoutDescription": "Without Description",
+        "withoutSubCategory": "Without Sub Category",
+        "labels": "Labels",
+        "noLabels": "No label filters added",
+        "key": "Key",
+        "value": "Value",
+        "applyFilters": "Apply Filters"
       }
     },
     "assetHolder": {
@@ -1178,7 +1204,8 @@
         "photo": "Photo",
         "labels": "Custom Labels",
         "noCustomLabels": "No custom labels found",
-        "columnNo": "No"
+        "columnNo": "No",
+        "filter": "Filter"
       },
       "variant": {
         "title": "Variant",

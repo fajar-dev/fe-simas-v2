@@ -302,6 +302,32 @@
         "noLogs": "Tidak ada log aktivitas",
         "noLogsDesc": "Tindakan yang dilakukan pada item ini akan muncul di sini.",
         "endOfHistory": "Akhir riwayat aktivitas"
+      },
+      "filterDrawer": {
+        "title": "Filter Lanjutan",
+        "description": "Persempit daftar persediaan Anda",
+        "clear": "Hapus",
+        "allCategories": "Semua Kategori",
+        "allSubCategories": "Semua Sub Kategori",
+        "allUnits": "Semua Satuan",
+        "status": "Status",
+        "variantStatus": "Status Varian",
+        "hasVariants": "Punya Varian",
+        "noVariants": "Tanpa Varian",
+        "newStockRange": "Rentang Stok Baru",
+        "usedStockRange": "Rentang Stok Bekas",
+        "min": "Min",
+        "max": "Maks",
+        "dataQuality": "Kualitas Data",
+        "allComplete": "Semua Lengkap",
+        "withoutImage": "Tanpa Gambar",
+        "withoutDescription": "Tanpa Deskripsi",
+        "withoutSubCategory": "Tanpa Sub Kategori",
+        "labels": "Label",
+        "noLabels": "Belum ada filter label",
+        "key": "Kunci",
+        "value": "Nilai",
+        "applyFilters": "Terapkan Filter"
       }
     },
     "assetHolder": {
@@ -1178,7 +1204,8 @@
         "photo": "Foto",
         "labels": "Label Kustom",
         "noCustomLabels": "Tidak ada label kustom",
-        "columnNo": "No"
+        "columnNo": "No",
+        "filter": "Filter"
       },
       "variant": {
         "title": "Varian",
