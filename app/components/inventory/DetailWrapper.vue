@@ -112,12 +112,6 @@
               <div class="text-sm text-neutral-700">{{ item.description || '-' }}</div>
             </div>
 
-            <!-- Variants -->
-            <div class="col-span-12 pt-4 border-t border-neutral-100">
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.inventory.stock.overviewTitle') }}</span>
-              <InventoryStockOverview v-if="item && hasPermission('inventory-stock:read')" :inventory-id="inventoryId" :refresh-key="stockKey" />
-            </div>
-
             <!-- Attachments -->
             <div v-if="item.attachments && item.attachments.length" class="col-span-12 pt-4 border-t border-neutral-100">
               <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">{{ $t('component.attachment.title') }}</span>
@@ -139,8 +133,6 @@
         </div>
       </div>
     </UCard>
-
-    <!-- Variant & stock overview -->
 
     <UTabs v-model="activeTab" :items="tabItems" variant="link" class="gap-4" />
 
@@ -181,15 +173,13 @@ const goBack = () => {
   }
 }
 
-// Bumped to force the stock overview to refetch (e.g. after adding stock, or switching tabs).
-const stockKey = ref(0)
-provide('inventoryStock', { refresh: () => { stockKey.value++ } })
-watch(() => route.path, () => { stockKey.value++ })
-
-const onItemSaved = async () => { await fetchItem(); stockKey.value++ }
+const onItemSaved = async () => { await fetchItem() }
 
 const tabItems = computed(() => {
   const tabs: TabsItem[] = []
+  if (hasPermission('inventory-stock:read')) {
+    tabs.push({ value: 'variants', label: t('pages.inventory.stock.overviewTitle'), icon: 'i-lucide-layers', to: `/inventory/${inventoryId}/variants` })
+  }
   if (hasPermission('inventory-stock:read')) {
     tabs.push({ value: 'stock-in', label: t('pages.inventory.tabs.stockIn'), icon: 'i-lucide-package', to: `/inventory/${inventoryId}/stock-in` })
   }
@@ -205,7 +195,8 @@ const tabItems = computed(() => {
 const activeTab = computed({
   get() {
     let current = 'stock-in'
-    if (route.path.endsWith('/transfer')) current = 'transfer'
+    if (route.path.endsWith('/variants')) current = 'variants'
+    else if (route.path.endsWith('/transfer')) current = 'transfer'
     else if (route.path.endsWith('/stock-out')) current = 'stock-out'
     return current
   },
