@@ -37,13 +37,12 @@ const loadData = async () => {
 }
 
 provide('inventoryState', { item, isLoading })
-provide('inventoryActions', { fetchItem: loadData })
 
 onMounted(() => { if (!isEdit.value) loadData() })
 
 watch(inventoryId, (id) => { if (id && !isEdit.value) loadData() })
 
 if (!isEdit.value && (route.path === `/inventory/${inventoryId.value}` || route.path === `/inventory/${inventoryId.value}/`)) {
-  navigateTo(`/inventory/${inventoryId.value}/stock-in`, { replace: true })
+  navigateTo(`/inventory/${inventoryId.value}/variants`, { replace: true })
 }
 </script>

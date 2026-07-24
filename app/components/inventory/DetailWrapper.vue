@@ -36,15 +36,6 @@
             <span class="hidden sm:inline">{{ $t('component.inventory.detailWrapper.activityLog') }}</span>
           </UButton>
           <UButton
-            v-if="hasPermission('inventory-variant:read')"
-            color="primary"
-            variant="outline"
-            icon="i-lucide-layers"
-            @click="() => { showVariantModal = true }"
-          >
-            <span class="hidden sm:inline">{{ $t('pages.inventory.variant.manageTitle') }}</span>
-          </UButton>
-          <UButton
             v-if="hasPermission('inventory:update')"
             color="primary"
             icon="i-lucide-edit"
@@ -143,7 +134,6 @@
       <slot />
     </div>
 
-    <InventoryVariantManagerModal v-model="showVariantModal" :inventory="item" @changed="onItemSaved" />
     <InventoryLogDrawer v-model:open="showLogDrawer" :inventory-id="inventoryId" />
   </div>
 </template>
@@ -159,9 +149,7 @@ const { openLightbox } = useLightbox()
 const inventoryId = Number(route.params.id)
 
 const { item, isLoading } = inject('inventoryState') as { item: Ref<Inventory | null>; isLoading: Ref<boolean> }
-const { fetchItem } = inject('inventoryActions') as { fetchItem: () => Promise<void> }
 
-const showVariantModal = ref(false)
 const showLogDrawer = ref(false)
 
 const goBack = () => {
@@ -172,8 +160,6 @@ const goBack = () => {
     navigateTo('/inventory')
   }
 }
-
-const onItemSaved = async () => { await fetchItem() }
 
 const tabItems = computed(() => {
   const tabs: TabsItem[] = []
@@ -194,8 +180,8 @@ const tabItems = computed(() => {
 
 const activeTab = computed({
   get() {
-    let current = 'stock-in'
-    if (route.path.endsWith('/variants')) current = 'variants'
+    let current = 'variants'
+    if (route.path.endsWith('/stock-in')) current = 'stock-in'
     else if (route.path.endsWith('/transfer')) current = 'transfer'
     else if (route.path.endsWith('/stock-out')) current = 'stock-out'
     return current

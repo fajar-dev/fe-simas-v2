@@ -1187,7 +1187,8 @@
         "add": "Tambah Varian",
         "unit": "Satuan",
         "codePlaceholder": "Pindai atau ketik kode",
-        "saveSuccess": "Varian tersimpan"
+        "saveSuccess": "Varian tersimpan",
+        "searchPlaceholder": "Cari varian..."
       },
       "condition": {
         "label": "Kondisi",

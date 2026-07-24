@@ -1,160 +1,172 @@
 <template>
-  <UTable
-    :data="flatRows"
-    :columns="columns"
-    :loading="isLoading"
-    :ui="{
-      th: 'bg-neutral-50 py-2',
-      td: 'py-2 border-b border-neutral-100'
-    }"
-    class="min-w-[480px] border border-neutral-200 rounded-md"
-  />
+  <div class="space-y-4">
+    <DataTable
+      v-model:search="search"
+      v-model:page="page"
+      v-model:perPage="perPage"
+      v-model:expanded="expanded"
+      :data="pagedVariants"
+      :columns="variantColumns"
+      :loading="isLoading"
+      :from="from"
+      :to="to"
+      :total="total"
+      :search-placeholder="$t('pages.inventory.variant.searchPlaceholder')"
+      table-class="min-w-[720px]"
+    >
+      <template #actions>
+        <UButton v-if="hasPermission('inventory-variant:read')" color="primary" variant="outline" icon="i-lucide-layers" @click="() => { showVariantModal = true }">
+          {{ $t('pages.inventory.variant.manageTitle') }}
+        </UButton>
+      </template>
+
+      <template #expanded="{ row }">
+        <UTable
+          :data="row.original.branches"
+          :columns="branchColumns"
+          :ui="{ th: 'bg-neutral-50 py-2', td: 'py-2' }"
+          class="border border-neutral-200 rounded-md"
+        />
+      </template>
+    </DataTable>
+
+    <InventoryVariantManagerModal v-model="showVariantModal" :inventory="item" @changed="onVariantsChanged" />
+  </div>
 </template>
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import type { Row } from '@tanstack/vue-table'
+import { inventoryVariantService } from '~/services/inventory-variant-service'
 import { inventoryStockService } from '~/services/inventory-stock-service'
-import type { StockCondition } from '~/types/inventory'
+import type { Inventory, InventoryVariant } from '~/types/inventory'
 
 definePageMeta({ layout: 'dashboard' })
 
 const { t } = useI18n()
 const route = useRoute()
+const { hasPermission } = useAuth()
 const inventoryId = Number(route.params.id)
 
+const { item } = inject('inventoryState') as { item: Ref<Inventory | null> }
+
 const UIcon = resolveComponent('UIcon')
+const NuxtImg = resolveComponent('NuxtImg')
 
-type Condition = { condition: StockCondition, quantity: number }
-type Branch = { branchId: number, name: string, total: number, conditions: Condition[] }
-type Variant = { variantId: number, name: string, unit: string, total: number, branches: Branch[] }
-
-type FlatRow = {
-  key: string
-  kind: 'variant' | 'branch' | 'condition'
-  depth: number
-  label: string
-  unit?: string
-  condition?: StockCondition
-  qty: number
-  canExpand: boolean
-  isOpen: boolean
-  onToggle?: () => void
+interface BranchStockRow {
+  branchId: number
+  name: string
+  newStock: number
+  usedStock: number
 }
 
-const tree = ref<Variant[]>([])
+interface VariantStockRow extends InventoryVariant {
+  newStock: number
+  usedStock: number
+  branches: BranchStockRow[]
+}
+
+const allVariants = ref<VariantStockRow[]>([])
 const isLoading = ref(false)
-const openVariants = ref<Set<number>>(new Set())
-const openBranches = ref<Set<string>>(new Set())
+const showVariantModal = ref(false)
 
-const toggleVariant = (id: number) => {
-  const s = new Set(openVariants.value)
-  s.has(id) ? s.delete(id) : s.add(id)
-  openVariants.value = s
-}
-const toggleBranch = (key: string) => {
-  const s = new Set(openBranches.value)
-  s.has(key) ? s.delete(key) : s.add(key)
-  openBranches.value = s
-}
+const search = ref('')
+const page = ref(1)
+const perPage = ref(10)
+const expanded = ref<Record<string, boolean>>({})
 
-/** Only the currently-visible rows, in display order (expansion handled manually). */
-const flatRows = computed<FlatRow[]>(() => {
-  const out: FlatRow[] = []
-  for (const v of tree.value) {
-    const vOpen = openVariants.value.has(v.variantId)
-    out.push({ key: `v${v.variantId}`, kind: 'variant', depth: 0, label: v.name, unit: v.unit, qty: v.total, canExpand: v.branches.length > 0, isOpen: vOpen, onToggle: () => toggleVariant(v.variantId) })
-    if (!vOpen) continue
-    for (const b of v.branches) {
-      const bk = `${v.variantId}:${b.branchId}`
-      const bOpen = openBranches.value.has(bk)
-      out.push({ key: `b${bk}`, kind: 'branch', depth: 1, label: b.name, qty: b.total, canExpand: true, isOpen: bOpen, onToggle: () => toggleBranch(bk) })
-      if (!bOpen) continue
-      for (const c of b.conditions) {
-        out.push({ key: `c${bk}:${c.condition}`, kind: 'condition', depth: 2, label: c.condition === 'new' ? t('pages.inventory.condition.new') : t('pages.inventory.condition.used'), condition: c.condition, unit: v.unit, qty: c.quantity, canExpand: false, isOpen: false })
-      }
-    }
-  }
-  return out
+const filteredVariants = computed(() => {
+  const q = search.value.trim().toLowerCase()
+  if (!q) return allVariants.value
+  return allVariants.value.filter(v => v.name.toLowerCase().includes(q) || (v.code || '').toLowerCase().includes(q))
 })
+const total = computed(() => filteredVariants.value.length)
+const from = computed(() => total.value === 0 ? 0 : (page.value - 1) * perPage.value + 1)
+const to = computed(() => Math.min(page.value * perPage.value, total.value))
+const pagedVariants = computed(() => filteredVariants.value.slice((page.value - 1) * perPage.value, page.value * perPage.value))
 
-function renderName(row: FlatRow) {
-  const lead = row.canExpand
-    ? h(UIcon, { name: row.isOpen ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right', class: 'w-4 h-4 text-neutral-400 shrink-0' })
-    : h('span', { class: 'w-4 shrink-0' })
+watch(search, () => { page.value = 1 })
 
-  let label: any
-  if (row.kind === 'variant') {
-    label = h('span', { class: 'flex items-baseline gap-1.5' }, [
-      h('span', { class: 'font-semibold text-neutral-900' }, row.label),
-      h('span', { class: 'text-xs text-neutral-400' }, row.unit)
-    ])
-  } else if (row.kind === 'branch') {
-    label = h('span', { class: 'font-medium text-neutral-800' }, row.label)
-  } else {
-    label = h('span', { class: `text-sm ${row.condition === 'new' ? 'text-emerald-600' : 'text-amber-600'}` }, row.label)
-  }
-
-  return h('div', {
-    class: ['flex items-center gap-2', row.canExpand ? 'cursor-pointer select-none' : ''],
-    style: { paddingLeft: `${row.depth * 22}px` },
-    onClick: row.onToggle
-  }, [lead, label])
-}
-
-function renderQty(row: FlatRow) {
-  if (row.kind === 'condition') return h('span', { class: 'text-sm text-neutral-600' }, `${row.qty} ${row.unit}`)
-  if (row.kind === 'branch') return h('span', { class: 'text-sm font-medium text-neutral-800' }, String(row.qty))
-  return h('span', { class: 'text-sm font-semibold text-neutral-900' }, `${row.qty} ${row.unit}`)
-}
-
-const columns: TableColumn<FlatRow>[] = [
-  {
-    accessorKey: 'label',
-    header: () => `${t('pages.inventory.variant.title')} / ${t('common.branch')}`,
-    cell: ({ row }: { row: Row<FlatRow> }) => renderName(row.original)
-  },
-  {
-    accessorKey: 'qty',
-    header: () => t('pages.inventory.monitor.quantity'),
-    meta: { class: { td: 'text-right w-40', th: 'text-right w-40' } },
-    cell: ({ row }: { row: Row<FlatRow> }) => renderQty(row.original)
-  }
+const branchColumns: TableColumn<BranchStockRow>[] = [
+  { accessorKey: 'name', header: t('common.branch'), cell: ({ row }) => h('span', { class: 'text-neutral-800 text-sm' }, row.original.name) },
+  { accessorKey: 'newStock', header: t('pages.inventory.condition.new'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-emerald-600 text-sm font-medium' }, String(row.original.newStock)) },
+  { accessorKey: 'usedStock', header: t('pages.inventory.condition.used'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-amber-600 text-sm font-medium' }, String(row.original.usedStock)) },
 ]
 
-/** Flatten variant × branch × condition balance rows into a nested tree. */
-function buildTree(balances: Awaited<ReturnType<typeof inventoryStockService.getBalances>>['data']): Variant[] {
-  const byVariant = new Map<number, { node: Variant, branches: Map<number, Branch> }>()
-  for (const r of balances ?? []) {
-    if (!r.branch || !r.variant) continue
-    let v = byVariant.get(r.variant.id)
-    if (!v) {
-      v = { node: { variantId: r.variant.id, name: r.variant.name, unit: r.variant.unit, total: 0, branches: [] }, branches: new Map() }
-      byVariant.set(r.variant.id, v)
-    }
-    let b = v.branches.get(r.branch.id)
-    if (!b) {
-      b = { branchId: r.branch.id, name: r.branch.name, total: 0, conditions: [{ condition: 'new', quantity: 0 }, { condition: 'used', quantity: 0 }] }
-      v.branches.set(r.branch.id, b)
-      v.node.branches.push(b)
-    }
-    const cond = b.conditions.find(c => c.condition === r.condition)
-    if (cond) cond.quantity += r.quantity
-    b.total += r.quantity
-    v.node.total += r.quantity
-  }
-  return Array.from(byVariant.values(), v => v.node)
-}
+const variantColumns: TableColumn<VariantStockRow>[] = [
+  { id: 'expand', header: '', meta: { class: { td: 'w-8', th: 'w-8' } }, cell: ({ row }) => {
+    if (!row.original.branches.length) return null
+    return h('button', {
+      type: 'button',
+      class: 'flex items-center justify-center text-neutral-500 hover:text-neutral-900 cursor-pointer',
+      onClick: (e: Event) => { e.stopPropagation(); row.toggleExpanded() }
+    }, [
+      h(UIcon, { name: row.getIsExpanded() ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right', class: 'w-4 h-4' })
+    ])
+  } },
+  { accessorKey: 'name', header: t('common.name'), cell: ({ row }) => {
+    const img = row.original.image
+    const imageEl = img
+      ? h(NuxtImg, { src: img, alt: row.original.name, class: 'w-9 h-9 object-cover rounded-md border border-neutral-200 shrink-0' })
+      : h('div', { class: 'w-9 h-9 bg-neutral-100 rounded-md flex items-center justify-center border border-neutral-200 shrink-0' }, [
+          h('span', { class: 'text-neutral-400 text-xs' }, 'N/A')
+        ])
+    const textEl = h('div', { class: 'flex flex-col min-w-0' }, [
+      h('span', { class: 'text-neutral-900 font-medium text-sm' }, row.original.name),
+      h('span', { class: 'text-xs text-neutral-500' }, row.original.code || '-')
+    ])
+    return h('div', { class: 'flex items-center gap-3' }, [imageEl, textEl])
+  } },
+  { accessorKey: 'description', header: t('common.description'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.description || '-') },
+  { accessorKey: 'newStock', header: t('pages.inventory.condition.new'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-emerald-600 text-sm font-medium' }, String(row.original.newStock)) },
+  { accessorKey: 'usedStock', header: t('pages.inventory.condition.used'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-amber-600 text-sm font-medium' }, String(row.original.usedStock)) },
+]
 
-const fetchBalances = async () => {
+const fetchData = async () => {
   isLoading.value = true
   try {
-    const res = await inventoryStockService.getBalances(1, 500, { inventoryId })
-    tree.value = res.success ? buildTree(res.data) : []
+    const [variantsRes, balancesRes] = await Promise.all([
+      inventoryVariantService.getByInventory(inventoryId),
+      inventoryStockService.getBalances(1, 500, { inventoryId })
+    ])
+    if (variantsRes.success && variantsRes.data) {
+      const stockByVariant = new Map<number, { new: number, used: number, branches: Map<number, BranchStockRow> }>()
+      for (const b of balancesRes.data ?? []) {
+        if (!b.variant || !b.branch) continue
+        let entry = stockByVariant.get(b.variant.id)
+        if (!entry) {
+          entry = { new: 0, used: 0, branches: new Map() }
+          stockByVariant.set(b.variant.id, entry)
+        }
+        if (b.condition === 'new') entry.new += b.quantity
+        else entry.used += b.quantity
+
+        let branchEntry = entry.branches.get(b.branch.id)
+        if (!branchEntry) {
+          branchEntry = { branchId: b.branch.id, name: b.branch.name, newStock: 0, usedStock: 0 }
+          entry.branches.set(b.branch.id, branchEntry)
+        }
+        if (b.condition === 'new') branchEntry.newStock += b.quantity
+        else branchEntry.usedStock += b.quantity
+      }
+      allVariants.value = variantsRes.data.map(v => {
+        const entry = stockByVariant.get(v.id)
+        return {
+          ...v,
+          newStock: entry?.new ?? 0,
+          usedStock: entry?.used ?? 0,
+          branches: entry ? Array.from(entry.branches.values()) : [],
+        }
+      })
+    }
   } finally {
     isLoading.value = false
   }
 }
 
-onMounted(fetchBalances)
+const onVariantsChanged = () => {
+  expanded.value = {}
+  fetchData()
+}
+
+onMounted(fetchData)
 </script>
