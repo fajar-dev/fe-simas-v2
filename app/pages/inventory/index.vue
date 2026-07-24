@@ -64,7 +64,13 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { inventoryService } from '~/services/inventory-service'
 import { inventoryVariantService } from '~/services/inventory-variant-service'
+import { inventoryStockService } from '~/services/inventory-stock-service'
 import type { Inventory, InventoryVariant } from '~/types/inventory'
+
+interface VariantStockRow extends InventoryVariant {
+  newStock: number
+  usedStock: number
+}
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -84,7 +90,7 @@ const isLoading = ref(false)
 const meta = reactive({ total: 0, from: 0, to: 0 })
 
 const expanded = ref<Record<string, boolean>>({})
-const variantsCache = reactive<Record<number, InventoryVariant[]>>({})
+const variantsCache = reactive<Record<number, VariantStockRow[]>>({})
 const loadingVariants = reactive<Record<number, boolean>>({})
 
 const toggleVariantRow = async (row: Row<Inventory>) => {
@@ -94,15 +100,32 @@ const toggleVariantRow = async (row: Row<Inventory>) => {
   if (opening && !variantsCache[id]) {
     loadingVariants[id] = true
     try {
-      const res = await inventoryVariantService.getByInventory(id)
-      if (res.success && res.data) variantsCache[id] = res.data
+      const [variantsRes, balancesRes] = await Promise.all([
+        inventoryVariantService.getByInventory(id),
+        inventoryStockService.getBalances(1, 500, { inventoryId: id })
+      ])
+      if (variantsRes.success && variantsRes.data) {
+        const stockByVariant = new Map<number, { new: number, used: number }>()
+        for (const b of balancesRes.data ?? []) {
+          if (!b.variant) continue
+          const entry = stockByVariant.get(b.variant.id) || { new: 0, used: 0 }
+          if (b.condition === 'new') entry.new += b.quantity
+          else entry.used += b.quantity
+          stockByVariant.set(b.variant.id, entry)
+        }
+        variantsCache[id] = variantsRes.data.map(v => ({
+          ...v,
+          newStock: stockByVariant.get(v.id)?.new ?? 0,
+          usedStock: stockByVariant.get(v.id)?.used ?? 0,
+        }))
+      }
     } finally {
       loadingVariants[id] = false
     }
   }
 }
 
-const variantColumns: TableColumn<InventoryVariant>[] = [
+const variantColumns: TableColumn<VariantStockRow>[] = [
   { id: 'image', header: '', meta: { class: { td: 'w-14', th: 'w-14' } }, cell: ({ row }) => {
     const img = row.original.image
     return img
@@ -111,9 +134,13 @@ const variantColumns: TableColumn<InventoryVariant>[] = [
           h('span', { class: 'text-neutral-400 text-xs' }, 'N/A')
         ])
   } },
-  { accessorKey: 'name', header: t('common.name'), cell: ({ row }) => h('span', { class: 'text-neutral-900 font-medium text-sm' }, row.original.name) },
-  { accessorKey: 'code', header: t('common.code'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.code || '-') },
+  { accessorKey: 'name', header: t('common.name'), cell: ({ row }) => h('div', { class: 'flex flex-col' }, [
+      h('span', { class: 'text-neutral-900 font-medium text-sm' }, row.original.name),
+      h('span', { class: 'text-xs text-neutral-500' }, row.original.code || '-')
+    ]) },
   { accessorKey: 'description', header: t('common.description'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.description || '-') },
+  { accessorKey: 'newStock', header: t('pages.inventory.condition.new'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-emerald-600 text-sm font-medium' }, String(row.original.newStock)) },
+  { accessorKey: 'usedStock', header: t('pages.inventory.condition.used'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-amber-600 text-sm font-medium' }, String(row.original.usedStock)) },
 ]
 
 const selectedItem = ref<Inventory | null>(null)
@@ -206,7 +233,6 @@ const columns = computed<TableColumn<Inventory>[]>(() => {
     { accessorKey: 'category', header: sortHeader(t('common.category'), 'category'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.category?.name || '-') },
     { accessorKey: 'subCategory', header: sortHeader(t('common.subCategory'), 'subCategory'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.subCategory?.name || '-') },
     { accessorKey: 'unit', header: sortHeader(t('pages.inventory.unit.label'), 'unit', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h(UBadge, { color: 'neutral', variant: 'subtle' }, () => row.original.unit || '-') },
-    { accessorKey: 'variantCount', header: sortHeader(t('pages.inventory.item.columnVariantCount'), 'variantCount', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-neutral-700 font-medium' }, row.original.variantCount ?? 0) },
     { accessorKey: 'balanceCount', header: sortHeader(t('pages.inventory.item.columnBalanceCount'), 'balanceCount', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-neutral-700 font-medium' }, row.original.balanceCount ?? 0) },
   ]
 

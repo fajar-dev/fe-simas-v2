@@ -1179,8 +1179,7 @@
         "labels": "Custom Labels",
         "noCustomLabels": "No custom labels found",
         "columnNo": "No",
-        "columnVariantCount": "Variants",
-        "columnBalanceCount": "Balance"
+        "columnBalanceCount": "Stock"
       },
       "variant": {
         "title": "Variant",

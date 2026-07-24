@@ -1179,8 +1179,7 @@
         "labels": "Label Kustom",
         "noCustomLabels": "Tidak ada label kustom",
         "columnNo": "No",
-        "columnVariantCount": "Varian",
-        "columnBalanceCount": "Balance"
+        "columnBalanceCount": "Stok"
       },
       "variant": {
         "title": "Varian",
