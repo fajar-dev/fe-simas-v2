@@ -25,7 +25,7 @@
 
     <UCard v-else-if="item" class="w-full">
       <div class="w-full mb-4 flex items-center justify-between">
-        <UButton :label="$t('common.back')" color="neutral" icon="i-lucide-arrow-left" variant="link" @click="() => { navigateTo('/inventory') }" />
+        <UButton :label="$t('common.back')" color="neutral" icon="i-lucide-arrow-left" variant="link" @click="goBack" />
         <div class="flex items-center gap-2">
           <UButton
             color="neutral"
@@ -171,6 +171,15 @@ const { fetchItem } = inject('inventoryActions') as { fetchItem: () => Promise<v
 
 const showVariantModal = ref(false)
 const showLogDrawer = ref(false)
+
+const goBack = () => {
+  const lastQuery = localStorage.getItem('last_inventory_query')
+  if (lastQuery) {
+    navigateTo(`/inventory?${lastQuery}`)
+  } else {
+    navigateTo('/inventory')
+  }
+}
 
 // Bumped to force the stock overview to refetch (e.g. after adding stock, or switching tabs).
 const stockKey = ref(0)

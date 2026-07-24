@@ -299,4 +299,13 @@ onMounted(async () => {
   const keys = await inventoryService.getLabelKeys()
   if (keys.success && keys.data) availableLabelKeys.value = keys.data
 })
+
+// Save current query string when visiting the inventory list page
+const route = useRoute()
+watch(() => route.fullPath, () => {
+  if (route.path === '/inventory' || route.path === '/inventory/') {
+    const queryStr = route.fullPath.split('?')[1] || ''
+    localStorage.setItem('last_inventory_query', queryStr)
+  }
+}, { immediate: true })
 </script>
