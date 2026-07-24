@@ -8,6 +8,9 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 
 ## [Unreleased] — 2026-07-23
 
+### Added
+- **Advance filter pada daftar Persediaan, seperti Asset**: tombol **Filter** baru di samping "Add Inventory" membuka drawer filter — Kategori/Sub Kategori (cascading), Satuan, Status (Aktif/Nonaktif), Status Varian (Punya/Tanpa Varian), rentang stok New & Used, kualitas data (tanpa gambar/deskripsi/sub kategori), dan filter label kunci/nilai. Mengikuti pola `AssetFilterDrawer` (badge jumlah filter aktif, tersinkron ke URL, tombol Clear All/Apply). Backend `GET /inventory` menambah query param yang sesuai.
+
 ### Changed (UI Consistency)
 - **Detail Persediaan: default ke tab Variants & Stock, tabnya di-restyle seperti tabel daftar Persediaan**: membuka detail item kini langsung ke tab **Variants & Stock** (bukan lagi Stock In). Tab itu sendiri dirombak dari tree manual (indentasi + klik) jadi `DataTable` yang sama persis dengan tabel daftar Persediaan — search box, pemilih jumlah baris, paginasi, kolom gambar+nama/kode, Description, New, Used, dengan expand per baris untuk breakdown per cabang. Tombol **Manage Variants** (beserta modalnya) pindah dari header kartu detail ke tab ini, karena di situlah daftar varian yang diaksinya ditampilkan.
 - **Daftar Persediaan: kolom Stock diganti New/Used**: kolom **Stock** (total gabungan) di tabel utama diganti dua kolom **New**/**Used**, memakai field baru `newCount`/`usedCount` dari `GET /inventory` (menggantikan `balanceCount`) — jadi tak perlu query tambahan per baris untuk memecah totalnya.
