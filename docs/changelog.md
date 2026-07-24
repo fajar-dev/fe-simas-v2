@@ -9,6 +9,7 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 ## [Unreleased] — 2026-07-23
 
 ### Added
+- **Export Excel pada daftar Persediaan, seperti Asset**: tombol **Export** baru di samping "Add Inventory" mengunduh `.xlsx` lengkap Item → Varian → Cabang → Kondisi (satu baris per kombinasi terdalam, item/varian tanpa stok tetap dapat baris dengan kolom lebih dalam kosong) — memakai pencarian/urutan/filter yang sedang aktif serta kolom label yang dicentang, sama seperti `assetService.exportExcel`. Backend `GET /inventory/export` baru (permission `inventory:export`).
 - **Advance filter pada daftar Persediaan, seperti Asset**: tombol **Filter** baru di samping "Add Inventory" membuka drawer filter — Kategori/Sub Kategori (cascading), Satuan, Status (Aktif/Nonaktif), Status Varian (Punya/Tanpa Varian), rentang stok New & Used, kualitas data (tanpa gambar/deskripsi/sub kategori), dan filter label kunci/nilai. Mengikuti pola `AssetFilterDrawer` (badge jumlah filter aktif, tersinkron ke URL, tombol Clear All/Apply). Backend `GET /inventory` menambah query param yang sesuai.
 
 ### Changed (UI Consistency)
