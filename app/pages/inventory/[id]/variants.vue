@@ -15,7 +15,7 @@
       table-class="min-w-[720px]"
     >
       <template #actions>
-        <UButton v-if="hasPermission('inventory-variant:read')" color="primary" variant="outline" icon="i-lucide-layers" @click="() => { showVariantModal = true }">
+        <UButton v-if="hasPermission('inventory-variant:read')" color="primary" icon="i-lucide-layers" @click="() => { showVariantModal = true }">
           {{ $t('pages.inventory.variant.manageTitle') }}
         </UButton>
       </template>
