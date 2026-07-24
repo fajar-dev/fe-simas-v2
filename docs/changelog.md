@@ -9,6 +9,7 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 ## [Unreleased] — 2026-07-23
 
 ### Changed (UI Consistency)
+- **Daftar Persediaan: baris expand menampilkan varian, URL sinkron seperti Asset**: kolom pertama tabel kini punya toggle expand (chevron, hanya muncul bila item punya varian) yang membuka tabel bersarang berisi varian item tersebut (gambar, nama, kode, deskripsi) — varian di-fetch sekali per item saat pertama kali dibuka, lalu di-cache. Pencarian, halaman, dan urutan kini juga tersinkron ke query string URL (`?q=...&page=...&sortBy=...`), sama seperti daftar Asset, jadi bisa di-bookmark/refresh tanpa kehilangan state.
 - **Tombol Cancel/Save & Continue/Save & Create Another pada halaman Asset & Persediaan**: halaman create & edit Asset kini punya tombol **Cancel**; teks tombol simpan create diubah dari "Save Asset" jadi **Save**. Create Persediaan menambah **Save & Create Another** (submit lalu reset form, tetap di halaman). Edit Persediaan & edit Asset menambah **Save & Continue** (submit lalu refetch data, tetap di halaman) berdampingan dengan tombol simpan utama.
 - **Tombol modal form: konsisten Cancel & Save**: audit menyeluruh pada semua modal berisi form (~30 file) — footer tombolnya kini seragam **Cancel** (outline neutral) & **Save** (tanpa ikon), menggantikan campuran sebelumnya (ada yang pakai ikon, ada yang pakai teks aksi spesifik seperti "Assign"/"Transfer"/"Send"). Modal konfirmasi (Delete, Cancel Handover), kamera/scanner, import, dan login SSO tidak disentuh karena bukan modal form.
 
