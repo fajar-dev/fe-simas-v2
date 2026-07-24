@@ -40,7 +40,7 @@
 
     <template #footer>
       <UButton :label="$t('common.cancel')" color="neutral" variant="outline" :disabled="saving" @click="() => { open = false }" />
-      <UButton :label="$t('pages.inventory.stockOut.return')" color="primary" type="submit" form="stock-return-form" :loading="saving" />
+      <UButton :label="$t('common.save')" color="primary" type="submit" form="stock-return-form" :loading="saving" />
     </template>
   </UModal>
 </template>

@@ -112,7 +112,7 @@
             @click="() => { open = false }"
           />
           <UButton
-            :label="$t('component.feedbackModal.send')"
+            :label="$t('common.save')"
             color="primary"
             variant="solid"
             type="submit"

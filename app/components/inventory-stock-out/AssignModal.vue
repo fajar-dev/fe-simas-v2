@@ -76,7 +76,7 @@
 
     <template #footer>
       <UButton :label="$t('common.cancel')" color="neutral" variant="outline" :disabled="saving" @click="() => { open = false }" />
-      <UButton :label="$t('pages.inventory.stockOut.assign')" color="primary" :loading="saving" :disabled="!canSubmit" @click="submit" />
+      <UButton :label="$t('common.save')" color="primary" :loading="saving" :disabled="!canSubmit" @click="submit" />
     </template>
   </UModal>
 </template>

@@ -106,7 +106,7 @@
         @click="() => { open = false }"
       />
       <UButton
-        :label="$t('component.assetStatus.updateModal.submit')"
+        :label="$t('common.save')"
         color="primary"
         type="submit"
         form="update-status-form"

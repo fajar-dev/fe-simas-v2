@@ -159,7 +159,7 @@
         @click="() => { open = false }"
       />
       <UButton
-        :label="$t('component.assetStatus.bulkModal.submit')"
+        :label="$t('common.save')"
         color="primary"
         type="submit"
         form="bulk-update-status-form"

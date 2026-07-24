@@ -44,14 +44,7 @@
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
         <UButton :label="$t('common.cancel')" @click="() => { open = false }" color="neutral" variant="outline" />
-        <UButton
-          type="submit"
-          form="return-asset-form"
-          color="success"
-          :loading="isSubmitting"
-        >
-          {{ $t('component.assetHolder.returnModal.submit') }}
-        </UButton>
+        <UButton :label="$t('common.save')" type="submit" form="return-asset-form" color="success" :loading="isSubmitting" />
       </div>
     </template>
   </UModal>
