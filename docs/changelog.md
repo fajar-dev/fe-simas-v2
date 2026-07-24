@@ -8,6 +8,9 @@ Format: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 
 ## [Unreleased] — 2026-07-23
 
+### Changed (UI Consistency)
+- **Tombol modal form: konsisten Cancel & Save**: audit menyeluruh pada semua modal berisi form (~30 file) — footer tombolnya kini seragam **Cancel** (outline neutral) & **Save** (tanpa ikon), menggantikan campuran sebelumnya (ada yang pakai ikon, ada yang pakai teks aksi spesifik seperti "Assign"/"Transfer"/"Send"). Modal konfirmasi (Delete, Cancel Handover), kamera/scanner, import, dan login SSO tidak disentuh karena bukan modal form.
+
 ### Changed (Stock Out)
 - **Tipe Stock Out jadi switch, bukan radio**: pilihan Tipe pada modal Assign diganti dari dua radio ("Ke karyawan" / "Lainnya") menjadi satu `USwitch` berlabel "To employee" — nyala menampilkan field Karyawan, mati menyembunyikannya. Mengikuti perubahan backend dari `type: 'employee'|'other'` ke boolean `isEmployee`.
 - **Tabel Stock Out kini dikelompokkan per dokumen, seperti Stock In**: satu aksi Assign (bisa multi-varian) kini tampil sebagai **satu baris** (Tanggal, Tipe, Karyawan, Catatan, Dibuat Oleh, Lampiran) dengan toggle expand di kolom pertama, membuka **tabel bersarang** berisi tiap item (Varian, Cabang, Kondisi, Sisa, tombol **Kembalikan** per item) — persis pola tabel Transfer/Stock In. `ReturnModal` kini menerima `employee` (dari dokumen induk) + `item` (baris bersarang yang dipilih) alih-alih satu objek gabungan.
