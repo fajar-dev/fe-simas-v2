@@ -6,6 +6,7 @@
       v-model:search="search"
       v-model:page="page"
       v-model:perPage="perPage"
+      v-model:expanded="expanded"
       :data="data"
       :columns="columns"
       :loading="isLoading"
@@ -15,6 +16,19 @@
       :search-placeholder="$t('pages.inventory.item.searchPlaceholder')"
       table-class="min-w-[1000px]"
     >
+      <template #expanded="{ row }">
+        <div v-if="loadingVariants[row.original.id]" class="p-4 flex items-center gap-2 text-sm text-neutral-500">
+          <UIcon name="i-lucide-loader-2" class="w-4 h-4 animate-spin" /> {{ $t('common.loading') }}
+        </div>
+        <UTable
+          v-else
+          :data="variantsCache[row.original.id] || []"
+          :columns="variantColumns"
+          :ui="{ th: 'bg-neutral-50 py-2', td: 'py-2' }"
+          class="border border-neutral-200 rounded-md"
+        />
+      </template>
+
       <template #actions>
         <div class="flex items-center gap-2 w-full sm:w-auto">
           <UButton v-if="hasPermission('inventory:create')" color="primary" variant="solid" icon="i-lucide-plus" class="flex-1 sm:flex-none justify-center" @click="() => { navigateTo('/inventory/create') }">
@@ -49,7 +63,8 @@
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { inventoryService } from '~/services/inventory-service'
-import type { Inventory } from '~/types/inventory'
+import { inventoryVariantService } from '~/services/inventory-variant-service'
+import type { Inventory, InventoryVariant } from '~/types/inventory'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -62,10 +77,44 @@ const UButton = resolveComponent('UButton')
 const NuxtImg = resolveComponent('NuxtImg')
 const UBadge = resolveComponent('UBadge')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
+const UIcon = resolveComponent('UIcon')
 
 const data = ref<Inventory[]>([])
 const isLoading = ref(false)
 const meta = reactive({ total: 0, from: 0, to: 0 })
+
+const expanded = ref<Record<string, boolean>>({})
+const variantsCache = reactive<Record<number, InventoryVariant[]>>({})
+const loadingVariants = reactive<Record<number, boolean>>({})
+
+const toggleVariantRow = async (row: Row<Inventory>) => {
+  const opening = !row.getIsExpanded()
+  row.toggleExpanded()
+  const id = row.original.id
+  if (opening && !variantsCache[id]) {
+    loadingVariants[id] = true
+    try {
+      const res = await inventoryVariantService.getByInventory(id)
+      if (res.success && res.data) variantsCache[id] = res.data
+    } finally {
+      loadingVariants[id] = false
+    }
+  }
+}
+
+const variantColumns: TableColumn<InventoryVariant>[] = [
+  { id: 'image', header: '', meta: { class: { td: 'w-14', th: 'w-14' } }, cell: ({ row }) => {
+    const img = row.original.image
+    return img
+      ? h(NuxtImg, { src: img, alt: row.original.name, class: 'w-9 h-9 object-cover rounded-md border border-neutral-200 shrink-0' })
+      : h('div', { class: 'w-9 h-9 bg-neutral-100 rounded-md flex items-center justify-center border border-neutral-200 shrink-0' }, [
+          h('span', { class: 'text-neutral-400 text-xs' }, 'N/A')
+        ])
+  } },
+  { accessorKey: 'name', header: t('common.name'), cell: ({ row }) => h('span', { class: 'text-neutral-900 font-medium text-sm' }, row.original.name) },
+  { accessorKey: 'code', header: t('common.code'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.code || '-') },
+  { accessorKey: 'description', header: t('common.description'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.description || '-') },
+]
 
 const selectedItem = ref<Inventory | null>(null)
 const showVariantModal = ref(false)
@@ -75,7 +124,7 @@ const deleting = ref(false)
 const availableLabelKeys = ref<string[]>([])
 const activeLabelColumns = ref<string[]>([])
 
-const { search, page, perPage, sortBy, order, sortHeader } = useTableQuery(() => fetchItems(), { defaultSortBy: 'createdAt', defaultOrder: 'DESC' })
+const { search, page, perPage, sortBy, order, sortHeader } = useTableQuery(() => fetchItems(), { syncUrl: true, defaultSortBy: 'createdAt', defaultOrder: 'DESC' })
 
 const fetchItems = async () => {
   isLoading.value = true
@@ -83,6 +132,7 @@ const fetchItems = async () => {
     const res = await inventoryService.getAll(page.value, perPage.value, search.value, sortBy.value, order.value)
     if (res.success && res.data) {
       data.value = res.data
+      expanded.value = {}
       if (res.meta) { meta.total = res.meta.total; meta.from = res.meta.from; meta.to = res.meta.to }
     }
   } finally {
@@ -99,6 +149,21 @@ const toggleLabelColumn = (key: string, on: boolean) => {
 
 const columns = computed<TableColumn<Inventory>[]>(() => {
   const list: TableColumn<Inventory>[] = [
+    {
+      id: 'expand',
+      header: '',
+      meta: { class: { td: 'w-8', th: 'w-8' } },
+      cell: ({ row }) => {
+        if (!row.original.variantCount) return null
+        return h('button', {
+          type: 'button',
+          class: 'flex items-center justify-center text-neutral-500 hover:text-neutral-900 cursor-pointer',
+          onClick: (e: Event) => { e.stopPropagation(); toggleVariantRow(row) }
+        }, [
+          h(UIcon, { name: row.getIsExpanded() ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right', class: 'w-4 h-4' })
+        ])
+      }
+    },
     {
       id: 'no',
       header: t('pages.inventory.item.columnNo'),
