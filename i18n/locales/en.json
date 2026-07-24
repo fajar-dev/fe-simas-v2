@@ -1178,8 +1178,7 @@
         "photo": "Photo",
         "labels": "Custom Labels",
         "noCustomLabels": "No custom labels found",
-        "columnNo": "No",
-        "columnBalanceCount": "Stock"
+        "columnNo": "No"
       },
       "variant": {
         "title": "Variant",

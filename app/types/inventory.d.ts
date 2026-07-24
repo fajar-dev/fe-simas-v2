@@ -21,7 +21,8 @@ export interface Inventory {
   labels: InventoryLabelItem[]
   attachments: Attachment[]
   variantCount?: number
-  balanceCount?: number
+  newCount?: number
+  usedCount?: number
   createdAt: string
   updatedAt: string
   createdBy: { id: number; name: string; photo: string | null } | null

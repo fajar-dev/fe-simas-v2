@@ -286,7 +286,8 @@ const columns = computed<TableColumn<Inventory>[]>(() => {
     { accessorKey: 'category', header: sortHeader(t('common.category'), 'category'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.category?.name || '-') },
     { accessorKey: 'subCategory', header: sortHeader(t('common.subCategory'), 'subCategory'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.subCategory?.name || '-') },
     { accessorKey: 'unit', header: sortHeader(t('pages.inventory.unit.label'), 'unit', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h(UBadge, { color: 'neutral', variant: 'subtle' }, () => row.original.unit || '-') },
-    { accessorKey: 'balanceCount', header: sortHeader(t('pages.inventory.item.columnBalanceCount'), 'balanceCount', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-neutral-700 font-medium' }, row.original.balanceCount ?? 0) },
+    { accessorKey: 'newCount', header: sortHeader(t('pages.inventory.condition.new'), 'newCount', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-emerald-600 text-sm font-medium' }, String(row.original.newCount ?? 0)) },
+    { accessorKey: 'usedCount', header: sortHeader(t('pages.inventory.condition.used'), 'usedCount', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-amber-600 text-sm font-medium' }, String(row.original.usedCount ?? 0)) },
   ]
 
   for (const key of activeLabelColumns.value) {

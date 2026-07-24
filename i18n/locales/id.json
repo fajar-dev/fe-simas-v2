@@ -1178,8 +1178,7 @@
         "photo": "Foto",
         "labels": "Label Kustom",
         "noCustomLabels": "Tidak ada label kustom",
-        "columnNo": "No",
-        "columnBalanceCount": "Stok"
+        "columnNo": "No"
       },
       "variant": {
         "title": "Varian",
