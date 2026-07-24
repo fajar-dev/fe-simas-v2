@@ -45,6 +45,17 @@
           <UButton v-if="hasPermission('inventory:create')" color="primary" variant="solid" icon="i-lucide-plus" class="flex-1 sm:flex-none justify-center" @click="() => { navigateTo('/inventory/create') }">
             {{ $t('pages.inventory.item.add') }}
           </UButton>
+          <UButton
+            v-if="hasPermission('inventory:export')"
+            color="primary"
+            variant="soft"
+            icon="i-lucide-download"
+            :loading="isExporting"
+            class="flex-1 sm:flex-none justify-center"
+            @click="handleExport"
+          >
+            {{ $t('pages.inventory.item.exportInventory') }}
+          </UButton>
           <UButton color="neutral" variant="soft" icon="i-lucide-filter" class="relative flex-1 sm:flex-none justify-center" @click="() => { showFilterDrawer = true }">
             {{ $t('pages.inventory.item.filter') }}
             <UBadge v-if="activeFilterCount > 0" :label="String(activeFilterCount)" color="primary" size="sm" variant="solid" />
@@ -218,9 +229,20 @@ const activeLabelColumns = ref<string[]>([])
 const showFilterDrawer = ref(false)
 const activeFilters = ref<Record<string, any>>({})
 const activeFilterCount = computed(() => Object.keys(activeFilters.value).length)
+const isExporting = ref(false)
 
 const onApplyFilters = (filters: Record<string, any>) => {
   activeFilters.value = filters
+}
+
+const handleExport = async () => {
+  isExporting.value = true
+  try {
+    await inventoryService.exportExcel(search.value, sortBy.value, order.value, activeFilters.value, activeLabelColumns.value)
+    toast.add({ title: t('pages.inventory.item.exportSuccess'), color: 'success', icon: 'i-lucide-circle-check' })
+  } finally {
+    isExporting.value = false
+  }
 }
 
 const { search, page, perPage, sortBy, order, sortHeader } = useTableQuery(() => fetchItems(), { syncUrl: true, defaultSortBy: 'createdAt', defaultOrder: 'DESC', filters: activeFilters })

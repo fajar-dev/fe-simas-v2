@@ -1205,7 +1205,9 @@
         "labels": "Custom Labels",
         "noCustomLabels": "No custom labels found",
         "columnNo": "No",
-        "filter": "Filter"
+        "filter": "Filter",
+        "exportInventory": "Export",
+        "exportSuccess": "Export successful"
       },
       "variant": {
         "title": "Variant",

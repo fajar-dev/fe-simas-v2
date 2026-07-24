@@ -1205,7 +1205,9 @@
         "labels": "Label Kustom",
         "noCustomLabels": "Tidak ada label kustom",
         "columnNo": "No",
-        "filter": "Filter"
+        "filter": "Filter",
+        "exportInventory": "Export",
+        "exportSuccess": "Export berhasil"
       },
       "variant": {
         "title": "Varian",

@@ -32,6 +32,39 @@ export class InventoryService {
     } catch (error: any) { return handleServiceError(error) }
   }
 
+  async exportExcel(q = '', sortBy = '', order = '', filters: Record<string, any> = {}, labelColumns: string[] = []): Promise<void> {
+    let url = `/inventory/export?q=${encodeURIComponent(q)}`
+    if (sortBy) url += `&sortBy=${encodeURIComponent(sortBy)}`
+    if (order) url += `&order=${encodeURIComponent(order)}`
+    if (labelColumns.length > 0) url += `&labelColumns=${labelColumns.map(encodeURIComponent).join(',')}`
+    for (const [key, value] of Object.entries(filters)) {
+      if (value === undefined || value === null || value === '') continue
+      if (key === 'labels' && Array.isArray(value)) {
+        for (const label of value) {
+          if (label.key && label.value) {
+            url += `&label.${encodeURIComponent(label.key)}=${encodeURIComponent(label.value)}`
+          }
+        }
+      } else if (Array.isArray(value) && value.length > 0) {
+        url += `&${key}=${value.join(',')}`
+      } else if (!Array.isArray(value)) {
+        url += `&${key}=${encodeURIComponent(value)}`
+      }
+    }
+    const response = await apiService.client.get(url, {
+      ...this.authHeaders,
+      responseType: 'blob',
+    })
+    const blob = new Blob([response.data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `inventory_export_${new Date().toISOString().slice(0, 10)}.xlsx`
+    link.click()
+    URL.revokeObjectURL(link.href)
+  }
+
   async getList(): Promise<ApiResponse<Inventory[]>> {
     try {
       const res = await apiService.client.get<ApiResponse<Inventory[]>>(`/inventory/list`, this.authHeaders)
