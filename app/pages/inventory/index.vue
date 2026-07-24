@@ -126,18 +126,19 @@ const toggleVariantRow = async (row: Row<Inventory>) => {
 }
 
 const variantColumns: TableColumn<VariantStockRow>[] = [
-  { id: 'image', header: '', meta: { class: { td: 'w-14', th: 'w-14' } }, cell: ({ row }) => {
+  { accessorKey: 'name', header: t('common.name'), cell: ({ row }) => {
     const img = row.original.image
-    return img
+    const imageEl = img
       ? h(NuxtImg, { src: img, alt: row.original.name, class: 'w-9 h-9 object-cover rounded-md border border-neutral-200 shrink-0' })
       : h('div', { class: 'w-9 h-9 bg-neutral-100 rounded-md flex items-center justify-center border border-neutral-200 shrink-0' }, [
           h('span', { class: 'text-neutral-400 text-xs' }, 'N/A')
         ])
-  } },
-  { accessorKey: 'name', header: t('common.name'), cell: ({ row }) => h('div', { class: 'flex flex-col' }, [
+    const textEl = h('div', { class: 'flex flex-col min-w-0' }, [
       h('span', { class: 'text-neutral-900 font-medium text-sm' }, row.original.name),
       h('span', { class: 'text-xs text-neutral-500' }, row.original.code || '-')
-    ]) },
+    ])
+    return h('div', { class: 'flex items-center gap-3' }, [imageEl, textEl])
+  } },
   { accessorKey: 'description', header: t('common.description'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.description || '-') },
   { accessorKey: 'newStock', header: t('pages.inventory.condition.new'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-emerald-600 text-sm font-medium' }, String(row.original.newStock)) },
   { accessorKey: 'usedStock', header: t('pages.inventory.condition.used'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-amber-600 text-sm font-medium' }, String(row.original.usedStock)) },
