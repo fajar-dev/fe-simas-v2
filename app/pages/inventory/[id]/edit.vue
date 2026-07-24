@@ -92,7 +92,8 @@
 
         <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-neutral-100">
           <UButton type="button" color="neutral" variant="outline" :to="`/inventory/${id}`">{{ $t('common.cancel') }}</UButton>
-          <UButton type="submit" color="primary" :loading="isSubmitting">{{ $t('common.saveChanges') }}</UButton>
+          <UButton type="submit" color="primary" variant="outline" :loading="isSubmitting && submitMode === 'continue'" @click="() => { submitMode = 'continue' }">{{ $t('common.saveAndContinue') }}</UButton>
+          <UButton type="submit" color="primary" :loading="isSubmitting && submitMode === 'save'" @click="() => { submitMode = 'save' }">{{ $t('common.saveChanges') }}</UButton>
         </div>
       </UForm>
     </UCard>
@@ -147,6 +148,7 @@ const attachmentIds = ref<number[]>([])
 
 const isLoading = ref(true)
 const isSubmitting = ref(false)
+const submitMode = ref<'save' | 'continue'>('save')
 
 const fetchCategories = async () => {
   const res = await categoryService.getList()
@@ -193,34 +195,8 @@ const onFileChange = (e: Event) => { const f = (e.target as HTMLInputElement).fi
 const onCaptured = (file: File) => uploadFile(file)
 const removeImage = () => { form.image = null; previewUrl.value = null }
 
-const onSubmit = async () => {
-  isSubmitting.value = true
-  try {
-    const res = await inventoryService.update(id, {
-      name: form.name,
-      code: form.code || null,
-      description: form.description || null,
-      image: form.image,
-      unit: form.unit || 'Pcs',
-      subCategoryId: form.subCategoryId ?? null,
-      labels: labels.value.filter(l => l.key.trim() && l.value.trim()),
-      attachmentIds: attachmentIds.value,
-    })
-    if (res.success) {
-      toast.add({ title: t('pages.inventory.edit.success'), color: 'success', icon: 'i-lucide-circle-check' })
-      navigateTo(`/inventory/${id}`)
-    } else {
-      toast.add({ title: res.message || 'Error occurred', color: 'error', icon: 'i-lucide-circle-alert' })
-    }
-  } finally {
-    isSubmitting.value = false
-  }
-}
-
-onMounted(async () => {
-  const [, itemRes, keys] = await Promise.all([fetchCategories(), inventoryService.getById(id), inventoryService.getLabelKeys()])
-  if (keys.success && keys.data) availableLabelKeys.value = keys.data
-
+const fetchItem = async () => {
+  const itemRes = await inventoryService.getById(id)
   if (itemRes.success && itemRes.data) {
     const it = itemRes.data
     form.name = it.name
@@ -242,6 +218,39 @@ onMounted(async () => {
       suppressCategoryWatch.value = false
     }
   }
+}
+
+const onSubmit = async () => {
+  isSubmitting.value = true
+  try {
+    const res = await inventoryService.update(id, {
+      name: form.name,
+      code: form.code || null,
+      description: form.description || null,
+      image: form.image,
+      unit: form.unit || 'Pcs',
+      subCategoryId: form.subCategoryId ?? null,
+      labels: labels.value.filter(l => l.key.trim() && l.value.trim()),
+      attachmentIds: attachmentIds.value,
+    })
+    if (res.success) {
+      toast.add({ title: t('pages.inventory.edit.success'), color: 'success', icon: 'i-lucide-circle-check' })
+      if (submitMode.value === 'continue') {
+        await fetchItem()
+      } else {
+        navigateTo(`/inventory/${id}`)
+      }
+    } else {
+      toast.add({ title: res.message || 'Error occurred', color: 'error', icon: 'i-lucide-circle-alert' })
+    }
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+onMounted(async () => {
+  const [, , keys] = await Promise.all([fetchCategories(), fetchItem(), inventoryService.getLabelKeys()])
+  if (keys.success && keys.data) availableLabelKeys.value = keys.data
   isLoading.value = false
 })
 </script>

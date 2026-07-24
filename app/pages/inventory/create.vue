@@ -141,7 +141,8 @@
 
         <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-neutral-100">
           <UButton type="button" color="neutral" variant="outline" to="/inventory">{{ $t('common.cancel') }}</UButton>
-          <UButton type="submit" color="primary" :loading="isSubmitting">{{ $t('common.save') }}</UButton>
+          <UButton type="submit" color="primary" variant="outline" :loading="isSubmitting && submitMode === 'another'" @click="() => { submitMode = 'another' }">{{ $t('common.saveAndCreateAnother') }}</UButton>
+          <UButton type="submit" color="primary" :loading="isSubmitting && submitMode === 'save'" @click="() => { submitMode = 'save' }">{{ $t('common.save') }}</UButton>
         </div>
       </UForm>
     </UCard>
@@ -305,6 +306,19 @@ const onCaptured = (file: File) => uploadFile(file)
 const removeImage = () => { form.image = null; previewUrl.value = null }
 
 const isSubmitting = ref(false)
+const submitMode = ref<'save' | 'another'>('save')
+
+const resetForm = () => {
+  Object.assign(form, {
+    name: '', code: '', description: '', image: null, unit: 'Pcs', categoryId: undefined, subCategoryId: undefined, variants: [],
+  })
+  subCategoryOptions.value = []
+  previewUrl.value = null
+  labels.value = []
+  attachments.value = []
+  attachmentIds.value = []
+}
+
 const onSubmit = async () => {
   isSubmitting.value = true
   try {
@@ -325,7 +339,11 @@ const onSubmit = async () => {
     })
     if (res.success) {
       toast.add({ title: t('pages.inventory.create.success'), color: 'success', icon: 'i-lucide-circle-check' })
-      navigateTo('/inventory')
+      if (submitMode.value === 'another') {
+        resetForm()
+      } else {
+        navigateTo('/inventory')
+      }
     } else {
       toast.add({ title: res.message || 'Error occurred', color: 'error', icon: 'i-lucide-circle-alert' })
     }

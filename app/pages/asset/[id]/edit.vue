@@ -228,9 +228,9 @@
 
         <!-- Footer Actions -->
         <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-neutral-100">
-          <UButton type="submit" color="primary" :loading="isSubmitting" :disabled="isUploading || codeStatus === 'exists' || hasDuplicateLabelKeys">
-            {{ $t('common.saveChanges') }}
-          </UButton>
+          <UButton :label="$t('common.cancel')" color="neutral" variant="outline" :disabled="isSubmitting" @click="goBack" />
+          <UButton :label="$t('common.saveAndContinue')" color="primary" variant="outline" type="submit" :loading="isSubmitting && submitMode === 'continue'" :disabled="isUploading || codeStatus === 'exists' || hasDuplicateLabelKeys" @click="() => { submitMode = 'continue' }" />
+          <UButton :label="$t('common.save')" type="submit" color="primary" :loading="isSubmitting && submitMode === 'save'" :disabled="isUploading || codeStatus === 'exists' || hasDuplicateLabelKeys" @click="() => { submitMode = 'save' }" />
         </div>
       </UForm>
     </UCard>
@@ -281,6 +281,7 @@ const {
 
 // ── State ───────────────────────────────────────────────────────────────────
 const isSubmitting = ref(false)
+const submitMode = ref<'save' | 'continue'>('save')
 const isLoadingAsset = ref(true)
 const uploadedAssetAttachments = ref<Attachment[]>([])
 
@@ -427,7 +428,11 @@ const handleSubmit = async () => {
     const response = await assetService.update(assetId, payload)
     if (response.success) {
       toast.add({ title: t('pages.asset.edit.success'), color: 'success', icon: 'i-lucide-circle-check' })
-      goBack()
+      if (submitMode.value === 'continue') {
+        await fetchAssetDetails()
+      } else {
+        goBack()
+      }
     }
   } finally {
     isSubmitting.value = false

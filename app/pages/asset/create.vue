@@ -313,12 +313,9 @@
 
         <!-- Footer Actions -->
         <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-neutral-100">
-          <UButton color="primary" variant="outline" :loading="isSubmitting && submitMode === 'another'" :disabled="isUploading || isSubmitting || hasInvalidCodes || hasDuplicateLabelKeys" @click="() => { submitMode = 'another'; submitForm() }">
-            {{ $t('pages.asset.create.saveAndCreateAnother') }}
-          </UButton>
-          <UButton type="submit" color="primary" :loading="isSubmitting && submitMode === 'save'" :disabled="isUploading || isSubmitting || hasInvalidCodes || hasDuplicateLabelKeys" @click="() => { submitMode = 'save' }">
-            {{ $t('pages.asset.create.submit') }}
-          </UButton>
+          <UButton :label="$t('common.cancel')" color="neutral" variant="outline" :disabled="isSubmitting" to="/asset" />
+          <UButton :label="$t('common.saveAndCreateAnother')" color="primary" variant="outline" :loading="isSubmitting && submitMode === 'another'" :disabled="isUploading || isSubmitting || hasInvalidCodes || hasDuplicateLabelKeys" @click="() => { submitMode = 'another'; submitForm() }" />
+          <UButton :label="$t('common.save')" type="submit" color="primary" :loading="isSubmitting && submitMode === 'save'" :disabled="isUploading || isSubmitting || hasInvalidCodes || hasDuplicateLabelKeys" @click="() => { submitMode = 'save' }" />
         </div>
       </UForm>
     </UCard>
