@@ -22,11 +22,22 @@
         </div>
         <UTable
           v-else
+          v-model:expanded="variantExpanded[row.original.id]"
+          :expanded-options="{ getRowCanExpand: () => true }"
           :data="variantsCache[row.original.id] || []"
           :columns="variantColumns"
           :ui="{ th: 'bg-neutral-50 py-2', td: 'py-2' }"
           class="border border-neutral-200 rounded-md"
-        />
+        >
+          <template #expanded="{ row: variantRow }">
+            <UTable
+              :data="variantRow.original.branches"
+              :columns="branchColumns"
+              :ui="{ th: 'bg-neutral-50 py-2', td: 'py-2' }"
+              class="border border-neutral-200 rounded-md"
+            />
+          </template>
+        </UTable>
       </template>
 
       <template #actions>
@@ -67,9 +78,17 @@ import { inventoryVariantService } from '~/services/inventory-variant-service'
 import { inventoryStockService } from '~/services/inventory-stock-service'
 import type { Inventory, InventoryVariant } from '~/types/inventory'
 
+interface BranchStockRow {
+  branchId: number
+  name: string
+  newStock: number
+  usedStock: number
+}
+
 interface VariantStockRow extends InventoryVariant {
   newStock: number
   usedStock: number
+  branches: BranchStockRow[]
 }
 
 definePageMeta({ layout: 'dashboard' })
@@ -92,12 +111,14 @@ const meta = reactive({ total: 0, from: 0, to: 0 })
 const expanded = ref<Record<string, boolean>>({})
 const variantsCache = reactive<Record<number, VariantStockRow[]>>({})
 const loadingVariants = reactive<Record<number, boolean>>({})
+const variantExpanded = reactive<Record<number, Record<string, boolean>>>({})
 
 const toggleVariantRow = async (row: Row<Inventory>) => {
   const opening = !row.getIsExpanded()
   row.toggleExpanded()
   const id = row.original.id
   if (opening && !variantsCache[id]) {
+    variantExpanded[id] = {}
     loadingVariants[id] = true
     try {
       const [variantsRes, balancesRes] = await Promise.all([
@@ -105,19 +126,34 @@ const toggleVariantRow = async (row: Row<Inventory>) => {
         inventoryStockService.getBalances(1, 500, { inventoryId: id })
       ])
       if (variantsRes.success && variantsRes.data) {
-        const stockByVariant = new Map<number, { new: number, used: number }>()
+        const stockByVariant = new Map<number, { new: number, used: number, branches: Map<number, BranchStockRow> }>()
         for (const b of balancesRes.data ?? []) {
-          if (!b.variant) continue
-          const entry = stockByVariant.get(b.variant.id) || { new: 0, used: 0 }
+          if (!b.variant || !b.branch) continue
+          let entry = stockByVariant.get(b.variant.id)
+          if (!entry) {
+            entry = { new: 0, used: 0, branches: new Map() }
+            stockByVariant.set(b.variant.id, entry)
+          }
           if (b.condition === 'new') entry.new += b.quantity
           else entry.used += b.quantity
-          stockByVariant.set(b.variant.id, entry)
+
+          let branchEntry = entry.branches.get(b.branch.id)
+          if (!branchEntry) {
+            branchEntry = { branchId: b.branch.id, name: b.branch.name, newStock: 0, usedStock: 0 }
+            entry.branches.set(b.branch.id, branchEntry)
+          }
+          if (b.condition === 'new') branchEntry.newStock += b.quantity
+          else branchEntry.usedStock += b.quantity
         }
-        variantsCache[id] = variantsRes.data.map(v => ({
-          ...v,
-          newStock: stockByVariant.get(v.id)?.new ?? 0,
-          usedStock: stockByVariant.get(v.id)?.used ?? 0,
-        }))
+        variantsCache[id] = variantsRes.data.map(v => {
+          const entry = stockByVariant.get(v.id)
+          return {
+            ...v,
+            newStock: entry?.new ?? 0,
+            usedStock: entry?.used ?? 0,
+            branches: entry ? Array.from(entry.branches.values()) : [],
+          }
+        })
       }
     } finally {
       loadingVariants[id] = false
@@ -125,7 +161,23 @@ const toggleVariantRow = async (row: Row<Inventory>) => {
   }
 }
 
+const branchColumns: TableColumn<BranchStockRow>[] = [
+  { accessorKey: 'name', header: t('common.branch'), cell: ({ row }) => h('span', { class: 'text-neutral-800 text-sm' }, row.original.name) },
+  { accessorKey: 'newStock', header: t('pages.inventory.condition.new'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-emerald-600 text-sm font-medium' }, String(row.original.newStock)) },
+  { accessorKey: 'usedStock', header: t('pages.inventory.condition.used'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-amber-600 text-sm font-medium' }, String(row.original.usedStock)) },
+]
+
 const variantColumns: TableColumn<VariantStockRow>[] = [
+  { id: 'expand', header: '', meta: { class: { td: 'w-8', th: 'w-8' } }, cell: ({ row }) => {
+    if (!row.original.branches.length) return null
+    return h('button', {
+      type: 'button',
+      class: 'flex items-center justify-center text-neutral-500 hover:text-neutral-900 cursor-pointer',
+      onClick: (e: Event) => { e.stopPropagation(); row.toggleExpanded() }
+    }, [
+      h(UIcon, { name: row.getIsExpanded() ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right', class: 'w-4 h-4' })
+    ])
+  } },
   { accessorKey: 'name', header: t('common.name'), cell: ({ row }) => {
     const img = row.original.image
     const imageEl = img
