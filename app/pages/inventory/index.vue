@@ -42,9 +42,6 @@
 
       <template #actions>
         <div class="flex items-center gap-2 w-full sm:w-auto">
-          <UButton v-if="hasPermission('inventory:create')" color="primary" variant="solid" icon="i-lucide-plus" class="flex-1 sm:flex-none justify-center" @click="() => { navigateTo('/inventory/create') }">
-            {{ $t('pages.inventory.item.add') }}
-          </UButton>
           <UButton
             v-if="hasPermission('inventory:export')"
             color="primary"
@@ -55,6 +52,9 @@
             @click="handleExport"
           >
             {{ $t('pages.inventory.item.exportInventory') }}
+          </UButton>
+          <UButton v-if="hasPermission('inventory:create')" color="primary" variant="solid" icon="i-lucide-plus" class="flex-1 sm:flex-none justify-center" @click="() => { navigateTo('/inventory/create') }">
+            {{ $t('pages.inventory.item.add') }}
           </UButton>
           <UButton color="neutral" variant="soft" icon="i-lucide-filter" class="relative flex-1 sm:flex-none justify-center" @click="() => { showFilterDrawer = true }">
             {{ $t('pages.inventory.item.filter') }}
