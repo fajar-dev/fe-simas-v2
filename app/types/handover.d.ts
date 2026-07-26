@@ -4,8 +4,6 @@ import type { TransactionType, HandoverStatus } from '../utils/enums'
 
 export type { TransactionType, HandoverStatus }
 
-export type HandoverItemKind = 'asset' | 'stock'
-
 export interface HandoverItem {
   id: number
   note: string | null
@@ -57,7 +55,6 @@ export interface Handover {
     photo: string | null
   } | null
   transactionType: TransactionType
-  itemKind: HandoverItemKind
   status: HandoverStatus
   note: string | null
   customFields: HandoverCustomField[]
@@ -88,7 +85,6 @@ export interface CreateHandoverPayload {
   handedOverById: number
   date?: string | null
   transactionType: TransactionType
-  itemKind?: HandoverItemKind
   note?: string | null
   customFields?: Record<string, string | number | null>
   items?: HandoverItemPayload[]

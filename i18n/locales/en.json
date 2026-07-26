@@ -1146,6 +1146,9 @@
         "note": "Note",
         "notePlaceholder": "Enter a note",
         "items": "Item List",
+        "assetItems": "Asset Items",
+        "assetItemsEmptyReturn": "No items added yet. Add an asset this employee currently holds.",
+        "stockItems": "Stock Items",
         "submit": "Save Document",
         "successCreate": "Handover document created successfully!",
         "handedOverBy": "Handed Over By",
@@ -1153,7 +1156,7 @@
         "receivedBy": "Received By",
         "receivedByPlaceholder": "Select receiving employee",
         "validation": {
-          "itemsRequired": "At least one item is required",
+          "itemsRequired": "At least one asset or stock item is required",
           "itemRequired": "Item selection is required",
           "handedOverByRequired": "Handover employee is required",
           "receivedByRequired": "Receiver employee is required"
@@ -1180,17 +1183,16 @@
         "selectHandedOverFirst": "Select the returning employee first.",
         "notHeld": "This item is not currently held by anyone.",
         "notHeldByEmployee": "This item is not held by the selected employee.",
-        "added": "Item added."
-      },
-      "itemKind": {
-        "label": "Item Type",
-        "asset": "Asset",
-        "stock": "Stock"
+        "added": "Item added.",
+        "noHeldAssets": "This employee holds no returnable assets."
       },
       "stock": {
         "addItem": "Add Item",
         "empty": "No stock items added yet.",
-        "required": "At least one stock item is required"
+        "required": "At least one stock item is required",
+        "noHeldItems": "This employee holds no returnable stock.",
+        "remainingHeld": "Remaining",
+        "returnsToOriginBranch": "Stock always returns to the branch it was originally taken from."
       }
     },
     "inventory": {
@@ -1270,6 +1272,7 @@
         "assignTitle": "Take Stock Out",
         "assignDescription": "Take stock out of a branch, to an employee or elsewhere",
         "selectEmployee": "Select employee",
+        "searchEmployee": "Search employee...",
         "selectVariant": "Select variant",
         "quantity": "Quantity",
         "remaining": "Remaining",

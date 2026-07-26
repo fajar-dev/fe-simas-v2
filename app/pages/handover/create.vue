@@ -22,109 +22,103 @@
         :state="form"
         @submit="handleSubmit"
       >
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-          <!-- ═══ Column 1: Document Metadata ═══ -->
-          <div class="space-y-4">
-            <!-- Handed Over By Employee Select -->
-            <UFormField
-              :label="$t('pages.handover.form.handedOverBy')"
-              name="handedOverById"
-              required
+        <!-- Transaction Type: top-level radio (Penetapan / Pengembalian) -->
+        <UFormField
+          :label="$t('pages.handover.form.transactionType')"
+          name="transactionType"
+          required
+          class="mb-6"
+        >
+          <URadioGroup
+            v-model="form.transactionType"
+            :items="transactionTypeOptions"
+            orientation="horizontal"
+          />
+        </UFormField>
+
+        <!-- ═══ Document Metadata — full width, employee pickers paired side by side ═══ -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mb-4">
+          <!-- Handed Over By Employee Select -->
+          <UFormField
+            :label="$t('pages.handover.form.handedOverBy')"
+            name="handedOverById"
+            required
+          >
+            <USelectMenu
+              v-model="selectedHandingOverEmployee"
+              :items="employeeOptions"
+              :avatar="selectedHandingOverEmployee?.avatar"
+              searchable
+              :searchable-placeholder="$t('pages.handover.itemForm.searchEmployees')"
+              :placeholder="$t('pages.handover.form.handedOverByPlaceholder')"
+              :loading="isLoadingEmployees"
+              class="w-full"
             >
-              <USelectMenu
-                v-model="selectedHandingOverEmployee"
-                :items="employeeOptions"
-                :avatar="selectedHandingOverEmployee?.avatar"
-                searchable
-                :searchable-placeholder="$t('pages.handover.itemForm.searchEmployees')"
-                :placeholder="$t('pages.handover.form.handedOverByPlaceholder')"
-                :loading="isLoadingEmployees"
-                class="w-full"
-              >
-                <template #item="{ item }">
-                  <UAvatar
-                    :src="item.avatar?.src"
-                    :alt="item.label"
-                    size="2xs"
-                    loading="lazy"
-                  />
-                  <span>{{ item.label }}</span>
-                </template>
-              </USelectMenu>
-            </UFormField>
+              <template #item="{ item }">
+                <UAvatar
+                  :src="item.avatar?.src"
+                  :alt="item.label"
+                  size="2xs"
+                  loading="lazy"
+                />
+                <span>{{ item.label }}</span>
+              </template>
+            </USelectMenu>
+          </UFormField>
 
-            <!-- Received By Employee Select -->
-            <UFormField
-              :label="$t('pages.handover.form.receivedBy')"
-              name="receivedById"
-              required
+          <!-- Received By Employee Select -->
+          <UFormField
+            :label="$t('pages.handover.form.receivedBy')"
+            name="receivedById"
+            required
+          >
+            <USelectMenu
+              v-model="selectedEmployee"
+              :items="employeeOptions"
+              :avatar="selectedEmployee?.avatar"
+              searchable
+              :searchable-placeholder="$t('pages.handover.itemForm.searchEmployees')"
+              :placeholder="$t('pages.handover.form.receivedByPlaceholder')"
+              :loading="isLoadingEmployees"
+              class="w-full"
             >
-              <USelectMenu
-                v-model="selectedEmployee"
-                :items="employeeOptions"
-                :avatar="selectedEmployee?.avatar"
-                searchable
-                :searchable-placeholder="$t('pages.handover.itemForm.searchEmployees')"
-                :placeholder="$t('pages.handover.form.receivedByPlaceholder')"
-                :loading="isLoadingEmployees"
-                class="w-full"
-              >
-                <template #item="{ item }">
-                  <UAvatar
-                    :src="item.avatar?.src"
-                    :alt="item.label"
-                    size="2xs"
-                    loading="lazy"
-                  />
-                  <span>{{ item.label }}</span>
-                </template>
-              </USelectMenu>
-            </UFormField>
+              <template #item="{ item }">
+                <UAvatar
+                  :src="item.avatar?.src"
+                  :alt="item.label"
+                  size="2xs"
+                  loading="lazy"
+                />
+                <span>{{ item.label }}</span>
+              </template>
+            </USelectMenu>
+          </UFormField>
+        </div>
 
-            <!-- Transaction Type -->
-            <UFormField
-              :label="$t('pages.handover.form.transactionType')"
-              name="transactionType"
-              required
-            >
-              <USelect
-                v-model="form.transactionType"
-                :items="transactionTypeOptions"
-                class="w-full"
-              />
-            </UFormField>
+        <!-- Note -->
+        <UFormField
+          :label="$t('pages.handover.form.note')"
+          name="note"
+          class="mb-4"
+        >
+          <UTextarea
+            v-model="form.note"
+            :placeholder="$t('pages.handover.form.notePlaceholder')"
+            class="w-full"
+            :rows="2"
+          />
+        </UFormField>
 
-            <!-- Item Kind: Asset or Stock -->
-            <UFormField
-              :label="$t('pages.handover.itemKind.label')"
-              name="itemKind"
-              required
-            >
-              <USelect
-                v-model="form.itemKind"
-                :items="itemKindOptions"
-                class="w-full"
-              />
-            </UFormField>
+        <!-- Configurable custom fields for the selected type -->
+        <HandoverCustomFields
+          v-model="form.customFields"
+          :fields="customFieldDefs"
+          class="mb-6"
+        />
 
-            <!-- Note -->
-            <UFormField
-              :label="$t('pages.handover.form.note')"
-              name="note"
-            >
-              <UTextarea
-                v-model="form.note"
-                :placeholder="$t('pages.handover.form.notePlaceholder')"
-                class="w-full"
-                :rows="3"
-              />
-            </UFormField>
-
-            <!-- Configurable custom fields for the selected type -->
-            <HandoverCustomFields v-model="form.customFields" :fields="customFieldDefs" />
-          </div>
-
-          <!-- ═══ Column 2 & 3: Items Listing ═══ -->
+        <!-- ═══ Items: asset items and stock items side by side ═══ -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-6 pt-6 border-t border-neutral-100">
+          <!-- Asset items -->
           <div class="space-y-4">
             <div class="flex items-center justify-between border-b border-neutral-100 pb-2">
               <h3 class="text-md font-semibold text-neutral-800 flex items-center gap-1.5">
@@ -132,11 +126,22 @@
                   name="i-lucide-box"
                   class="text-primary w-5 h-5"
                 />
-                {{ $t('pages.handover.form.items') }}
+                {{ $t('pages.handover.form.assetItems') }}
               </h3>
 
               <UButton
-                v-if="form.itemKind === 'asset'"
+                v-if="form.transactionType === 'return'"
+                type="button"
+                color="primary"
+                variant="soft"
+                icon="i-lucide-plus"
+                size="sm"
+                @click="() => { showAssetPicker = true }"
+              >
+                {{ $t('pages.handover.stock.addItem') }}
+              </UButton>
+              <UButton
+                v-else
                 type="button"
                 color="primary"
                 variant="soft"
@@ -149,16 +154,9 @@
               </UButton>
             </div>
 
-            <!-- Stock item builder -->
-            <HandoverStockItems
-              v-if="form.itemKind === 'stock'"
-              v-model="form.stockItems"
-              :transaction-type="form.transactionType"
-            />
-
             <!-- Lookup error -->
             <UAlert
-              v-if="form.itemKind === 'asset' && lookupError"
+              v-if="lookupError"
               color="error"
               variant="soft"
               icon="i-lucide-triangle-alert"
@@ -168,15 +166,26 @@
 
             <!-- Empty state -->
             <div
-              v-if="form.itemKind === 'asset' && form.items.length === 0"
+              v-if="form.items.length === 0"
               class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-neutral-200 rounded-lg"
             >
               <UIcon
-                name="i-lucide-scan-line"
+                :name="form.transactionType === 'return' ? 'i-lucide-box' : 'i-lucide-scan-line'"
                 class="w-10 h-10 text-neutral-300 mb-3"
               />
-              <span class="text-sm text-neutral-500 mb-3">{{ $t('pages.handover.scan.empty') }}</span>
+              <span class="text-sm text-neutral-500 mb-3">{{ form.transactionType === 'return' ? $t('pages.handover.form.assetItemsEmptyReturn') : $t('pages.handover.scan.empty') }}</span>
               <UButton
+                v-if="form.transactionType === 'return'"
+                type="button"
+                :label="$t('pages.handover.stock.addItem')"
+                icon="i-lucide-plus"
+                color="neutral"
+                variant="outline"
+                size="sm"
+                @click="() => { showAssetPicker = true }"
+              />
+              <UButton
+                v-else
                 type="button"
                 :label="$t('pages.handover.scan.button')"
                 icon="i-lucide-scan-line"
@@ -190,7 +199,7 @@
 
             <!-- Scanned Items Rows -->
             <div
-              v-else-if="form.itemKind === 'asset'"
+              v-else
               class="space-y-3"
             >
               <div
@@ -200,16 +209,7 @@
               >
                 <!-- Header of Row -->
                 <div class="flex items-center justify-between border-b border-neutral-100 pb-2">
-                  <div class="flex items-center gap-2 min-w-0">
-                    <span class="text-xs font-semibold text-neutral-500 uppercase tracking-wider shrink-0">Item {{ index + 1 }}</span>
-                    <UBadge
-                      color="neutral"
-                      variant="subtle"
-                      size="sm"
-                    >
-                      {{ item.code }}
-                    </UBadge>
-                  </div>
+                  <span class="text-xs font-semibold text-neutral-500 uppercase tracking-wider shrink-0">Item {{ index + 1 }}</span>
                   <UButton
                     type="button"
                     color="error"
@@ -257,6 +257,105 @@
               </div>
             </div>
           </div>
+
+          <!-- Stock items -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-neutral-100 pb-2">
+              <h3 class="text-md font-semibold text-neutral-800 flex items-center gap-1.5">
+                <UIcon
+                  name="i-lucide-layers"
+                  class="text-primary w-5 h-5"
+                />
+                {{ $t('pages.handover.form.stockItems') }}
+              </h3>
+
+              <UButton
+                type="button"
+                color="primary"
+                variant="soft"
+                icon="i-lucide-plus"
+                size="sm"
+                @click="() => { showStockModal = true }"
+              >
+                {{ $t('pages.handover.stock.addItem') }}
+              </UButton>
+            </div>
+
+            <!-- Empty state -->
+            <div
+              v-if="form.stockItems.length === 0"
+              class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-neutral-200 rounded-lg"
+            >
+              <UIcon
+                name="i-lucide-layers"
+                class="w-10 h-10 text-neutral-300 mb-3"
+              />
+              <span class="text-sm text-neutral-500 mb-3">{{ $t('pages.handover.stock.empty') }}</span>
+              <UButton
+                type="button"
+                :label="$t('pages.handover.stock.addItem')"
+                icon="i-lucide-plus"
+                color="neutral"
+                variant="outline"
+                size="sm"
+                @click="() => { showStockModal = true }"
+              />
+            </div>
+
+            <!-- Added rows -->
+            <div
+              v-else
+              class="space-y-3"
+            >
+              <div
+                v-for="(item, index) in form.stockItems"
+                :key="index"
+                class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 space-y-3"
+              >
+                <!-- Header of Row -->
+                <div class="flex items-center justify-between border-b border-neutral-100 pb-2">
+                  <span class="text-xs font-semibold text-neutral-500 uppercase tracking-wider shrink-0">Item {{ index + 1 }}</span>
+                  <UButton
+                    type="button"
+                    color="error"
+                    variant="soft"
+                    icon="i-lucide-trash"
+                    size="sm"
+                    square
+                    @click="removeStockRow(index)"
+                  />
+                </div>
+
+                <!-- Stock info -->
+                <div class="flex items-start gap-2.5">
+                  <div class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <UIcon
+                      name="i-lucide-layers"
+                      class="w-5 h-5 text-primary"
+                    />
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <span class="text-sm font-semibold text-neutral-800 block truncate">{{ item.inventoryName }} — {{ item.variantName }}</span>
+                    <span class="text-xs text-neutral-500 block truncate">
+                      {{ item.branchName }} ·
+                      <span v-if="form.transactionType === 'assign'">{{ item.condition === 'new' ? $t('pages.inventory.condition.new') : $t('pages.inventory.condition.used') }} · </span>
+                      {{ item.quantity }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Note (Keterangan) -->
+                <UFormField :label="$t('pages.handover.itemForm.note')">
+                  <UTextarea
+                    v-model="item.note"
+                    :placeholder="$t('pages.handover.itemForm.notePlaceholder')"
+                    class="w-full bg-white"
+                    :rows="3"
+                  />
+                </UFormField>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Footer Actions -->
@@ -280,11 +379,27 @@
       </UForm>
     </UCard>
 
-    <!-- Asset Scanner Modal -->
+    <!-- Asset Scanner Modal (assign) -->
     <AssetScannerModal
       v-model="showScanner"
       :auto-close="true"
       @scanned="onScanned"
+    />
+
+    <!-- Asset Picker Modal (return) -->
+    <HandoverAssetPicker
+      v-model="showAssetPicker"
+      :employee-id="form.transactionType === 'return' ? form.handedOverById : undefined"
+      :exclude-asset-ids="excludeAssetIds"
+      @select="onAssetPicked"
+    />
+
+    <!-- Stock Item Modal -->
+    <HandoverStockItems
+      v-model:open="showStockModal"
+      v-model:rows="form.stockItems"
+      :transaction-type="form.transactionType"
+      :employee-id="form.transactionType === 'return' ? form.handedOverById : undefined"
     />
 
     <!-- Lightbox Modal -->
@@ -317,7 +432,6 @@ const transactionTypeOptions = computed(() =>
 // Form state
 const form = reactive({
   transactionType: 'assign' as TransactionType,
-  itemKind: 'asset' as 'asset' | 'stock',
   note: '',
   receivedById: undefined as unknown as number,
   handedOverById: undefined as unknown as number,
@@ -325,11 +439,6 @@ const form = reactive({
   items: [] as { assetId: number, name: string, code: string, image: string | null, note: string }[],
   stockItems: [] as HandoverStockRow[]
 })
-
-const itemKindOptions = computed(() => [
-  { label: t('pages.handover.itemKind.asset'), value: 'asset' },
-  { label: t('pages.handover.itemKind.stock'), value: 'stock' }
-])
 
 // Custom fields configured for the selected transaction type.
 const customFieldDefs = ref<HandoverField[]>([])
@@ -353,8 +462,25 @@ watch(selectedHandingOverEmployee, (val) => {
 
 // ── Scan flow ─────────────────────────────────────────────────────────────
 const showScanner = ref(false)
+const showAssetPicker = ref(false)
+const showStockModal = ref(false)
 const isLookingUp = ref(false)
 const lookupError = ref<string | null>(null)
+
+const excludeAssetIds = computed(() => [
+  ...form.items.map(i => i.assetId),
+  ...Array.from(pendingHandoverAssetIds.value)
+])
+
+const onAssetPicked = (asset: { id: number, name: string, code: string }) => {
+  form.items.push({
+    assetId: asset.id,
+    name: asset.name,
+    code: asset.code,
+    image: null,
+    note: ''
+  })
+}
 
 const onScanned = (code: string) => {
   lookupAndAddAsset(code)
@@ -369,14 +495,10 @@ watch(() => form.transactionType, (type) => {
   form.customFields = {}
   fetchCustomFields(type)
 })
-watch(() => form.itemKind, () => {
-  form.items = []
-  form.stockItems = []
-  lookupError.value = null
-})
 watch(() => form.handedOverById, () => {
   if (form.transactionType === 'return') {
     form.items = []
+    form.stockItems = []
     lookupError.value = null
   }
 })
@@ -471,21 +593,20 @@ const removeItemRow = (index: number) => {
   form.items.splice(index, 1)
 }
 
+const removeStockRow = (index: number) => {
+  form.stockItems.splice(index, 1)
+}
+
 // Zod schema for form validation
 const schema = z.object({
   transactionType: z.enum(HANDOVER_TRANSACTION_TYPES),
-  itemKind: z.enum(['asset', 'stock']),
   note: z.string().optional().or(z.literal('')),
   receivedById: z.number().int().positive(t('pages.handover.form.validation.receivedByRequired')),
   handedOverById: z.number().int().positive(t('pages.handover.form.validation.handedOverByRequired')),
   items: z.array(z.object({ assetId: z.number().int().positive(), note: z.string().optional().nullable() })).optional(),
   stockItems: z.array(z.object({ variantId: z.number(), branchId: z.number(), condition: z.enum(['new', 'used']), quantity: z.number().int().min(1) })).optional()
 }).superRefine((data, ctx) => {
-  if (data.itemKind === 'stock') {
-    if (!data.stockItems || data.stockItems.length === 0) {
-      ctx.addIssue({ code: 'custom', path: ['stockItems'], message: t('pages.handover.stock.required') })
-    }
-  } else if (!data.items || data.items.length === 0) {
+  if ((!data.items || data.items.length === 0) && (!data.stockItems || data.stockItems.length === 0)) {
     ctx.addIssue({ code: 'custom', path: ['items'], message: t('pages.handover.form.validation.itemsRequired') })
   }
 })
@@ -548,14 +669,14 @@ const handleSubmit = async () => {
       receivedById: form.receivedById,
       handedOverById: form.handedOverById,
       transactionType: form.transactionType,
-      itemKind: form.itemKind,
       note: form.note || null,
       customFields: form.customFields
     }
-    if (form.itemKind === 'stock') {
-      payload.stockItems = form.stockItems.map(r => ({ variantId: r.variantId, branchId: r.branchId, condition: r.condition, quantity: r.quantity, note: null }))
-    } else {
+    if (form.items.length > 0) {
       payload.items = form.items.map(item => ({ assetId: item.assetId, note: item.note || null }))
+    }
+    if (form.stockItems.length > 0) {
+      payload.stockItems = form.stockItems.map(r => ({ variantId: r.variantId, branchId: r.branchId, condition: r.condition, quantity: r.quantity, note: r.note || null }))
     }
 
     const response = await handoverService.create(payload)

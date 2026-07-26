@@ -183,7 +183,9 @@
             class="col-span-12 sm:col-span-6 md:col-span-4"
           >
             <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ field.label }}</span>
-            <div class="text-sm text-neutral-900 font-medium">{{ field.value || '-' }}</div>
+            <div class="text-sm text-neutral-900 font-medium">
+              {{ field.value || '-' }}
+            </div>
           </div>
 
           <!-- Attachments (full width) -->
@@ -221,97 +223,114 @@
               class="w-3.5 h-3.5"
             />
             {{ $t('pages.handover.itemInfo') }}
-            <span class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium normal-case tracking-normal">{{ handover.itemKind === 'stock' ? handover.stockItems.length : handover.items.length }}</span>
+            <span class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium normal-case tracking-normal">{{ handover.items.length + handover.stockItems.length }}</span>
           </h4>
         </div>
 
+        <div
+          v-if="!handover.items.length && !handover.stockItems.length"
+          class="text-center text-sm text-neutral-400 py-8"
+        >
+          {{ $t('common.noData') }}
+        </div>
+
         <!-- Asset items -->
-        <div v-if="handover.itemKind !== 'stock'" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div
-            v-for="item in handover.items"
-            :key="item.id"
-            class="border border-neutral-200 rounded-lg p-3 flex flex-col gap-2.5"
-          >
-            <div class="flex items-start gap-3">
-              <NuxtImg
-                v-if="item.asset?.image"
-                :src="item.asset.image"
-                :alt="item.asset?.name"
-                class="w-11 h-11 object-cover rounded-lg border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shrink-0"
-                @click="item.asset && openLightbox(item.asset.image)"
-              />
-              <div
-                v-else
-                class="w-11 h-11 bg-primary/10 text-primary rounded-lg flex items-center justify-center shrink-0"
-              >
-                <UIcon
-                  name="i-lucide-box"
-                  class="w-5 h-5"
-                />
-              </div>
-              <div class="min-w-0 flex-1">
-                <NuxtLink
-                  :to="`/asset/${item.asset?.id}`"
-                  class="text-sm font-semibold text-neutral-900 hover:text-primary hover:underline block truncate"
-                >
-                  {{ item.asset?.name || '-' }}
-                </NuxtLink>
-                <span class="text-xs text-neutral-500 mt-0.5 block truncate">{{ item.asset?.code || '-' }}</span>
-              </div>
-            </div>
-
+        <div
+          v-if="handover.items.length"
+          class="space-y-3"
+        >
+          <h5 class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+            {{ $t('pages.handover.form.assetItems') }}
+          </h5>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div
-              v-if="item.note"
-              class="text-xs text-neutral-600 bg-neutral-50 border border-neutral-100 rounded-lg p-2 whitespace-pre-line"
+              v-for="item in handover.items"
+              :key="item.id"
+              class="border border-neutral-200 rounded-lg p-3 flex flex-col gap-2.5"
             >
-              {{ item.note }}
-            </div>
-          </div>
+              <div class="flex items-start gap-3">
+                <NuxtImg
+                  v-if="item.asset?.image"
+                  :src="item.asset.image"
+                  :alt="item.asset?.name"
+                  class="w-11 h-11 object-cover rounded-lg border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shrink-0"
+                  @click="item.asset && openLightbox(item.asset.image)"
+                />
+                <div
+                  v-else
+                  class="w-11 h-11 bg-primary/10 text-primary rounded-lg flex items-center justify-center shrink-0"
+                >
+                  <UIcon
+                    name="i-lucide-box"
+                    class="w-5 h-5"
+                  />
+                </div>
+                <div class="min-w-0 flex-1">
+                  <NuxtLink
+                    :to="`/asset/${item.asset?.id}`"
+                    class="text-sm font-semibold text-neutral-900 hover:text-primary hover:underline block truncate"
+                  >
+                    {{ item.asset?.name || '-' }}
+                  </NuxtLink>
+                  <span class="text-xs text-neutral-500 mt-0.5 block truncate">{{ item.asset?.code || '-' }}</span>
+                </div>
+              </div>
 
-          <div
-            v-if="!handover.items.length"
-            class="col-span-full text-center text-sm text-neutral-400 py-8"
-          >
-            {{ $t('common.noData') }}
+              <div
+                v-if="item.note"
+                class="text-xs text-neutral-600 bg-neutral-50 border border-neutral-100 rounded-lg p-2 whitespace-pre-line"
+              >
+                {{ item.note }}
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- Stock items -->
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div
-            v-for="item in handover.stockItems"
-            :key="item.id"
-            class="border border-neutral-200 rounded-lg p-3 flex flex-col gap-2.5"
-          >
-            <div class="flex items-start gap-3">
-              <div class="w-11 h-11 bg-primary/10 text-primary rounded-lg flex items-center justify-center shrink-0">
-                <UIcon name="i-lucide-layers" class="w-5 h-5" />
-              </div>
-              <div class="min-w-0 flex-1">
-                <span class="text-sm font-semibold text-neutral-900 block truncate">{{ item.variant?.inventory?.name || '-' }} — {{ item.variant?.name || '-' }}</span>
-                <span class="text-xs text-neutral-500 mt-0.5 block truncate">
-                  {{ item.branch?.name || '-' }} ·
-                  <UBadge :color="item.condition === 'new' ? 'success' : 'warning'" variant="subtle" size="sm">
-                    {{ item.condition === 'new' ? $t('pages.inventory.condition.new') : $t('pages.inventory.condition.used') }}
-                  </UBadge>
-                  · {{ item.quantity }} {{ item.variant?.unit || '' }}
-                </span>
-              </div>
-            </div>
-
+        <div
+          v-if="handover.stockItems.length"
+          class="space-y-3"
+          :class="{ 'mt-6 pt-6 border-t border-neutral-100': handover.items.length }"
+        >
+          <h5 class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+            {{ $t('pages.handover.form.stockItems') }}
+          </h5>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div
-              v-if="item.note"
-              class="text-xs text-neutral-600 bg-neutral-50 border border-neutral-100 rounded-lg p-2 whitespace-pre-line"
+              v-for="item in handover.stockItems"
+              :key="item.id"
+              class="border border-neutral-200 rounded-lg p-3 flex flex-col gap-2.5"
             >
-              {{ item.note }}
-            </div>
-          </div>
+              <div class="flex items-start gap-3">
+                <div class="w-11 h-11 bg-primary/10 text-primary rounded-lg flex items-center justify-center shrink-0">
+                  <UIcon
+                    name="i-lucide-layers"
+                    class="w-5 h-5"
+                  />
+                </div>
+                <div class="min-w-0 flex-1">
+                  <span class="text-sm font-semibold text-neutral-900 block truncate">{{ item.variant?.inventory?.name || '-' }} — {{ item.variant?.name || '-' }}</span>
+                  <span class="text-xs text-neutral-500 mt-0.5 block truncate">
+                    {{ item.branch?.name || '-' }} ·
+                    <UBadge
+                      :color="item.condition === 'new' ? 'success' : 'warning'"
+                      variant="subtle"
+                      size="sm"
+                    >
+                      {{ item.condition === 'new' ? $t('pages.inventory.condition.new') : $t('pages.inventory.condition.used') }}
+                    </UBadge>
+                    · {{ item.quantity }} {{ item.variant?.unit || '' }}
+                  </span>
+                </div>
+              </div>
 
-          <div
-            v-if="!handover.stockItems.length"
-            class="col-span-full text-center text-sm text-neutral-400 py-8"
-          >
-            {{ $t('common.noData') }}
+              <div
+                v-if="item.note"
+                class="text-xs text-neutral-600 bg-neutral-50 border border-neutral-100 rounded-lg p-2 whitespace-pre-line"
+              >
+                {{ item.note }}
+              </div>
+            </div>
           </div>
         </div>
       </UCard>

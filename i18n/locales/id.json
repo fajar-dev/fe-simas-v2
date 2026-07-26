@@ -1146,6 +1146,9 @@
         "note": "Catatan",
         "notePlaceholder": "Masukkan catatan",
         "items": "Daftar Item",
+        "assetItems": "Item Aset",
+        "assetItemsEmptyReturn": "Belum ada item ditambahkan. Tambahkan aset yang sedang dipegang karyawan ini.",
+        "stockItems": "Item Stok",
         "submit": "Simpan Dokumen",
         "successCreate": "Dokumen serah terima berhasil dibuat!",
         "handedOverBy": "Diserahkan Oleh",
@@ -1153,7 +1156,7 @@
         "receivedBy": "Diterima Oleh",
         "receivedByPlaceholder": "Pilih karyawan penerima",
         "validation": {
-          "itemsRequired": "Minimal harus ada satu item",
+          "itemsRequired": "Minimal harus ada satu item aset atau stok",
           "itemRequired": "Barang wajib dipilih",
           "handedOverByRequired": "Karyawan penyerah wajib dipilih",
           "receivedByRequired": "Karyawan penerima wajib dipilih"
@@ -1180,17 +1183,16 @@
         "selectHandedOverFirst": "Pilih karyawan yang mengembalikan terlebih dahulu.",
         "notHeld": "Barang ini sedang tidak dipegang siapa pun.",
         "notHeldByEmployee": "Barang ini tidak dipegang oleh karyawan yang dipilih.",
-        "added": "Barang ditambahkan."
-      },
-      "itemKind": {
-        "label": "Jenis Item",
-        "asset": "Aset",
-        "stock": "Stok"
+        "added": "Barang ditambahkan.",
+        "noHeldAssets": "Karyawan ini tidak memegang aset yang bisa dikembalikan."
       },
       "stock": {
         "addItem": "Tambah Item",
         "empty": "Belum ada item stok.",
-        "required": "Minimal satu item stok wajib diisi"
+        "required": "Minimal satu item stok wajib diisi",
+        "noHeldItems": "Karyawan ini tidak memegang stok yang bisa dikembalikan.",
+        "remainingHeld": "Sisa",
+        "returnsToOriginBranch": "Stok selalu dikembalikan ke cabang asal pengambilannya."
       }
     },
     "inventory": {
@@ -1270,6 +1272,7 @@
         "assignTitle": "Keluarkan Stok",
         "assignDescription": "Keluarkan stok dari suatu cabang, ke karyawan atau lainnya",
         "selectEmployee": "Pilih karyawan",
+        "searchEmployee": "Cari karyawan...",
         "selectVariant": "Pilih varian",
         "quantity": "Jumlah",
         "remaining": "Sisa",
