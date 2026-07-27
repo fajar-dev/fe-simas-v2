@@ -31,7 +31,7 @@
             class="flex-1 justify-center"
             @click="() => { open = false }"
           >
-            {{ $t('common.back') }}
+            {{ $t('common.cancel') }}
           </UButton>
           <UButton
             color="warning"

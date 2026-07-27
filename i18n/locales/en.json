@@ -1145,6 +1145,7 @@
         "items": "Item List",
         "assetItems": "Asset Items",
         "assetItemsEmptyReturn": "No items added yet. Add an asset this employee currently holds.",
+        "assetPickerDescription": "Select an asset this employee currently holds to add it to the return.",
         "stockItems": "Stock Items",
         "submit": "Save Document",
         "successCreate": "Handover document created successfully!",
@@ -1185,6 +1186,7 @@
       },
       "stock": {
         "addItem": "Add Item",
+        "addItemDescriptionAssign": "Choose a branch and inventory item, then enter the quantities to add.",
         "empty": "No stock items added yet.",
         "required": "At least one stock item is required",
         "noHeldItems": "This employee holds no returnable stock.",

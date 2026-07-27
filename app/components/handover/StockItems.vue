@@ -2,6 +2,7 @@
   <UModal
     v-model:open="open"
     :title="$t('pages.handover.stock.addItem')"
+    :description="modalDescription"
     :ui="{ content: 'sm:max-w-lg', overlay: 'bg-black/40', footer: 'justify-end' }"
   >
     <template #body>
@@ -32,15 +33,6 @@
             />
           </UFormField>
         </template>
-
-        <!-- Return: no branch/inventory picker — stock always returns to the branch it was taken from -->
-        <UAlert
-          v-else
-          color="neutral"
-          variant="soft"
-          icon="i-lucide-info"
-          :description="$t('pages.handover.stock.returnsToOriginBranch')"
-        />
 
         <!-- Rows: variant × new/used (assign) or variant × quantity (return), capped at available -->
         <div class="space-y-1.5">
@@ -202,15 +194,14 @@
 
     <template #footer>
       <UButton
-        :label="$t('common.close')"
+        :label="$t('common.cancel')"
         color="neutral"
         variant="outline"
         @click="() => { open = false }"
       />
       <UButton
-        :label="$t('pages.handover.stock.addItem')"
+        :label="$t('common.save')"
         color="primary"
-        icon="i-lucide-plus"
         :disabled="!canAdd"
         @click="addRows"
       />
@@ -261,6 +252,10 @@ interface TableRow {
 const props = defineProps<{ transactionType: 'assign' | 'return', employeeId?: number | null }>()
 const rows = defineModel<HandoverStockRow[]>('rows', { default: () => [] })
 const open = defineModel<boolean>('open', { default: false })
+
+const modalDescription = computed(() => props.transactionType === 'return'
+  ? t('pages.handover.stock.returnsToOriginBranch')
+  : t('pages.handover.stock.addItemDescriptionAssign'))
 
 const inventoryOptions = ref<{ label: string, value: number }[]>([])
 const branchOptions = ref<{ label: string, value: number }[]>([])

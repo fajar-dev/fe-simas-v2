@@ -1145,6 +1145,7 @@
         "items": "Daftar Item",
         "assetItems": "Item Aset",
         "assetItemsEmptyReturn": "Belum ada item ditambahkan. Tambahkan aset yang sedang dipegang karyawan ini.",
+        "assetPickerDescription": "Pilih aset yang sedang dipegang karyawan ini untuk ditambahkan ke pengembalian.",
         "stockItems": "Item Stok",
         "submit": "Simpan Dokumen",
         "successCreate": "Dokumen serah terima berhasil dibuat!",
@@ -1185,6 +1186,7 @@
       },
       "stock": {
         "addItem": "Tambah Item",
+        "addItemDescriptionAssign": "Pilih cabang dan item inventori, lalu masukkan jumlah untuk ditambahkan.",
         "empty": "Belum ada item stok.",
         "required": "Minimal satu item stok wajib diisi",
         "noHeldItems": "Karyawan ini tidak memegang stok yang bisa dikembalikan.",

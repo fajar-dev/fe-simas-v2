@@ -2,6 +2,7 @@
   <UModal
     v-model:open="open"
     :title="$t('pages.handover.form.assetItems')"
+    :description="$t('pages.handover.form.assetPickerDescription')"
     :ui="{ content: 'sm:max-w-lg', overlay: 'bg-black/40', footer: 'justify-end' }"
   >
     <template #body>
@@ -78,7 +79,7 @@
 
     <template #footer>
       <UButton
-        :label="$t('common.close')"
+        :label="$t('common.cancel')"
         color="neutral"
         variant="outline"
         @click="() => { open = false }"
