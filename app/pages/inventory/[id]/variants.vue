@@ -11,7 +11,6 @@
       :from="from"
       :to="to"
       :total="total"
-      :search-placeholder="$t('pages.inventory.variant.searchPlaceholder')"
       table-class="min-w-[720px]"
     >
       <template #actions>

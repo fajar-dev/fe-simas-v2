@@ -9,10 +9,10 @@
       <div class="space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <UFormField :label="$t('pages.inventory.transfer.fromBranch')" required>
-            <USelectMenu v-model="fromBranchId" :items="branchOptions" value-key="value" searchable :placeholder="$t('pages.inventory.transfer.selectBranch')" class="w-full" />
+            <USelectMenu v-model="fromBranchId" :items="branchOptions" value-key="value" searchable :searchable-placeholder="$t('common.search')" :placeholder="$t('pages.inventory.transfer.selectBranch')" class="w-full" />
           </UFormField>
           <UFormField :label="$t('pages.inventory.transfer.toBranch')" required>
-            <USelectMenu v-model="toBranchId" :items="branchOptions" value-key="value" searchable :placeholder="$t('pages.inventory.transfer.selectBranch')" class="w-full" />
+            <USelectMenu v-model="toBranchId" :items="branchOptions" value-key="value" searchable :searchable-placeholder="$t('common.search')" :placeholder="$t('pages.inventory.transfer.selectBranch')" class="w-full" />
           </UFormField>
         </div>
 

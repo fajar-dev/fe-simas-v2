@@ -17,7 +17,7 @@
             v-model="selectedAsset"
             :items="assetOptions"
             searchable
-            :searchable-placeholder="$t('component.assetLocation.addModal.searchAssets')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.assetLocation.addModal.selectAsset')"
             :loading="isLoadingAssets"
             class="w-full"
@@ -30,7 +30,7 @@
             v-model="selectedBranch"
             :items="branchOptions"
             searchable
-            :searchable-placeholder="$t('component.assetLocation.addModal.searchBranches')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.assetLocation.addModal.selectBranch')"
             :loading="isLoadingBranches"
             class="w-full"
@@ -43,7 +43,7 @@
             v-model="selectedLocation"
             :items="filteredLocationOptions"
             searchable
-            :searchable-placeholder="$t('component.assetLocation.addModal.searchLocations')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="selectedBranch ? $t('component.assetLocation.addModal.selectLocation') : $t('component.assetLocation.addModal.selectBranchFirst')"
             :disabled="!selectedBranch"
             :loading="isLoadingLocations"

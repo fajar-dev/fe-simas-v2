@@ -8,7 +8,7 @@
     <template #body>
       <div class="space-y-4">
         <UFormField :label="$t('common.branch')" required>
-          <USelectMenu v-model="branchId" :items="branchOptions" value-key="value" searchable :placeholder="$t('pages.inventory.transfer.selectBranch')" class="w-full" />
+          <USelectMenu v-model="branchId" :items="branchOptions" value-key="value" searchable :searchable-placeholder="$t('common.search')" :placeholder="$t('pages.inventory.transfer.selectBranch')" class="w-full" />
         </UFormField>
 
         <!-- Rows: variant × new/used (current on-hand shown for context) -->

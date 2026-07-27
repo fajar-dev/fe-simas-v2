@@ -11,7 +11,6 @@
         :from="meta.from"
         :to="meta.to"
         :total="meta.total"
-        :search-placeholder="$t('pages.asset.holder.searchPlaceholder')"
         table-class="min-w-[800px]"
       >
         <template #actions>

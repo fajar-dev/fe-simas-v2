@@ -129,6 +129,7 @@
             :placeholder="$t('pages.book.selectBookPlaceholder')"
             :loading="isLoadingBorrowed"
             searchable
+            :searchable-placeholder="$t('common.search')"
             class="w-full"
           >
             <template #leading>

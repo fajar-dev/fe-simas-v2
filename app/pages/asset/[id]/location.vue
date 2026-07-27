@@ -11,7 +11,6 @@
         :from="meta.from"
         :to="meta.to"
         :total="meta.total"
-        :search-placeholder="$t('pages.asset.location.searchPlaceholder')"
         table-class="min-w-[600px]"
       >
         <template #actions v-if="hasPermission('asset-location:create')">

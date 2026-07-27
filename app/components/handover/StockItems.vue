@@ -15,6 +15,7 @@
               :items="branchOptions"
               value-key="value"
               searchable
+              :searchable-placeholder="$t('common.search')"
               :placeholder="$t('pages.inventory.transfer.selectBranch')"
               class="w-full"
               @update:model-value="onBranchChange"
@@ -27,6 +28,7 @@
               :items="inventoryOptions"
               value-key="value"
               searchable
+              :searchable-placeholder="$t('common.search')"
               :placeholder="$t('pages.inventory.entry.selectInventory')"
               class="w-full"
               @update:model-value="onInventoryChange"

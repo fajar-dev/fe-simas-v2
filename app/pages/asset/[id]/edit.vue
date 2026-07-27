@@ -94,14 +94,14 @@
 
             <UFormField :label="$t('pages.asset.create.categoryLabel')" required>
               <div class="flex items-center gap-2">
-                <USelectMenu v-model="selectedCategory" :items="categoryOptions" searchable :searchable-placeholder="$t('pages.asset.create.searchCategory')" :placeholder="$t('pages.asset.create.selectCategory')" class="w-full" />
+                <USelectMenu v-model="selectedCategory" :items="categoryOptions" searchable :searchable-placeholder="$t('common.search')" :placeholder="$t('pages.asset.create.selectCategory')" class="w-full" />
                 <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="() => { showAddCategory = true }" />
               </div>
             </UFormField>
 
             <UFormField :label="$t('pages.asset.create.subCategoryLabel')" name="subCategoryId" required>
               <div class="flex items-center gap-2">
-                <USelectMenu v-model="selectedSubCategory" :items="subCategoryOptions" searchable :searchable-placeholder="$t('pages.asset.create.searchSubCategory')" :placeholder="$t('pages.asset.create.selectSubCategory')" :disabled="!selectedCategoryId || isLoadingSubCategories" class="w-full" />
+                <USelectMenu v-model="selectedSubCategory" :items="subCategoryOptions" searchable :searchable-placeholder="$t('common.search')" :placeholder="$t('pages.asset.create.selectSubCategory')" :disabled="!selectedCategoryId || isLoadingSubCategories" class="w-full" />
                 <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="() => { showAddSubCategory = true }" />
               </div>
             </UFormField>

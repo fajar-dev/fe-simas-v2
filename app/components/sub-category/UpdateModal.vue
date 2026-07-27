@@ -16,7 +16,7 @@
             v-model="selectedCategory"
             :items="categoryOptions"
             searchable
-            :searchable-placeholder="$t('component.subCategory.updateModal.searchCategory')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.subCategory.updateModal.selectCategory')"
             class="w-full"
           />

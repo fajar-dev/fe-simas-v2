@@ -51,14 +51,14 @@
 
             <UFormField :label="$t('common.category')" name="categoryId" required>
               <div class="flex items-center gap-2">
-                <USelectMenu v-model="selectedCategory" :items="categoryOptions" searchable :searchable-placeholder="$t('pages.asset.create.searchCategory')" :placeholder="$t('pages.asset.create.selectCategory')" class="w-full" />
+                <USelectMenu v-model="selectedCategory" :items="categoryOptions" searchable :searchable-placeholder="$t('common.search')" :placeholder="$t('pages.asset.create.selectCategory')" class="w-full" />
                 <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="() => { showAddCategory = true }" />
               </div>
             </UFormField>
 
             <UFormField :label="$t('common.subCategory')" name="subCategoryId" required>
               <div class="flex items-center gap-2">
-                <USelectMenu v-model="selectedSubCategory" :items="subCategoryOptions" searchable :searchable-placeholder="$t('pages.asset.create.searchSubCategory')" :placeholder="$t('pages.asset.create.selectSubCategory')" :disabled="!form.categoryId" class="w-full" />
+                <USelectMenu v-model="selectedSubCategory" :items="subCategoryOptions" searchable :searchable-placeholder="$t('common.search')" :placeholder="$t('pages.asset.create.selectSubCategory')" :disabled="!form.categoryId" class="w-full" />
                 <UButton icon="i-lucide-plus" color="primary" variant="soft" size="sm" square @click="() => { showAddSubCategory = true }" />
               </div>
             </UFormField>

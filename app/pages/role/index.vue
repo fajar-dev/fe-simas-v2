@@ -17,7 +17,6 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      :search-placeholder="$t('pages.role.searchPlaceholder')"
       table-class="min-w-[768px]"
     >
       <template #actions v-if="hasPermission('role:create')">

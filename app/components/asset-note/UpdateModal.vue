@@ -17,7 +17,7 @@
             v-model="selectedAsset"
             :items="assetOptions"
             searchable
-            :searchable-placeholder="$t('component.assetNote.updateModal.searchAssets')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.assetNote.updateModal.selectAsset')"
             :loading="isLoadingAssets"
             class="w-full"

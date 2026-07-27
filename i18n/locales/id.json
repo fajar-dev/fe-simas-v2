@@ -6,6 +6,7 @@
     "detail": "Detail",
     "add": "Tambah",
     "close": "Tutup",
+    "search": "Cari...",
     "back": "Kembali",
     "system": "Sistem",
     "loading": "Memuat...",
@@ -716,7 +717,6 @@
       "index": {
         "title": "Manajemen Aset",
         "description": "Kelola dan lacak aset perusahaan",
-        "searchPlaceholder": "Cari aset...",
         "addAsset": "Tambah Aset",
         "importAsset": "Import",
         "exportAsset": "Export",
@@ -835,7 +835,6 @@
         "success": "Aset berhasil diperbarui!"
       },
       "holder": {
-        "searchPlaceholder": "Cari riwayat penetapan...",
         "assignAsset": "Tetapkan Aset",
         "returnAsset": "Kembalikan Aset",
         "columnEmployee": "Karyawan",
@@ -853,7 +852,6 @@
         "system": "Sistem"
       },
       "location": {
-        "searchPlaceholder": "Cari catatan...",
         "relocateAsset": "Relokasi Aset",
         "columnRelocationDate": "Tanggal Relokasi",
         "columnLocation": "Lokasi",
@@ -865,7 +863,6 @@
         "system": "Sistem"
       },
       "maintenance": {
-        "searchPlaceholder": "Cari catatan...",
         "addMaintenance": "Tambah Pemeliharaan",
         "deleteTitle": "Hapus Catatan Pemeliharaan",
         "columnMaintenanceDate": "Tanggal Pemeliharaan",
@@ -880,7 +877,6 @@
         "deleteSuccess": "Catatan pemeliharaan aset berhasil dihapus!"
       },
       "note": {
-        "searchPlaceholder": "Cari catatan...",
         "addNote": "Tambah Catatan",
         "deleteTitle": "Hapus Catatan",
         "columnNoteDate": "Tanggal Catatan",
@@ -897,7 +893,6 @@
     "branch": {
       "title": "Manajemen Cabang",
       "description": "Kelola cabang",
-      "searchPlaceholder": "Cari cabang...",
       "addBranch": "Tambah Cabang",
       "columnCode": "Kode",
       "columnName": "Nama",
@@ -915,7 +910,6 @@
     "category": {
       "title": "Manajemen Kategori",
       "description": "Kelola kategori aset",
-      "searchPlaceholder": "Cari kategori...",
       "addCategory": "Tambah Kategori",
       "columnCode": "Kode",
       "columnName": "Nama",
@@ -930,7 +924,6 @@
     "subCategory": {
       "title": "Manajemen Sub Kategori",
       "description": "Kelola sub kategori aset",
-      "searchPlaceholder": "Cari sub kategori...",
       "addSubCategory": "Tambah Sub Kategori",
       "columnCode": "Kode",
       "columnName": "Nama",
@@ -946,7 +939,6 @@
     "employee": {
       "title": "Manajemen Karyawan",
       "description": "Kelola karyawan",
-      "searchPlaceholder": "Cari nama atau ID karyawan...",
       "addEmployee": "Tambah Karyawan",
       "columnEmployee": "Karyawan",
       "columnJobPosition": "Jabatan",
@@ -963,7 +955,6 @@
     "location": {
       "title": "Manajemen Lokasi",
       "description": "Kelola lokasi cabang",
-      "searchPlaceholder": "Cari lokasi...",
       "addLocation": "Tambah Lokasi",
       "columnName": "Nama",
       "columnBranch": "Cabang",
@@ -979,7 +970,6 @@
     "user": {
       "title": "Manajemen Pengguna",
       "description": "Kelola pengguna sistem dan profil mereka",
-      "searchPlaceholder": "Cari nama atau email...",
       "addUser": "Tambah Pengguna",
       "columnUserProfile": "Profil Pengguna",
       "columnStatus": "Status",
@@ -994,7 +984,6 @@
     "role": {
       "title": "Manajemen Role",
       "description": "Kelola role dan izin akses",
-      "searchPlaceholder": "Cari nama role...",
       "addRole": "Tambah Role",
       "columnNo": "No",
       "columnName": "Nama",
@@ -1012,7 +1001,6 @@
     "feedback": {
       "title": "Riwayat Feedback",
       "description": "Lihat dan lacak feedback yang telah dikirim",
-      "searchPlaceholder": "Cari feedback...",
       "columnTime": "Waktu",
       "columnUrl": "URL",
       "columnMessage": "Pesan",
@@ -1090,7 +1078,6 @@
       "title": "Serah Terima",
       "description": "Kelola dokumen serah terima",
       "addHandover": "Buat Serah Terima",
-      "searchPlaceholder": "Cari...",
       "columnDate": "Tanggal",
       "columnHandedOverBy": "Diserahkan Oleh",
       "columnReceivedBy": "Diterima Oleh",
@@ -1201,7 +1188,6 @@
         "add": "Tambah Persediaan",
         "addTitle": "Tambah Persediaan",
         "editTitle": "Edit Persediaan",
-        "searchPlaceholder": "Cari persediaan...",
         "photo": "Foto",
         "labels": "Label Kustom",
         "noCustomLabels": "Tidak ada label kustom",
@@ -1217,8 +1203,7 @@
         "add": "Tambah Varian",
         "unit": "Satuan",
         "codePlaceholder": "Pindai atau ketik kode",
-        "saveSuccess": "Varian tersimpan",
-        "searchPlaceholder": "Cari varian..."
+        "saveSuccess": "Varian tersimpan"
       },
       "condition": {
         "label": "Kondisi",

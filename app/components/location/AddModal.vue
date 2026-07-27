@@ -16,7 +16,7 @@
             v-model="selectedBranch"
             :items="branchOptions"
             searchable
-            :searchable-placeholder="$t('component.location.addModal.searchBranch')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.location.addModal.selectBranch')"
             class="w-full"
           />

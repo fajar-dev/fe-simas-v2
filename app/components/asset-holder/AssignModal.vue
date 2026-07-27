@@ -17,7 +17,7 @@
             v-model="selectedAsset"
             :items="assetOptions"
             searchable
-            :searchable-placeholder="$t('component.assetHolder.assignModal.searchAssets')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.assetHolder.assignModal.selectAsset')"
             :loading="isLoadingAssets"
             class="w-full"
@@ -31,7 +31,7 @@
             :items="employeeOptions"
             :avatar="selectedEmployee?.avatar"
             searchable
-            :searchable-placeholder="$t('component.assetHolder.assignModal.searchEmployees')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.assetHolder.assignModal.selectEmployee')"
             :loading="isLoadingEmployees"
             class="w-full"

@@ -18,7 +18,7 @@
             :items="employeeOptions"
             :avatar="selectedEmployee?.avatar"
             searchable
-            :searchable-placeholder="$t('pages.inventory.stockOut.searchEmployee')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('pages.inventory.stockOut.selectEmployee')"
             :loading="isLoadingEmployees"
             class="w-full"
@@ -36,7 +36,7 @@
         </UFormField>
 
         <UFormField :label="$t('common.branch')" required>
-          <USelectMenu v-model="branchId" :items="branchOptions" value-key="value" searchable :placeholder="$t('pages.inventory.transfer.selectBranch')" class="w-full" />
+          <USelectMenu v-model="branchId" :items="branchOptions" value-key="value" searchable :searchable-placeholder="$t('common.search')" :placeholder="$t('pages.inventory.transfer.selectBranch')" class="w-full" />
         </UFormField>
 
         <!-- Rows: variant × new/used (capped at available) -->

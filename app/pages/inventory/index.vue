@@ -13,7 +13,6 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      :search-placeholder="$t('pages.inventory.item.searchPlaceholder')"
       table-class="min-w-[1000px]"
     >
       <template #expanded="{ row }">

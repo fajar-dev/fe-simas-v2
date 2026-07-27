@@ -5,13 +5,13 @@
       <div class="flex flex-col sm:flex-row sm:items-center gap-2">
         <div class="flex flex-row items-center gap-2">
           <!-- Search -->
-          <UInput 
-            v-model="search" 
-            icon="i-lucide-search" 
-            size="md" 
-            variant="outline" 
-            :placeholder="searchPlaceholder" 
-            class="w-full sm:w-64" 
+          <UInput
+            v-model="search"
+            icon="i-lucide-search"
+            size="md"
+            variant="outline"
+            :placeholder="searchPlaceholder ?? $t('common.search')"
+            class="w-full sm:w-64"
           />
 
           <!-- Items per page -->
@@ -89,7 +89,6 @@ withDefaults(defineProps<{
   total: 0,
   from: 0,
   to: 0,
-  searchPlaceholder: 'Search...',
   limitOptions: () => [10, 25, 50, 100],
   tableClass: ''
 })

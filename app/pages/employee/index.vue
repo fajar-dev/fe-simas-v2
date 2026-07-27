@@ -17,7 +17,6 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      :search-placeholder="$t('pages.employee.searchPlaceholder')"
       table-class="min-w-[768px]"
     >
       <template #filters>

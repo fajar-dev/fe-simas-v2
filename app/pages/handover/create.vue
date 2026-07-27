@@ -49,7 +49,7 @@
               :items="employeeOptions"
               :avatar="selectedHandingOverEmployee?.avatar"
               searchable
-              :searchable-placeholder="$t('pages.handover.itemForm.searchEmployees')"
+              :searchable-placeholder="$t('common.search')"
               :placeholder="$t('pages.handover.form.handedOverByPlaceholder')"
               :loading="isLoadingEmployees"
               class="w-full"
@@ -77,7 +77,7 @@
               :items="employeeOptions"
               :avatar="selectedEmployee?.avatar"
               searchable
-              :searchable-placeholder="$t('pages.handover.itemForm.searchEmployees')"
+              :searchable-placeholder="$t('common.search')"
               :placeholder="$t('pages.handover.form.receivedByPlaceholder')"
               :loading="isLoadingEmployees"
               class="w-full"

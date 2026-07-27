@@ -17,7 +17,6 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      :search-placeholder="$t('pages.subCategory.searchPlaceholder')"
     >
       <template #filters>
         <USelectMenu
@@ -25,6 +24,7 @@
           :items="categoryOptions"
           value-key="value"
           :searchable="true"
+          :searchable-placeholder="$t('common.search')"
           class="w-full md:w-52"
         />
       </template>

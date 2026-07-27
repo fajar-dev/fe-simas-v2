@@ -16,7 +16,6 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      :search-placeholder="$t('pages.feedback.searchPlaceholder')"
     />
 
     <!-- Lightbox Modal -->

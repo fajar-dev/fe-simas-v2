@@ -6,6 +6,7 @@
     "detail": "Detail",
     "add": "Add",
     "close": "Close",
+    "search": "Search...",
     "back": "Back",
     "system": "System",
     "loading": "Loading...",
@@ -716,7 +717,6 @@
       "index": {
         "title": "Asset Management",
         "description": "Manage and track company assets",
-        "searchPlaceholder": "Search assets...",
         "addAsset": "Add Asset",
         "importAsset": "Import",
         "exportAsset": "Export",
@@ -835,7 +835,6 @@
         "success": "Asset updated successfully!"
       },
       "holder": {
-        "searchPlaceholder": "Search assignment history...",
         "assignAsset": "Assign Asset",
         "returnAsset": "Return Asset",
         "columnEmployee": "Employee",
@@ -853,7 +852,6 @@
         "system": "System"
       },
       "location": {
-        "searchPlaceholder": "Search notes...",
         "relocateAsset": "Relocate Asset",
         "columnRelocationDate": "Relocation Date",
         "columnLocation": "Location",
@@ -865,7 +863,6 @@
         "system": "System"
       },
       "maintenance": {
-        "searchPlaceholder": "Search notes...",
         "addMaintenance": "Add Maintenance",
         "deleteTitle": "Delete Maintenance Record",
         "columnMaintenanceDate": "Maintenance Date",
@@ -880,7 +877,6 @@
         "deleteSuccess": "Asset maintenance record deleted successfully!"
       },
       "note": {
-        "searchPlaceholder": "Search notes...",
         "addNote": "Add Note",
         "deleteTitle": "Delete Note Record",
         "columnNoteDate": "Note Date",
@@ -897,7 +893,6 @@
     "branch": {
       "title": "Branch Management",
       "description": "Manage branches",
-      "searchPlaceholder": "Search branch...",
       "addBranch": "Add Branch",
       "columnCode": "Code",
       "columnName": "Name",
@@ -915,7 +910,6 @@
     "category": {
       "title": "Category Management",
       "description": "Manage asset categories",
-      "searchPlaceholder": "Search category...",
       "addCategory": "Add Category",
       "columnCode": "Code",
       "columnName": "Name",
@@ -930,7 +924,6 @@
     "subCategory": {
       "title": "Sub Category Management",
       "description": "Manage asset sub categories",
-      "searchPlaceholder": "Search sub category...",
       "addSubCategory": "Add Sub Category",
       "columnCode": "Code",
       "columnName": "Name",
@@ -946,7 +939,6 @@
     "employee": {
       "title": "Employee Management",
       "description": "Manage employee",
-      "searchPlaceholder": "Search name or employee ID...",
       "addEmployee": "Add Employee",
       "columnEmployee": "Employee",
       "columnJobPosition": "Job Position",
@@ -963,7 +955,6 @@
     "location": {
       "title": "Location Management",
       "description": "Manage branch locations",
-      "searchPlaceholder": "Search location...",
       "addLocation": "Add Location",
       "columnName": "Name",
       "columnBranch": "Branch",
@@ -979,7 +970,6 @@
     "user": {
       "title": "User Management",
       "description": "Manage system users and their profiles",
-      "searchPlaceholder": "Search name or email...",
       "addUser": "Add User",
       "columnUserProfile": "User Profile",
       "columnStatus": "Status",
@@ -994,7 +984,6 @@
     "role": {
       "title": "Role Management",
       "description": "Manage roles and permissions",
-      "searchPlaceholder": "Search role name...",
       "addRole": "Add Role",
       "columnNo": "No",
       "columnName": "Name",
@@ -1012,7 +1001,6 @@
     "feedback": {
       "title": "Feedback History",
       "description": "View and track your submitted feedback and responses",
-      "searchPlaceholder": "Search feedback...",
       "columnTime": "Time",
       "columnUrl": "URL",
       "columnMessage": "Message",
@@ -1090,7 +1078,6 @@
       "title": "Handover",
       "description": "Manage handover documents",
       "addHandover": "Create Handover",
-      "searchPlaceholder": "Search...",
       "columnDate": "Date",
       "columnHandedOverBy": "Handed Over By",
       "columnReceivedBy": "Received By",
@@ -1201,7 +1188,6 @@
         "add": "Add Inventory",
         "addTitle": "Add Inventory",
         "editTitle": "Edit Inventory",
-        "searchPlaceholder": "Search inventory...",
         "photo": "Photo",
         "labels": "Custom Labels",
         "noCustomLabels": "No custom labels found",
@@ -1217,8 +1203,7 @@
         "add": "Add Variant",
         "unit": "Unit",
         "codePlaceholder": "Scan or type code",
-        "saveSuccess": "Variants saved",
-        "searchPlaceholder": "Search variant..."
+        "saveSuccess": "Variants saved"
       },
       "condition": {
         "label": "Condition",
