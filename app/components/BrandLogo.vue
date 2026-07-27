@@ -1,23 +1,8 @@
 <template>
   <div class="flex items-center gap-3">
-    <!-- <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-primary text-white shadow-sm shrink-0">
-      <UIcon name="i-lucide-box" class="w-5 h-5 text-white" />
-    </div>
-    <div v-if="!isCollapsed" class="min-w-0">
-      <h1 class="text-sm font-medium text-neutral-900 truncate">
-        SIMAS
-      </h1>
-      <p class="text-xs text-neutral-600">
-        Asset Management System
-      </p>
-    </div> -->
     <NuxtLink to="/">
-      <div v-if="isCollapsed">
-        <img src="/logo.png" alt="Logo" class="w-10">
-      </div>
-      <div v-else>
-        <img src="/logo.png" alt="Logo">
-      </div>
+      <img v-if="!isCollapsed" src="/logo.png" alt="Logo" class="w-28">
+      <img v-else src="/logo_no_text.png" alt="Logo" class="w-10">
     </NuxtLink>
   </div>
 </template>
