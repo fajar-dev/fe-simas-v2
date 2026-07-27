@@ -11,9 +11,11 @@
         <UFormField :label="$t('pages.calendar.form.assets')" name="assetIds" required>
           <USelectMenu
             v-model="selectedAssets"
+            v-model:search-term="assetSearchTerm"
             :items="assetOptions"
             multiple
             searchable
+            ignore-filter
             :searchable-placeholder="$t('common.search')"
             :placeholder="$t('pages.calendar.form.selectAssets')"
             :loading="isLoadingAssets"
@@ -143,6 +145,7 @@ const isSubmitting = ref(false)
 const isLoadingAssets = ref(false)
 const assetOptions = ref<{ label: string; value: number }[]>([])
 const selectedAssets = ref<{ label: string; value: number }[]>([])
+const assetSearchTerm = ref('')
 const uploadedAttachments = ref<Attachment[]>([])
 
 type RecOption = { label: string; value: ScheduleRecurrence }
@@ -211,17 +214,30 @@ watch(selectedMonth, (val) => { if (val) form.month = val.value })
 
 const onAttachmentsChanged = (ids: number[]) => { form.attachmentIds = ids }
 
-const loadAssets = async () => {
+const toAssetOption = (a: { id: number; code: string; name: string }) => ({ label: `${a.code} - ${a.name}`, value: a.id })
+
+// Asset select is search-as-you-type against the lightweight /asset/options endpoint
+// (not the full paginated list, which doesn't scale to very large asset tables).
+const searchAssets = async (q = '') => {
   isLoadingAssets.value = true
   try {
-    const res = await assetService.getAll(1, 200)
+    const res = await assetService.searchOptions(q, 20)
     if (res.success && res.data) {
-      assetOptions.value = res.data.map(a => ({ label: `${a.code} - ${a.name}`, value: a.id }))
+      const results = res.data.map(toAssetOption)
+      // Keep already-selected assets visible even if the current search no longer returns them.
+      const pinned = selectedAssets.value.filter(a => !results.some(r => r.value === a.value))
+      assetOptions.value = [...pinned, ...results]
     }
   } finally {
     isLoadingAssets.value = false
   }
 }
+
+let assetSearchTimeout: ReturnType<typeof setTimeout>
+watch(assetSearchTerm, (term) => {
+  clearTimeout(assetSearchTimeout)
+  assetSearchTimeout = setTimeout(() => { searchAssets(term) }, 300)
+})
 
 const resetForm = () => {
   form.assetIds = []
@@ -235,6 +251,7 @@ const resetForm = () => {
   form.recurrenceEndDate = null
   form.attachmentIds = []
   selectedAssets.value = []
+  assetSearchTerm.value = ''
   selectedRecurrence.value = recurrenceOptions.value[0]!
   selectedDayOfMonth.value = dayOptions[0]!
   selectedMonth.value = monthOptions.value[0]!
@@ -252,7 +269,8 @@ const hydrateFromSchedule = (s: AssetSchedule) => {
   form.month = s.month
   form.recurrenceEndDate = s.recurrenceEndDate
   form.attachmentIds = s.attachments.map(a => a.id)
-  selectedAssets.value = s.assets.map(a => ({ label: `${a.code} - ${a.name}`, value: a.id }))
+  selectedAssets.value = s.assets.map(toAssetOption)
+  assetOptions.value = [...selectedAssets.value]
   selectedRecurrence.value = recurrenceOptions.value.find(o => o.value === s.recurrence) || recurrenceOptions.value[0]!
   selectedDayOfMonth.value = dayOptions.find(o => o.value === s.dayOfMonth) || dayOptions[0]!
   selectedMonth.value = monthOptions.value.find(o => o.value === s.month) || monthOptions.value[0]!
@@ -296,8 +314,8 @@ const handleSubmit = async () => {
 
 watch(open, (val) => {
   if (!val) return
-  loadAssets()
   if (props.schedule) hydrateFromSchedule(props.schedule)
   else resetForm()
+  searchAssets()
 })
 </script>

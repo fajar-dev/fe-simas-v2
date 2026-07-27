@@ -37,6 +37,19 @@ export class HandoverService {
     }
   }
 
+  /** Asset ids currently tied to a pending handover — a cheap check, not the paginated list. */
+  async getPendingAssetIds(): Promise<ApiResponse<{ assetIds: number[] }>> {
+    try {
+      const response = await apiService.client.get<ApiResponse<{ assetIds: number[] }>>(
+        `/handover/pending-assets`,
+        this.authHeaders
+      )
+      return response.data
+    } catch (error: any) {
+      return handleServiceError(error)
+    }
+  }
+
   async getById(id: number): Promise<ApiResponse<Handover>> {
     try {
       const response = await apiService.client.get<ApiResponse<Handover>>(

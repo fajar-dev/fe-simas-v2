@@ -18,8 +18,10 @@
 
       <USelectMenu
         v-model="selectedAssetFilter"
+        v-model:search-term="assetSearchTerm"
         :items="assetFilterOptions"
         searchable
+        ignore-filter
         :searchable-placeholder="$t('common.search')"
         :loading="isLoadingAssets"
         class="w-full lg:w-56"
@@ -92,10 +94,12 @@ const monthDate = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 
 const occurrences = ref<ScheduleOccurrence[]>([])
 const isLoading = ref(false)
 
-// Asset filter
+// Asset filter — search-as-you-type against /asset/options (not the full paginated list).
 type AssetFilterOption = { label: string; value: number | null }
-const assetFilterOptions = ref<AssetFilterOption[]>([{ label: t('pages.calendar.allAssets'), value: null }])
+const allAssetsOption = computed<AssetFilterOption>(() => ({ label: t('pages.calendar.allAssets'), value: null }))
+const assetFilterOptions = ref<AssetFilterOption[]>([allAssetsOption.value])
 const selectedAssetFilter = ref<AssetFilterOption>(assetFilterOptions.value[0]!)
+const assetSearchTerm = ref('')
 const isLoadingAssets = ref(false)
 
 // Modal state
@@ -126,20 +130,27 @@ const fetchOccurrences = async () => {
   }
 }
 
-const loadAssetFilter = async () => {
+const searchAssetFilter = async (q = '') => {
   isLoadingAssets.value = true
   try {
-    const res = await assetService.getAll(1, 200)
+    const res = await assetService.searchOptions(q, 20)
     if (res.success && res.data) {
-      assetFilterOptions.value = [
-        { label: t('pages.calendar.allAssets'), value: null },
-        ...res.data.map(a => ({ label: `${a.code} - ${a.name}`, value: a.id })),
-      ]
+      const results = res.data.map(a => ({ label: `${a.code} - ${a.name}`, value: a.id as number | null }))
+      // Keep the currently selected asset visible even if it falls outside the new search results.
+      const current = selectedAssetFilter.value
+      const pinned = current.value !== null && !results.some(r => r.value === current.value) ? [current] : []
+      assetFilterOptions.value = [allAssetsOption.value, ...pinned, ...results]
     }
   } finally {
     isLoadingAssets.value = false
   }
 }
+
+let assetSearchTimeout: ReturnType<typeof setTimeout>
+watch(assetSearchTerm, (term) => {
+  clearTimeout(assetSearchTimeout)
+  assetSearchTimeout = setTimeout(() => { searchAssetFilter(term) }, 300)
+})
 
 // Navigation
 const shiftMonth = (delta: number) => {
@@ -199,7 +210,7 @@ watch(monthDate, fetchOccurrences)
 watch(selectedAssetFilter, fetchOccurrences)
 
 onMounted(() => {
-  loadAssetFilter()
+  searchAssetFilter()
   fetchOccurrences()
 })
 </script>

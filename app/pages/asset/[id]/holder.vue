@@ -144,9 +144,9 @@ const fetchActiveHolder = async () => {
 const fetchPendingHandover = async () => {
   isLoadingPendingHandover.value = true
   try {
-    const res = await handoverService.getAll(1, 200, '', '', '', 'pending')
+    const res = await handoverService.getPendingAssetIds()
     if (res.success && res.data) {
-      isInPendingHandover.value = res.data.some(h => h.items.some(item => item.asset?.id === assetId))
+      isInPendingHandover.value = res.data.assetIds.includes(assetId)
     }
   } finally {
     isLoadingPendingHandover.value = false

@@ -129,3 +129,11 @@ export interface AssetPayload {
   status?: string | null
   statusNote?: string | null
 }
+
+/** Minimal shape from GET /asset/options — for search-as-you-type pickers, not the full list. */
+export interface AssetOption {
+  id: number
+  code: string
+  name: string
+  image: string | null
+}
