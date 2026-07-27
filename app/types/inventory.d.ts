@@ -81,6 +81,7 @@ export interface InventoryStockEntryRow {
   name: string
   code: string | null
   unit: string
+  image: string | null
   new: number
   used: number
 }
@@ -155,6 +156,7 @@ export interface InventoryStockOutLineItem {
     name: string
     code: string | null
     unit: string
+    image: string | null
     inventory: { id: number; name: string; code: string | null } | null
   } | null
 }

@@ -12,6 +12,7 @@ export interface AssetHolder {
     id: number
     name: string
     code: string
+    image?: string | null
   } | null
   employee: {
     id: number

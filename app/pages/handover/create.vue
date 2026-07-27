@@ -335,7 +335,17 @@
 
                 <!-- Stock info -->
                 <div class="flex items-start gap-2.5">
-                  <div class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <NuxtImg
+                    v-if="item.image"
+                    :src="item.image"
+                    :alt="item.variantName"
+                    class="w-9 h-9 object-cover rounded-lg border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0"
+                    @click="item.image && openLightbox(item.image)"
+                  />
+                  <div
+                    v-else
+                    class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"
+                  >
                     <UIcon
                       name="i-lucide-layers"
                       class="w-5 h-5 text-primary"
@@ -484,12 +494,12 @@ const excludeAssetIds = computed(() => [
   ...Array.from(pendingHandoverAssetIds.value)
 ])
 
-const onAssetPicked = (asset: { id: number, name: string, code: string }) => {
+const onAssetPicked = (asset: { id: number, name: string, code: string, image: string | null }) => {
   form.items.push({
     assetId: asset.id,
     name: asset.name,
     code: asset.code,
-    image: null,
+    image: asset.image,
     note: ''
   })
 }

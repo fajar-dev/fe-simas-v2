@@ -109,14 +109,34 @@
                   class="border-b border-neutral-100"
                 >
                   <td class="py-2 pr-3">
-                    <div class="font-medium text-neutral-900">
-                      {{ row.name }}
-                    </div>
-                    <div
-                      v-if="row.code"
-                      class="text-xs text-neutral-500"
-                    >
-                      {{ row.code }}
+                    <div class="flex items-center gap-2">
+                      <NuxtImg
+                        v-if="row.image"
+                        :src="row.image"
+                        :alt="row.name"
+                        class="w-8 h-8 object-cover rounded-lg border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0"
+                        @click="() => openLightbox(row.image!)"
+                      />
+                      <div
+                        v-else
+                        class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"
+                      >
+                        <UIcon
+                          name="i-lucide-layers"
+                          class="w-4 h-4 text-primary"
+                        />
+                      </div>
+                      <div class="min-w-0">
+                        <div class="font-medium text-neutral-900 truncate">
+                          {{ row.name }}
+                        </div>
+                        <div
+                          v-if="row.code"
+                          class="text-xs text-neutral-500 truncate"
+                        >
+                          {{ row.code }}
+                        </div>
+                      </div>
                     </div>
                   </td>
                   <td
@@ -207,6 +227,7 @@ import type { StockCondition, InventoryStockEntryRow } from '~/types/inventory'
 
 const { t } = useI18n()
 const toast = useToast()
+const { openLightbox } = useLightbox()
 
 export interface HandoverStockRow {
   variantId: number
@@ -217,6 +238,7 @@ export interface HandoverStockRow {
   variantName: string
   branchName: string
   note: string
+  image: string | null
 }
 
 interface TableRow {
@@ -224,6 +246,7 @@ interface TableRow {
   name: string
   code: string | null
   unit: string
+  image: string | null
   availableNew: number
   availableUsed: number
   availableQty: number
@@ -280,6 +303,7 @@ const buildAssignRows = () => {
     name: r.name,
     code: r.code,
     unit: r.unit,
+    image: r.image,
     availableNew: r.new,
     availableUsed: r.used,
     availableQty: 0,
@@ -293,7 +317,7 @@ const buildAssignRows = () => {
 // ── Return: what the handing-over employee currently holds, per variant × origin branch ──
 // Stock always returns to the branch it was originally taken from, so held
 // amounts are grouped by (variant, branch) rather than by variant alone.
-interface HeldEntry { variantId: number, branchId: number, branchName: string, inventoryName: string, variantName: string, unit: string, remaining: number }
+interface HeldEntry { variantId: number, branchId: number, branchName: string, inventoryName: string, variantName: string, unit: string, image: string | null, remaining: number }
 const heldKey = (variantId: number, branchId: number) => `${variantId}-${branchId}`
 const heldByVariantBranch = ref<Map<string, HeldEntry>>(new Map())
 
@@ -323,6 +347,7 @@ const loadHeldSummary = async () => {
               inventoryName: item.variant.inventory?.name || '-',
               variantName: item.variant.name,
               unit: item.variant.unit || '',
+              image: item.variant.image ?? null,
               remaining: item.quantityRemaining
             })
           }
@@ -342,6 +367,7 @@ const buildReturnRows = () => {
     name: `${h.inventoryName} — ${h.variantName}`,
     code: null,
     unit: h.unit,
+    image: h.image,
     availableNew: 0,
     availableUsed: 0,
     availableQty: h.remaining,
@@ -435,7 +461,8 @@ const addRows = () => {
         inventoryName: held?.inventoryName || '-',
         variantName: held?.variantName || '-',
         branchName: row.branchName || '-',
-        note: ''
+        note: '',
+        image: row.image
       })
     }
   } else {
@@ -445,10 +472,10 @@ const addRows = () => {
       const newQty = Number(row.qtyNew) || 0
       const usedQty = Number(row.qtyUsed) || 0
       if (newQty > 0) {
-        added.push({ variantId: row.variantId, branchId: draft.branchId!, condition: 'new', quantity: newQty, inventoryName, variantName: row.name, branchName, note: '' })
+        added.push({ variantId: row.variantId, branchId: draft.branchId!, condition: 'new', quantity: newQty, inventoryName, variantName: row.name, branchName, note: '', image: row.image })
       }
       if (usedQty > 0) {
-        added.push({ variantId: row.variantId, branchId: draft.branchId!, condition: 'used', quantity: usedQty, inventoryName, variantName: row.name, branchName, note: '' })
+        added.push({ variantId: row.variantId, branchId: draft.branchId!, condition: 'used', quantity: usedQty, inventoryName, variantName: row.name, branchName, note: '', image: row.image })
       }
     }
   }

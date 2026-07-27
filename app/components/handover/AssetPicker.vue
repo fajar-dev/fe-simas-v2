@@ -37,7 +37,17 @@
             :key="asset.id"
             class="flex items-center gap-2 p-3 rounded-lg border border-neutral-100 bg-neutral-50/50"
           >
-            <div class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <NuxtImg
+              v-if="asset.image"
+              :src="asset.image"
+              :alt="asset.name"
+              class="w-9 h-9 object-cover rounded-lg border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0"
+              @click="() => openLightbox(asset.image!)"
+            />
+            <div
+              v-else
+              class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"
+            >
               <UIcon
                 name="i-lucide-box"
                 class="w-5 h-5 text-primary"
@@ -84,11 +94,13 @@ export interface HeldAssetOption {
   id: number
   name: string
   code: string
+  image: string | null
 }
 
 const props = defineProps<{ employeeId?: number | null, excludeAssetIds: number[] }>()
 const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ select: [HeldAssetOption] }>()
+const { openLightbox } = useLightbox()
 
 const isLoading = ref(false)
 const heldAssets = ref<HeldAssetOption[]>([])
@@ -104,7 +116,7 @@ const load = async () => {
     if (res.success && res.data) {
       heldAssets.value = res.data
         .filter(h => !h.returnedDate && h.asset)
-        .map(h => ({ id: h.asset!.id, name: h.asset!.name, code: h.asset!.code }))
+        .map(h => ({ id: h.asset!.id, name: h.asset!.name, code: h.asset!.code, image: h.asset!.image ?? null }))
     }
   } finally {
     isLoading.value = false
