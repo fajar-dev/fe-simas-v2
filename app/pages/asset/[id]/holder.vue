@@ -33,23 +33,17 @@
               {{ $t('pages.asset.holder.assignAsset') }}
             </UButton>
           </UTooltip>
-          <UTooltip
+          <UButton
             v-if="activeHolder && hasPermission('asset-holder:return')"
-            :text="$t('component.assetStatus.handoverReturnWarning.returnAsset')"
-            :prevent="!isManualReturnDisabled"
+            class="w-full lg:w-auto justify-center"
+            color="error"
+            variant="solid"
+            icon="i-lucide-arrow-left-right"
+            :loading="isLoadingActive"
+            @click="() => { showReturnModal = true }"
           >
-            <UButton
-              class="w-full lg:w-auto justify-center"
-              color="error"
-              variant="solid"
-              icon="i-lucide-arrow-left-right"
-              :loading="isLoadingActive"
-              :disabled="isManualReturnDisabled"
-              @click="() => { showReturnModal = true }"
-            >
-              {{ $t('pages.asset.holder.returnAsset') }}
-            </UButton>
-          </UTooltip>
+            {{ $t('pages.asset.holder.returnAsset') }}
+          </UButton>
         </template>
       </DataTable>
 
@@ -104,9 +98,6 @@ const assignDisabledReason = computed(() => {
   if (isInPendingHandover.value) return t('component.assetStatus.pendingHandoverWarning.assignHolder')
   return ''
 })
-
-// Holders created from an assign handover must be returned via a return handover, not manually.
-const isManualReturnDisabled = computed(() => !!activeHolder.value?.assignHandover)
 
 const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')
