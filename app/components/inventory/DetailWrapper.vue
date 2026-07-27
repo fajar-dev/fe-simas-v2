@@ -167,7 +167,7 @@ const tabItems = computed(() => {
     tabs.push({ value: 'variants', label: t('pages.inventory.stock.overviewTitle'), icon: 'i-lucide-layers', to: `/inventory/${inventoryId}/variants` })
   }
   if (hasPermission('inventory-stock:read')) {
-    tabs.push({ value: 'stock-in', label: t('pages.inventory.tabs.stockIn'), icon: 'i-lucide-package', to: `/inventory/${inventoryId}/stock-in` })
+    tabs.push({ value: 'stock-in', label: t('pages.inventory.tabs.stockIn'), icon: 'i-lucide-package-plus', to: `/inventory/${inventoryId}/stock-in` })
   }
   if (hasPermission('inventory-stock:transfer')) {
     tabs.push({ value: 'transfer', label: t('pages.inventory.tabs.transfer'), icon: 'i-lucide-arrow-left-right', to: `/inventory/${inventoryId}/transfer` })

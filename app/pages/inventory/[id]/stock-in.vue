@@ -14,7 +14,7 @@
       table-class="min-w-[820px]"
     >
       <template #actions>
-        <UButton v-if="canAdd" icon="i-lucide-plus" color="primary" :label="$t('pages.inventory.addStock.button')" @click="() => { showAddModal = true }" />
+        <UButton v-if="canAdd" icon="i-lucide-package-plus" color="primary" :label="$t('pages.inventory.addStock.button')" @click="() => { showAddModal = true }" />
       </template>
 
       <template #expanded="{ row }">
