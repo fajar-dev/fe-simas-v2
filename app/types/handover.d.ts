@@ -89,5 +89,6 @@ export interface CreateHandoverPayload {
   customFields?: Record<string, string | number | null>
   items?: HandoverItemPayload[]
   stockItems?: HandoverStockItemPayload[]
+  attachmentIds?: number[]
 }
 

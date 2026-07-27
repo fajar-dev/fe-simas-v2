@@ -113,7 +113,14 @@
         <HandoverCustomFields
           v-model="form.customFields"
           :fields="customFieldDefs"
+          class="mb-4"
+        />
+
+        <!-- Supporting documents, alongside the auto-generated signing form -->
+        <AttachmentManager
+          v-model="attachments"
           class="mb-6"
+          @change="(ids: number[]) => { attachmentIds = ids }"
         />
 
         <!-- ═══ Items: asset items and stock items side by side ═══ -->
@@ -415,6 +422,7 @@ import { assetService } from '~/services/asset-service'
 import { employeeService } from '~/services/employee-service'
 import type { HandoverField } from '~/types/handover-field'
 import type { HandoverStockRow } from '~/components/handover/StockItems.vue'
+import type { Attachment } from '~/types/attachment'
 
 definePageMeta({
   layout: 'dashboard'
@@ -439,6 +447,10 @@ const form = reactive({
   items: [] as { assetId: number, name: string, code: string, image: string | null, note: string }[],
   stockItems: [] as HandoverStockRow[]
 })
+
+// Supporting documents uploaded by the user (the signing form is generated server-side).
+const attachments = ref<Attachment[]>([])
+const attachmentIds = ref<number[]>([])
 
 // Custom fields configured for the selected transaction type.
 const customFieldDefs = ref<HandoverField[]>([])
@@ -670,7 +682,8 @@ const handleSubmit = async () => {
       handedOverById: form.handedOverById,
       transactionType: form.transactionType,
       note: form.note || null,
-      customFields: form.customFields
+      customFields: form.customFields,
+      attachmentIds: attachmentIds.value
     }
     if (form.items.length > 0) {
       payload.items = form.items.map(item => ({ assetId: item.assetId, note: item.note || null }))
