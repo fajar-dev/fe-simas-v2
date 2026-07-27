@@ -83,7 +83,8 @@
     "handover": "Serah Terima",
     "feedback": "Feedback",
     "capturing": "Menangkap...",
-    "inventory": "Persediaan"
+    "inventory": "Persediaan",
+    "calendar": "Kalender"
   },
   "component": {
     "deleteModal": {
@@ -1306,6 +1307,87 @@
         "items": "Item",
         "addRow": "Tambah Baris",
         "noRows": "Belum ada baris. Tambah cabang & varian."
+      }
+    },
+    "calendar": {
+      "title": "Kalender",
+      "description": "Jadwalkan perawatan, pengingat, dan agenda untuk aset Anda.",
+      "addSchedule": "Tambah Jadwal",
+      "today": "Hari Ini",
+      "moreEvents": "+{count} lainnya",
+      "allAssets": "Semua aset",
+      "filterAsset": "Filter aset",
+      "noSchedules": "Tidak ada jadwal bulan ini",
+      "weekdays": {
+        "sun": "Min",
+        "mon": "Sen",
+        "tue": "Sel",
+        "wed": "Rab",
+        "thu": "Kam",
+        "fri": "Jum",
+        "sat": "Sab"
+      },
+      "recurrence": {
+        "label": "Pengulangan",
+        "none": "Tidak berulang",
+        "weekly": "Mingguan",
+        "monthly": "Bulanan",
+        "yearly": "Tahunan"
+      },
+      "form": {
+        "addTitle": "Tambah Jadwal",
+        "editTitle": "Ubah Jadwal",
+        "addDescription": "Buat jadwal untuk sebuah aset dan opsional diulang.",
+        "editDescription": "Perbarui detail jadwal ini.",
+        "titleLabel": "Judul",
+        "titlePlaceholder": "mis. Perawatan triwulan",
+        "descriptionPlaceholder": "Tambahkan detail (opsional)",
+        "startDate": "Tanggal mulai",
+        "startTime": "Waktu mulai",
+        "endTime": "Waktu selesai",
+        "recurrenceEndDate": "Ulangi sampai",
+        "recurrenceEndHint": "Kosongkan untuk mengulang tanpa tanggal akhir.",
+        "titleRequired": "Judul wajib diisi",
+        "assetRequired": "Aset wajib dipilih",
+        "startDateRequired": "Tanggal mulai wajib diisi",
+        "createSuccess": "Jadwal berhasil dibuat",
+        "updateSuccess": "Jadwal berhasil diperbarui",
+        "assets": "Aset",
+        "selectAssets": "Pilih satu atau beberapa aset",
+        "repeatOn": "Ulangi pada",
+        "dayOfMonth": "Tanggal",
+        "month": "Bulan"
+      },
+      "detail": {
+        "title": "Detail Jadwal",
+        "description": "Lihat detail jadwal ini.",
+        "recurring": "Berulang",
+        "oneTime": "Sekali",
+        "allDay": "Seharian",
+        "attachments": "Lampiran",
+        "noAttachments": "Tidak ada lampiran",
+        "createdBy": "Dibuat oleh",
+        "everyWeekdays": "Setiap {days}",
+        "everyDayOfMonth": "Setiap tanggal {day}",
+        "everyYearOn": "Setiap {day} {month}"
+      },
+      "delete": {
+        "title": "Hapus Jadwal",
+        "success": "Jadwal berhasil dihapus"
+      },
+      "months": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "Mei",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Agu",
+        "sep": "Sep",
+        "oct": "Okt",
+        "nov": "Nov",
+        "dec": "Des"
       }
     }
   }

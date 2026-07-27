@@ -47,6 +47,12 @@ export const useNavigation = () => {
           icon: 'i-lucide-layers',
           permission: 'inventory:read'
         },
+        {
+          label: t('nav.calendar'),
+          to: '/calendar',
+          icon: 'i-lucide-calendar',
+          permission: 'asset-schedule:read'
+        },
       ]
     },
     {

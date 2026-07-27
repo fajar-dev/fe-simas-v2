@@ -83,7 +83,8 @@
     "handover": "Handover",
     "feedback": "Feedback",
     "capturing": "Capturing...",
-    "inventory": "Inventory"
+    "inventory": "Inventory",
+    "calendar": "Calendar"
   },
   "component": {
     "deleteModal": {
@@ -1306,6 +1307,87 @@
         "items": "Items",
         "addRow": "Add Row",
         "noRows": "No rows yet. Add a branch and variant."
+      }
+    },
+    "calendar": {
+      "title": "Calendar",
+      "description": "Schedule maintenance, reminders and events for your assets.",
+      "addSchedule": "Add Schedule",
+      "today": "Today",
+      "moreEvents": "+{count} more",
+      "allAssets": "All assets",
+      "filterAsset": "Filter by asset",
+      "noSchedules": "No schedules this month",
+      "weekdays": {
+        "sun": "Sun",
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat"
+      },
+      "recurrence": {
+        "label": "Recurrence",
+        "none": "Does not repeat",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "yearly": "Yearly"
+      },
+      "form": {
+        "addTitle": "Add Schedule",
+        "editTitle": "Edit Schedule",
+        "addDescription": "Create a schedule for an asset and optionally repeat it.",
+        "editDescription": "Update this schedule's details.",
+        "titleLabel": "Title",
+        "titlePlaceholder": "e.g. Quarterly maintenance",
+        "descriptionPlaceholder": "Add more details (optional)",
+        "startDate": "Start date",
+        "startTime": "Start time",
+        "endTime": "End time",
+        "recurrenceEndDate": "Repeat until",
+        "recurrenceEndHint": "Leave empty to repeat with no end date.",
+        "titleRequired": "Title is required",
+        "assetRequired": "Asset is required",
+        "startDateRequired": "Start date is required",
+        "createSuccess": "Schedule created successfully",
+        "updateSuccess": "Schedule updated successfully",
+        "assets": "Assets",
+        "selectAssets": "Select one or more assets",
+        "repeatOn": "Repeat on",
+        "dayOfMonth": "Day of month",
+        "month": "Month"
+      },
+      "detail": {
+        "title": "Schedule Detail",
+        "description": "View this schedule's details.",
+        "recurring": "Recurring",
+        "oneTime": "One-time",
+        "allDay": "All day",
+        "attachments": "Attachments",
+        "noAttachments": "No attachments",
+        "createdBy": "Created by",
+        "everyWeekdays": "Every {days}",
+        "everyDayOfMonth": "Day {day} of every month",
+        "everyYearOn": "Every {day} {month}"
+      },
+      "delete": {
+        "title": "Delete Schedule",
+        "success": "Schedule deleted successfully"
+      },
+      "months": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec"
       }
     }
   }
