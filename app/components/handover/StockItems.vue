@@ -390,6 +390,11 @@ const resetForm = () => {
   draft.inventoryId = undefined
   draft.branchId = undefined
   tableRows.value = []
+  // Return mode has no branch/inventory pickers to repopulate the table — its
+  // rows come straight from what the employee holds, so reload them here
+  // instead of leaving the table blank (this also picks up anything assigned
+  // since the employee was selected).
+  if (props.transactionType === 'return') loadHeldSummary()
 }
 
 const addRows = () => {
