@@ -41,4 +41,16 @@
   --color-red-800: #5C0E0E;
   --color-red-900: #440A0A;
   --color-red-950: #2C0707;
+
+  --color-blue-50: #EAF4FF;
+  --color-blue-100: #D5EAFF;
+  --color-blue-200: #A9D5FF;
+  --color-blue-300: #70B8FF;
+  --color-blue-400: #42A5F5;
+  --color-blue-500: #2196F3;
+  --color-blue-600: #1E88E5;
+  --color-blue-700: #1976D2;
+  --color-blue-800: #1565C0;
+  --color-blue-900: #0D47A1;
+  --color-blue-950: #062B5C;
 }
