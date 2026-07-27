@@ -465,9 +465,6 @@
       },
       "pendingHandoverWarning": {
         "assignHolder": "Tidak dapat menetapkan pemegang: aset sedang dalam serah terima yang pending"
-      },
-      "handoverReturnWarning": {
-        "returnAsset": "Aset ini ditetapkan lewat serah terima dan harus dikembalikan melalui serah terima pengembalian"
       }
     },
     "branch": {

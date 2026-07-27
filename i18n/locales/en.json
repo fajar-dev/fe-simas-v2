@@ -465,9 +465,6 @@
       },
       "pendingHandoverWarning": {
         "assignHolder": "Cannot assign holder: asset is in a pending handover"
-      },
-      "handoverReturnWarning": {
-        "returnAsset": "This asset was assigned via a handover and must be returned through a return handover"
       }
     },
     "branch": {
