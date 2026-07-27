@@ -154,7 +154,7 @@
       </div>
 
       <!-- User Profile with Popover -->
-      <div class="pt-2 border-t border-neutral-200">
+      <div class="hidden lg:block pt-2 border-t border-neutral-200">
       <UserPopover :popover-props="{ content: { side: 'right', sideOffset: 12, align: 'end' } }">
         <button
           class="flex w-full items-center cursor-pointer rounded-md transition-colors hover:bg-neutral-50"
