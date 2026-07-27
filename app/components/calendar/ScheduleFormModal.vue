@@ -31,29 +31,19 @@
           <UTextarea v-model="form.description" :placeholder="$t('pages.calendar.form.descriptionPlaceholder')" class="w-full" :rows="3" />
         </UFormField>
 
-        <!-- Start date + time -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <UFormField :label="$t('pages.calendar.form.startDate')" name="startDate" required class="sm:col-span-1">
-            <UInputDate v-model="startDateVal" class="w-full">
-              <template #trailing>
-                <UPopover>
-                  <UButton icon="i-lucide-calendar" color="neutral" variant="ghost" size="sm" square />
-                  <template #content>
-                    <UCalendar v-model="startDateVal" />
-                  </template>
-                </UPopover>
-              </template>
-            </UInputDate>
-          </UFormField>
-
-          <UFormField :label="$t('pages.calendar.form.startTime')" name="startTime">
-            <UInput v-model="startTimeModel" type="time" class="w-full" />
-          </UFormField>
-
-          <UFormField :label="$t('pages.calendar.form.endTime')" name="endTime">
-            <UInput v-model="endTimeModel" type="time" class="w-full" />
-          </UFormField>
-        </div>
+        <!-- Start date -->
+        <UFormField :label="$t('pages.calendar.form.startDate')" name="startDate" required>
+          <UInputDate v-model="startDateVal" class="w-full">
+            <template #trailing>
+              <UPopover>
+                <UButton icon="i-lucide-calendar" color="neutral" variant="ghost" size="sm" square />
+                <template #content>
+                  <UCalendar v-model="startDateVal" />
+                </template>
+              </UPopover>
+            </template>
+          </UInputDate>
+        </UFormField>
 
         <!-- Attachments -->
         <AttachmentManager v-model="uploadedAttachments" @change="onAttachmentsChanged" />
@@ -185,8 +175,6 @@ const form = reactive<AssetSchedulePayload>({
   title: '',
   description: '',
   startDate: '',
-  startTime: null,
-  endTime: null,
   recurrence: 'none',
   daysOfWeek: [],
   dayOfMonth: null,
@@ -207,14 +195,6 @@ const startDateVal = computed({
 const recurrenceEndVal = computed({
   get: () => toCalendar(form.recurrenceEndDate),
   set: (val) => { form.recurrenceEndDate = val ? val.toString() : null },
-})
-const startTimeModel = computed({
-  get: () => form.startTime ?? '',
-  set: (v: string) => { form.startTime = v || null },
-})
-const endTimeModel = computed({
-  get: () => form.endTime ?? '',
-  set: (v: string) => { form.endTime = v || null },
 })
 
 const toggleWeekday = (day: number) => {
@@ -248,8 +228,6 @@ const resetForm = () => {
   form.title = ''
   form.description = ''
   form.startDate = props.defaultDate || new Date().toISOString().split('T')[0] || ''
-  form.startTime = null
-  form.endTime = null
   form.recurrence = 'none'
   form.daysOfWeek = []
   form.dayOfMonth = null
@@ -268,8 +246,6 @@ const hydrateFromSchedule = (s: AssetSchedule) => {
   form.title = s.title
   form.description = s.description || ''
   form.startDate = s.startDate
-  form.startTime = s.startTime
-  form.endTime = s.endTime
   form.recurrence = s.recurrence
   form.daysOfWeek = s.daysOfWeek ? [...s.daysOfWeek] : []
   form.dayOfMonth = s.dayOfMonth
@@ -292,8 +268,6 @@ const handleSubmit = async () => {
       title: form.title,
       description: form.description || null,
       startDate: form.startDate,
-      startTime: form.startTime || null,
-      endTime: form.endTime || null,
       recurrence: r,
       daysOfWeek: r === 'weekly' ? (form.daysOfWeek || []) : null,
       dayOfMonth: r === 'monthly' || r === 'yearly' ? form.dayOfMonth : null,

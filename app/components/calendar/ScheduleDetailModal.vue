@@ -44,16 +44,10 @@
           </div>
         </div>
 
-        <!-- Date & time -->
-        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-neutral-700 dark:text-neutral-300">
-          <span class="inline-flex items-center gap-1.5">
-            <UIcon name="i-lucide-calendar" class="w-4 h-4 text-neutral-400" />
-            {{ dateLabel }}
-          </span>
-          <span class="inline-flex items-center gap-1.5">
-            <UIcon name="i-lucide-clock" class="w-4 h-4 text-neutral-400" />
-            {{ timeLabel }}
-          </span>
+        <!-- Date -->
+        <div class="flex items-center gap-1.5 text-sm text-neutral-700 dark:text-neutral-300">
+          <UIcon name="i-lucide-calendar" class="w-4 h-4 text-neutral-400" />
+          {{ dateLabel }}
         </div>
 
         <!-- Description -->
@@ -136,13 +130,6 @@ const dateLabel = computed(() => {
   return fromISODate(iso).toLocaleDateString(isId.value ? 'id-ID' : 'en-US', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   })
-})
-
-const timeLabel = computed(() => {
-  const s = props.schedule
-  if (!s) return ''
-  if (!s.startTime) return t('pages.calendar.detail.allDay')
-  return s.endTime ? `${s.startTime} - ${s.endTime}` : s.startTime
 })
 
 // Human-readable recurrence specifics ("Every Mon, Wed" / "Day 15 of each month" / "Every 10 Aug").

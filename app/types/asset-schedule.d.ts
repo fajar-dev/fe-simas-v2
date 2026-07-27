@@ -14,8 +14,6 @@ export interface AssetSchedule {
   title: string
   description: string | null
   startDate: string
-  startTime: string | null
-  endTime: string | null
   recurrence: ScheduleRecurrence
   daysOfWeek: number[] | null
   dayOfMonth: number | null
@@ -43,8 +41,6 @@ export interface AssetSchedulePayload {
   title: string
   description?: string | null
   startDate: string
-  startTime?: string | null
-  endTime?: string | null
   recurrence: ScheduleRecurrence
   daysOfWeek?: number[] | null
   dayOfMonth?: number | null

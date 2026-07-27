@@ -48,7 +48,6 @@
               name="i-lucide-repeat"
               class="w-2.5 h-2.5 shrink-0 opacity-70"
             />
-            <span v-if="occ.startTime" class="font-medium shrink-0">{{ occ.startTime }}</span>
             <span class="truncate">{{ occ.title }}</span>
           </button>
 
