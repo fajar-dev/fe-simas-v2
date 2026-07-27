@@ -13,7 +13,26 @@
         </UFormField>
 
         <UFormField v-if="isEmployee" :label="$t('common.employee')" required>
-          <USelectMenu v-model="employeeId" :items="employeeOptions" value-key="value" searchable :placeholder="$t('pages.inventory.stockOut.selectEmployee')" class="w-full" />
+          <USelectMenu
+            v-model="selectedEmployee"
+            :items="employeeOptions"
+            :avatar="selectedEmployee?.avatar"
+            searchable
+            :searchable-placeholder="$t('pages.inventory.stockOut.searchEmployee')"
+            :placeholder="$t('pages.inventory.stockOut.selectEmployee')"
+            :loading="isLoadingEmployees"
+            class="w-full"
+          >
+            <template #item="{ item }">
+              <UAvatar
+                :src="item.avatar?.src"
+                :alt="item.label"
+                size="2xs"
+                loading="lazy"
+              />
+              <span>{{ item.label }}</span>
+            </template>
+          </USelectMenu>
         </UFormField>
 
         <UFormField :label="$t('common.branch')" required>
@@ -98,19 +117,41 @@ const open = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ done: [] }>()
 
 interface Row { variantId: number, name: string, code: string | null, new: number, used: number, assignNew: number, assignUsed: number }
+interface EmployeeOption {
+  label: string
+  value: number
+  avatar?: {
+    src: string
+    alt: string
+    loading?: 'lazy' | 'eager'
+  }
+}
 
 const saving = ref(false)
 const isLoading = ref(false)
-const employeeOptions = ref<{ label: string, value: number }[]>([])
+const isLoadingEmployees = ref(false)
+const employeeOptions = ref<EmployeeOption[]>([])
 const branchOptions = ref<{ label: string, value: number }[]>([])
 const rows = ref<Row[]>([])
 
 const isEmployee = ref(true)
 const employeeId = ref<number | undefined>(undefined)
+const selectedEmployee = ref<EmployeeOption | undefined>(undefined)
 const branchId = ref<number | undefined>(undefined)
 const note = ref('')
 const attachments = ref<Attachment[]>([])
 const attachmentIds = ref<number[]>([])
+
+watch(selectedEmployee, (val) => {
+  employeeId.value = val?.value
+})
+
+watch(isEmployee, (val) => {
+  if (!val) {
+    selectedEmployee.value = undefined
+    employeeId.value = undefined
+  }
+})
 
 const hasQty = computed(() => rows.value.some(r => (Number(r.assignNew) || 0) > 0 || (Number(r.assignUsed) || 0) > 0))
 const canSubmit = computed(() => {
@@ -156,12 +197,29 @@ const loadRows = async () => {
 watch(branchId, loadRows)
 
 const load = async () => {
-  const [b, e] = await Promise.all([
-    branchService.getList(),
-    employeeService.getList(true)
-  ])
-  if (b.success && b.data) branchOptions.value = b.data.map(x => ({ label: x.name, value: x.id }))
-  if (e.success && e.data) employeeOptions.value = e.data.map(x => ({ label: `${x.name} (${x.employeeId})`, value: x.id }))
+  isLoadingEmployees.value = true
+  try {
+    const [b, e] = await Promise.all([
+      branchService.getList(),
+      employeeService.getList(true)
+    ])
+    if (b.success && b.data) branchOptions.value = b.data.map(x => ({ label: x.name, value: x.id }))
+    if (e.success && e.data) {
+      employeeOptions.value = e.data.map(x => ({
+        label: `${x.name} (${x.employeeId})`,
+        value: x.id,
+        avatar: x.photo
+          ? {
+              src: x.photo,
+              alt: x.name,
+              loading: 'lazy' as const
+            }
+          : undefined
+      }))
+    }
+  } finally {
+    isLoadingEmployees.value = false
+  }
 }
 
 const submit = async () => {
@@ -213,6 +271,7 @@ watch(open, async (val) => {
   if (val) {
     isEmployee.value = true
     employeeId.value = undefined
+    selectedEmployee.value = undefined
     branchId.value = undefined
     note.value = ''
     attachments.value = []
