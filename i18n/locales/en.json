@@ -187,7 +187,8 @@
         "noteTab": "Notes",
         "accumulatedDepreciation": "Accumulated Depreciation",
         "bookValue": "Book Value",
-        "depreciationSection": "Depreciation"
+        "depreciationSection": "Depreciation",
+        "scheduleTab": "Schedule"
       },
       "printCodeModal": {
         "title": "Print Asset Code",
@@ -889,6 +890,12 @@
         "deleteRecord": "Delete Record",
         "system": "System",
         "deleteSuccess": "Asset note record deleted successfully!"
+      },
+      "schedule": {
+        "columnAssets": "Assets",
+        "columnAction": "Action",
+        "editRecord": "Edit",
+        "deleteRecord": "Delete"
       }
     },
     "branch": {

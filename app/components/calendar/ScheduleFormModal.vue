@@ -134,6 +134,8 @@ const open = defineModel<boolean>({ default: false })
 const props = defineProps<{
   schedule?: AssetSchedule | null
   defaultDate?: string | null
+  /** Pre-select this asset when creating a new schedule (e.g. opened from an asset's own page). Editable — not a hard lock. */
+  defaultAssetId?: number | null
 }>()
 
 const emit = defineEmits<{ saved: [] }>()
@@ -173,7 +175,20 @@ const schema = z.object({
   startDate: z.string().min(1, t('pages.calendar.form.startDateRequired')),
 })
 
-const form = reactive<AssetSchedulePayload>({
+interface ScheduleFormState {
+  assetIds: number[]
+  title: string
+  description: string
+  startDate: string
+  recurrence: ScheduleRecurrence
+  daysOfWeek: number[]
+  dayOfMonth: number | null
+  month: number | null
+  recurrenceEndDate: string | null
+  attachmentIds: number[]
+}
+
+const form = reactive<ScheduleFormState>({
   assetIds: [],
   title: '',
   description: '',
@@ -238,6 +253,16 @@ watch(assetSearchTerm, (term) => {
   clearTimeout(assetSearchTimeout)
   assetSearchTimeout = setTimeout(() => { searchAssets(term) }, 300)
 })
+
+const preselectDefaultAsset = async () => {
+  if (!props.defaultAssetId) return
+  const res = await assetService.getById(props.defaultAssetId)
+  if (res.success && res.data) {
+    const option = toAssetOption(res.data)
+    selectedAssets.value = [option]
+    form.assetIds = [option.value]
+  }
+}
 
 const resetForm = () => {
   form.assetIds = []
@@ -312,10 +337,14 @@ const handleSubmit = async () => {
   }
 }
 
-watch(open, (val) => {
+watch(open, async (val) => {
   if (!val) return
-  if (props.schedule) hydrateFromSchedule(props.schedule)
-  else resetForm()
+  if (props.schedule) {
+    hydrateFromSchedule(props.schedule)
+  } else {
+    resetForm()
+    await preselectDefaultAsset()
+  }
   searchAssets()
 })
 </script>

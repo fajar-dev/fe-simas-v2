@@ -385,6 +385,14 @@ const items = computed(() => {
       to: `/asset/${assetId}/note`
     })
   }
+  if (hasPermission('asset-schedule:read')) {
+    tabs.push({
+      value: 'schedule',
+      label: t('component.asset.detailWrapper.scheduleTab'),
+      icon: 'i-lucide-calendar-clock',
+      to: `/asset/${assetId}/schedule`
+    })
+  }
   return tabs
 })
 
@@ -394,6 +402,7 @@ const activeTab = computed({
     if (route.path.endsWith('/holder')) current = 'holder'
     else if (route.path.endsWith('/maintenance')) current = 'maintenance'
     else if (route.path.endsWith('/note')) current = 'note'
+    else if (route.path.endsWith('/schedule')) current = 'schedule'
 
     const isAllowed = items.value.some(i => i.value === current)
     if (!isAllowed && items.value.length > 0) {

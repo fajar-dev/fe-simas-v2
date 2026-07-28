@@ -187,7 +187,8 @@
         "noteTab": "Catatan",
         "accumulatedDepreciation": "Akumulasi Penyusutan",
         "bookValue": "Nilai Buku",
-        "depreciationSection": "Penyusutan"
+        "depreciationSection": "Penyusutan",
+        "scheduleTab": "Jadwal"
       },
       "printCodeModal": {
         "title": "Cetak Kode Aset",
@@ -889,6 +890,12 @@
         "deleteRecord": "Hapus Catatan",
         "system": "Sistem",
         "deleteSuccess": "Catatan aset berhasil dihapus!"
+      },
+      "schedule": {
+        "columnAssets": "Aset",
+        "columnAction": "Aksi",
+        "editRecord": "Ubah",
+        "deleteRecord": "Hapus"
       }
     },
     "branch": {
