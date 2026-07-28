@@ -6,6 +6,7 @@ export interface Category {
     name: string
     description: string | null
     assetCount: number
+    inventoryCount: number
     createdAt: string
     updatedAt: string
 }

@@ -160,6 +160,13 @@ const baseColumns: TableColumn<Branch>[] = [
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
     }
+  },
+  {
+    accessorKey: 'inventoryCount',
+    header: sortHeader(t('pages.branch.columnInventoryCount'), 'inventoryCount'),
+    cell: ({ row }) => {
+      return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.inventoryCount ?? 0))
+    }
   }
 ]
 

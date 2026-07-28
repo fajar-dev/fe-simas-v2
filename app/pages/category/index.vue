@@ -139,6 +139,13 @@ const baseColumns: TableColumn<Category>[] = [
     cell: ({ row }) => {
       return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
     }
+  },
+  {
+    accessorKey: 'inventoryCount',
+    header: sortHeader(t('pages.category.columnInventoryCount'), 'inventoryCount'),
+    cell: ({ row }) => {
+      return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.inventoryCount ?? 0))
+    }
   }
 ]
 
