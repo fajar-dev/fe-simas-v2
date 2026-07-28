@@ -1,6 +1,6 @@
 import { apiService } from "./api-service"
 import { handleServiceError } from "../composables/error-helper"
-import type { User, UserPayload } from "../types/user"
+import type { User, UserOption, UserPayload } from "../types/user"
 import type { ApiResponse } from "../types/api"
 
 export class UserService {
@@ -19,6 +19,19 @@ export class UserService {
             if (order) url += `&order=${order}`
             const response = await apiService.client.get<ApiResponse<User[]>>(
                 url,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
+    /** Lightweight search-as-you-type lookup for pickers/selects — not the full paginated list. */
+    async searchOptions(q = '', limit = 20): Promise<ApiResponse<UserOption[]>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<UserOption[]>>(
+                `/user/options?q=${encodeURIComponent(q)}&limit=${limit}`,
                 this.authHeaders
             )
             return response.data

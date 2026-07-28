@@ -893,6 +893,7 @@
       },
       "schedule": {
         "columnAssets": "Aset",
+        "columnUsers": "Ditugaskan",
         "columnAction": "Aksi",
         "editRecord": "Ubah",
         "deleteRecord": "Hapus"
@@ -1361,7 +1362,9 @@
         "selectAssets": "Pilih satu atau beberapa aset",
         "repeatOn": "Ulangi pada",
         "dayOfMonth": "Tanggal",
-        "month": "Bulan"
+        "month": "Bulan",
+        "assignedUsers": "Pengguna Ditugaskan",
+        "selectUsers": "Pilih pengguna untuk diberi tahu (opsional)"
       },
       "detail": {
         "title": "Detail Jadwal",
@@ -1373,7 +1376,9 @@
         "createdBy": "Dibuat oleh",
         "everyWeekdays": "Setiap {days}",
         "everyDayOfMonth": "Setiap tanggal {day}",
-        "everyYearOn": "Setiap {day} {month}"
+        "everyYearOn": "Setiap {day} {month}",
+        "assignedUsers": "Pengguna Ditugaskan",
+        "noUsersAssigned": "Tidak ada yang ditugaskan"
       },
       "delete": {
         "title": "Hapus Jadwal",

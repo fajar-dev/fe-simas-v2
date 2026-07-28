@@ -9,7 +9,7 @@
       <div v-if="schedule" class="space-y-4">
         <!-- Title + recurrence -->
         <div class="flex items-start justify-between gap-3">
-          <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{{ schedule.title }}</h3>
+          <h3 class="text-lg font-semibold text-neutral-900">{{ schedule.title }}</h3>
           <UBadge
             :color="schedule.recurrence === 'none' ? 'neutral' : 'primary'"
             variant="subtle"
@@ -30,28 +30,55 @@
             <div
               v-for="asset in schedule.assets"
               :key="asset.id"
-              class="flex items-center gap-3 rounded-lg border border-neutral-200 dark:border-neutral-800 p-2.5"
+              class="flex items-center gap-3 rounded-lg border border-neutral-200 p-2.5"
             >
               <img v-if="asset.image" :src="asset.image" :alt="asset.name" class="w-9 h-9 rounded object-cover shrink-0">
-              <div v-else class="w-9 h-9 rounded bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
+              <div v-else class="w-9 h-9 rounded bg-neutral-100 flex items-center justify-center shrink-0">
                 <UIcon name="i-lucide-box" class="w-4 h-4 text-neutral-400" />
               </div>
               <div class="min-w-0">
-                <p class="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate">{{ asset.name }}</p>
+                <p class="text-sm font-medium text-neutral-900 truncate">{{ asset.name }}</p>
                 <p class="text-xs text-neutral-500">{{ asset.code }}</p>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- Assigned users -->
+        <div class="space-y-2">
+          <p class="text-xs font-medium text-neutral-500">{{ $t('pages.calendar.detail.assignedUsers') }} ({{ schedule.users.length }})</p>
+          <div v-if="schedule.users.length === 0" class="text-sm text-neutral-400">
+            {{ $t('pages.calendar.detail.noUsersAssigned') }}
+          </div>
+          <div v-else class="space-y-2 max-h-44 overflow-y-auto">
+            <div
+              v-for="assignedUser in schedule.users"
+              :key="assignedUser.id"
+              class="flex items-center gap-3 rounded-lg border border-neutral-200 p-2.5"
+            >
+              <UAvatar
+                :src="assignedUser.photo || undefined"
+                :alt="assignedUser.name"
+                class="bg-primary-50 text-primary-700 shrink-0 animate-none"
+                size="sm"
+                loading="lazy"
+              />
+              <div class="min-w-0">
+                <p class="text-sm font-medium text-neutral-900 truncate">{{ assignedUser.name }}</p>
+                <p class="text-xs text-neutral-500 truncate">{{ assignedUser.email }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Date -->
-        <div class="flex items-center gap-1.5 text-sm text-neutral-700 dark:text-neutral-300">
+        <div class="flex items-center gap-1.5 text-sm text-neutral-700">
           <UIcon name="i-lucide-calendar" class="w-4 h-4 text-neutral-400" />
           {{ dateLabel }}
         </div>
 
         <!-- Description -->
-        <p v-if="schedule.description" class="text-sm text-neutral-600 dark:text-neutral-400 whitespace-pre-wrap">
+        <p v-if="schedule.description" class="text-sm text-neutral-600 whitespace-pre-wrap">
           {{ schedule.description }}
         </p>
 

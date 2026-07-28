@@ -27,3 +27,11 @@ export interface UserPayload {
   employeeId?: number | null
 }
 
+/** Minimal shape from GET /user/options — for search-as-you-type pickers, not the full list. */
+export interface UserOption {
+  id: number
+  name: string
+  email: string
+  photo: string | null
+}
+

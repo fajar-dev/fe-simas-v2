@@ -47,6 +47,22 @@
           </UInputDate>
         </UFormField>
 
+        <!-- Assigned users (optional, multiple) -->
+        <UFormField :label="$t('pages.calendar.form.assignedUsers')" name="userIds">
+          <USelectMenu
+            v-model="selectedUsers"
+            v-model:search-term="userSearchTerm"
+            :items="userOptions"
+            multiple
+            searchable
+            ignore-filter
+            :searchable-placeholder="$t('common.search')"
+            :placeholder="$t('pages.calendar.form.selectUsers')"
+            :loading="isLoadingUsers"
+            class="w-full"
+          />
+        </UFormField>
+
         <!-- Attachments -->
         <AttachmentManager v-model="uploadedAttachments" @change="onAttachmentsChanged" />
 
@@ -124,6 +140,7 @@ import { z } from 'zod'
 import { parseDate } from '@internationalized/date'
 import { assetScheduleService } from '~/services/asset-schedule-service'
 import { assetService } from '~/services/asset-service'
+import { userService } from '~/services/user-service'
 import type { AssetSchedule, AssetSchedulePayload, ScheduleRecurrence } from '~/types/asset-schedule'
 import type { Attachment } from '~/types/attachment'
 
@@ -148,6 +165,10 @@ const isLoadingAssets = ref(false)
 const assetOptions = ref<{ label: string; value: number }[]>([])
 const selectedAssets = ref<{ label: string; value: number }[]>([])
 const assetSearchTerm = ref('')
+const isLoadingUsers = ref(false)
+const userOptions = ref<{ label: string; value: number }[]>([])
+const selectedUsers = ref<{ label: string; value: number }[]>([])
+const userSearchTerm = ref('')
 const uploadedAttachments = ref<Attachment[]>([])
 
 type RecOption = { label: string; value: ScheduleRecurrence }
@@ -186,6 +207,7 @@ interface ScheduleFormState {
   month: number | null
   recurrenceEndDate: string | null
   attachmentIds: number[]
+  userIds: number[]
 }
 
 const form = reactive<ScheduleFormState>({
@@ -199,6 +221,7 @@ const form = reactive<ScheduleFormState>({
   month: null,
   recurrenceEndDate: null,
   attachmentIds: [],
+  userIds: [],
 })
 
 // Date <-> CalendarDate bridges
@@ -223,6 +246,7 @@ const toggleWeekday = (day: number) => {
 }
 
 watch(selectedAssets, (val) => { form.assetIds = (val || []).map(a => a.value) })
+watch(selectedUsers, (val) => { form.userIds = (val || []).map(u => u.value) })
 watch(selectedRecurrence, (val) => { form.recurrence = val.value })
 watch(selectedDayOfMonth, (val) => { if (val) form.dayOfMonth = val.value })
 watch(selectedMonth, (val) => { if (val) form.month = val.value })
@@ -254,6 +278,31 @@ watch(assetSearchTerm, (term) => {
   assetSearchTimeout = setTimeout(() => { searchAssets(term) }, 300)
 })
 
+const toUserOption = (u: { id: number; name: string; email: string }) => ({ label: `${u.name} (${u.email})`, value: u.id })
+
+// User assignment is optional and search-as-you-type against the lightweight /user/options
+// endpoint (no `user:read` permission required, so any user who can create schedules can pick assignees).
+const searchUsers = async (q = '') => {
+  isLoadingUsers.value = true
+  try {
+    const res = await userService.searchOptions(q, 20)
+    if (res.success && res.data) {
+      const results = res.data.map(toUserOption)
+      // Keep already-selected users visible even if the current search no longer returns them.
+      const pinned = selectedUsers.value.filter(u => !results.some(r => r.value === u.value))
+      userOptions.value = [...pinned, ...results]
+    }
+  } finally {
+    isLoadingUsers.value = false
+  }
+}
+
+let userSearchTimeout: ReturnType<typeof setTimeout>
+watch(userSearchTerm, (term) => {
+  clearTimeout(userSearchTimeout)
+  userSearchTimeout = setTimeout(() => { searchUsers(term) }, 300)
+})
+
 const preselectDefaultAsset = async () => {
   if (!props.defaultAssetId) return
   const res = await assetService.getById(props.defaultAssetId)
@@ -275,8 +324,11 @@ const resetForm = () => {
   form.month = null
   form.recurrenceEndDate = null
   form.attachmentIds = []
+  form.userIds = []
   selectedAssets.value = []
   assetSearchTerm.value = ''
+  selectedUsers.value = []
+  userSearchTerm.value = ''
   selectedRecurrence.value = recurrenceOptions.value[0]!
   selectedDayOfMonth.value = dayOptions[0]!
   selectedMonth.value = monthOptions.value[0]!
@@ -294,8 +346,11 @@ const hydrateFromSchedule = (s: AssetSchedule) => {
   form.month = s.month
   form.recurrenceEndDate = s.recurrenceEndDate
   form.attachmentIds = s.attachments.map(a => a.id)
+  form.userIds = s.users.map(u => u.id)
   selectedAssets.value = s.assets.map(toAssetOption)
   assetOptions.value = [...selectedAssets.value]
+  selectedUsers.value = s.users.map(toUserOption)
+  userOptions.value = [...selectedUsers.value]
   selectedRecurrence.value = recurrenceOptions.value.find(o => o.value === s.recurrence) || recurrenceOptions.value[0]!
   selectedDayOfMonth.value = dayOptions.find(o => o.value === s.dayOfMonth) || dayOptions[0]!
   selectedMonth.value = monthOptions.value.find(o => o.value === s.month) || monthOptions.value[0]!
@@ -317,6 +372,7 @@ const handleSubmit = async () => {
       month: r === 'yearly' ? form.month : null,
       recurrenceEndDate: r === 'none' ? null : (form.recurrenceEndDate || null),
       attachmentIds: form.attachmentIds || [],
+      userIds: form.userIds || [],
     }
 
     const res = props.schedule
@@ -346,5 +402,6 @@ watch(open, async (val) => {
     await preselectDefaultAsset()
   }
   searchAssets()
+  searchUsers()
 })
 </script>

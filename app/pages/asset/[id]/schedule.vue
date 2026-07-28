@@ -177,6 +177,15 @@ const columns = computed(() => {
         if (others.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
         return h('span', { class: 'text-xs text-neutral-500' }, `+${others.length}`)
       }
+    },
+    {
+      id: 'users',
+      header: t('pages.asset.schedule.columnUsers'),
+      cell: ({ row }) => {
+        const users = row.original.users || []
+        if (users.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+        return h('span', { class: 'text-xs text-neutral-500' }, users.map(u => u.name).join(', '))
+      }
     }
   ]
 

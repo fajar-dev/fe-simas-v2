@@ -9,6 +9,13 @@ export interface ScheduleAssetRef {
   image: string | null
 }
 
+export interface ScheduleUserRef {
+  id: number
+  name: string
+  email: string
+  photo: string | null
+}
+
 export interface AssetSchedule {
   id: number
   title: string
@@ -20,6 +27,8 @@ export interface AssetSchedule {
   month: number | null
   recurrenceEndDate: string | null
   assets: ScheduleAssetRef[]
+  /** Users assigned to be notified about this schedule. May be empty. */
+  users: ScheduleUserRef[]
   createdBy: {
     id: number
     name: string
@@ -47,4 +56,6 @@ export interface AssetSchedulePayload {
   month?: number | null
   recurrenceEndDate?: string | null
   attachmentIds?: number[]
+  /** Users to notify about this schedule. Optional — omit or pass [] to leave/clear it unassigned. */
+  userIds?: number[]
 }

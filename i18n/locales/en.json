@@ -893,6 +893,7 @@
       },
       "schedule": {
         "columnAssets": "Assets",
+        "columnUsers": "Assigned",
         "columnAction": "Action",
         "editRecord": "Edit",
         "deleteRecord": "Delete"
@@ -1361,7 +1362,9 @@
         "selectAssets": "Select one or more assets",
         "repeatOn": "Repeat on",
         "dayOfMonth": "Day of month",
-        "month": "Month"
+        "month": "Month",
+        "assignedUsers": "Assigned Users",
+        "selectUsers": "Select users to notify (optional)"
       },
       "detail": {
         "title": "Schedule Detail",
@@ -1373,7 +1376,9 @@
         "createdBy": "Created by",
         "everyWeekdays": "Every {days}",
         "everyDayOfMonth": "Day {day} of every month",
-        "everyYearOn": "Every {day} {month}"
+        "everyYearOn": "Every {day} {month}",
+        "assignedUsers": "Assigned Users",
+        "noUsersAssigned": "No one assigned"
       },
       "delete": {
         "title": "Delete Schedule",
