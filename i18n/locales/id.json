@@ -1326,6 +1326,8 @@
       "allAssets": "Semua aset",
       "filterAsset": "Filter aset",
       "noSchedules": "Tidak ada jadwal bulan ini",
+      "todayScheduleTitle": "Jadwal Hari Ini",
+      "todayScheduleEmpty": "Tidak ada jadwal hari ini",
       "weekdays": {
         "sun": "Min",
         "mon": "Sen",

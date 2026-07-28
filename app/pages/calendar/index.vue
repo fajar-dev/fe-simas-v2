@@ -38,17 +38,48 @@
       </UButton>
     </div>
 
-    <!-- Calendar -->
-    <div class="relative">
-      <div v-if="isLoading" class="absolute inset-0 z-10 flex items-center justify-center bg-white/60 rounded-lg">
-        <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-primary" />
+    <!-- Calendar + today's schedule -->
+    <div class="flex flex-col lg:flex-row gap-6 items-start">
+      <div class="relative flex-1 min-w-0 w-full">
+        <div v-if="isLoading" class="absolute inset-0 z-10 flex items-center justify-center bg-white/60 rounded-lg">
+          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-primary" />
+        </div>
+        <CalendarMonthGrid
+          :month-date="monthDate"
+          :occurrences="occurrences"
+          @day-click="onDayClick"
+          @event-click="onEventClick"
+        />
       </div>
-      <CalendarMonthGrid
-        :month-date="monthDate"
-        :occurrences="occurrences"
-        @day-click="onDayClick"
-        @event-click="onEventClick"
-      />
+
+      <div class="w-full lg:w-80 shrink-0 rounded-lg border border-neutral-200 bg-white overflow-hidden">
+        <div class="px-4 py-3 border-b border-neutral-200">
+          <h3 class="text-sm font-semibold text-neutral-900">{{ $t('pages.calendar.todayScheduleTitle') }}</h3>
+          <p class="text-xs text-neutral-500">{{ todayLabel }}</p>
+        </div>
+
+        <div v-if="isLoadingToday" class="p-4 flex justify-center">
+          <UIcon name="i-lucide-loader-2" class="w-5 h-5 animate-spin text-primary" />
+        </div>
+        <p v-else-if="todayOccurrences.length === 0" class="p-4 text-sm text-neutral-400 text-center">
+          {{ $t('pages.calendar.todayScheduleEmpty') }}
+        </p>
+        <ul v-else class="divide-y divide-neutral-100 max-h-[560px] overflow-y-auto">
+          <li v-for="occ in todayOccurrences" :key="occ.id">
+            <button
+              type="button"
+              class="w-full text-left px-4 py-3 hover:bg-neutral-50 transition-colors"
+              @click="onEventClick(occ)"
+            >
+              <div class="flex items-start justify-between gap-2">
+                <p class="text-sm font-medium text-neutral-900 truncate">{{ occ.title }}</p>
+                <UIcon v-if="occ.isRecurring" name="i-lucide-repeat" class="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+              </div>
+              <p class="text-xs text-neutral-500 truncate mt-0.5">{{ assetsSummary(occ) }}</p>
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <!-- Modals -->
@@ -56,7 +87,7 @@
       v-model="showForm"
       :schedule="editingSchedule"
       :default-date="defaultDate"
-      @saved="fetchOccurrences"
+      @saved="refreshAll"
     />
     <CalendarScheduleDetailModal
       v-model="showDetail"
@@ -80,7 +111,7 @@
 import { assetScheduleService } from '~/services/asset-schedule-service'
 import { assetService } from '~/services/asset-service'
 import type { AssetSchedule, ScheduleOccurrence } from '~/types/asset-schedule'
-import { monthGrid, toISODate } from '~/utils/calendar-date'
+import { monthGrid, toISODate, fromISODate } from '~/utils/calendar-date'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -93,6 +124,16 @@ const monthDate = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 
 
 const occurrences = ref<ScheduleOccurrence[]>([])
 const isLoading = ref(false)
+
+// Today's schedule sidebar — fetched independently of the displayed month so it always
+// reflects the real "today", regardless of which month the calendar grid is showing.
+const todayIso = toISODate(new Date())
+const todayOccurrences = ref<ScheduleOccurrence[]>([])
+const isLoadingToday = ref(false)
+const todayLabel = computed(() =>
+  fromISODate(todayIso).toLocaleDateString(locale.value === 'id' ? 'id-ID' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+)
+const assetsSummary = (occ: ScheduleOccurrence) => occ.assets.map(a => a.name).join(', ')
 
 // Asset filter — search-as-you-type against /asset/options (not the full paginated list).
 type AssetFilterOption = { label: string; value: number | null }
@@ -129,6 +170,21 @@ const fetchOccurrences = async () => {
     isLoading.value = false
   }
 }
+
+const fetchTodayOccurrences = async () => {
+  isLoadingToday.value = true
+  try {
+    const assetId = selectedAssetFilter.value?.value ?? undefined
+    const res = await assetScheduleService.getCalendar(todayIso, todayIso, assetId ? { assetId } : {})
+    if (res.success && res.data) {
+      todayOccurrences.value = res.data
+    }
+  } finally {
+    isLoadingToday.value = false
+  }
+}
+
+const refreshAll = () => Promise.all([fetchOccurrences(), fetchTodayOccurrences()])
 
 const searchAssetFilter = async (q = '') => {
   isLoadingAssets.value = true
@@ -199,7 +255,7 @@ const handleDelete = async () => {
       toast.add({ title: t('pages.calendar.delete.success'), color: 'success', icon: 'i-lucide-circle-check' })
       showDelete.value = false
       scheduleToDelete.value = null
-      await fetchOccurrences()
+      await refreshAll()
     }
   } finally {
     isDeleting.value = false
@@ -207,10 +263,10 @@ const handleDelete = async () => {
 }
 
 watch(monthDate, fetchOccurrences)
-watch(selectedAssetFilter, fetchOccurrences)
+watch(selectedAssetFilter, refreshAll)
 
 onMounted(() => {
   searchAssetFilter()
-  fetchOccurrences()
+  refreshAll()
 })
 </script>

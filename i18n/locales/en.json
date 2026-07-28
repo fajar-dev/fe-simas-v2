@@ -1326,6 +1326,8 @@
       "allAssets": "All assets",
       "filterAsset": "Filter by asset",
       "noSchedules": "No schedules this month",
+      "todayScheduleTitle": "Today's Schedule",
+      "todayScheduleEmpty": "No schedules today",
       "weekdays": {
         "sun": "Sun",
         "mon": "Mon",
