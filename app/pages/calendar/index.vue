@@ -10,7 +10,7 @@
         <UButton icon="i-lucide-chevron-right" color="neutral" variant="outline" square @click="shiftMonth(1)" />
       </div>
 
-      <h2 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100 min-w-[180px]">
+      <h2 class="text-lg font-semibold text-neutral-900 min-w-[180px]">
         {{ monthLabel }}
       </h2>
 
@@ -40,7 +40,7 @@
 
     <!-- Calendar -->
     <div class="relative">
-      <div v-if="isLoading" class="absolute inset-0 z-10 flex items-center justify-center bg-white/60 dark:bg-neutral-900/60 rounded-xl">
+      <div v-if="isLoading" class="absolute inset-0 z-10 flex items-center justify-center bg-white/60 rounded-lg">
         <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-primary" />
       </div>
       <CalendarMonthGrid
