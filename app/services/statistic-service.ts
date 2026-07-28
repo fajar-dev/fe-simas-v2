@@ -15,6 +15,7 @@ export interface StatisticSummary {
 }
 
 export interface ChartGroupItem {
+    id: number
     name: string
     count: number
     totalPrice: number

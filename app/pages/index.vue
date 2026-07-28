@@ -19,46 +19,52 @@
 
     <!-- Stats Cards Row 1 -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-      <UCard
+      <NuxtLink
         v-for="stat in statsRow1"
         :key="stat.key"
-        :ui="{ body: 'sm:p-5' }"
+        :to="stat.to"
+        class="block"
       >
-        <UAvatar
-          :icon="stat.icon"
-          size="lg"
-          :ui="{ icon: stat.iconClass }"
-          :class="[stat.bgClass, 'mb-3']"
-          loading="lazy"
-        />
-        <p class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">{{ stat.label }}</p>
-        <p v-if="!isLoading" class="text-xl font-semibold text-neutral-900 tabular-nums">
-          {{ stat.value.toLocaleString('id-ID') }}
-        </p>
-        <USkeleton v-else class="h-7 w-24" />
-      </UCard>
+        <UCard :ui="{ body: 'sm:p-5' }" class="cursor-pointer transition-shadow hover:shadow-md hover:ring-primary/40">
+          <UAvatar
+            :icon="stat.icon"
+            size="lg"
+            :ui="{ icon: stat.iconClass }"
+            :class="[stat.bgClass, 'mb-3']"
+            loading="lazy"
+          />
+          <p class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">{{ stat.label }}</p>
+          <p v-if="!isLoading" class="text-xl font-semibold text-neutral-900 tabular-nums">
+            {{ stat.value.toLocaleString('id-ID') }}
+          </p>
+          <USkeleton v-else class="h-7 w-24" />
+        </UCard>
+      </NuxtLink>
     </div>
 
     <!-- Stats Cards Row 2 (Monetary) -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <UCard
+      <NuxtLink
         v-for="stat in statsRow2"
         :key="stat.key"
-        :ui="{ body: 'sm:p-5' }"
+        :to="stat.to"
+        class="block"
       >
-        <UAvatar
-          :icon="stat.icon"
-          size="lg"
-          :ui="{ icon: stat.iconClass }"
-          :class="[stat.bgClass, 'mb-3']"
-          loading="lazy"
-        />
-        <p class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">{{ stat.label }}</p>
-        <p v-if="!isLoading" class="text-xl font-semibold text-neutral-900 tabular-nums">
-          {{ stat.format(stat.value) }}
-        </p>
-        <USkeleton v-else class="h-7 w-24" />
-      </UCard>
+        <UCard :ui="{ body: 'sm:p-5' }" class="cursor-pointer transition-shadow hover:shadow-md hover:ring-primary/40">
+          <UAvatar
+            :icon="stat.icon"
+            size="lg"
+            :ui="{ icon: stat.iconClass }"
+            :class="[stat.bgClass, 'mb-3']"
+            loading="lazy"
+          />
+          <p class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">{{ stat.label }}</p>
+          <p v-if="!isLoading" class="text-xl font-semibold text-neutral-900 tabular-nums">
+            {{ stat.format(stat.value) }}
+          </p>
+          <USkeleton v-else class="h-7 w-24" />
+        </UCard>
+      </NuxtLink>
     </div>
 
     <!-- Charts Row 1: Category -->
@@ -85,7 +91,12 @@
             hide-legend
           />
           <div class="mt-3 max-h-36 overflow-y-auto space-y-1.5 pr-1">
-            <div v-for="(item, i) in categoryData" :key="item.name" class="flex items-center justify-between text-sm">
+            <div
+              v-for="(item, i) in categoryData"
+              :key="item.id"
+              class="flex items-center justify-between text-sm cursor-pointer rounded px-1 -mx-1 hover:bg-neutral-100 transition-colors"
+              @click="goToAssetFilter('categoryIds', item.id)"
+            >
               <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: chartColors[i % chartColors.length] }" />
                 <span class="text-neutral-700 truncate">{{ item.name }}</span>
@@ -155,7 +166,12 @@
             hide-legend
           />
           <div class="mt-3 max-h-36 overflow-y-auto space-y-1.5 pr-1">
-            <div v-for="(item, i) in locationData" :key="item.name" class="flex items-center justify-between text-sm">
+            <div
+              v-for="(item, i) in locationData"
+              :key="item.id"
+              class="flex items-center justify-between text-sm cursor-pointer rounded px-1 -mx-1 hover:bg-neutral-100 transition-colors"
+              @click="goToAssetFilter('locationIds', item.id)"
+            >
               <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: chartColors[i % chartColors.length] }" />
                 <span class="text-neutral-700 truncate">{{ item.name }}</span>
@@ -225,7 +241,12 @@
             hide-legend
           />
           <div class="mt-3 max-h-40 overflow-y-auto space-y-1.5 pr-1">
-            <div v-for="(item, i) in subCategoryData" :key="item.name" class="flex items-center justify-between text-sm">
+            <div
+              v-for="(item, i) in subCategoryData"
+              :key="item.id"
+              class="flex items-center justify-between text-sm cursor-pointer rounded px-1 -mx-1 hover:bg-neutral-100 transition-colors"
+              @click="goToAssetFilter('subCategoryIds', item.id)"
+            >
               <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: chartColors[i % chartColors.length] }" />
                 <span class="text-neutral-700 truncate">{{ item.name }}</span>
@@ -334,20 +355,34 @@ const summary = ref<StatisticSummary>({
   totalCategories: 0, totalSubCategories: 0, totalLocations: 0, totalBranches: 0, totalActiveEmployees: 0,
 })
 
+// Where the "Assets" and monetary cards link to — the asset list, scoped to the same status filter as this dashboard.
+const assetLink = computed(() => ({
+  path: '/asset',
+  query: selectedStatuses.value.length ? { status: selectedStatuses.value.join(',') } : {}
+}))
+
 const statsRow1 = computed(() => [
-  { key: 'assets', label: t('pages.dashboard.assets'), icon: 'i-lucide-box', bgClass: 'bg-blue-50', iconClass: 'text-blue-600', value: summary.value.totalAssets },
-  { key: 'categories', label: t('pages.dashboard.categories'), icon: 'i-lucide-list', bgClass: 'bg-violet-50', iconClass: 'text-violet-600', value: summary.value.totalCategories },
-  { key: 'subCategories', label: t('pages.dashboard.subCategories'), icon: 'i-lucide-list-tree', bgClass: 'bg-amber-50', iconClass: 'text-amber-600', value: summary.value.totalSubCategories },
-  { key: 'branches', label: t('pages.dashboard.branches'), icon: 'i-lucide-building-2', bgClass: 'bg-teal-50', iconClass: 'text-teal-600', value: summary.value.totalBranches },
-  { key: 'locations', label: t('pages.dashboard.locations'), icon: 'i-lucide-map-pin', bgClass: 'bg-rose-50', iconClass: 'text-rose-600', value: summary.value.totalLocations },
-  { key: 'employees', label: t('pages.dashboard.activeEmployees'), icon: 'i-lucide-users', bgClass: 'bg-indigo-50', iconClass: 'text-indigo-600', value: summary.value.totalActiveEmployees },
+  { key: 'assets', label: t('pages.dashboard.assets'), icon: 'i-lucide-box', bgClass: 'bg-blue-50', iconClass: 'text-blue-600', value: summary.value.totalAssets, to: assetLink.value },
+  { key: 'categories', label: t('pages.dashboard.categories'), icon: 'i-lucide-list', bgClass: 'bg-violet-50', iconClass: 'text-violet-600', value: summary.value.totalCategories, to: '/category' },
+  { key: 'subCategories', label: t('pages.dashboard.subCategories'), icon: 'i-lucide-list-tree', bgClass: 'bg-amber-50', iconClass: 'text-amber-600', value: summary.value.totalSubCategories, to: '/sub-category' },
+  { key: 'branches', label: t('pages.dashboard.branches'), icon: 'i-lucide-building-2', bgClass: 'bg-teal-50', iconClass: 'text-teal-600', value: summary.value.totalBranches, to: '/branch' },
+  { key: 'locations', label: t('pages.dashboard.locations'), icon: 'i-lucide-map-pin', bgClass: 'bg-rose-50', iconClass: 'text-rose-600', value: summary.value.totalLocations, to: '/location' },
+  { key: 'employees', label: t('pages.dashboard.activeEmployees'), icon: 'i-lucide-users', bgClass: 'bg-indigo-50', iconClass: 'text-indigo-600', value: summary.value.totalActiveEmployees, to: '/employee' },
 ])
 
 const statsRow2 = computed(() => [
-  { key: 'price', label: t('pages.dashboard.totalPrice'), icon: 'i-lucide-banknote', bgClass: 'bg-emerald-50', iconClass: 'text-emerald-600', value: summary.value.totalPrice, format: (v: number) => `Rp ${v.toLocaleString('id-ID')}` },
-  { key: 'bookValue', label: t('pages.dashboard.totalBookValue'), icon: 'i-lucide-wallet', bgClass: 'bg-cyan-50', iconClass: 'text-cyan-600', value: summary.value.totalBookValue, format: (v: number) => `Rp ${v.toLocaleString('id-ID')}` },
-  { key: 'depreciation', label: t('pages.dashboard.depreciationValue'), icon: 'i-lucide-trending-down', bgClass: 'bg-red-50', iconClass: 'text-red-600', value: summary.value.totalDepreciation, format: (v: number) => `Rp ${v.toLocaleString('id-ID')}` },
+  { key: 'price', label: t('pages.dashboard.totalPrice'), icon: 'i-lucide-banknote', bgClass: 'bg-emerald-50', iconClass: 'text-emerald-600', value: summary.value.totalPrice, format: (v: number) => `Rp ${v.toLocaleString('id-ID')}`, to: assetLink.value },
+  { key: 'bookValue', label: t('pages.dashboard.totalBookValue'), icon: 'i-lucide-wallet', bgClass: 'bg-cyan-50', iconClass: 'text-cyan-600', value: summary.value.totalBookValue, format: (v: number) => `Rp ${v.toLocaleString('id-ID')}`, to: assetLink.value },
+  { key: 'depreciation', label: t('pages.dashboard.depreciationValue'), icon: 'i-lucide-trending-down', bgClass: 'bg-red-50', iconClass: 'text-red-600', value: summary.value.totalDepreciation, format: (v: number) => `Rp ${v.toLocaleString('id-ID')}`, to: assetLink.value },
 ])
+
+// Chart legends (category/location/sub-category) drill into the asset list, filtered to that one item.
+const router = useRouter()
+const goToAssetFilter = (key: 'categoryIds' | 'locationIds' | 'subCategoryIds', id: number) => {
+  const query: Record<string, string> = { [key]: String(id) }
+  if (selectedStatuses.value.length) query.status = selectedStatuses.value.join(',')
+  router.push({ path: '/asset', query })
+}
 
 // ── Chart data ───────────────────────────────────────
 const categoryData = ref<ChartGroupItem[]>([])
