@@ -99,24 +99,24 @@
         </div>
 
         <!-- Created by -->
-          <p v-if="schedule.createdBy" class="text-xs text-neutral-400">
-            {{ $t('pages.calendar.detail.createdBy') }}:
-                <div class="text-xs text-neutral-900 font-medium">
-                  <div v-if="schedule.createdBy" class="flex items-center gap-2 min-w-0">
-                    <UAvatar
-                      :src="schedule.createdBy.photo || undefined"
-                      :alt="schedule.createdBy.name"
-                      class="bg-primary-50 text-primary-700 shrink-0 animate-none"
-                      size="xs"
-                      loading="lazy"
-                    />
-                    <span class="text-xs text-neutral-900 truncate" :title="schedule.createdBy.name">
-                      {{ schedule.createdBy.name }}
-                    </span>
-                  </div>
-                  <span v-else>-</span>
-                </div>
-          </p>
+        <div v-if="schedule.createdBy" class="text-xs text-neutral-400">
+          {{ $t('pages.calendar.detail.createdBy') }}:
+          <div class="text-xs text-neutral-900 font-medium mt-1">
+            <div v-if="schedule.createdBy" class="flex items-center gap-2 min-w-0">
+              <UAvatar
+                :src="schedule.createdBy.photo || undefined"
+                :alt="schedule.createdBy.name"
+                class="bg-primary-50 text-primary-700 shrink-0 animate-none"
+                size="xs"
+                loading="lazy"
+              />
+              <span class="text-xs text-neutral-900 truncate" :title="schedule.createdBy.name">
+                {{ schedule.createdBy.name }}
+              </span>
+            </div>
+            <span v-else>-</span>
+          </div>
+        </div>
       </div>
     </template>
 
