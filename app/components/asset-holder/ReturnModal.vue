@@ -12,12 +12,9 @@
     <template #body>
       <UAlert
         v-if="activeHolder"
-        :avatar="{
-          src: activeHolder.employee?.photo || undefined,
-          alt: activeHolder.employee?.name,
-        }"
-        :title="activeHolder.employee?.name"
-        :description="activeHolder.employee?.employeeId"
+        :avatar="activeHolder.organization ? undefined : { src: activeHolder.employee?.photo || undefined, alt: activeHolder.employee?.name }"
+        :title="activeHolder.employee?.name || activeHolder.organization?.name"
+        :description="activeHolder.employee?.employeeId || activeHolder.organization?.type"
         color="neutral"
         variant="subtle"
         class="mb-4"

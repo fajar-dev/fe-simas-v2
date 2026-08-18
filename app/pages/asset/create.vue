@@ -237,9 +237,12 @@
             <div v-if="form.hasHolder" class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 space-y-4">
               <div class="font-medium text-sm text-neutral-850 flex items-center gap-1.5 border-b border-neutral-100 pb-2">
                 <UIcon name="i-lucide-user-plus" class="w-4 h-4 text-primary-500" />
-                {{ $t('pages.asset.create.assignToEmployee') }}
+                {{ $t('pages.asset.create.assignHolder') }}
               </div>
-              <UFormField :label="$t('common.employee')" name="employeeId">
+              <UFormField :label="$t('component.assetHolder.assignModal.holderKind')" name="holderKind">
+                <URadioGroup v-model="form.holderKind" :items="holderKindOptions" orientation="horizontal" />
+              </UFormField>
+              <UFormField v-if="form.holderKind === 'employee'" :label="$t('common.employee')" name="employeeId">
                 <USelectMenu
                   v-model="selectedEmployee"
                   :items="employeeOptions"
@@ -251,14 +254,25 @@
                   class="w-full"
                 />
               </UFormField>
-              <UFormField v-if="form.employeeId" :label="$t('pages.asset.create.assignmentDate')" name="assignedDate">
+              <UFormField v-else :label="$t('common.organization')" name="organizationId">
+                <USelectMenu
+                  v-model="selectedOrganization"
+                  :items="organizationOptions"
+                  searchable
+                  :searchable-placeholder="$t('common.search')"
+                  :placeholder="$t('component.assetHolder.assignModal.selectOrganization')"
+                  :loading="isLoadingOrganizations"
+                  class="w-full"
+                />
+              </UFormField>
+              <UFormField v-if="form.employeeId || form.organizationId" :label="$t('pages.asset.create.assignmentDate')" name="assignedDate">
                 <UInput type="datetime-local" v-model="form.assignedDate" class="w-full" />
               </UFormField>
-              <UFormField v-if="form.employeeId" :label="$t('pages.asset.create.assignmentNotes')" name="assignNote">
+              <UFormField v-if="form.employeeId || form.organizationId" :label="$t('pages.asset.create.assignmentNotes')" name="assignNote">
                 <UTextarea v-model="form.assignNote" :placeholder="$t('pages.asset.create.assignNotesPlaceholder')" class="w-full" :rows="2" />
               </UFormField>
               <AttachmentManager
-                v-if="form.employeeId"
+                v-if="form.employeeId || form.organizationId"
                 v-model="uploadedAssignAttachments"
                 @change="onAssignAttachmentsChanged"
               />
@@ -331,6 +345,7 @@ import { assetService } from '~/services/asset-service'
 import { assetSchema } from '~/composables/useAssetForm'
 import type { AssetPayload } from '~/types/asset'
 import { employeeService } from '~/services/employee-service'
+import { organizationService } from '~/services/organization-service'
 import { branchService } from '~/services/branch-service'
 import { locationService } from '~/services/location-service'
 import type { Attachment } from '~/types/attachment'
@@ -394,7 +409,9 @@ const uploadedAssetAttachments = ref<Attachment[]>([])
 const schema = assetSchema.pick({ categoryId: true, name: true, subCategoryId: true, brand: true, model: true, price: true, purchaseDate: true, description: true })
 
 const form = reactive<Omit<AssetPayload, 'code' | 'bleTagMac'> & { categoryId: number } & {
+  holderKind: 'employee' | 'organization'
   employeeId?: number | null
+  organizationId?: number | null
   assignedDate?: string
   assignNote?: string
   assignAttachmentIds?: number[] | null
@@ -420,7 +437,9 @@ const form = reactive<Omit<AssetPayload, 'code' | 'bleTagMac'> & { categoryId: n
 
   image: null,
   subCategoryId: undefined as unknown as number,
+  holderKind: 'employee',
   employeeId: null,
+  organizationId: null,
   assignedDate: getLocalDatetimeString(),
   assignNote: '',
   assignAttachmentIds: [],
@@ -539,6 +558,7 @@ const hasInvalidCodes = computed(() => {
 
 // ── Assignment & Location Selects ───────────────────────────────────────────
 const isLoadingEmployees = ref(false)
+const isLoadingOrganizations = ref(false)
 const isLoadingBranches = ref(false)
 const isLoadingLocations = ref(false)
 const employeeOptions = ref<{
@@ -547,16 +567,38 @@ const employeeOptions = ref<{
   avatar?: { src: string; alt: string; loading?: 'lazy' | 'eager' }
   photo?: { src: string; alt: string; loading?: 'lazy' | 'eager' }
 }[]>([])
+const organizationOptions = ref<{ label: string; value: number }[]>([])
 const branchOptions = ref<{ label: string; value: number }[]>([])
 const filteredLocationOptions = ref<{ label: string; value: number }[]>([])
 
 const selectedEmployee = ref<{ label: string; value: number; avatar?: any; photo?: any } | undefined>(undefined)
+const selectedOrganization = ref<{ label: string; value: number } | undefined>(undefined)
 const selectedBranch = ref<{ label: string; value: number } | undefined>(undefined)
 const selectedLocation = ref<{ label: string; value: number } | undefined>(undefined)
 const showAddLocation = ref(false)
 
+const holderKindOptions = computed(() => [
+  { label: t('common.employee'), value: 'employee' as const },
+  { label: t('common.organization'), value: 'organization' as const },
+])
+
 watch(selectedEmployee, (val) => {
   form.employeeId = val?.value ?? null
+})
+
+watch(selectedOrganization, (val) => {
+  form.organizationId = val?.value ?? null
+})
+
+// Clear the other holder's selection when toggling kind, so payload stays mutually exclusive.
+watch(() => form.holderKind, (kind) => {
+  if (kind === 'employee') {
+    form.organizationId = null
+    selectedOrganization.value = undefined
+  } else {
+    form.employeeId = null
+    selectedEmployee.value = undefined
+  }
 })
 
 const loadEmployees = async () => {
@@ -581,6 +623,20 @@ const loadEmployees = async () => {
     }
   } finally {
     isLoadingEmployees.value = false
+  }
+}
+
+const loadOrganizations = async () => {
+  isLoadingOrganizations.value = true
+  try {
+    const res = await organizationService.getList()
+    if (res.success && res.data) {
+      organizationOptions.value = res.data
+        .filter(o => o.isActive)
+        .map(o => ({ label: o.name, value: o.id }))
+    }
+  } finally {
+    isLoadingOrganizations.value = false
   }
 }
 
@@ -648,7 +704,7 @@ const resetForm = () => {
   Object.assign(form, {
     categoryId: undefined, name: '', description: '', price: undefined,
     purchaseDate: '', brand: '', model: '', image: null, subCategoryId: undefined,
-    employeeId: null, assignedDate: getLocalDatetimeString(), assignNote: '',
+    holderKind: 'employee', employeeId: null, organizationId: null, assignedDate: getLocalDatetimeString(), assignNote: '',
     assignAttachmentIds: [],
     branchId: null, locationId: null, locationDate: getLocalDatetimeString(), locationNote: '',
     locationAttachmentIds: [],
@@ -662,6 +718,7 @@ const resetForm = () => {
   })
   selectedCategoryId.value = undefined
   selectedEmployee.value = undefined
+  selectedOrganization.value = undefined
   selectedBranch.value = undefined
   selectedLocation.value = undefined
   previewUrl.value = null
@@ -705,10 +762,11 @@ const handleSubmit = async () => {
         hasMaintenance: form.hasMaintenance,
         hasLocation: form.hasLocation,
         usefulLife: form.usefulLife || undefined,
-        employeeId: form.hasHolder ? (form.employeeId || null) : null,
-        assignedDate: form.hasHolder && form.employeeId ? form.assignedDate : null,
-        assignNote: form.hasHolder && form.employeeId ? form.assignNote : null,
-        assignAttachmentIds: form.hasHolder && form.employeeId ? form.assignAttachmentIds : null,
+        employeeId: form.hasHolder && form.holderKind === 'employee' ? (form.employeeId || null) : null,
+        organizationId: form.hasHolder && form.holderKind === 'organization' ? (form.organizationId || null) : null,
+        assignedDate: form.hasHolder && (form.employeeId || form.organizationId) ? form.assignedDate : null,
+        assignNote: form.hasHolder && (form.employeeId || form.organizationId) ? form.assignNote : null,
+        assignAttachmentIds: form.hasHolder && (form.employeeId || form.organizationId) ? form.assignAttachmentIds : null,
         locationId: form.hasLocation ? (form.locationId || null) : null,
         locationDate: form.hasLocation && form.locationId ? form.locationDate : null,
         locationNote: form.hasLocation && form.locationId ? form.locationNote : null,
@@ -737,6 +795,7 @@ const handleSubmit = async () => {
 onMounted(() => {
   fetchCategories()
   loadEmployees()
+  loadOrganizations()
   loadBranches()
   fetchLabelKeys()
 })

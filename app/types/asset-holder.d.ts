@@ -2,6 +2,7 @@ import type { Attachment } from "./attachment"
 
 export interface AssetHolder {
   id: number
+  holderKind: 'employee' | 'organization'
   assignedDate: string
   returnedDate: string | null
   assignNote: string | null
@@ -22,6 +23,11 @@ export interface AssetHolder {
     email: string
     phone: string
     photo: string | null
+  } | null
+  organization: {
+    id: number
+    name: string
+    type: string
   } | null
   createdBy: {
     id: number
@@ -52,7 +58,9 @@ export interface AssetHolder {
 
 export interface AssignAssetPayload {
   assetId: number
-  employeeId: number
+  holderKind: 'employee' | 'organization'
+  employeeId?: number
+  organizationId?: number
   assignedDate: string
   assignNote?: string
   attachmentIds?: number[]

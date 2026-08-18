@@ -413,17 +413,24 @@ const baseColumns: TableColumn<Asset>[] = [
           ])
 
       const textEl = h('div', { class: 'flex flex-col min-w-0' }, [
-        h('span', { 
-          class: 'font-semibold cursor-pointer hover:underline truncate',
+        h('span', {
+          class: 'font-semibold cursor-pointer hover:underline truncate block',
+          title: row.original.name,
           onClick: (e: Event) => {
             e.stopPropagation()
             navigateTo(`/asset/${row.original.id}`)
           }
         }, row.original.name),
-        h('span', { class: 'text-xs text-neutral-500' }, row.original.code)
+        h('span', { class: 'text-xs text-neutral-500 truncate block', title: row.original.code }, row.original.code)
       ])
 
-      return h('div', { class: 'flex items-center gap-3' }, [imageEl, textEl])
+      return h('div', { class: 'flex items-center gap-3 min-w-0' }, [imageEl, textEl])
+    },
+    meta: {
+      class: {
+        td: 'max-w-[280px]',
+        th: 'max-w-[280px]'
+      }
     }
   },
   {
@@ -501,8 +508,15 @@ const baseColumns: TableColumn<Asset>[] = [
     header: sortHeader(t('pages.asset.index.columnActiveHolder'), 'activeHolder'),
     cell: ({ row }) => {
       const holder = row.original.activeHolder
-      if (!holder || !holder.employee) return h('span', { class: 'text-neutral-500 italic' }, '-')
-      const emp = holder.employee
+      if (!holder || (!holder.employee && !holder.organization)) return h('span', { class: 'text-neutral-500 italic' }, '-')
+      if (holder.organization) {
+        const org = holder.organization
+        return h('div', { class: 'flex flex-col min-w-0' }, [
+          h('span', { class: 'text-neutral-900 font-semibold truncate' }, org.name),
+          h('span', { class: 'text-xs text-neutral-500' }, org.type)
+        ])
+      }
+      const emp = holder.employee!
       return h('div', { class: 'flex items-center gap-2 min-w-0' }, [
         h(UAvatar, {
           src: emp.photo || undefined,

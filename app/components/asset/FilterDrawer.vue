@@ -124,6 +124,19 @@
           />
         </div>
 
+        <!-- Holder Kind (only if has_holder) -->
+        <div v-if="filters.holderStatus === 'has_holder'">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.holderKind') }}</label>
+            <UButton v-if="filters.holderKind" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('holderKind')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
+          </div>
+          <URadioGroup
+            v-model="filters.holderKind"
+            :items="holderKindOptions"
+            orientation="horizontal"
+          />
+        </div>
+
         <!-- Select Holder (only if has_holder and holderType selected) -->
         <div v-if="filters.holderStatus === 'has_holder' && filters.holderType">
           <div class="flex items-center justify-between mb-1.5">
@@ -131,6 +144,15 @@
             <UButton v-if="filters.holderId" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('holderId')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
+            v-if="filters.holderKind === 'organization'"
+            v-model="filters.holderId"
+            :items="organizationOptions"
+            :placeholder="$t('component.asset.filterDrawer.allOrganizations')"
+            value-key="value"
+            class="w-full"
+          />
+          <USelectMenu
+            v-else
             v-model="filters.holderId"
             :items="employeeOptions"
             :placeholder="$t('component.asset.filterDrawer.allEmployees')"
@@ -401,6 +423,7 @@ import { subCategoryService } from '~/services/sub-category-service'
 import { branchService } from '~/services/branch-service'
 import { locationService } from '~/services/location-service'
 import { employeeService } from '~/services/employee-service'
+import { organizationService } from '~/services/organization-service'
 import { assetService } from '~/services/asset-service'
 
 const { t } = useI18n()
@@ -423,6 +446,7 @@ const filters = reactive<Record<string, any>>({
   status: [],
   holderStatus: undefined,
   holderType: undefined,
+  holderKind: undefined,
   holderId: undefined,
   bleTagStatus: undefined,
   priceMin: undefined,
@@ -503,6 +527,7 @@ const subCategoryOptions = ref<{ label: string; value: number }[]>([])
 const branchOptions = ref<{ label: string; value: number }[]>([])
 const locationOptions = ref<{ label: string; value: number }[]>([])
 const employeeOptions = ref<{ label: string; value: number; avatar?: { src: string } }[]>([])
+const organizationOptions = ref<{ label: string; value: number }[]>([])
 const availableLabelKeys = ref<string[]>([])
 
 const statusOptions = computed(() => getStatusOptions())
@@ -515,6 +540,11 @@ const holderStatusOptions = computed(() => [
 const holderTypeOptions = computed(() => [
   { label: t('component.asset.filterDrawer.activeHolder'), value: 'active_holder' },
   { label: t('component.asset.filterDrawer.historicalHolder'), value: 'historical_holder' },
+])
+
+const holderKindOptions = computed(() => [
+  { label: t('common.employee'), value: 'employee' },
+  { label: t('common.organization'), value: 'organization' },
 ])
 
 const bleTagStatusOptions = computed(() => [
@@ -614,9 +644,13 @@ const clearField = (field: string) => {
   }
   if (field === 'holderStatus') {
     filters.holderType = undefined
+    filters.holderKind = undefined
     filters.holderId = undefined
   }
   if (field === 'holderType') {
+    filters.holderId = undefined
+  }
+  if (field === 'holderKind') {
     filters.holderId = undefined
   }
   if (field === 'bleTagStatus') {
@@ -643,6 +677,7 @@ const resetAll = () => {
   filters.status = []
   filters.holderStatus = undefined
   filters.holderType = undefined
+  filters.holderKind = undefined
   filters.holderId = undefined
   filters.bleTagStatus = undefined
   filters.priceMin = undefined
@@ -710,6 +745,15 @@ const fetchEmployees = async () => {
   }
 }
 
+const fetchOrganizations = async () => {
+  const res = await organizationService.getList()
+  if (res.success) {
+    organizationOptions.value = res.data
+      .filter(o => o.isActive)
+      .map(o => ({ label: o.name, value: o.id }))
+  }
+}
+
 const fetchLabelKeys = async () => {
   const res = await assetService.getLabelKeys()
   if (res.success) {
@@ -729,6 +773,7 @@ watch(open, (isOpen) => {
     filters.status = init.status || []
     filters.holderStatus = init.holderStatus ?? undefined
     filters.holderType = init.holderType ?? undefined
+    filters.holderKind = init.holderKind ?? undefined
     filters.holderId = init.holderId ?? undefined
     filters.bleTagStatus = init.bleTagStatus ?? undefined
     filters.priceMin = init.priceMin ?? undefined
@@ -750,6 +795,7 @@ watch(open, (isOpen) => {
     fetchCategories()
     fetchBranches()
     fetchEmployees()
+    fetchOrganizations()
     fetchLabelKeys()
     // Refetch sub-categories/locations if parent is already selected
     if (filters.categoryIds?.length) onCategoryChange()

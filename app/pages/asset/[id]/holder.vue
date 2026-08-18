@@ -191,17 +191,24 @@ const columns: TableColumn<AssetHolder>[] = [
     header: sortHeader(t('pages.asset.holder.columnEmployee'), 'employee'),
     cell: ({ row }) => {
       const employee = row.original.employee
-      if (!employee) return h('span', { class: 'text-neutral-500 italic' }, '-')
+      const organization = row.original.organization
+      if (!employee && !organization) return h('span', { class: 'text-neutral-500 italic' }, '-')
+      if (organization) {
+        return h('div', { class: 'flex flex-col' }, [
+          h('span', { class: 'text-neutral-900 font-semibold text-sm' }, organization.name),
+          h('span', { class: 'text-neutral-500 text-xs' }, organization.type)
+        ])
+      }
       return h('div', { class: 'flex items-center gap-2' }, [
         h(UAvatar, {
-          src: employee.photo || undefined,
-          alt: employee.name,
+          src: employee!.photo || undefined,
+          alt: employee!.name,
           class: 'bg-primary-50 text-primary-700',
           loading: 'lazy'
         }),
         h('div', { class: 'flex flex-col' }, [
-          h('span', { class: 'text-neutral-900 font-semibold text-sm' }, employee.name),
-          h('span', { class: 'text-neutral-500 text-xs' }, employee.employeeId)
+          h('span', { class: 'text-neutral-900 font-semibold text-sm' }, employee!.name),
+          h('span', { class: 'text-neutral-500 text-xs' }, employee!.employeeId)
         ])
       ])
     }

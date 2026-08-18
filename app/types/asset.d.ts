@@ -53,6 +53,7 @@ export interface Asset {
   hasLocation: boolean
   activeHolder?: {
     id: number
+    holderKind: 'employee' | 'organization'
     assignedDate: string
     assignHandoverId: number | null
     employee: {
@@ -61,6 +62,11 @@ export interface Asset {
       employeeId: string
       jobPosition: string
       photo: string | null
+    } | null
+    organization: {
+      id: number
+      name: string
+      type: string
     } | null
   } | null
   lastLocation?: {
@@ -118,6 +124,7 @@ export interface AssetPayload {
   usefulLife?: number
 
   employeeId?: number | null
+  organizationId?: number | null
   assignedDate?: string | null
   assignNote?: string | null
   assignAttachmentIds?: number[] | null

@@ -167,6 +167,10 @@
                     <span class="text-xs text-neutral-500 leading-tight block truncate" :title="asset.activeHolder.employee.employeeId">{{ asset.activeHolder.employee.employeeId }}</span>
                   </div>
                 </div>
+                <div v-else-if="asset.activeHolder?.organization" class="flex flex-col min-w-0">
+                  <span class="text-sm text-neutral-900 leading-tight block truncate" :title="asset.activeHolder.organization.name">{{ asset.activeHolder.organization.name }}</span>
+                  <span class="text-xs text-neutral-500 leading-tight block truncate" :title="asset.activeHolder.organization.type">{{ asset.activeHolder.organization.type }}</span>
+                </div>
                 <span v-else>-</span>
               </div>
             </div>
