@@ -74,6 +74,7 @@
     "setting": "Setting",
     "category": "Category",
     "subCategory": "Sub Category",
+    "organization": "Organization",
     "location": "Location",
     "branch": "Branch",
     "employees": "Employees",
@@ -508,6 +509,21 @@
         "success": "Category updated successfully!"
       }
     },
+    "organization": {
+      "formModal": {
+        "addTitle": "Add Organization",
+        "editTitle": "Edit Organization",
+        "addDescription": "Create a new organization, optionally under a parent.",
+        "editDescription": "Update this organization's details.",
+        "namePlaceholder": "Enter organization name",
+        "typePlaceholder": "e.g. division, department",
+        "typeRequired": "Type is required",
+        "parentPlaceholder": "Select a parent (optional)",
+        "noParent": "No parent (root level)",
+        "createSuccess": "Organization created successfully",
+        "updateSuccess": "Organization updated successfully"
+      }
+    },
     "subCategory": {
       "addModal": {
         "title": "Add Sub Category",
@@ -538,6 +554,9 @@
         "namePlaceholder": "Enter full name",
         "jobPosition": "Job Position",
         "jobPositionPlaceholder": "Enter job position",
+        "organization": "Organization",
+        "organizationPlaceholder": "Select an organization (optional)",
+        "noOrganization": "No organization",
         "emailPlaceholder": "Enter email address",
         "phonePlaceholder": "Enter phone number",
         "submit": "Save Employee",
@@ -556,6 +575,9 @@
         "namePlaceholder": "Enter full name",
         "jobPosition": "Job Position",
         "jobPositionPlaceholder": "Enter job position",
+        "organization": "Organization",
+        "organizationPlaceholder": "Select an organization (optional)",
+        "noOrganization": "No organization",
         "emailPlaceholder": "Enter email address",
         "phonePlaceholder": "Enter phone number",
         "success": "Employee updated successfully!",
@@ -932,6 +954,24 @@
       "deleteSuccess": "Category deleted successfully!",
       "deleteTitle": "Delete Category"
     },
+    "organization": {
+      "title": "Organization Management",
+      "description": "Manage department and division of organization",
+      "addOrganization": "Add Organization",
+      "type": "Type",
+      "parent": "Parent",
+      "active": "Active",
+      "columnName": "Name",
+      "columnType": "Type",
+      "columnParent": "Parent",
+      "columnDescription": "Description",
+      "columnStatus": "Status",
+      "columnAction": "Action",
+      "editOrganization": "Edit Organization",
+      "deleteOrganization": "Delete Organization",
+      "deleteTitle": "Delete Organization",
+      "deleteSuccess": "Organization deleted successfully"
+    },
     "subCategory": {
       "title": "Sub Category Management",
       "description": "Manage asset sub categories",
@@ -954,6 +994,7 @@
       "addEmployee": "Add Employee",
       "columnEmployee": "Employee",
       "columnJobPosition": "Job Position",
+      "columnOrganization": "Organization",
       "columnEmail": "Email",
       "columnPhone": "Phone",
       "columnStatus": "Status",

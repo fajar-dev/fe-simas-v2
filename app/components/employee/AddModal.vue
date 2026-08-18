@@ -45,6 +45,17 @@
         <UFormField :label="$t('component.employee.addModal.jobPosition')" name="jobPosition" required>
           <UInput v-model="form.jobPosition" :placeholder="$t('component.employee.addModal.jobPositionPlaceholder')" class="w-full" />
         </UFormField>
+        <UFormField :label="$t('component.employee.addModal.organization')" name="organizationId">
+          <USelectMenu
+            v-model="selectedOrganization"
+            :items="organizationOptions"
+            searchable
+            :searchable-placeholder="$t('common.search')"
+            :placeholder="$t('component.employee.addModal.organizationPlaceholder')"
+            :loading="isLoadingOrganizations"
+            class="w-full"
+          />
+        </UFormField>
         <UFormField :label="$t('common.email')" name="email" required>
           <UInput v-model="form.email" type="email" :placeholder="$t('component.employee.addModal.emailPlaceholder')" class="w-full" />
         </UFormField>
@@ -71,6 +82,7 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import { employeeService } from '~/services/employee-service'
+import { organizationService } from '~/services/organization-service'
 import type { EmployeePayload } from '~/types/employee'
 
 const { t } = useI18n()
@@ -80,6 +92,24 @@ const emit = defineEmits<{ created: [] }>()
 const toast = useToast()
 const isSubmitting = ref(false)
 const isUploading = ref(false)
+const isLoadingOrganizations = ref(false)
+
+type OrgOption = { label: string; value: number | null }
+const noOrganizationOption: OrgOption = { label: t('component.employee.addModal.noOrganization'), value: null }
+const organizationOptions = ref<OrgOption[]>([noOrganizationOption])
+const selectedOrganization = ref<OrgOption>(noOrganizationOption)
+
+const loadOrganizations = async () => {
+  isLoadingOrganizations.value = true
+  try {
+    const res = await organizationService.getList()
+    if (res.success && res.data) {
+      organizationOptions.value = [noOrganizationOption, ...res.data.map(o => ({ label: o.name, value: o.id }))]
+    }
+  } finally {
+    isLoadingOrganizations.value = false
+  }
+}
 
 const previewUrl = ref<string | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -102,8 +132,11 @@ const form = reactive<EmployeePayload>({
   email: '',
   phone: '',
   photo: null,
-  isActive: true
+  isActive: true,
+  organizationId: null
 })
+
+watch(selectedOrganization, (val) => { form.organizationId = val?.value ?? null })
 
 const resetForm = () => {
   form.employeeId = ''
@@ -113,6 +146,8 @@ const resetForm = () => {
   form.phone = ''
   form.photo = null
   form.isActive = true
+  form.organizationId = null
+  selectedOrganization.value = noOrganizationOption
   previewUrl.value = null
 }
 
@@ -180,6 +215,7 @@ const handleSubmit = async () => {
 }
 
 watch(open, (val) => {
-  if (!val) resetForm()
+  if (val) loadOrganizations()
+  else resetForm()
 })
 </script>

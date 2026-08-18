@@ -164,6 +164,15 @@ const baseColumns: TableColumn<Employee>[] = [
     }
   },
   {
+    id: 'organization',
+    header: sortHeader(t('pages.employee.columnOrganization'), 'organization'),
+    cell: ({ row }) => {
+      const organization = row.original.organization
+      if (!organization) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+      return h('span', { class: 'text-neutral-600' }, organization.name)
+    }
+  },
+  {
     accessorKey: 'email',
     header: sortHeader(t('pages.employee.columnEmail'), 'email'),
     cell: ({ row }) => {

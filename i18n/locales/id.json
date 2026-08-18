@@ -74,6 +74,7 @@
     "setting": "Pengaturan",
     "category": "Kategori",
     "subCategory": "Sub Kategori",
+    "organization": "Organisasi",
     "location": "Lokasi",
     "branch": "Cabang",
     "employees": "Karyawan",
@@ -508,6 +509,21 @@
         "success": "Kategori berhasil diperbarui!"
       }
     },
+    "organization": {
+      "formModal": {
+        "addTitle": "Tambah Organisasi",
+        "editTitle": "Edit Organisasi",
+        "addDescription": "Buat organisasi baru, opsional di bawah induk tertentu.",
+        "editDescription": "Perbarui detail organisasi ini.",
+        "namePlaceholder": "Masukkan nama organisasi",
+        "typePlaceholder": "mis. division, department",
+        "typeRequired": "Tipe wajib diisi",
+        "parentPlaceholder": "Pilih induk (opsional)",
+        "noParent": "Tanpa induk (level teratas)",
+        "createSuccess": "Organisasi berhasil dibuat",
+        "updateSuccess": "Organisasi berhasil diperbarui"
+      }
+    },
     "subCategory": {
       "addModal": {
         "title": "Tambah Sub Kategori",
@@ -538,6 +554,9 @@
         "namePlaceholder": "Masukkan nama lengkap",
         "jobPosition": "Jabatan",
         "jobPositionPlaceholder": "Masukkan jabatan",
+        "organization": "Organisasi",
+        "organizationPlaceholder": "Pilih organisasi (opsional)",
+        "noOrganization": "Tanpa organisasi",
         "emailPlaceholder": "Masukkan alamat email",
         "phonePlaceholder": "Masukkan nomor telepon",
         "submit": "Simpan Karyawan",
@@ -556,6 +575,9 @@
         "namePlaceholder": "Masukkan nama lengkap",
         "jobPosition": "Jabatan",
         "jobPositionPlaceholder": "Masukkan jabatan",
+        "organization": "Organisasi",
+        "organizationPlaceholder": "Pilih organisasi (opsional)",
+        "noOrganization": "Tanpa organisasi",
         "emailPlaceholder": "Masukkan alamat email",
         "phonePlaceholder": "Masukkan nomor telepon",
         "success": "Karyawan berhasil diperbarui!",
@@ -932,6 +954,24 @@
       "deleteSuccess": "Kategori berhasil dihapus!",
       "deleteTitle": "Hapus Kategori"
     },
+    "organization": {
+      "title": "Manajemen Organisasi",
+      "description": "Kelola department dan division organisasi",
+      "addOrganization": "Tambah Organisasi",
+      "type": "Tipe",
+      "parent": "Induk",
+      "active": "Aktif",
+      "columnName": "Nama",
+      "columnType": "Tipe",
+      "columnParent": "Induk",
+      "columnDescription": "Deskripsi",
+      "columnStatus": "Status",
+      "columnAction": "Aksi",
+      "editOrganization": "Edit Organisasi",
+      "deleteOrganization": "Hapus Organisasi",
+      "deleteTitle": "Hapus Organisasi",
+      "deleteSuccess": "Organisasi berhasil dihapus"
+    },
     "subCategory": {
       "title": "Manajemen Sub Kategori",
       "description": "Kelola sub kategori aset",
@@ -954,6 +994,7 @@
       "addEmployee": "Tambah Karyawan",
       "columnEmployee": "Karyawan",
       "columnJobPosition": "Jabatan",
+      "columnOrganization": "Organisasi",
       "columnEmail": "Email",
       "columnPhone": "Telepon",
       "columnStatus": "Status",
