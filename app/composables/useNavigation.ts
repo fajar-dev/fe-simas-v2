@@ -83,6 +83,12 @@ export const useNavigation = () => {
           permission: 'branch:read'
         },
         {
+          label: t('nav.organization'),
+          to: '/organization',
+          icon: 'i-lucide-network',
+          permission: 'organization:read'
+        },
+        {
           label: t('nav.employees'),
           to: '/employee',
           icon: 'i-lucide-users',
