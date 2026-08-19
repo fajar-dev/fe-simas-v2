@@ -164,7 +164,7 @@ watch(selectedOrganization, (val) => {
   if (val) form.organizationId = val.value
 })
 
-// Clear the other holder's selection when toggling kind, so payload stays mutually exclusive.
+// Keep employeeId/organizationId mutually exclusive.
 watch(() => form.holderKind, (kind) => {
   if (kind === 'employee') {
     form.organizationId = undefined
