@@ -71,3 +71,14 @@ export interface ReturnAssetPayload {
   returnNote?: string
   attachmentIds?: number[]
 }
+
+export interface UpdateAssetHolderPayload {
+  holderKind?: 'employee' | 'organization'
+  employeeId?: number | null
+  organizationId?: number | null
+  assignedDate?: string
+  assignNote?: string | null
+  returnedDate?: string
+  returnNote?: string | null
+  attachmentIds?: number[]
+}

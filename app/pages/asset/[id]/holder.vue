@@ -58,12 +58,27 @@
         :active-holder="activeHolder"
         @returned="handleReload"
       />
+
+      <AssetHolderUpdateModal
+        v-model="showUpdateModal"
+        :holder="selectedHolder"
+        @updated="handleReload"
+      />
+
+      <DeleteModal
+        v-model="showDeleteModal"
+        :title="$t('pages.asset.holder.deleteTitle')"
+        :item-name="selectedHolder ? `holder record #${selectedHolder.id}` : ''"
+        :loading="isDeleting"
+        @confirm="handleDelete"
+      />
     </div>
   </AssetDetailWrapper>
 </template>
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
+import type { Row } from '@tanstack/vue-table'
 import { assetHolderService } from '~/services/asset-holder-service'
 import { handoverService } from '~/services/handover-service'
 import type { AssetHolder } from '~/types/asset-holder'
@@ -101,6 +116,8 @@ const assignDisabledReason = computed(() => {
 const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')
 const NuxtLink = resolveComponent('NuxtLink')
+const UButton = resolveComponent('UButton')
+const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 // State
 const activeHolder = ref<AssetHolder | null>(null)
@@ -110,6 +127,10 @@ const isLoadingHistory = ref(false)
 
 const showAssignModal = ref(false)
 const showReturnModal = ref(false)
+const showUpdateModal = ref(false)
+const showDeleteModal = ref(false)
+const selectedHolder = ref<AssetHolder | null>(null)
+const isDeleting = ref(false)
 
 const {
   search,
@@ -185,18 +206,18 @@ const handleReload = () => {
 }
 
 // Table columns
-const columns: TableColumn<AssetHolder>[] = [
+const baseColumns: TableColumn<AssetHolder>[] = [
   {
     accessorKey: 'employee',
     header: sortHeader(t('pages.asset.holder.columnEmployee'), 'employee'),
     cell: ({ row }) => {
       const employee = row.original.employee
       const organization = row.original.organization
-      if (!employee && !organization) return h('span', { class: 'text-neutral-500 italic' }, '-')
+      if (!employee && !organization) return h('span', { class: 'text-muted italic' }, '-')
       if (organization) {
         return h('div', { class: 'flex flex-col' }, [
-          h('span', { class: 'text-neutral-900 font-semibold text-sm' }, organization.name),
-          h('span', { class: 'text-neutral-500 text-xs' }, organization.type)
+          h('span', { class: 'text-highlighted font-semibold text-sm' }, organization.name),
+          h('span', { class: 'text-muted text-xs' }, organization.type)
         ])
       }
       return h('div', { class: 'flex items-center gap-2' }, [
@@ -207,8 +228,8 @@ const columns: TableColumn<AssetHolder>[] = [
           loading: 'lazy'
         }),
         h('div', { class: 'flex flex-col' }, [
-          h('span', { class: 'text-neutral-900 font-semibold text-sm' }, employee!.name),
-          h('span', { class: 'text-neutral-500 text-xs' }, employee!.employeeId)
+          h('span', { class: 'text-highlighted font-semibold text-sm' }, employee!.name),
+          h('span', { class: 'text-muted text-xs' }, employee!.employeeId)
         ])
       ])
     }
@@ -242,14 +263,14 @@ const columns: TableColumn<AssetHolder>[] = [
     accessorKey: 'assignedDate',
     header: sortHeader(t('pages.asset.holder.columnAssignedDate'), 'assignedDate'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-900 font-medium' }, formatDate(row.original.assignedDate || ''))
+      return h('span', { class: 'text-highlighted font-medium' }, formatDate(row.original.assignedDate || ''))
     }
   },
   {
     accessorKey: 'returnedDate',
     header: sortHeader(t('pages.asset.holder.columnReturnDate'), 'returnedDate'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-900 font-medium' }, formatDate(row.original.returnedDate || ''))
+      return h('span', { class: 'text-highlighted font-medium' }, formatDate(row.original.returnedDate || ''))
     }
   },
   {
@@ -260,7 +281,7 @@ const columns: TableColumn<AssetHolder>[] = [
         row.original.assignNote ? `${t('pages.asset.holder.assignPrefix')}${row.original.assignNote}` : null,
         row.original.returnNote ? `${t('pages.asset.holder.returnPrefix')}${row.original.returnNote}` : null
       ].filter(Boolean).join(' | ')
-      return h('span', { class: 'text-neutral-600 truncate max-w-md block' }, notes || '-')
+      return h('span', { class: 'text-toned truncate max-w-md block' }, notes || '-')
     }
   },
   {
@@ -268,7 +289,7 @@ const columns: TableColumn<AssetHolder>[] = [
     header: t('pages.asset.holder.columnAttachments'),
     cell: ({ row }) => {
       const attachments = row.original.attachments || []
-      if (attachments.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+      if (attachments.length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
 
       return h(
         'div',
@@ -310,10 +331,10 @@ const columns: TableColumn<AssetHolder>[] = [
             class: 'bg-primary-50 text-primary-700',
             loading: 'lazy'
           }),
-          h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
+          h('span', { class: 'text-default font-medium text-sm' }, creator.name)
         ])
       } else {
-        return h('span', { class: 'text-neutral-500 italic text-sm' }, t('pages.asset.holder.system'))
+        return h('span', { class: 'text-muted italic text-sm' }, t('pages.asset.holder.system'))
       }
     }
   },
@@ -331,14 +352,94 @@ const columns: TableColumn<AssetHolder>[] = [
             class: 'bg-primary-50 text-primary-700',
             loading: 'lazy'
           }),
-          h('span', { class: 'text-neutral-700 font-medium text-sm' }, returner.name)
+          h('span', { class: 'text-default font-medium text-sm' }, returner.name)
         ])
       } else {
-        return h('span', { class: 'text-neutral-400 text-sm' }, '-')
+        return h('span', { class: 'text-dimmed text-sm' }, '-')
       }
     }
   }
 ]
+
+const columns = computed(() => {
+  const list = [...baseColumns]
+  if (hasPermission('asset-holder:update', 'asset-holder:delete')) {
+    list.push({
+      id: 'actions',
+      header: t('pages.asset.holder.columnAction'),
+      meta: {
+        class: {
+          td: 'text-right',
+          th: 'text-right'
+        }
+      },
+      cell: ({ row }) => {
+        return h(
+          UDropdownMenu,
+          {
+            content: { align: 'end' },
+            items: getRowItems(row),
+            'aria-label': 'Actions dropdown'
+          },
+          () =>
+            h(UButton, {
+              icon: 'i-lucide-ellipsis-vertical',
+              color: 'neutral',
+              variant: 'ghost',
+              'aria-label': 'Actions dropdown'
+            })
+        )
+      }
+    })
+  }
+  return list
+})
+
+function getRowItems(row: Row<AssetHolder>) {
+  const actions = []
+  if (hasPermission('asset-holder:update')) {
+    actions.push({
+      label: t('pages.asset.holder.editRecord'),
+      icon: 'i-lucide-edit',
+      onSelect() {
+        selectedHolder.value = row.original
+        showUpdateModal.value = true
+      }
+    })
+  }
+  if (hasPermission('asset-holder:delete')) {
+    actions.push({
+      label: t('pages.asset.holder.deleteRecord'),
+      color: 'error' as const,
+      icon: 'i-lucide-trash',
+      onSelect() {
+        selectedHolder.value = row.original
+        showDeleteModal.value = true
+      }
+    })
+  }
+  return actions
+}
+
+const toast = useToast()
+const handleDelete = async () => {
+  if (!selectedHolder.value) return
+  isDeleting.value = true
+  try {
+    const response = await assetHolderService.delete(selectedHolder.value.id)
+    if (response.success) {
+      toast.add({
+        title: t('pages.asset.holder.deleteSuccess'),
+        color: 'success',
+        icon: 'i-lucide-circle-check'
+      })
+    }
+    showDeleteModal.value = false
+    handleReload()
+  } finally {
+    isDeleting.value = false
+  }
+}
 
 onMounted(() => {
   fetchActiveHolder()
