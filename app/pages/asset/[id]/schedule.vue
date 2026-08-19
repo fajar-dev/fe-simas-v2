@@ -142,12 +142,12 @@ const columns = computed(() => {
     {
       accessorKey: 'title',
       header: sortHeader(t('pages.calendar.form.titleLabel'), 'title'),
-      cell: ({ row }) => h('span', { class: 'text-neutral-900 font-medium' }, row.original.title)
+      cell: ({ row }) => h('span', { class: 'text-highlighted font-medium' }, row.original.title)
     },
     {
       accessorKey: 'startDate',
       header: sortHeader(t('pages.calendar.form.startDate'), 'startDate'),
-      cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.startDate)
+      cell: ({ row }) => h('span', { class: 'text-default' }, row.original.startDate)
     },
     {
       accessorKey: 'recurrence',
@@ -164,7 +164,7 @@ const columns = computed(() => {
             schedule.recurrence !== 'none' ? h(UIcon, { name: 'i-lucide-repeat', class: 'w-3 h-3 mr-1' }) : null,
             schedule.recurrence === 'none' ? t('pages.calendar.detail.oneTime') : t(`pages.calendar.recurrence.${schedule.recurrence}`)
           ]),
-          subtitle ? h('span', { class: 'text-xs text-neutral-500' }, subtitle) : null
+          subtitle ? h('span', { class: 'text-xs text-muted' }, subtitle) : null
         ])
       }
     },
@@ -174,8 +174,8 @@ const columns = computed(() => {
       cell: ({ row }) => {
         const assets = row.original.assets || []
         const others = assets.filter(a => a.id !== assetId)
-        if (others.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
-        return h('span', { class: 'text-xs text-neutral-500' }, `+${others.length}`)
+        if (others.length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
+        return h('span', { class: 'text-xs text-muted' }, `+${others.length}`)
       }
     },
     {
@@ -183,8 +183,8 @@ const columns = computed(() => {
       header: t('pages.asset.schedule.columnUsers'),
       cell: ({ row }) => {
         const users = row.original.users || []
-        if (users.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
-        return h('span', { class: 'text-xs text-neutral-500' }, users.map(u => u.name).join(', '))
+        if (users.length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
+        return h('span', { class: 'text-xs text-muted' }, users.map(u => u.name).join(', '))
       }
     }
   ]

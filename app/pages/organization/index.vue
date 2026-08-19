@@ -118,7 +118,7 @@ const baseColumns: TableColumn<Organization>[] = [
     accessorKey: 'name',
     header: sortHeader(t('pages.organization.columnName'), 'name'),
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, row.original.name)
+      return h('span', { class: 'font-medium text-highlighted' }, row.original.name)
     }
   },
   {
@@ -133,8 +133,8 @@ const baseColumns: TableColumn<Organization>[] = [
     header: sortHeader(t('pages.organization.columnParent'), 'parent'),
     cell: ({ row }) => {
       const parent = row.original.parent
-      if (!parent) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
-      return h('span', { class: 'text-neutral-600' }, parent.name)
+      if (!parent) return h('span', { class: 'text-dimmed text-xs' }, '-')
+      return h('span', { class: 'text-toned' }, parent.name)
     }
   },
   {
@@ -142,7 +142,7 @@ const baseColumns: TableColumn<Organization>[] = [
     header: sortHeader(t('pages.organization.columnDescription'), 'description'),
     cell: ({ row }) => {
       const desc = row.original.description
-      return h('span', { class: 'text-neutral-600' }, desc || '-')
+      return h('span', { class: 'text-toned' }, desc || '-')
     }
   },
   {
@@ -173,7 +173,7 @@ const columns = computed(() => {
       },
       cell: ({ row }) => {
         const items = getRowItems(row)
-        if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+        if (items.flat().length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
         return h(
           UDropdownMenu,
           {

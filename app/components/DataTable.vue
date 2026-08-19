@@ -43,10 +43,10 @@
         :columns="columns"
         :loading="loading"
         :ui="{
-          th: 'bg-neutral-50 py-2.5',
-          td: 'text-neutral-900 py-3'
+          th: 'bg-muted py-2.5',
+          td: 'text-highlighted py-3'
         }"
-        :class="['border border-neutral-200 rounded-md', tableClass]"
+        :class="['border border-default rounded-md', tableClass]"
       >
         <template #expanded="{ row }">
           <slot name="expanded" :row="row" />
@@ -56,7 +56,7 @@
 
     <!-- Pagination -->
     <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-      <span class="text-sm text-neutral-500">
+      <span class="text-sm text-muted">
         {{ $t('component.dataTable.showing', { from: from || 0, to: to || 0, total }) }}
       </span>
       <UPagination v-slot="{ page: activePage }" v-model:page="page" size="md" :total="total" :items-per-page="perPage">

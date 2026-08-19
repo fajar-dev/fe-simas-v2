@@ -115,14 +115,14 @@ const baseColumns: TableColumn<Branch>[] = [
     accessorKey: 'code',
     header: sortHeader(t('pages.branch.columnCode'), 'code'),
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, row.original.code)
+      return h('span', { class: 'font-medium text-highlighted' }, row.original.code)
     }
   },
   {
     accessorKey: 'name',
     header: sortHeader(t('pages.branch.columnName'), 'name'),
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, row.original.name)
+      return h('span', { class: 'font-medium text-highlighted' }, row.original.name)
     }
   },
   {
@@ -130,42 +130,42 @@ const baseColumns: TableColumn<Branch>[] = [
     header: sortHeader(t('pages.branch.columnDescription'), 'description'),
     cell: ({ row }) => {
       const desc = row.original.description
-      return h('span', { class: 'text-neutral-600' }, desc || '-')
+      return h('span', { class: 'text-toned' }, desc || '-')
     }
   },
   {
     accessorKey: 'email',
     header: sortHeader(t('pages.branch.columnEmail'), 'email'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600' }, row.original.email || '-')
+      return h('span', { class: 'text-toned' }, row.original.email || '-')
     }
   },
   {
     accessorKey: 'phone',
     header: sortHeader(t('pages.branch.columnPhone'), 'phone'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600' }, row.original.phone || '-')
+      return h('span', { class: 'text-toned' }, row.original.phone || '-')
     }
   },
   {
     accessorKey: 'address',
     header: sortHeader(t('pages.branch.columnAddress'), 'address'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600' }, row.original.address || '-')
+      return h('span', { class: 'text-toned' }, row.original.address || '-')
     }
   },
   {
     accessorKey: 'assetCount',
     header: sortHeader(t('pages.branch.columnAssetCount'), 'assetCount'),
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
+      return h('span', { class: 'font-medium text-highlighted' }, String(row.original.assetCount ?? 0))
     }
   },
   {
     accessorKey: 'inventoryCount',
     header: sortHeader(t('pages.branch.columnInventoryCount'), 'inventoryCount'),
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.inventoryCount ?? 0))
+      return h('span', { class: 'font-medium text-highlighted' }, String(row.original.inventoryCount ?? 0))
     }
   }
 ]
@@ -184,7 +184,7 @@ const columns = computed(() => {
       },
       cell: ({ row }) => {
         const items = getRowItems(row)
-        if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+        if (items.flat().length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
         return h(
           UDropdownMenu,
           {

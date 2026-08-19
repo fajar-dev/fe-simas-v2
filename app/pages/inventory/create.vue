@@ -14,19 +14,19 @@
           <div class="space-y-4">
             <div>
               <div class="flex justify-between mb-1.5">
-                <label class="text-sm font-medium text-neutral-700">{{ $t('pages.inventory.item.photo') }}</label>
+                <label class="text-sm font-medium text-default">{{ $t('pages.inventory.item.photo') }}</label>
                 <UButton icon="i-lucide-camera" color="primary" variant="soft" size="xs" @click="() => { showCamera = true }">{{ $t('pages.asset.create.takePhoto') }}</UButton>
               </div>
               <div v-if="previewUrl" class="relative inline-block w-full aspect-square">
-                <NuxtImg :src="previewUrl" class="w-full h-full rounded-lg object-cover border border-neutral-200" />
+                <NuxtImg :src="previewUrl" class="w-full h-full rounded-lg object-cover border border-default" />
                 <UButton icon="i-lucide-x" color="error" variant="solid" size="xs" class="absolute top-1 right-1 rounded-full" @click="removeImage" />
               </div>
-              <div v-else class="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-neutral-200 rounded-lg cursor-pointer hover:border-primary transition-colors" @click="triggerFileInput">
-                <UIcon name="i-lucide-upload" class="w-8 h-8 text-neutral-400 mb-2" />
-                <span class="text-sm text-neutral-500">{{ $t('pages.asset.create.dropImage') }}</span>
-                <span class="text-xs text-neutral-400 mt-1">{{ $t('pages.asset.create.imageHint') }}</span>
+              <div v-else class="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-default rounded-lg cursor-pointer hover:border-primary transition-colors" @click="triggerFileInput">
+                <UIcon name="i-lucide-upload" class="w-8 h-8 text-dimmed mb-2" />
+                <span class="text-sm text-muted">{{ $t('pages.asset.create.dropImage') }}</span>
+                <span class="text-xs text-dimmed mt-1">{{ $t('pages.asset.create.imageHint') }}</span>
               </div>
-              <div v-if="isUploading" class="mt-2 flex items-center gap-2 text-sm text-neutral-500">
+              <div v-if="isUploading" class="mt-2 flex items-center gap-2 text-sm text-muted">
                 <UIcon name="i-lucide-loader-2" class="w-4 h-4 animate-spin" /> {{ $t('pages.asset.create.uploading') }}
               </div>
               <input ref="fileInput" type="file" class="hidden" accept="image/*" @change="onFileChange">
@@ -73,10 +73,10 @@
 
             <div>
               <div class="flex items-center justify-between mb-1.5">
-                <label class="text-sm font-medium text-neutral-700">{{ $t('pages.inventory.item.labels') }}</label>
+                <label class="text-sm font-medium text-default">{{ $t('pages.inventory.item.labels') }}</label>
                 <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addLabel">{{ $t('common.add') }}</UButton>
               </div>
-              <div v-if="labels.length === 0" class="text-sm text-neutral-400 py-3 text-center border border-dashed border-neutral-200 rounded-lg">{{ $t('pages.inventory.create.noLabels') }}</div>
+              <div v-if="labels.length === 0" class="text-sm text-dimmed py-3 text-center border border-dashed border-default rounded-lg">{{ $t('pages.inventory.create.noLabels') }}</div>
               <div v-else class="space-y-2">
                 <div v-for="(label, i) in labels" :key="i" class="flex items-center gap-2">
                   <UInputMenu v-model="label.key" :items="availableLabelKeys" placeholder="Key" class="w-full" />
@@ -90,7 +90,7 @@
           <!-- ═══ Column 3: Variants ═══ -->
           <div class="space-y-3">
             <div class="flex items-center justify-between">
-              <label class="text-sm font-medium text-neutral-700 flex items-center gap-1.5">
+              <label class="text-sm font-medium text-default flex items-center gap-1.5">
                 {{ $t('pages.inventory.variant.title') }}
               </label>
               <div class="flex items-center gap-1.5">
@@ -98,19 +98,19 @@
                 <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addVariant">{{ $t('pages.inventory.variant.add') }}</UButton>
               </div>
             </div>
-            <div v-if="form.variants.length === 0" class="text-sm text-neutral-400 py-6 text-center border-2 border-dashed border-neutral-200 rounded-lg">{{ $t('pages.inventory.create.noVariants') }}</div>
+            <div v-if="form.variants.length === 0" class="text-sm text-dimmed py-6 text-center border-2 border-dashed border-default rounded-lg">{{ $t('pages.inventory.create.noVariants') }}</div>
             <div v-else class="space-y-3">
-              <div v-for="(v, vi) in form.variants" :key="vi" class="p-3 rounded-lg border border-neutral-200 space-y-2.5">
+              <div v-for="(v, vi) in form.variants" :key="vi" class="p-3 rounded-lg border border-default space-y-2.5">
                 <div class="flex items-start gap-2">
                   <!-- Variant image -->
                   <div class="shrink-0">
                     <div v-if="v.imagePreview || v.image" class="relative w-32 h-32">
-                      <NuxtImg :src="v.imagePreview || v.image || ''" class="w-full h-full rounded-md object-cover border border-neutral-200" />
+                      <NuxtImg :src="v.imagePreview || v.image || ''" class="w-full h-full rounded-md object-cover border border-default" />
                       <UButton icon="i-lucide-x" color="error" variant="solid" size="xs" class="absolute -top-1.5 -right-1.5 rounded-full" @click="() => removeVariantImage(vi)" />
                     </div>
-                    <label v-else class="w-32 h-32 flex flex-col items-center justify-center border-2 border-dashed border-neutral-200 rounded-md cursor-pointer hover:border-primary transition-colors">
-                      <UIcon v-if="!v.uploading" name="i-lucide-image-plus" class="w-5 h-5 text-neutral-400" />
-                      <UIcon v-else name="i-lucide-loader-2" class="w-5 h-5 text-neutral-400 animate-spin" />
+                    <label v-else class="w-32 h-32 flex flex-col items-center justify-center border-2 border-dashed border-default rounded-md cursor-pointer hover:border-primary transition-colors">
+                      <UIcon v-if="!v.uploading" name="i-lucide-image-plus" class="w-5 h-5 text-dimmed" />
+                      <UIcon v-else name="i-lucide-loader-2" class="w-5 h-5 text-dimmed animate-spin" />
                       <input type="file" class="hidden" accept="image/*" @change="(e) => onVariantFile(vi, e)">
                     </label>
                   </div>
@@ -139,7 +139,7 @@
           </div>
         </div>
 
-        <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-neutral-100">
+        <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-muted">
           <UButton type="button" color="neutral" variant="outline" to="/inventory">{{ $t('common.cancel') }}</UButton>
           <UButton type="submit" color="primary" variant="outline" :loading="isSubmitting && submitMode === 'another'" @click="() => { submitMode = 'another' }">{{ $t('common.saveAndCreateAnother') }}</UButton>
           <UButton type="submit" color="primary" :loading="isSubmitting && submitMode === 'save'" @click="() => { submitMode = 'save' }">{{ $t('common.save') }}</UButton>

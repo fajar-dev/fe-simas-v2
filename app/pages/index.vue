@@ -33,8 +33,8 @@
             :class="[stat.bgClass, 'mb-3']"
             loading="lazy"
           />
-          <p class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">{{ stat.label }}</p>
-          <p v-if="!isLoading" class="text-xl font-semibold text-neutral-900 tabular-nums">
+          <p class="text-xs font-medium text-muted uppercase tracking-wider mb-1">{{ stat.label }}</p>
+          <p v-if="!isLoading" class="text-xl font-semibold text-highlighted tabular-nums">
             {{ stat.value.toLocaleString('id-ID') }}
           </p>
           <USkeleton v-else class="h-7 w-24" />
@@ -58,8 +58,8 @@
             :class="[stat.bgClass, 'mb-3']"
             loading="lazy"
           />
-          <p class="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">{{ stat.label }}</p>
-          <p v-if="!isLoading" class="text-xl font-semibold text-neutral-900 tabular-nums">
+          <p class="text-xs font-medium text-muted uppercase tracking-wider mb-1">{{ stat.label }}</p>
+          <p v-if="!isLoading" class="text-xl font-semibold text-highlighted tabular-nums">
             {{ stat.format(stat.value) }}
           </p>
           <USkeleton v-else class="h-7 w-24" />
@@ -73,13 +73,13 @@
       <UCard class="md:col-span-4">
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.assetByCategory') }}</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.assetByCategoryDesc') }}</p>
+            <h3 class="text-base font-semibold text-highlighted">{{ $t('pages.dashboard.assetByCategory') }}</h3>
+            <p class="text-xs text-muted mt-0.5">{{ $t('pages.dashboard.assetByCategoryDesc') }}</p>
           </div>
         </template>
 
         <div v-if="isChartLoading" class="flex items-center justify-center h-64">
-          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-neutral-400" />
+          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-dimmed" />
         </div>
         <div v-else-if="categoryData.length">
           <DonutChart
@@ -94,18 +94,18 @@
             <div
               v-for="(item, i) in categoryData"
               :key="item.id"
-              class="flex items-center justify-between text-sm cursor-pointer rounded px-1 -mx-1 hover:bg-neutral-100 transition-colors"
+              class="flex items-center justify-between text-sm cursor-pointer rounded px-1 -mx-1 hover:bg-elevated transition-colors"
               @click="goToAssetFilter('categoryIds', item.id)"
             >
               <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: chartColors[i % chartColors.length] }" />
-                <span class="text-neutral-700 truncate">{{ item.name }}</span>
+                <span class="text-default truncate">{{ item.name }}</span>
               </div>
-              <span class="font-medium text-neutral-900 tabular-nums shrink-0 ml-2">{{ item.count.toLocaleString('id-ID') }}</span>
+              <span class="font-medium text-highlighted tabular-nums shrink-0 ml-2">{{ item.count.toLocaleString('id-ID') }}</span>
             </div>
           </div>
         </div>
-        <div v-else class="flex items-center justify-center h-64 text-sm text-neutral-400">
+        <div v-else class="flex items-center justify-center h-64 text-sm text-dimmed">
           {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
@@ -114,13 +114,13 @@
       <UCard class="md:col-span-8">
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.valueByCategory') }}</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.valueByCategoryDesc') }}</p>
+            <h3 class="text-base font-semibold text-highlighted">{{ $t('pages.dashboard.valueByCategory') }}</h3>
+            <p class="text-xs text-muted mt-0.5">{{ $t('pages.dashboard.valueByCategoryDesc') }}</p>
           </div>
         </template>
 
         <div v-if="isChartLoading" class="flex items-center justify-center h-64">
-          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-neutral-400" />
+          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-dimmed" />
         </div>
         <div v-else-if="categoryData.length">
           <BarChart
@@ -136,7 +136,7 @@
             :radius="4"
           />
         </div>
-        <div v-else class="flex items-center justify-center h-64 text-sm text-neutral-400">
+        <div v-else class="flex items-center justify-center h-64 text-sm text-dimmed">
           {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
@@ -148,13 +148,13 @@
       <UCard class="md:col-span-4">
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.assetByLocation') }}</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.assetByLocationDesc') }}</p>
+            <h3 class="text-base font-semibold text-highlighted">{{ $t('pages.dashboard.assetByLocation') }}</h3>
+            <p class="text-xs text-muted mt-0.5">{{ $t('pages.dashboard.assetByLocationDesc') }}</p>
           </div>
         </template>
 
         <div v-if="isChartLoading" class="flex items-center justify-center h-64">
-          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-neutral-400" />
+          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-dimmed" />
         </div>
         <div v-else-if="locationData.length">
           <DonutChart
@@ -169,18 +169,18 @@
             <div
               v-for="(item, i) in locationData"
               :key="item.id"
-              class="flex items-center justify-between text-sm cursor-pointer rounded px-1 -mx-1 hover:bg-neutral-100 transition-colors"
+              class="flex items-center justify-between text-sm cursor-pointer rounded px-1 -mx-1 hover:bg-elevated transition-colors"
               @click="goToAssetFilter('locationIds', item.id)"
             >
               <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: chartColors[i % chartColors.length] }" />
-                <span class="text-neutral-700 truncate">{{ item.name }}</span>
+                <span class="text-default truncate">{{ item.name }}</span>
               </div>
-              <span class="font-medium text-neutral-900 tabular-nums shrink-0 ml-2">{{ item.count.toLocaleString('id-ID') }}</span>
+              <span class="font-medium text-highlighted tabular-nums shrink-0 ml-2">{{ item.count.toLocaleString('id-ID') }}</span>
             </div>
           </div>
         </div>
-        <div v-else class="flex items-center justify-center h-64 text-sm text-neutral-400">
+        <div v-else class="flex items-center justify-center h-64 text-sm text-dimmed">
           {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
@@ -189,13 +189,13 @@
       <UCard class="md:col-span-8">
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.valueByLocation') }}</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.valueByLocationDesc') }}</p>
+            <h3 class="text-base font-semibold text-highlighted">{{ $t('pages.dashboard.valueByLocation') }}</h3>
+            <p class="text-xs text-muted mt-0.5">{{ $t('pages.dashboard.valueByLocationDesc') }}</p>
           </div>
         </template>
 
         <div v-if="isChartLoading" class="flex items-center justify-center h-64">
-          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-neutral-400" />
+          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-dimmed" />
         </div>
         <div v-else-if="locationData.length">
           <BarChart
@@ -211,7 +211,7 @@
             :radius="4"
           />
         </div>
-        <div v-else class="flex items-center justify-center h-64 text-sm text-neutral-400">
+        <div v-else class="flex items-center justify-center h-64 text-sm text-dimmed">
           {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
@@ -223,13 +223,13 @@
       <UCard>
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.subCategories') }}</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.assetBySubCategory') }}</p>
+            <h3 class="text-base font-semibold text-highlighted">{{ $t('pages.dashboard.subCategories') }}</h3>
+            <p class="text-xs text-muted mt-0.5">{{ $t('pages.dashboard.assetBySubCategory') }}</p>
           </div>
         </template>
 
         <div v-if="isChartLoading" class="flex items-center justify-center h-72">
-          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-neutral-400" />
+          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-dimmed" />
         </div>
         <div v-else-if="subCategoryData.length">
           <DonutChart
@@ -244,18 +244,18 @@
             <div
               v-for="(item, i) in subCategoryData"
               :key="item.id"
-              class="flex items-center justify-between text-sm cursor-pointer rounded px-1 -mx-1 hover:bg-neutral-100 transition-colors"
+              class="flex items-center justify-between text-sm cursor-pointer rounded px-1 -mx-1 hover:bg-elevated transition-colors"
               @click="goToAssetFilter('subCategoryIds', item.id)"
             >
               <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: chartColors[i % chartColors.length] }" />
-                <span class="text-neutral-700 truncate">{{ item.name }}</span>
+                <span class="text-default truncate">{{ item.name }}</span>
               </div>
-              <span class="font-medium text-neutral-900 tabular-nums shrink-0 ml-2">{{ item.count.toLocaleString('id-ID') }}</span>
+              <span class="font-medium text-highlighted tabular-nums shrink-0 ml-2">{{ item.count.toLocaleString('id-ID') }}</span>
             </div>
           </div>
         </div>
-        <div v-else class="flex items-center justify-center h-72 text-sm text-neutral-400">
+        <div v-else class="flex items-center justify-center h-72 text-sm text-dimmed">
           {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
@@ -264,13 +264,13 @@
       <UCard>
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.assetAging') }}</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.assetAgingDesc') }}</p>
+            <h3 class="text-base font-semibold text-highlighted">{{ $t('pages.dashboard.assetAging') }}</h3>
+            <p class="text-xs text-muted mt-0.5">{{ $t('pages.dashboard.assetAgingDesc') }}</p>
           </div>
         </template>
 
         <div v-if="isChartLoading" class="flex items-center justify-center h-72">
-          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-neutral-400" />
+          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-dimmed" />
         </div>
         <div v-else-if="agingData.length">
           <BarChart
@@ -285,7 +285,7 @@
             hide-legend
           />
         </div>
-        <div v-else class="flex items-center justify-center h-72 text-sm text-neutral-400">
+        <div v-else class="flex items-center justify-center h-72 text-sm text-dimmed">
           {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>
@@ -294,13 +294,13 @@
       <UCard>
         <template #header>
           <div>
-            <h3 class="text-base font-semibold text-neutral-900">{{ $t('pages.dashboard.dataQuality') }}</h3>
-            <p class="text-xs text-neutral-500 mt-0.5">{{ $t('pages.dashboard.dataQualityDesc') }}</p>
+            <h3 class="text-base font-semibold text-highlighted">{{ $t('pages.dashboard.dataQuality') }}</h3>
+            <p class="text-xs text-muted mt-0.5">{{ $t('pages.dashboard.dataQualityDesc') }}</p>
           </div>
         </template>
 
         <div v-if="isChartLoading" class="flex items-center justify-center h-72">
-          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-neutral-400" />
+          <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-dimmed" />
         </div>
         <div v-else-if="qualityData.length">
           <BarChart
@@ -315,7 +315,7 @@
             hide-legend
           />
         </div>
-        <div v-else class="flex items-center justify-center h-72 text-sm text-neutral-400">
+        <div v-else class="flex items-center justify-center h-72 text-sm text-dimmed">
           {{ $t('pages.dashboard.noData') }}
         </div>
       </UCard>

@@ -6,17 +6,17 @@
 @theme static {
   --font-sans: 'Geist', sans-serif;
 
-  --color-green-50: #EDFCF3;
-  --color-green-100: #D1FAE0;
-  --color-green-200: #A1F7C0;
-  --color-green-300: #5FF797;
-  --color-green-400: #06F95F;
-  --color-green-500: #009838;
+  --color-green-50: #F0F9F3;
+  --color-green-100: #D8F0DF;
+  --color-green-200: #B4DFC1;
+  --color-green-300: #86C99B;
+  --color-green-400: #4DAD70;
+  --color-green-500: #1A9449;
   --color-green-600: #00802F;
-  --color-green-700: #006625;
-  --color-green-800: #004D1C;
-  --color-green-900: #003815;
-  --color-green-950: #00240D;
+  --color-green-700: #006B28;
+  --color-green-800: #005522;
+  --color-green-900: #003F19;
+  --color-green-950: #002B11;
 
   --color-yellow-50: #FBF1E6;
   --color-yellow-100: #F7E3CD;

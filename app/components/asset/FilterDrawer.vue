@@ -11,7 +11,7 @@
         <!-- Category -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('common.category') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('common.category') }}</label>
             <UButton v-if="filters.categoryIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('categoryIds')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
@@ -28,7 +28,7 @@
         <!-- Sub Category -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('common.subCategory') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('common.subCategory') }}</label>
             <UButton v-if="filters.subCategoryIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('subCategoryIds')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
@@ -47,7 +47,7 @@
         <!-- Branch -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('common.branch') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('common.branch') }}</label>
             <UButton v-if="filters.branchIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('branchIds')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
@@ -64,7 +64,7 @@
         <!-- Location -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('common.location') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('common.location') }}</label>
             <UButton v-if="filters.locationIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('locationIds')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
@@ -83,7 +83,7 @@
         <!-- Status -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('common.status') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('common.status') }}</label>
             <UButton v-if="filters.status?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('status')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
@@ -101,7 +101,7 @@
         <!-- Holder Status -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.holderStatus') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.holderStatus') }}</label>
             <UButton v-if="filters.holderStatus" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('holderStatus')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <URadioGroup
@@ -114,7 +114,7 @@
         <!-- Holder Type (only if has_holder) -->
         <div v-if="filters.holderStatus === 'has_holder'">
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.holderType') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.holderType') }}</label>
             <UButton v-if="filters.holderType" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('holderType')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <URadioGroup
@@ -127,7 +127,7 @@
         <!-- Holder Kind (only if has_holder) -->
         <div v-if="filters.holderStatus === 'has_holder'">
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.holderKind') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.holderKind') }}</label>
             <UButton v-if="filters.holderKind" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('holderKind')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <URadioGroup
@@ -140,7 +140,7 @@
         <!-- Select Holder (only if has_holder and holderType selected) -->
         <div v-if="filters.holderStatus === 'has_holder' && filters.holderType">
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.selectHolder') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.selectHolder') }}</label>
             <UButton v-if="filters.holderId" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('holderId')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
@@ -169,7 +169,7 @@
         <!-- BLE Tag Status -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.bleTagStatus') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.bleTagStatus') }}</label>
             <UButton v-if="filters.bleTagStatus" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('bleTagStatus')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <URadioGroup
@@ -184,7 +184,7 @@
         <!-- Price Range -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.priceRange') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.priceRange') }}</label>
             <UButton v-if="filters.priceMin || filters.priceMax" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('priceMin'); clearField('priceMax')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <div class="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -194,17 +194,17 @@
               class="w-full sm:flex-1"
             >
               <template #leading>
-                <span class="text-neutral-500 text-sm">Rp</span>
+                <span class="text-muted text-sm">Rp</span>
               </template>
             </UInput>
-            <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
+            <span class="text-dimmed text-sm hidden sm:inline">—</span>
             <UInput
               v-model="priceMaxDisplay"
               :placeholder="$t('component.asset.filterDrawer.max')"
               class="w-full sm:flex-1"
             >
               <template #leading>
-                <span class="text-neutral-500 text-sm">Rp</span>
+                <span class="text-muted text-sm">Rp</span>
               </template>
             </UInput>
           </div>
@@ -215,7 +215,7 @@
         <!-- Purchase Date -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.detailWrapper.purchaseDate') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.detailWrapper.purchaseDate') }}</label>
             <UButton v-if="filters.purchaseDateFrom || filters.purchaseDateTo" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('purchaseDateFrom'); clearField('purchaseDateTo')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
@@ -229,7 +229,7 @@
                 </UPopover>
               </template>
             </UInputDate>
-            <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
+            <span class="text-dimmed text-sm hidden sm:inline">—</span>
             <UInputDate v-model="purchaseDateToVal" class="w-full sm:flex-1">
               <template #trailing>
                 <UPopover>
@@ -260,7 +260,7 @@
         <!-- Depreciation Status -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.depreciationStatus') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.depreciationStatus') }}</label>
             <UButton v-if="filters.depreciationStatus" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('depreciationStatus')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <URadioGroup
@@ -272,7 +272,7 @@
         <!-- Useful Life (shown for has_depreciation or fully_depreciated) -->
         <div v-if="filters.depreciationStatus === 'has_depreciation' || filters.depreciationStatus === 'fully_depreciated'">
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.usefulLife') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.usefulLife') }}</label>
             <UButton v-if="filters.usefulLifeOp || filters.usefulLifeYears" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('usefulLifeOp'); clearField('usefulLifeYears')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <div class="flex items-center gap-2">
@@ -291,7 +291,7 @@
               min="0"
             >
               <template #trailing>
-                <span class="text-neutral-400 text-sm">{{ $t('component.asset.filterDrawer.yearUnit') }}</span>
+                <span class="text-dimmed text-sm">{{ $t('component.asset.filterDrawer.yearUnit') }}</span>
               </template>
             </UInput>
           </div>
@@ -300,16 +300,16 @@
         <!-- Monthly Depreciation Range (only for has_depreciation) -->
         <div v-if="filters.depreciationStatus === 'has_depreciation'">
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.monthlyDepreciation') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.monthlyDepreciation') }}</label>
             <UButton v-if="filters.monthlyDepMin || filters.monthlyDepMax" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('monthlyDepMin'); clearField('monthlyDepMax')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <div class="flex flex-col sm:flex-row sm:items-center gap-2">
             <UInput v-model="monthlyDepMinDisplay" :placeholder="$t('component.asset.filterDrawer.min')" class="w-full sm:flex-1">
-              <template #leading><span class="text-neutral-500 text-sm">Rp</span></template>
+              <template #leading><span class="text-muted text-sm">Rp</span></template>
             </UInput>
-            <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
+            <span class="text-dimmed text-sm hidden sm:inline">—</span>
             <UInput v-model="monthlyDepMaxDisplay" :placeholder="$t('component.asset.filterDrawer.max')" class="w-full sm:flex-1">
-              <template #leading><span class="text-neutral-500 text-sm">Rp</span></template>
+              <template #leading><span class="text-muted text-sm">Rp</span></template>
             </UInput>
           </div>
         </div>
@@ -317,16 +317,16 @@
         <!-- Accumulated Depreciation Range (only for has_depreciation) -->
         <div v-if="filters.depreciationStatus === 'has_depreciation'">
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.accumulatedDepreciation') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.accumulatedDepreciation') }}</label>
             <UButton v-if="filters.accumulatedDepMin || filters.accumulatedDepMax" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('accumulatedDepMin'); clearField('accumulatedDepMax')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <div class="flex flex-col sm:flex-row sm:items-center gap-2">
             <UInput v-model="accDepMinDisplay" :placeholder="$t('component.asset.filterDrawer.min')" class="w-full sm:flex-1">
-              <template #leading><span class="text-neutral-500 text-sm">Rp</span></template>
+              <template #leading><span class="text-muted text-sm">Rp</span></template>
             </UInput>
-            <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
+            <span class="text-dimmed text-sm hidden sm:inline">—</span>
             <UInput v-model="accDepMaxDisplay" :placeholder="$t('component.asset.filterDrawer.max')" class="w-full sm:flex-1">
-              <template #leading><span class="text-neutral-500 text-sm">Rp</span></template>
+              <template #leading><span class="text-muted text-sm">Rp</span></template>
             </UInput>
           </div>
         </div>
@@ -334,16 +334,16 @@
         <!-- Book Value Range (only for has_depreciation) -->
         <div v-if="filters.depreciationStatus === 'has_depreciation'">
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.bookValue') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.bookValue') }}</label>
             <UButton v-if="filters.bookValueMin || filters.bookValueMax" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('bookValueMin'); clearField('bookValueMax')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <div class="flex flex-col sm:flex-row sm:items-center gap-2">
             <UInput v-model="bookValueMinDisplay" :placeholder="$t('component.asset.filterDrawer.min')" class="w-full sm:flex-1">
-              <template #leading><span class="text-neutral-500 text-sm">Rp</span></template>
+              <template #leading><span class="text-muted text-sm">Rp</span></template>
             </UInput>
-            <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
+            <span class="text-dimmed text-sm hidden sm:inline">—</span>
             <UInput v-model="bookValueMaxDisplay" :placeholder="$t('component.asset.filterDrawer.max')" class="w-full sm:flex-1">
-              <template #leading><span class="text-neutral-500 text-sm">Rp</span></template>
+              <template #leading><span class="text-muted text-sm">Rp</span></template>
             </UInput>
           </div>
         </div>
@@ -353,7 +353,7 @@
         <!-- Data Quality -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.dataQuality') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.dataQuality') }}</label>
             <UButton v-if="filters.missingFields?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('missingFields')">{{ $t('component.asset.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
@@ -371,10 +371,10 @@
         <!-- Labels -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.filterDrawer.labels') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.filterDrawer.labels') }}</label>
             <UButton icon="i-lucide-plus" size="xs" color="primary" variant="soft" @click="addLabelFilter">{{ $t('common.add') }}</UButton>
           </div>
-          <div v-if="!labelFilters.length" class="text-sm text-neutral-400 py-3 text-center border border-dashed border-neutral-200 rounded-lg">
+          <div v-if="!labelFilters.length" class="text-sm text-dimmed py-3 text-center border border-dashed border-default rounded-lg">
             {{ $t('component.asset.filterDrawer.noLabels') }}
           </div>
           <div v-else class="space-y-2">

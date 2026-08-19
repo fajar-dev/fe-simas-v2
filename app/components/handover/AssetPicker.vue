@@ -19,13 +19,13 @@
         </div>
         <div
           v-else-if="!employeeId"
-          class="text-sm text-neutral-400 py-8 text-center border-2 border-dashed border-neutral-200 rounded-lg"
+          class="text-sm text-dimmed py-8 text-center border-2 border-dashed border-default rounded-lg"
         >
           {{ $t('pages.handover.scan.selectHandedOverFirst') }}
         </div>
         <div
           v-else-if="availableAssets.length === 0"
-          class="text-sm text-neutral-400 py-8 text-center border-2 border-dashed border-neutral-200 rounded-lg"
+          class="text-sm text-dimmed py-8 text-center border-2 border-dashed border-default rounded-lg"
         >
           {{ $t('pages.handover.scan.noHeldAssets') }}
         </div>
@@ -36,13 +36,13 @@
           <div
             v-for="asset in availableAssets"
             :key="asset.id"
-            class="flex items-center gap-2 p-3 rounded-lg border border-neutral-100 bg-neutral-50/50"
+            class="flex items-center gap-2 p-3 rounded-lg border border-muted bg-muted/50"
           >
             <NuxtImg
               v-if="asset.image"
               :src="asset.image"
               :alt="asset.name"
-              class="w-9 h-9 object-cover rounded-lg border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0"
+              class="w-9 h-9 object-cover rounded-lg border border-default cursor-pointer hover:border-accented transition-colors shadow-2xs shrink-0"
               @click="() => openLightbox(asset.image!)"
             />
             <div
@@ -55,10 +55,10 @@
               />
             </div>
             <div class="min-w-0 flex-1">
-              <div class="text-sm font-medium text-neutral-900 truncate">
+              <div class="text-sm font-medium text-highlighted truncate">
                 {{ asset.name }}
               </div>
-              <div class="text-xs text-neutral-500 truncate">
+              <div class="text-xs text-muted truncate">
                 {{ asset.code }}
               </div>
             </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4 shrink-0 select-none">
     <!-- Top Mobile Navigation Bar (Visible on mobile viewports only) -->
-    <header class="flex items-center justify-between px-4 py-3 lg:hidden bg-white border-b border-neutral-200 shrink-0 -mx-4 -mt-4 mb-4">
+    <header class="flex items-center justify-between px-4 py-3 lg:hidden bg-default border-b border-default shrink-0 -mx-4 -mt-4 mb-4">
       <div class="flex items-center gap-2">
         <UButton
           icon="i-lucide-menu"
@@ -19,16 +19,16 @@
 
     <!-- Top Row: Page Title & Description -->
     <div class="flex flex-col gap-1">
-      <h2 class="text-xl md:text-2xl font-bold text-neutral-900 tracking-tight">
+      <h2 class="text-xl md:text-2xl font-bold text-highlighted tracking-tight">
         {{ title }}
       </h2>
-      <p v-if="description" class="text-sm md:text-sm text-neutral-500">
+      <p v-if="description" class="text-sm md:text-sm text-muted">
         {{ description }}
       </p>
     </div>
 
     <!-- Middle Row: Tab links -->
-    <div v-if="$slots.tabs" class="border-b border-neutral-200 mt-7">
+    <div v-if="$slots.tabs" class="border-b border-default mt-7">
       <nav class="flex gap-6 -mb-px">
         <slot name="tabs" />
       </nav>

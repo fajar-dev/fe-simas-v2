@@ -6,10 +6,10 @@
       :description="$t('pages.handover.description')"
     >
       <template #breadcrumbs>
-        <div class="flex items-center gap-2 text-xs text-neutral-500 mb-2 select-none">
+        <div class="flex items-center gap-2 text-xs text-muted mb-2 select-none">
           <NuxtLink to="/" class="hover:text-primary transition-colors">Dashboard</NuxtLink>
-          <UIcon name="i-lucide-chevron-right" class="w-3.5 h-3.5 text-neutral-400" />
-          <span class="font-medium text-neutral-700">{{ $t('nav.handover') }}</span>
+          <UIcon name="i-lucide-chevron-right" class="w-3.5 h-3.5 text-dimmed" />
+          <span class="font-medium text-default">{{ $t('nav.handover') }}</span>
         </div>
       </template>
     </Header>
@@ -200,7 +200,7 @@ const baseColumns: TableColumn<Handover>[] = [
       const d = row.original.createdAt
       // Format simple local date
       const formatted = d ? d.replace('T', ' ').slice(0, 16) : '-'
-      return h('span', { class: 'text-neutral-600 font-medium' }, formatted)
+      return h('span', { class: 'text-toned font-medium' }, formatted)
     }
   },
   {
@@ -208,7 +208,7 @@ const baseColumns: TableColumn<Handover>[] = [
     header: t('pages.handover.columnHandedOverBy'),
     cell: ({ row }) => {
       const person = row.original.handedOver
-      if (!person) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+      if (!person) return h('span', { class: 'text-dimmed text-xs' }, '-')
       return h('div', { class: 'flex items-center gap-2 min-w-0' }, [
         h(UAvatar, {
           src: person.photo || undefined,
@@ -217,8 +217,8 @@ const baseColumns: TableColumn<Handover>[] = [
           loading: 'lazy'
         }),
         h('div', { class: 'flex flex-col min-w-0' }, [
-          h('span', { class: 'text-neutral-900 font-semibold truncate' }, person.name),
-          h('span', { class: 'text-xs text-neutral-500' }, person.employeeId)
+          h('span', { class: 'text-highlighted font-semibold truncate' }, person.name),
+          h('span', { class: 'text-xs text-muted' }, person.employeeId)
         ])
       ])
     }
@@ -228,7 +228,7 @@ const baseColumns: TableColumn<Handover>[] = [
     header: t('pages.handover.columnReceivedBy'),
     cell: ({ row }) => {
       const person = row.original.received
-      if (!person) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+      if (!person) return h('span', { class: 'text-dimmed text-xs' }, '-')
       return h('div', { class: 'flex items-center gap-2 min-w-0' }, [
         h(UAvatar, {
           src: person.photo || undefined,
@@ -237,8 +237,8 @@ const baseColumns: TableColumn<Handover>[] = [
           loading: 'lazy'
         }),
         h('div', { class: 'flex flex-col min-w-0' }, [
-          h('span', { class: 'text-neutral-900 font-semibold truncate' }, person.name),
-          h('span', { class: 'text-xs text-neutral-500' }, person.employeeId)
+          h('span', { class: 'text-highlighted font-semibold truncate' }, person.name),
+          h('span', { class: 'text-xs text-muted' }, person.employeeId)
         ])
       ])
     }
@@ -248,7 +248,7 @@ const baseColumns: TableColumn<Handover>[] = [
     header: sortHeader(t('pages.handover.columnType'), 'transactionType'),
     cell: ({ row }) => {
       const label = t(`pages.handover.types.${row.original.transactionType}`)
-      return h('span', { class: 'text-sm text-neutral-600 font-medium' }, label)
+      return h('span', { class: 'text-sm text-toned font-medium' }, label)
     }
   },
   {
@@ -276,7 +276,7 @@ const baseColumns: TableColumn<Handover>[] = [
     header: t('pages.handover.columnCreatedBy'),
     cell: ({ row }) => {
       const creator = row.original.createdBy
-      if (!creator) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+      if (!creator) return h('span', { class: 'text-dimmed text-xs' }, '-')
       return h('div', { class: 'flex items-center gap-2' }, [
         h(UAvatar, {
           src: creator.photo || undefined,
@@ -284,7 +284,7 @@ const baseColumns: TableColumn<Handover>[] = [
           size: 'xs',
           class: 'ring-1 ring-primary/10'
         }),
-        h('span', { class: 'text-xs text-neutral-700 truncate max-w-[120px]' }, creator.name)
+        h('span', { class: 'text-xs text-default truncate max-w-[120px]' }, creator.name)
       ])
     }
   }

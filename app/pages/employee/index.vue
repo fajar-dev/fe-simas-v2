@@ -150,8 +150,8 @@ const baseColumns: TableColumn<Employee>[] = [
           loading: 'lazy'
         }),
         h('div', { class: 'flex flex-col' }, [
-          h('span', { class: 'font-medium text-neutral-900' }, name),
-          h('span', { class: 'text-xs text-neutral-500' }, employeeId)
+          h('span', { class: 'font-medium text-highlighted' }, name),
+          h('span', { class: 'text-xs text-muted' }, employeeId)
         ])
       ])
     }
@@ -168,22 +168,22 @@ const baseColumns: TableColumn<Employee>[] = [
     header: sortHeader(t('pages.employee.columnOrganization'), 'organization'),
     cell: ({ row }) => {
       const organization = row.original.organization
-      if (!organization) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
-      return h('span', { class: 'text-neutral-600' }, organization.name)
+      if (!organization) return h('span', { class: 'text-dimmed text-xs' }, '-')
+      return h('span', { class: 'text-toned' }, organization.name)
     }
   },
   {
     accessorKey: 'email',
     header: sortHeader(t('pages.employee.columnEmail'), 'email'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600' }, row.original.email)
+      return h('span', { class: 'text-toned' }, row.original.email)
     }
   },
   {
     accessorKey: 'phone',
     header: sortHeader(t('pages.employee.columnPhone'), 'phone'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600' }, row.original.phone)
+      return h('span', { class: 'text-toned' }, row.original.phone)
     }
   },
   {
@@ -205,7 +205,7 @@ const baseColumns: TableColumn<Employee>[] = [
     accessorKey: 'assetCount',
     header: sortHeader(t('pages.employee.columnAssetCount'), 'assetCount'),
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
+      return h('span', { class: 'font-medium text-highlighted' }, String(row.original.assetCount ?? 0))
     }
   }
 ]
@@ -224,7 +224,7 @@ const columns = computed(() => {
       },
       cell: ({ row }) => {
         const items = getRowItems(row)
-        if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+        if (items.flat().length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
         return h(
           UDropdownMenu,
           {

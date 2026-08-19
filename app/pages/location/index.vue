@@ -146,7 +146,7 @@ const baseColumns: TableColumn<Location>[] = [
     accessorKey: 'name',
     header: sortHeader(t('pages.location.columnName'), 'name'),
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, row.original.name)
+      return h('span', { class: 'font-medium text-highlighted' }, row.original.name)
     }
   },
   {
@@ -155,7 +155,7 @@ const baseColumns: TableColumn<Location>[] = [
     cell: ({ row }) => {
       const branch = row.original.branch
       if (!branch) return '-'
-      return h('span', { class: 'font-medium text-neutral-900' }, `[${branch.code}] ${branch.name}`)
+      return h('span', { class: 'font-medium text-highlighted' }, `[${branch.code}] ${branch.name}`)
     }
   },
   {
@@ -163,7 +163,7 @@ const baseColumns: TableColumn<Location>[] = [
     header: sortHeader(t('pages.location.columnDescription'), 'description'),
     cell: ({ row }) => {
       const desc = row.original.description
-      return h('span', { class: 'text-neutral-600' }, desc || '-')
+      return h('span', { class: 'text-toned' }, desc || '-')
     }
   },
   {
@@ -171,15 +171,15 @@ const baseColumns: TableColumn<Location>[] = [
     header: t('pages.location.columnMistZoneId'),
     cell: ({ row }) => {
       const zoneId = row.original.mistZoneId
-      if (!zoneId) return h('span', { class: 'text-neutral-500' }, '-')
-      return h('span', { class: 'text-neutral-900 ' }, zoneId)
+      if (!zoneId) return h('span', { class: 'text-muted' }, '-')
+      return h('span', { class: 'text-highlighted ' }, zoneId)
     }
   },
   {
     accessorKey: 'assetCount',
     header: sortHeader(t('pages.location.columnAssetCount'), 'assetCount'),
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
+      return h('span', { class: 'font-medium text-highlighted' }, String(row.original.assetCount ?? 0))
     }
   }
 ]
@@ -198,7 +198,7 @@ const columns = computed(() => {
       },
       cell: ({ row }) => {
         const items = getRowItems(row)
-        if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+        if (items.flat().length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
         return h(
           UDropdownMenu,
           {

@@ -33,10 +33,10 @@
               />
               <template #content>
                 <div class="p-3 w-48 space-y-2 select-none">
-                  <div class="text-sm font-semibold text-neutral-600 mb-1">
+                  <div class="text-sm font-semibold text-toned mb-1">
                     {{ $t('common.customLabels') }}
                   </div>
-                  <div v-if="availableLabelKeys.length === 0" class="text-xs text-neutral-400 italic">
+                  <div v-if="availableLabelKeys.length === 0" class="text-xs text-dimmed italic">
                     {{ $t('pages.asset.index.noCustomLabels') }}
                   </div>
                   <div v-else class="space-y-1.5 max-h-48 overflow-y-auto">
@@ -181,14 +181,14 @@ const baseColumns: TableColumn<AssetNote>[] = [
     accessorKey: 'date',
     header: sortHeader(t('pages.asset.note.columnNoteDate'), 'date'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-900 font-medium' }, row.original.date)
+      return h('span', { class: 'text-highlighted font-medium' }, row.original.date)
     }
   },
   {
     accessorKey: 'note',
     header: sortHeader(t('pages.asset.note.columnNotes'), 'note'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600 truncate max-w-md block' }, row.original.note || '-')
+      return h('span', { class: 'text-toned truncate max-w-md block' }, row.original.note || '-')
     }
   },
   {
@@ -196,7 +196,7 @@ const baseColumns: TableColumn<AssetNote>[] = [
     header: t('pages.asset.note.columnAttachments'),
     cell: ({ row }) => {
       const attachments = row.original.attachments || []
-      if (attachments.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+      if (attachments.length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
 
       // Render clickable mini badges for each attachment
       return h(
@@ -241,10 +241,10 @@ const createdByColumn: TableColumn<AssetNote> = {
           class: 'bg-primary-50 text-primary-700',
           loading: 'lazy'
         }),
-        h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
+        h('span', { class: 'text-default font-medium text-sm' }, creator.name)
       ])
     } else {
-      return h('span', { class: 'text-neutral-500 italic text-sm' }, t('pages.asset.note.system'))
+      return h('span', { class: 'text-muted italic text-sm' }, t('pages.asset.note.system'))
     }
   }
 }
@@ -257,7 +257,7 @@ const columns = computed(() => {
       header: key,
       cell: ({ row }: any) => {
         const label = row.original.labels?.find((l: any) => l.key === key)
-        return h('span', { class: 'text-neutral-600' }, label ? label.value : '-')
+        return h('span', { class: 'text-toned' }, label ? label.value : '-')
       }
     })
   })

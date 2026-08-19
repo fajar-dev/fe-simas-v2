@@ -46,10 +46,10 @@
         <!-- Labels -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('common.labels') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('common.labels') }}</label>
             <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addLabel">{{ $t('common.add') }}</UButton>
           </div>
-          <div v-if="formLabels.length === 0" class="text-sm text-neutral-400 py-3 text-center border border-dashed border-neutral-200 rounded-lg">
+          <div v-if="formLabels.length === 0" class="text-sm text-dimmed py-3 text-center border border-dashed border-default rounded-lg">
             {{ $t('pages.asset.create.noLabels') }}
           </div>
           <div v-else class="space-y-2">

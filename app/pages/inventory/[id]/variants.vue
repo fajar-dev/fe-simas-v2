@@ -23,8 +23,8 @@
         <UTable
           :data="row.original.branches"
           :columns="branchColumns"
-          :ui="{ th: 'bg-neutral-50 py-2', td: 'py-2' }"
-          class="border border-neutral-200 rounded-md"
+          :ui="{ th: 'bg-muted py-2', td: 'py-2' }"
+          class="border border-default rounded-md"
         />
       </template>
     </DataTable>
@@ -86,7 +86,7 @@ const pagedVariants = computed(() => filteredVariants.value.slice((page.value - 
 watch(search, () => { page.value = 1 })
 
 const branchColumns: TableColumn<BranchStockRow>[] = [
-  { accessorKey: 'name', header: t('common.branch'), cell: ({ row }) => h('span', { class: 'text-neutral-800 text-sm' }, row.original.name) },
+  { accessorKey: 'name', header: t('common.branch'), cell: ({ row }) => h('span', { class: 'text-highlighted text-sm' }, row.original.name) },
   { accessorKey: 'newStock', header: t('pages.inventory.condition.new'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-emerald-600 text-sm font-medium' }, String(row.original.newStock)) },
   { accessorKey: 'usedStock', header: t('pages.inventory.condition.used'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-amber-600 text-sm font-medium' }, String(row.original.usedStock)) },
 ]
@@ -96,7 +96,7 @@ const variantColumns: TableColumn<VariantStockRow>[] = [
     if (!row.original.branches.length) return null
     return h('button', {
       type: 'button',
-      class: 'flex items-center justify-center text-neutral-500 hover:text-neutral-900 cursor-pointer',
+      class: 'flex items-center justify-center text-muted hover:text-highlighted cursor-pointer',
       onClick: (e: Event) => { e.stopPropagation(); row.toggleExpanded() }
     }, [
       h(UIcon, { name: row.getIsExpanded() ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right', class: 'w-4 h-4' })
@@ -105,17 +105,17 @@ const variantColumns: TableColumn<VariantStockRow>[] = [
   { accessorKey: 'name', header: t('common.name'), cell: ({ row }) => {
     const img = row.original.image
     const imageEl = img
-      ? h(NuxtImg, { src: img, alt: row.original.name, class: 'w-9 h-9 object-cover rounded-md border border-neutral-200 shrink-0' })
-      : h('div', { class: 'w-9 h-9 bg-neutral-100 rounded-md flex items-center justify-center border border-neutral-200 shrink-0' }, [
-          h('span', { class: 'text-neutral-400 text-xs' }, 'N/A')
+      ? h(NuxtImg, { src: img, alt: row.original.name, class: 'w-9 h-9 object-cover rounded-md border border-default shrink-0' })
+      : h('div', { class: 'w-9 h-9 bg-elevated rounded-md flex items-center justify-center border border-default shrink-0' }, [
+          h('span', { class: 'text-dimmed text-xs' }, 'N/A')
         ])
     const textEl = h('div', { class: 'flex flex-col min-w-0' }, [
-      h('span', { class: 'text-neutral-900 font-medium text-sm' }, row.original.name),
-      h('span', { class: 'text-xs text-neutral-500' }, row.original.code || '-')
+      h('span', { class: 'text-highlighted font-medium text-sm' }, row.original.name),
+      h('span', { class: 'text-xs text-muted' }, row.original.code || '-')
     ])
     return h('div', { class: 'flex items-center gap-3' }, [imageEl, textEl])
   } },
-  { accessorKey: 'description', header: t('common.description'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.description || '-') },
+  { accessorKey: 'description', header: t('common.description'), cell: ({ row }) => h('span', { class: 'text-toned text-sm' }, row.original.description || '-') },
   { accessorKey: 'newStock', header: t('pages.inventory.condition.new'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-emerald-600 text-sm font-medium' }, String(row.original.newStock)) },
   { accessorKey: 'usedStock', header: t('pages.inventory.condition.used'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-amber-600 text-sm font-medium' }, String(row.original.usedStock)) },
 ]

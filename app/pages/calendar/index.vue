@@ -10,7 +10,7 @@
         <UButton icon="i-lucide-chevron-right" color="neutral" variant="outline" square @click="shiftMonth(1)" />
       </div>
 
-      <h2 class="text-lg font-semibold text-neutral-900 min-w-[180px]">
+      <h2 class="text-lg font-semibold text-highlighted min-w-[180px]">
         {{ monthLabel }}
       </h2>
 
@@ -41,7 +41,7 @@
     <!-- Calendar + today's schedule -->
     <div class="flex flex-col lg:flex-row gap-6 items-start">
       <div class="relative flex-1 min-w-0 w-full">
-        <div v-if="isLoading" class="absolute inset-0 z-10 flex items-center justify-center bg-white/60 rounded-lg">
+        <div v-if="isLoading" class="absolute inset-0 z-10 flex items-center justify-center bg-default/60 rounded-lg">
           <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-primary" />
         </div>
         <CalendarMonthGrid
@@ -52,30 +52,30 @@
         />
       </div>
 
-      <div class="w-full lg:w-80 shrink-0 rounded-lg border border-neutral-200 bg-white overflow-hidden">
-        <div class="px-4 py-3 border-b border-neutral-200">
-          <h3 class="text-sm font-semibold text-neutral-900">{{ $t('pages.calendar.todayScheduleTitle') }}</h3>
-          <p class="text-xs text-neutral-500">{{ todayLabel }}</p>
+      <div class="w-full lg:w-80 shrink-0 rounded-lg border border-default bg-default overflow-hidden">
+        <div class="px-4 py-3 border-b border-default">
+          <h3 class="text-sm font-semibold text-highlighted">{{ $t('pages.calendar.todayScheduleTitle') }}</h3>
+          <p class="text-xs text-muted">{{ todayLabel }}</p>
         </div>
 
         <div v-if="isLoadingToday" class="p-4 flex justify-center">
           <UIcon name="i-lucide-loader-2" class="w-5 h-5 animate-spin text-primary" />
         </div>
-        <p v-else-if="todayOccurrences.length === 0" class="p-4 text-sm text-neutral-400 text-center">
+        <p v-else-if="todayOccurrences.length === 0" class="p-4 text-sm text-dimmed text-center">
           {{ $t('pages.calendar.todayScheduleEmpty') }}
         </p>
-        <ul v-else class="divide-y divide-neutral-100 max-h-[560px] overflow-y-auto">
+        <ul v-else class="divide-y divide-muted max-h-[560px] overflow-y-auto">
           <li v-for="occ in todayOccurrences" :key="occ.id">
             <button
               type="button"
-              class="w-full text-left px-4 py-3 hover:bg-neutral-50 transition-colors"
+              class="w-full text-left px-4 py-3 hover:bg-muted transition-colors"
               @click="onEventClick(occ)"
             >
               <div class="flex items-start justify-between gap-2">
-                <p class="text-sm font-medium text-neutral-900 truncate">{{ occ.title }}</p>
+                <p class="text-sm font-medium text-highlighted truncate">{{ occ.title }}</p>
                 <UIcon v-if="occ.isRecurring" name="i-lucide-repeat" class="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
               </div>
-              <p class="text-xs text-neutral-500 truncate mt-0.5">{{ assetsSummary(occ) }}</p>
+              <p class="text-xs text-muted truncate mt-0.5">{{ assetsSummary(occ) }}</p>
             </button>
           </li>
         </ul>

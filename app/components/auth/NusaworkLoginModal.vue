@@ -12,8 +12,8 @@
     <template #body>
       <div class="flex flex-col items-center gap-4 py-2">
         <!-- Loading state -->
-        <div v-if="isLoading" class="w-52 h-52 rounded-xl bg-neutral-100 flex items-center justify-center">
-          <UIcon name="i-lucide-loader-2" class="w-8 h-8 text-neutral-600 animate-spin" />
+        <div v-if="isLoading" class="w-52 h-52 rounded-xl bg-elevated flex items-center justify-center">
+          <UIcon name="i-lucide-loader-2" class="w-8 h-8 text-toned animate-spin" />
         </div>
 
         <!-- Error / Expired state -->
@@ -44,22 +44,22 @@
             :alt="`${profile.firstName} ${profile.lastName}`"
             icon="i-lucide-user"
             size="3xl"
-            class="border-2 border-neutral-200 shadow-sm"
+            class="border-2 border-default shadow-sm"
             loading="lazy"
           />
           <div class="text-center">
-            <p class="text-base font-bold text-neutral-900">{{ profile.firstName }} {{ profile.lastName }}</p>
-            <p class="text-xs text-neutral-600 mt-0.5">{{ profile.email }}</p>
+            <p class="text-base font-bold text-highlighted">{{ profile.firstName }} {{ profile.lastName }}</p>
+            <p class="text-xs text-toned mt-0.5">{{ profile.email }}</p>
           </div>
           <UBadge :label="$t('component.auth.nusawork.confirmed')" color="success" variant="subtle" size="sm" class="uppercase tracking-wide" />
-          <p class="text-xs text-neutral-400 text-center">
+          <p class="text-xs text-dimmed text-center">
             {{ $t('component.auth.nusawork.confirmInstruction') }}
           </p>
         </div>
 
         <!-- QR Code display (waiting state) -->
         <div v-else class="relative">
-          <div class="w-52 h-52 rounded-xl bg-white border border-neutral-200 p-2 shadow-sm">
+          <div class="w-52 h-52 rounded-xl bg-default border border-default p-2 shadow-sm">
             <img
               v-if="qrCode"
               :src="qrCode"
@@ -83,13 +83,13 @@
 
         <!-- Instructions (only in waiting state) -->
         <div v-if="status === 'waiting'" class="w-full space-y-2">
-          <div class="flex items-center gap-3 rounded-lg bg-neutral-50 px-3.5 py-3">
+          <div class="flex items-center gap-3 rounded-lg bg-muted px-3.5 py-3">
             <UBadge label="1" color="success" variant="subtle" class="rounded-full w-6 h-6 justify-center" />
-            <span class="text-sm text-neutral-700">{{ $t('component.auth.nusawork.step1') }}</span>
+            <span class="text-sm text-default">{{ $t('component.auth.nusawork.step1') }}</span>
           </div>
-          <div class="flex items-center gap-3 rounded-lg bg-neutral-50 px-3.5 py-3">
+          <div class="flex items-center gap-3 rounded-lg bg-muted px-3.5 py-3">
             <UBadge label="2" color="success" variant="subtle" class="rounded-full w-6 h-6 justify-center" />
-            <span class="text-sm text-neutral-700">{{ $t('component.auth.nusawork.step2') }}</span>
+            <span class="text-sm text-default">{{ $t('component.auth.nusawork.step2') }}</span>
           </div>
         </div>
       </div>

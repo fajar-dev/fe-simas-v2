@@ -9,7 +9,7 @@
       <div v-if="schedule" class="space-y-4">
         <!-- Title + recurrence -->
         <div class="flex items-start justify-between gap-3">
-          <h3 class="text-lg font-semibold text-neutral-900">{{ schedule.title }}</h3>
+          <h3 class="text-lg font-semibold text-highlighted">{{ schedule.title }}</h3>
           <UBadge
             :color="schedule.recurrence === 'none' ? 'neutral' : 'primary'"
             variant="subtle"
@@ -21,24 +21,24 @@
         </div>
 
         <!-- Recurrence detail -->
-        <p v-if="recurrenceText" class="text-xs text-neutral-500 -mt-2">{{ recurrenceText }}</p>
+        <p v-if="recurrenceText" class="text-xs text-muted -mt-2">{{ recurrenceText }}</p>
 
         <!-- Assets -->
         <div class="space-y-2">
-          <p class="text-xs font-medium text-neutral-500">{{ $t('pages.calendar.form.assets') }} ({{ schedule.assets.length }})</p>
+          <p class="text-xs font-medium text-muted">{{ $t('pages.calendar.form.assets') }} ({{ schedule.assets.length }})</p>
           <div class="space-y-2 max-h-44 overflow-y-auto">
             <div
               v-for="asset in schedule.assets"
               :key="asset.id"
-              class="flex items-center gap-3 rounded-lg border border-neutral-200 p-2.5"
+              class="flex items-center gap-3 rounded-lg border border-default p-2.5"
             >
               <img v-if="asset.image" :src="asset.image" :alt="asset.name" class="w-9 h-9 rounded object-cover shrink-0">
-              <div v-else class="w-9 h-9 rounded bg-neutral-100 flex items-center justify-center shrink-0">
-                <UIcon name="i-lucide-box" class="w-4 h-4 text-neutral-400" />
+              <div v-else class="w-9 h-9 rounded bg-elevated flex items-center justify-center shrink-0">
+                <UIcon name="i-lucide-box" class="w-4 h-4 text-dimmed" />
               </div>
               <div class="min-w-0">
-                <p class="text-sm font-medium text-neutral-900 truncate">{{ asset.name }}</p>
-                <p class="text-xs text-neutral-500">{{ asset.code }}</p>
+                <p class="text-sm font-medium text-highlighted truncate">{{ asset.name }}</p>
+                <p class="text-xs text-muted">{{ asset.code }}</p>
               </div>
             </div>
           </div>
@@ -46,15 +46,15 @@
 
         <!-- Assigned users -->
         <div class="space-y-2">
-          <p class="text-xs font-medium text-neutral-500">{{ $t('pages.calendar.detail.assignedUsers') }} ({{ schedule.users.length }})</p>
-          <div v-if="schedule.users.length === 0" class="text-sm text-neutral-400">
+          <p class="text-xs font-medium text-muted">{{ $t('pages.calendar.detail.assignedUsers') }} ({{ schedule.users.length }})</p>
+          <div v-if="schedule.users.length === 0" class="text-sm text-dimmed">
             {{ $t('pages.calendar.detail.noUsersAssigned') }}
           </div>
           <div v-else class="space-y-2 max-h-44 overflow-y-auto">
             <div
               v-for="assignedUser in schedule.users"
               :key="assignedUser.id"
-              class="flex items-center gap-3 rounded-lg border border-neutral-200 p-2.5"
+              class="flex items-center gap-3 rounded-lg border border-default p-2.5"
             >
               <UAvatar
                 :src="assignedUser.photo || undefined"
@@ -64,28 +64,28 @@
                 loading="lazy"
               />
               <div class="min-w-0">
-                <p class="text-sm font-medium text-neutral-900 truncate">{{ assignedUser.name }}</p>
-                <p class="text-xs text-neutral-500 truncate">{{ assignedUser.email }}</p>
+                <p class="text-sm font-medium text-highlighted truncate">{{ assignedUser.name }}</p>
+                <p class="text-xs text-muted truncate">{{ assignedUser.email }}</p>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Date -->
-        <div class="flex items-center gap-1.5 text-sm text-neutral-700">
-          <UIcon name="i-lucide-calendar" class="w-4 h-4 text-neutral-400" />
+        <div class="flex items-center gap-1.5 text-sm text-default">
+          <UIcon name="i-lucide-calendar" class="w-4 h-4 text-dimmed" />
           {{ dateLabel }}
         </div>
 
         <!-- Description -->
-        <p v-if="schedule.description" class="text-sm text-neutral-600 whitespace-pre-wrap">
+        <p v-if="schedule.description" class="text-sm text-toned whitespace-pre-wrap">
           {{ schedule.description }}
         </p>
 
         <!-- Attachments -->
         <div>
-          <p class="text-xs font-medium text-neutral-500 mb-1.5">{{ $t('pages.calendar.detail.attachments') }}</p>
-          <div v-if="schedule.attachments.length === 0" class="text-sm text-neutral-400">
+          <p class="text-xs font-medium text-muted mb-1.5">{{ $t('pages.calendar.detail.attachments') }}</p>
+          <div v-if="schedule.attachments.length === 0" class="text-sm text-dimmed">
             {{ $t('pages.calendar.detail.noAttachments') }}
           </div>
           <ul v-else class="space-y-1.5">
@@ -99,9 +99,9 @@
         </div>
 
         <!-- Created by -->
-        <div v-if="schedule.createdBy" class="text-xs text-neutral-400">
+        <div v-if="schedule.createdBy" class="text-xs text-dimmed">
           {{ $t('pages.calendar.detail.createdBy') }}:
-          <div class="text-xs text-neutral-900 font-medium mt-1">
+          <div class="text-xs text-highlighted font-medium mt-1">
             <div v-if="schedule.createdBy" class="flex items-center gap-2 min-w-0">
               <UAvatar
                 :src="schedule.createdBy.photo || undefined"
@@ -110,7 +110,7 @@
                 size="xs"
                 loading="lazy"
               />
-              <span class="text-xs text-neutral-900 truncate" :title="schedule.createdBy.name">
+              <span class="text-xs text-highlighted truncate" :title="schedule.createdBy.name">
                 {{ schedule.createdBy.name }}
               </span>
             </div>

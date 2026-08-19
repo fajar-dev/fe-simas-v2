@@ -124,11 +124,11 @@
         />
 
         <!-- ═══ Items: asset items and stock items side by side ═══ -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-6 pt-6 border-t border-neutral-100">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-6 pt-6 border-t border-muted">
           <!-- Asset items -->
           <div class="space-y-4">
-            <div class="flex items-center justify-between border-b border-neutral-100 pb-2">
-              <h3 class="text-md font-semibold text-neutral-800 flex items-center gap-1.5">
+            <div class="flex items-center justify-between border-b border-muted pb-2">
+              <h3 class="text-md font-semibold text-highlighted flex items-center gap-1.5">
                 <UIcon
                   name="i-lucide-box"
                   class="text-primary w-5 h-5"
@@ -174,13 +174,13 @@
             <!-- Empty state -->
             <div
               v-if="form.items.length === 0"
-              class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-neutral-200 rounded-lg"
+              class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-default rounded-lg"
             >
               <UIcon
                 :name="form.transactionType === 'return' ? 'i-lucide-box' : 'i-lucide-scan-line'"
-                class="w-10 h-10 text-neutral-300 mb-3"
+                class="w-10 h-10 text-dimmed mb-3"
               />
-              <span class="text-sm text-neutral-500 mb-3">{{ form.transactionType === 'return' ? $t('pages.handover.form.assetItemsEmptyReturn') : $t('pages.handover.scan.empty') }}</span>
+              <span class="text-sm text-muted mb-3">{{ form.transactionType === 'return' ? $t('pages.handover.form.assetItemsEmptyReturn') : $t('pages.handover.scan.empty') }}</span>
               <UButton
                 v-if="form.transactionType === 'return'"
                 type="button"
@@ -212,11 +212,11 @@
               <div
                 v-for="(item, index) in form.items"
                 :key="item.assetId"
-                class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 space-y-3"
+                class="p-4 rounded-lg border border-muted bg-muted/50 space-y-3"
               >
                 <!-- Header of Row -->
-                <div class="flex items-center justify-between border-b border-neutral-100 pb-2">
-                  <span class="text-xs font-semibold text-neutral-500 uppercase tracking-wider shrink-0">Item {{ index + 1 }}</span>
+                <div class="flex items-center justify-between border-b border-muted pb-2">
+                  <span class="text-xs font-semibold text-muted uppercase tracking-wider shrink-0">Item {{ index + 1 }}</span>
                   <UButton
                     type="button"
                     color="error"
@@ -234,7 +234,7 @@
                     v-if="item.image"
                     :src="item.image"
                     :alt="item.name"
-                    class="w-9 h-9 object-cover rounded-lg border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0"
+                    class="w-9 h-9 object-cover rounded-lg border border-default cursor-pointer hover:border-accented transition-colors shadow-2xs shrink-0"
                     @click="item.image && openLightbox(item.image)"
                   />
                   <div
@@ -247,8 +247,8 @@
                     />
                   </div>
                   <div class="min-w-0 flex-1">
-                    <span class="text-sm font-semibold text-neutral-800 block truncate">{{ item.name }}</span>
-                    <span class="text-xs text-neutral-500 block truncate">{{ item.code }}</span>
+                    <span class="text-sm font-semibold text-highlighted block truncate">{{ item.name }}</span>
+                    <span class="text-xs text-muted block truncate">{{ item.code }}</span>
                   </div>
                 </div>
 
@@ -257,7 +257,7 @@
                   <UTextarea
                     v-model="item.note"
                     :placeholder="$t('pages.handover.itemForm.notePlaceholder')"
-                    class="w-full bg-white"
+                    class="w-full bg-default"
                     :rows="3"
                   />
                 </UFormField>
@@ -267,8 +267,8 @@
 
           <!-- Stock items -->
           <div class="space-y-4">
-            <div class="flex items-center justify-between border-b border-neutral-100 pb-2">
-              <h3 class="text-md font-semibold text-neutral-800 flex items-center gap-1.5">
+            <div class="flex items-center justify-between border-b border-muted pb-2">
+              <h3 class="text-md font-semibold text-highlighted flex items-center gap-1.5">
                 <UIcon
                   name="i-lucide-layers"
                   class="text-primary w-5 h-5"
@@ -291,13 +291,13 @@
             <!-- Empty state -->
             <div
               v-if="form.stockItems.length === 0"
-              class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-neutral-200 rounded-lg"
+              class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-default rounded-lg"
             >
               <UIcon
                 name="i-lucide-layers"
-                class="w-10 h-10 text-neutral-300 mb-3"
+                class="w-10 h-10 text-dimmed mb-3"
               />
-              <span class="text-sm text-neutral-500 mb-3">{{ $t('pages.handover.stock.empty') }}</span>
+              <span class="text-sm text-muted mb-3">{{ $t('pages.handover.stock.empty') }}</span>
               <UButton
                 type="button"
                 :label="$t('pages.handover.stock.addItem')"
@@ -317,11 +317,11 @@
               <div
                 v-for="(item, index) in form.stockItems"
                 :key="index"
-                class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 space-y-3"
+                class="p-4 rounded-lg border border-muted bg-muted/50 space-y-3"
               >
                 <!-- Header of Row -->
-                <div class="flex items-center justify-between border-b border-neutral-100 pb-2">
-                  <span class="text-xs font-semibold text-neutral-500 uppercase tracking-wider shrink-0">Item {{ index + 1 }}</span>
+                <div class="flex items-center justify-between border-b border-muted pb-2">
+                  <span class="text-xs font-semibold text-muted uppercase tracking-wider shrink-0">Item {{ index + 1 }}</span>
                   <UButton
                     type="button"
                     color="error"
@@ -339,7 +339,7 @@
                     v-if="item.image"
                     :src="item.image"
                     :alt="item.variantName"
-                    class="w-9 h-9 object-cover rounded-lg border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0"
+                    class="w-9 h-9 object-cover rounded-lg border border-default cursor-pointer hover:border-accented transition-colors shadow-2xs shrink-0"
                     @click="item.image && openLightbox(item.image)"
                   />
                   <div
@@ -352,8 +352,8 @@
                     />
                   </div>
                   <div class="min-w-0 flex-1">
-                    <span class="text-sm font-semibold text-neutral-800 block truncate">{{ item.inventoryName }} — {{ item.variantName }}</span>
-                    <span class="text-xs text-neutral-500 block truncate">
+                    <span class="text-sm font-semibold text-highlighted block truncate">{{ item.inventoryName }} — {{ item.variantName }}</span>
+                    <span class="text-xs text-muted block truncate">
                       {{ item.branchName }} ·
                       <span v-if="form.transactionType === 'assign'">{{ item.condition === 'new' ? $t('pages.inventory.condition.new') : $t('pages.inventory.condition.used') }} · </span>
                       {{ item.quantity }}
@@ -366,7 +366,7 @@
                   <UTextarea
                     v-model="item.note"
                     :placeholder="$t('pages.handover.itemForm.notePlaceholder')"
-                    class="w-full bg-white"
+                    class="w-full bg-default"
                     :rows="3"
                   />
                 </UFormField>
@@ -376,7 +376,7 @@
         </div>
 
         <!-- Footer Actions -->
-        <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-neutral-100">
+        <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-muted">
           <UButton
             type="button"
             color="neutral"

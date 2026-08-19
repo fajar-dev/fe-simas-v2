@@ -12,7 +12,7 @@
         <div
           v-for="(field, index) in currentFields"
           :key="index"
-          class="rounded-lg border border-neutral-200 p-3 space-y-3"
+          class="rounded-lg border border-default p-3 space-y-3"
         >
           <div class="flex items-start gap-2">
             <div class="space-y-2 flex-1 min-w-0">
@@ -35,7 +35,7 @@
 
           <!-- Options editor for select / radio -->
           <div v-if="field.type === 'select' || field.type === 'radio'" class="pl-1 space-y-2">
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">{{ $t('pages.handover.fieldSettings.options') }}</span>
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider">{{ $t('pages.handover.fieldSettings.options') }}</span>
             <div v-for="(_, oi) in field.options" :key="oi" class="flex items-center gap-2">
               <UInput v-model="field.options[oi]" :placeholder="$t('pages.handover.fieldSettings.optionPlaceholder')" class="flex-1" @update:model-value="() => clearError(index)" />
               <UButton color="neutral" variant="ghost" icon="i-lucide-x" square size="sm" @click="() => { field.options.splice(oi, 1) }" />
@@ -48,11 +48,11 @@
 
           <label class="flex items-center gap-2 cursor-pointer">
             <USwitch v-model="field.required" />
-            <span class="text-sm text-neutral-700">{{ $t('pages.handover.fieldSettings.required') }}</span>
+            <span class="text-sm text-default">{{ $t('pages.handover.fieldSettings.required') }}</span>
           </label>
         </div>
 
-        <div v-if="currentFields.length === 0" class="text-center text-sm text-neutral-400 py-6 border-2 border-dashed border-neutral-200 rounded-lg">
+        <div v-if="currentFields.length === 0" class="text-center text-sm text-dimmed py-6 border-2 border-dashed border-default rounded-lg">
           {{ $t('pages.handover.fieldSettings.empty') }}
         </div>
 

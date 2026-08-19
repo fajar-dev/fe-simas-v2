@@ -34,7 +34,7 @@
             </div>
           </template>
           <template #description="{ item }">
-            <p class="text-neutral-700 whitespace-pre-wrap">{{ item.description }}</p>
+            <p class="text-default whitespace-pre-wrap">{{ item.description }}</p>
             <UUser
               v-if="item.user"
               :name="item.user.name"
@@ -43,8 +43,8 @@
               class="mt-1"
             />
             <div v-else class="flex items-center gap-2 mt-1">
-              <UIcon name="i-lucide-monitor" class="w-4 h-4 text-neutral-400" />
-              <span class="text-xs text-neutral-400 italic">{{ $t('component.inventory.logDrawer.system') }}</span>
+              <UIcon name="i-lucide-monitor" class="w-4 h-4 text-dimmed" />
+              <span class="text-xs text-dimmed italic">{{ $t('component.inventory.logDrawer.system') }}</span>
             </div>
           </template>
         </UTimeline>
@@ -69,7 +69,7 @@
         </div>
 
         <!-- End of List -->
-        <p v-if="!isLoading && logs.length > 0 && logs.length >= meta.total" class="text-center py-4 text-xs text-neutral-400">
+        <p v-if="!isLoading && logs.length > 0 && logs.length >= meta.total" class="text-center py-4 text-xs text-dimmed">
           {{ $t('component.inventory.logDrawer.endOfHistory') }}
         </p>
       </div>
@@ -93,7 +93,7 @@ const titleClass = (color?: string) => {
     info: 'text-sky-600',
     primary: 'text-primary',
   }
-  return `font-medium ${map[color || ''] || 'text-neutral-700'}`
+  return `font-medium ${map[color || ''] || 'text-default'}`
 }
 
 const logs = ref<InventoryLog[]>([])

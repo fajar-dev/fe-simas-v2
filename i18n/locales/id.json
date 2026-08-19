@@ -99,6 +99,9 @@
     "userPopover": {
       "profile": "Profil",
       "myFeedback": "Feedback Saya",
+      "darkMode": "Mode Gelap",
+      "lightMode": "Mode Terang",
+      "theme": "Tema",
       "logout": "Keluar",
       "logoutSuccess": "Berhasil keluar"
     },
@@ -368,6 +371,11 @@
         "error": "Gagal mengembalikan aset",
         "noActiveHolder": "Tidak ada pemegang aktif untuk aset ini.",
         "dateRequired": "Tanggal pengembalian wajib diisi"
+      },
+      "updateModal": {
+        "title": "Ubah Data Asset Holder",
+        "description": "Perbarui detail penetapan di bawah. Detail pengembalian baru bisa diubah setelah aset dikembalikan.",
+        "success": "Data asset holder berhasil diperbarui!"
       }
     },
     "assetLocation": {
@@ -879,7 +887,12 @@
         "columnSource": "Sumber",
         "handoverSource": "Serah Terima",
         "manualSource": "Manual",
-        "system": "Sistem"
+        "system": "Sistem",
+        "columnAction": "Aksi",
+        "editRecord": "Ubah Data",
+        "deleteRecord": "Hapus Data",
+        "deleteTitle": "Hapus Data Asset Holder",
+        "deleteSuccess": "Data asset holder berhasil dihapus!"
       },
       "location": {
         "relocateAsset": "Relokasi Aset",

@@ -27,8 +27,8 @@
         <UTable
           :data="row.original.items || []"
           :columns="itemColumns"
-          :ui="{ th: 'bg-neutral-50 py-2', td: 'py-2' }"
-          class="border border-neutral-200 rounded-md"
+          :ui="{ th: 'bg-muted py-2', td: 'py-2' }"
+          class="border border-default rounded-md"
         />
       </template>
     </DataTable>
@@ -81,12 +81,12 @@ const fetchTransfers = async () => {
 // Columns for the nested per-transfer item table shown in the expanded row.
 type TransferItem = NonNullable<InventoryStockTransfer['items']>[number]
 const itemColumns: TableColumn<TransferItem>[] = [
-  { id: 'variant', header: t('pages.inventory.variant.title'), cell: ({ row }) => h('span', { class: 'text-neutral-900 text-sm' }, row.original.variant?.name || '-') },
+  { id: 'variant', header: t('pages.inventory.variant.title'), cell: ({ row }) => h('span', { class: 'text-highlighted text-sm' }, row.original.variant?.name || '-') },
   { id: 'condition', header: t('pages.inventory.condition.label'), cell: ({ row }) => {
     const c = row.original.condition
     return h('span', { class: c === 'new' ? 'text-emerald-600 text-sm' : 'text-amber-600 text-sm' }, c === 'new' ? t('pages.inventory.condition.new') : t('pages.inventory.condition.used'))
   } },
-  { id: 'quantity', header: t('pages.inventory.monitor.quantity'), cell: ({ row }) => h('span', { class: 'font-semibold text-neutral-700 text-sm' }, `× ${row.original.quantity}`) },
+  { id: 'quantity', header: t('pages.inventory.monitor.quantity'), cell: ({ row }) => h('span', { class: 'font-semibold text-default text-sm' }, `× ${row.original.quantity}`) },
 ]
 
 const columns: TableColumn<InventoryStockTransfer>[] = [
@@ -95,30 +95,30 @@ const columns: TableColumn<InventoryStockTransfer>[] = [
     if (items.length === 0) return null
     return h('button', {
       type: 'button',
-      class: 'flex items-center justify-center text-neutral-500 hover:text-neutral-900 cursor-pointer',
+      class: 'flex items-center justify-center text-muted hover:text-highlighted cursor-pointer',
       onClick: () => row.toggleExpanded()
     }, [
       h(UIcon, { name: row.getIsExpanded() ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right', class: 'w-4 h-4' })
     ])
   } },
-  { accessorKey: 'createdAt', header: t('common.date'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, new Date(row.original.createdAt).toLocaleString()) },
+  { accessorKey: 'createdAt', header: t('common.date'), cell: ({ row }) => h('span', { class: 'text-toned text-sm' }, new Date(row.original.createdAt).toLocaleString()) },
   { id: 'route', header: t('pages.inventory.transfer.title'), cell: ({ row }) => h('div', { class: 'flex items-center gap-2 text-sm' }, [
-    h('span', { class: 'text-neutral-700' }, row.original.fromBranch?.name || '-'),
-    h(UIcon, { name: 'i-lucide-arrow-right', class: 'w-4 h-4 text-neutral-400' }),
-    h('span', { class: 'text-neutral-900 font-medium' }, row.original.toBranch?.name || '-')
+    h('span', { class: 'text-default' }, row.original.fromBranch?.name || '-'),
+    h(UIcon, { name: 'i-lucide-arrow-right', class: 'w-4 h-4 text-dimmed' }),
+    h('span', { class: 'text-highlighted font-medium' }, row.original.toBranch?.name || '-')
   ]) },
-  { accessorKey: 'note', header: t('common.note'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.note || '-') },
+  { accessorKey: 'note', header: t('common.note'), cell: ({ row }) => h('span', { class: 'text-toned text-sm' }, row.original.note || '-') },
   { accessorKey: 'createdBy', header: t('common.createdBy'), cell: ({ row }) => {
     const creator = row.original.createdBy
-    if (!creator) return h('span', { class: 'text-neutral-500 italic text-sm' }, t('common.system'))
+    if (!creator) return h('span', { class: 'text-muted italic text-sm' }, t('common.system'))
     return h('div', { class: 'flex items-center gap-2' }, [
       h(UAvatar, { src: creator.photo || undefined, alt: creator.name, size: 'xs', class: 'bg-primary-50 text-primary-700', loading: 'lazy' }),
-      h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
+      h('span', { class: 'text-default font-medium text-sm' }, creator.name)
     ])
   } },
   { id: 'attachments', header: t('component.attachment.title'), cell: ({ row }) => {
     const atts = row.original.attachments || []
-    if (!atts.length) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+    if (!atts.length) return h('span', { class: 'text-dimmed text-xs' }, '-')
     return h('div', { class: 'flex flex-wrap gap-2 max-w-sm' }, atts.map((att) => {
       const theme = getAttachmentBadgeTheme(att.mimeType)
       return h('a', { href: att.url, target: '_blank', rel: 'noopener', class: 'cursor-pointer inline-block max-w-[160px]' }, [

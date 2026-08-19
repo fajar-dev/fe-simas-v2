@@ -13,8 +13,8 @@
             <UIcon name="i-lucide-book-open" class="w-6 h-6 text-[#009838]" />
           </div>
           <div class="text-left">
-            <h1 class="text-md font-bold text-neutral-900">{{ $t('pages.book.title') }}</h1>
-            <p class="text-sm text-neutral-500">{{ $t('pages.book.description') }}</p>
+            <h1 class="text-md font-bold text-highlighted">{{ $t('pages.book.title') }}</h1>
+            <p class="text-sm text-muted">{{ $t('pages.book.description') }}</p>
           </div>
         </div>
 
@@ -26,7 +26,7 @@
       <div v-if="activeTab === 'borrow'" class="space-y-5">
         <!-- Serial Number -->
         <div>
-          <label class="text-sm font-medium text-neutral-700 block mb-1.5">
+          <label class="text-sm font-medium text-default block mb-1.5">
             {{ $t('pages.book.serialNumber') }} <span class="text-red-500">*</span>
           </label>
           <div class="flex items-center gap-2">
@@ -38,7 +38,7 @@
               @keyup.enter="lookupAsset"
             >
               <template #leading>
-                <UIcon name="i-lucide-hash" class="w-4 h-4 text-neutral-400" />
+                <UIcon name="i-lucide-hash" class="w-4 h-4 text-dimmed" />
               </template>
             </UInput>
             <UButton icon="i-lucide-search" color="primary" variant="soft" square :loading="isLookingUp" @click="lookupAsset" />
@@ -61,7 +61,7 @@
           <UFormField :label="$t('pages.book.bookTitle')" required>
             <UInput :model-value="foundAsset.name" :placeholder="$t('pages.book.bookTitlePlaceholder')" class="w-full" disabled>
               <template #leading>
-                <UIcon name="i-lucide-book-open" class="w-4 h-4 text-neutral-400" />
+                <UIcon name="i-lucide-book-open" class="w-4 h-4 text-dimmed" />
               </template>
             </UInput>
           </UFormField>
@@ -69,7 +69,7 @@
           <UFormField :label="$t('pages.book.category')" required>
             <UInput :model-value="foundAsset.subCategory?.category?.name || '-'" :placeholder="$t('pages.book.categoryPlaceholder')" class="w-full" disabled>
               <template #leading>
-                <UIcon name="i-lucide-tag" class="w-4 h-4 text-neutral-400" />
+                <UIcon name="i-lucide-tag" class="w-4 h-4 text-dimmed" />
               </template>
             </UInput>
           </UFormField>
@@ -86,20 +86,20 @@
 
           <!-- Borrow Photo (camera only) -->
           <div>
-            <label class="text-sm font-medium text-neutral-700 block mb-1.5">
+            <label class="text-sm font-medium text-default block mb-1.5">
               {{ $t('pages.book.borrowPhoto') }} <span class="text-red-500">*</span>
             </label>
             <div v-if="borrowPhotoPreview" class="relative w-full">
-              <img :src="borrowPhotoPreview" class="w-full rounded-lg object-cover border border-neutral-200" alt="Borrow photo" />
+              <img :src="borrowPhotoPreview" class="w-full rounded-lg object-cover border border-default" alt="Borrow photo" />
               <UButton icon="i-lucide-x" color="error" variant="solid" size="xs" class="absolute top-1 right-1 rounded-full" @click="removeBorrowPhoto" />
             </div>
             <div
               v-else
-              class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-neutral-200 rounded-lg cursor-pointer hover:border-primary transition-colors"
+              class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-default rounded-lg cursor-pointer hover:border-primary transition-colors"
               @click="() => { showBorrowCamera = true }"
             >
-              <UIcon name="i-lucide-camera" class="w-10 h-10 text-neutral-300 mb-3" />
-              <span class="text-sm text-neutral-500 mb-2">{{ $t('pages.book.borrowPhotoHint') }}</span>
+              <UIcon name="i-lucide-camera" class="w-10 h-10 text-dimmed mb-3" />
+              <span class="text-sm text-muted mb-2">{{ $t('pages.book.borrowPhotoHint') }}</span>
               <UButton :label="$t('pages.book.openCamera')" icon="i-lucide-camera" color="neutral" variant="outline" size="sm" @click.stop="() => { showBorrowCamera = true }" />
             </div>
           </div>
@@ -133,7 +133,7 @@
             class="w-full"
           >
             <template #leading>
-              <UIcon name="i-lucide-book-open" class="w-4 h-4 text-neutral-400" />
+              <UIcon name="i-lucide-book-open" class="w-4 h-4 text-dimmed" />
             </template>
           </USelectMenu>
         </UFormField>
@@ -159,20 +159,20 @@
 
         <!-- Return Photo (camera only) -->
         <div v-if="selectedBorrowedBook">
-          <label class="text-sm font-medium text-neutral-700 block mb-1.5">
+          <label class="text-sm font-medium text-default block mb-1.5">
             {{ $t('pages.book.returnPhoto') }} <span class="text-red-500">*</span>
           </label>
           <div v-if="returnPhotoPreview" class="relative w-full">
-            <img :src="returnPhotoPreview" class="w-full rounded-lg object-cover border border-neutral-200" alt="Return photo" />
+            <img :src="returnPhotoPreview" class="w-full rounded-lg object-cover border border-default" alt="Return photo" />
             <UButton icon="i-lucide-x" color="error" variant="solid" size="xs" class="absolute top-1 right-1 rounded-full" @click="removeReturnPhoto" />
           </div>
           <div
             v-else
-            class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-neutral-200 rounded-lg cursor-pointer hover:border-primary transition-colors"
+            class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-default rounded-lg cursor-pointer hover:border-primary transition-colors"
             @click="() => { showReturnCamera = true }"
           >
-            <UIcon name="i-lucide-camera" class="w-10 h-10 text-neutral-300 mb-3" />
-            <span class="text-sm text-neutral-500 mb-2">{{ $t('pages.book.returnPhotoHint') }}</span>
+            <UIcon name="i-lucide-camera" class="w-10 h-10 text-dimmed mb-3" />
+            <span class="text-sm text-muted mb-2">{{ $t('pages.book.returnPhotoHint') }}</span>
             <UButton :label="$t('pages.book.openCamera')" icon="i-lucide-camera" color="neutral" variant="outline" size="sm" @click.stop="() => { showReturnCamera = true }" />
           </div>
         </div>

@@ -99,6 +99,9 @@
     "userPopover": {
       "profile": "Profile",
       "myFeedback": "My Feedback",
+      "darkMode": "Dark Mode",
+      "lightMode": "Light Mode",
+      "theme": "Theme",
       "logout": "Logout",
       "logoutSuccess": "Logout success"
     },
@@ -368,6 +371,11 @@
         "error": "Error returning asset",
         "noActiveHolder": "No active holder found for this asset.",
         "dateRequired": "Return date is required"
+      },
+      "updateModal": {
+        "title": "Edit Asset Holder Record",
+        "description": "Update the assign details below. Return details are only editable once the asset has been returned.",
+        "success": "Asset holder record updated successfully!"
       }
     },
     "assetLocation": {
@@ -879,7 +887,12 @@
         "columnSource": "Source",
         "handoverSource": "Handover",
         "manualSource": "Manual",
-        "system": "System"
+        "system": "System",
+        "columnAction": "Action",
+        "editRecord": "Edit Record",
+        "deleteRecord": "Delete Record",
+        "deleteTitle": "Delete Asset Holder Record",
+        "deleteSuccess": "Asset holder record deleted successfully!"
       },
       "location": {
         "relocateAsset": "Relocate Asset",

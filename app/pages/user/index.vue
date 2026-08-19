@@ -150,8 +150,8 @@ const baseColumns: TableColumn<User>[] = [
           loading: 'lazy'
         }),
         h('div', { class: 'flex flex-col' }, [
-          h('span', { class: 'font-medium text-neutral-900' }, name),
-          h('span', { class: 'text-xs text-neutral-500' }, email)
+          h('span', { class: 'font-medium text-highlighted' }, name),
+          h('span', { class: 'text-xs text-muted' }, email)
         ])
       ])
     }
@@ -178,7 +178,7 @@ const baseColumns: TableColumn<User>[] = [
       const role = row.original.role
       return role
         ? h(UBadge, { color: 'neutral', variant: 'subtle' }, () => role.name)
-        : h('span', { class: 'text-xs text-neutral-400' }, '-')
+        : h('span', { class: 'text-xs text-dimmed' }, '-')
     }
   },
   {
@@ -186,10 +186,10 @@ const baseColumns: TableColumn<User>[] = [
     header: t('pages.user.columnEmployee'),
     cell: ({ row }) => {
       const employee = row.original.employee
-      if (!employee) return h('span', { class: 'text-xs text-neutral-400' }, '-')
+      if (!employee) return h('span', { class: 'text-xs text-dimmed' }, '-')
       return h('div', { class: 'flex flex-col' }, [
-        h('span', { class: 'text-sm font-medium text-neutral-900' }, employee.name),
-        h('span', { class: 'text-xs text-neutral-500' }, employee.employeeId)
+        h('span', { class: 'text-sm font-medium text-highlighted' }, employee.name),
+        h('span', { class: 'text-xs text-muted' }, employee.employeeId)
       ])
     }
   }
@@ -209,7 +209,7 @@ const columns = computed(() => {
       },
       cell: ({ row }) => {
         const items = getRowItems(row)
-        if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+        if (items.flat().length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
         return h(
           UDropdownMenu,
           {

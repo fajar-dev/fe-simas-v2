@@ -3,14 +3,14 @@
     <!-- Loading: Validating Token -->
     <div v-if="isValidating" class="flex flex-col items-center gap-4 py-12">
       <UIcon name="i-lucide-loader-circle" class="w-8 h-8 text-primary animate-spin" />
-      <p class="text-neutral-500">{{ $t('common.loading') }}</p>
+      <p class="text-muted">{{ $t('common.loading') }}</p>
     </div>
 
     <!-- Success State -->
     <div v-else-if="isSuccess" class="flex flex-col gap-5 mb-6">
       <BrandLogo />
       <div class="space-y-4">
-        <h1 class="text-3xl font-bold text-neutral-900">
+        <h1 class="text-3xl font-bold text-highlighted">
           {{ $t('pages.auth.resetPassword.title') }}
         </h1>
         <UAlert
@@ -36,17 +36,17 @@
       <div class="flex flex-col gap-5 mb-6">
         <BrandLogo />
         <div class="space-y-1">
-          <h1 class="text-3xl font-bold text-neutral-900">
+          <h1 class="text-3xl font-bold text-highlighted">
             {{ $t('pages.auth.resetPassword.title') }}
           </h1>
-          <p class="text-neutral-600">
+          <p class="text-toned">
             {{ $t('pages.auth.resetPassword.subtitle') }}
           </p>
         </div>
       </div>
 
       <UForm :state="state" :schema="resetSchema" @submit="handleReset" class="space-y-4">
-        <UFormField :label="$t('pages.auth.resetPassword.newPassword')" name="password" class="w-full" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
+        <UFormField :label="$t('pages.auth.resetPassword.newPassword')" name="password" class="w-full" :ui="{ label: 'text-sm font-medium text-highlighted' }">
           <UInput
             id="new-password"
             v-model="state.password"
@@ -60,7 +60,7 @@
                 color="neutral"
                 variant="ghost"
                 :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
-                class="text-neutral-400 hover:text-neutral-600 p-1 hover:bg-transparent cursor-pointer"
+                class="text-dimmed hover:text-toned p-1 hover:bg-transparent cursor-pointer"
                 @click="() => { showPassword = !showPassword }"
                 aria-label="Toggle Password Visibility"
               />
@@ -68,7 +68,7 @@
           </UInput>
         </UFormField>
 
-        <UFormField :label="$t('pages.auth.resetPassword.confirmPassword')" name="confirmPassword" class="w-full" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
+        <UFormField :label="$t('pages.auth.resetPassword.confirmPassword')" name="confirmPassword" class="w-full" :ui="{ label: 'text-sm font-medium text-highlighted' }">
           <UInput
             id="confirm-password"
             v-model="state.confirmPassword"
@@ -82,7 +82,7 @@
                 color="neutral"
                 variant="ghost"
                 :icon="showConfirmPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
-                class="text-neutral-400 hover:text-neutral-600 p-1 hover:bg-transparent cursor-pointer"
+                class="text-dimmed hover:text-toned p-1 hover:bg-transparent cursor-pointer"
                 @click="() => { showConfirmPassword = !showConfirmPassword }"
                 aria-label="Toggle Confirm Password Visibility"
               />
@@ -103,7 +103,7 @@
 
           <NuxtLink
             to="/auth/sign-in"
-            class="flex items-center justify-center gap-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
+            class="flex items-center justify-center gap-2 text-sm font-medium text-toned hover:text-highlighted transition-colors"
           >
             <UIcon name="i-lucide-arrow-left" class="w-4 h-4" />
             {{ $t('pages.auth.resetPassword.backToLogin') }}

@@ -38,7 +38,7 @@
 
         <!-- Rows: variant × new/used (assign) or variant × quantity (return), capped at available -->
         <div class="space-y-1.5">
-          <label class="text-sm font-medium text-neutral-700">{{ $t('pages.inventory.variant.title') }}</label>
+          <label class="text-sm font-medium text-default">{{ $t('pages.inventory.variant.title') }}</label>
 
           <div
             v-if="isLoadingTable"
@@ -52,19 +52,19 @@
           </div>
           <div
             v-else-if="transactionType === 'assign' && !draft.inventoryId"
-            class="text-sm text-neutral-400 py-6 text-center border-2 border-dashed border-neutral-200 rounded-lg"
+            class="text-sm text-dimmed py-6 text-center border-2 border-dashed border-default rounded-lg"
           >
             {{ $t('pages.inventory.transfer.pickFirst') }}
           </div>
           <div
             v-else-if="transactionType === 'return' && !employeeId"
-            class="text-sm text-neutral-400 py-6 text-center border-2 border-dashed border-neutral-200 rounded-lg"
+            class="text-sm text-dimmed py-6 text-center border-2 border-dashed border-default rounded-lg"
           >
             {{ $t('pages.handover.scan.selectHandedOverFirst') }}
           </div>
           <div
             v-else-if="tableRows.length === 0"
-            class="text-sm text-neutral-400 py-6 text-center border-2 border-dashed border-neutral-200 rounded-lg"
+            class="text-sm text-dimmed py-6 text-center border-2 border-dashed border-default rounded-lg"
           >
             {{ transactionType === 'return' ? $t('pages.handover.stock.noHeldItems') : $t('pages.inventory.entry.noVariants') }}
           </div>
@@ -74,7 +74,7 @@
           >
             <table class="w-full min-w-[420px] text-sm">
               <thead>
-                <tr class="text-left text-xs font-semibold text-neutral-400 uppercase tracking-wider border-b border-neutral-200">
+                <tr class="text-left text-xs font-semibold text-dimmed uppercase tracking-wider border-b border-default">
                   <th class="py-2 pr-3">
                     {{ $t('pages.inventory.variant.title') }}
                   </th>
@@ -100,7 +100,7 @@
                 <tr
                   v-for="row in tableRows"
                   :key="`${row.variantId}-${row.branchId ?? ''}`"
-                  class="border-b border-neutral-100"
+                  class="border-b border-muted"
                 >
                   <td class="py-2 pr-3">
                     <div class="flex items-center gap-2">
@@ -108,7 +108,7 @@
                         v-if="row.image"
                         :src="row.image"
                         :alt="row.name"
-                        class="w-8 h-8 object-cover rounded-lg border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0"
+                        class="w-8 h-8 object-cover rounded-lg border border-default cursor-pointer hover:border-accented transition-colors shadow-2xs shrink-0"
                         @click="() => openLightbox(row.image!)"
                       />
                       <div
@@ -121,12 +121,12 @@
                         />
                       </div>
                       <div class="min-w-0">
-                        <div class="font-medium text-neutral-900 truncate">
+                        <div class="font-medium text-highlighted truncate">
                           {{ row.name }}
                         </div>
                         <div
                           v-if="row.code"
-                          class="text-xs text-neutral-500 truncate"
+                          class="text-xs text-muted truncate"
                         >
                           {{ row.code }}
                         </div>
@@ -135,7 +135,7 @@
                   </td>
                   <td
                     v-if="transactionType === 'return'"
-                    class="py-2 px-2 text-neutral-600"
+                    class="py-2 px-2 text-toned"
                   >
                     {{ row.branchName }}
                   </td>
@@ -151,7 +151,7 @@
                           class="w-20"
                           :disabled="row.availableNew === 0"
                         />
-                        <span class="text-xs text-neutral-400">/ {{ row.availableNew }}</span>
+                        <span class="text-xs text-dimmed">/ {{ row.availableNew }}</span>
                       </div>
                     </td>
                     <td class="py-2 px-2">
@@ -165,7 +165,7 @@
                           class="w-20"
                           :disabled="row.availableUsed === 0"
                         />
-                        <span class="text-xs text-neutral-400">/ {{ row.availableUsed }}</span>
+                        <span class="text-xs text-dimmed">/ {{ row.availableUsed }}</span>
                       </div>
                     </td>
                   </template>
@@ -183,7 +183,7 @@
                         class="w-20"
                         :disabled="row.availableQty === 0"
                       />
-                      <span class="text-xs text-neutral-400">/ {{ row.availableQty }} {{ row.unit }}</span>
+                      <span class="text-xs text-dimmed">/ {{ row.availableQty }} {{ row.unit }}</span>
                     </div>
                   </td>
                 </tr>

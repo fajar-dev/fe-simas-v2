@@ -66,16 +66,16 @@
         <!-- PDF Preview (rendered via pdf.js canvas) -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.asset.printCodeModal.preview') }}</label>
-            <span class="text-xs text-neutral-400">
+            <label class="text-sm font-medium text-default">{{ $t('component.asset.printCodeModal.preview') }}</label>
+            <span class="text-xs text-dimmed">
               <template v-if="totalPages > 1">{{ currentPage }} / {{ totalPages }} &mdash; </template>
               {{ $t('component.asset.printCodeModal.totalLabels', { count: assets.length }) }}
             </span>
           </div>
-          <div class="border border-neutral-200 rounded-lg overflow-hidden bg-neutral-100 relative" style="height: 380px;">
+          <div class="border border-default rounded-lg overflow-hidden bg-elevated relative" style="height: 380px;">
             <!-- Loading -->
             <div v-if="isGenerating" class="flex items-center justify-center h-full">
-              <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-neutral-400" />
+              <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-dimmed" />
             </div>
 
             <!-- Canvas pages -->
@@ -84,7 +84,7 @@
                 v-for="n in totalPages"
                 :key="n"
                 :ref="(el) => { if (el) pageCanvasRefs[n] = el as HTMLCanvasElement }"
-                class="shadow-md rounded bg-white max-w-full"
+                class="shadow-md rounded bg-default max-w-full"
               />
             </div>
 

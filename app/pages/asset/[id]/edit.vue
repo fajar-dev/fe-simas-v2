@@ -36,19 +36,19 @@
           <div class="space-y-4">
             <div>
               <div class="flex justify-between mb-1.5">
-                <label class="text-sm font-medium text-neutral-700">{{ $t('pages.asset.create.assetImage') }}</label>
+                <label class="text-sm font-medium text-default">{{ $t('pages.asset.create.assetImage') }}</label>
                 <UButton icon="i-lucide-camera" color="primary" variant="soft" size="xs" @click="() => { showCamera = true }">{{ $t('pages.asset.create.takePhoto') }}</UButton>
               </div>
               <div v-if="previewUrl" class="relative inline-block w-full aspect-square">
-                <NuxtImg :src="previewUrl" class="w-full h-full rounded-lg object-cover border border-neutral-200" />
+                <NuxtImg :src="previewUrl" class="w-full h-full rounded-lg object-cover border border-default" />
                 <UButton icon="i-lucide-x" color="error" variant="solid" size="xs" class="absolute top-1 right-1 rounded-full" @click="removeImage(form)" />
               </div>
-              <div v-else class="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-neutral-200 rounded-lg cursor-pointer hover:border-primary transition-colors" @click="triggerFileInput">
-                <UIcon name="i-lucide-upload" class="w-8 h-8 text-neutral-400 mb-2" />
-                <span class="text-sm text-neutral-500">{{ $t('pages.asset.create.dropImage') }}</span>
-                <span class="text-xs text-neutral-400 mt-1">{{ $t('pages.asset.create.imageHint') }}</span>
+              <div v-else class="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-default rounded-lg cursor-pointer hover:border-primary transition-colors" @click="triggerFileInput">
+                <UIcon name="i-lucide-upload" class="w-8 h-8 text-dimmed mb-2" />
+                <span class="text-sm text-muted">{{ $t('pages.asset.create.dropImage') }}</span>
+                <span class="text-xs text-dimmed mt-1">{{ $t('pages.asset.create.imageHint') }}</span>
               </div>
-              <div v-if="isUploading" class="mt-2 flex items-center gap-2 text-sm text-neutral-500">
+              <div v-if="isUploading" class="mt-2 flex items-center gap-2 text-sm text-muted">
                 <UIcon name="i-lucide-loader-2" class="w-4 h-4 animate-spin" /> {{ $t('pages.asset.create.uploading') }}
               </div>
               <input ref="fileInput" type="file" class="hidden" accept="image/*" @change="onFileChange($event, form)" />
@@ -68,7 +68,7 @@
                 <div class="relative w-full">
                   <UInput v-model="form.code" :placeholder="$t('pages.asset.create.codePlaceholder')" class="w-full" />
                   <div v-if="codeStatus" class="absolute right-2 top-1/2 -translate-y-1/2">
-                    <UIcon v-if="codeStatus === 'checking'" name="i-lucide-loader-2" class="w-4 h-4 text-neutral-400 animate-spin" />
+                    <UIcon v-if="codeStatus === 'checking'" name="i-lucide-loader-2" class="w-4 h-4 text-dimmed animate-spin" />
                     <UIcon v-else-if="codeStatus === 'available'" name="i-lucide-circle-check" class="w-4 h-4 text-green-500" />
                     <UIcon v-else-if="codeStatus === 'exists'" name="i-lucide-circle-x" class="w-4 h-4 text-red-500" />
                   </div>
@@ -137,7 +137,7 @@
             <UFormField :label="$t('pages.asset.create.priceLabel')" name="price">
               <UInput v-model="priceDisplay" placeholder="0" class="w-full">
                 <template #leading>
-                  <span class="text-neutral-500 text-sm">Rp</span>
+                  <span class="text-muted text-sm">Rp</span>
                 </template>
               </UInput>
             </UFormField>
@@ -146,19 +146,19 @@
               <UFormField :label="$t('pages.asset.create.usefulLifeLabel')" name="usefulLife">
                 <UInput v-model.number="form.usefulLife" type="number" min="1" :placeholder="$t('pages.asset.create.usefulLifePlaceholder')" class="w-full">
                   <template #trailing>
-                    <span class="text-neutral-400 text-xs">{{ $t('pages.asset.create.usefulLifeUnit') }}</span>
+                    <span class="text-dimmed text-xs">{{ $t('pages.asset.create.usefulLifeUnit') }}</span>
                   </template>
                 </UInput>
               </UFormField>
               <UFormField :label="$t('pages.asset.create.monthlyDepreciationLabel')" name="monthlyDepreciation">
-                <UInput :model-value="monthlyDepreciationDisplay" readonly class="w-full bg-neutral-50">
+                <UInput :model-value="monthlyDepreciationDisplay" readonly class="w-full bg-muted">
                   <template #leading>
-                    <span class="text-neutral-500 text-sm">Rp</span>
+                    <span class="text-muted text-sm">Rp</span>
                   </template>
                 </UInput>
               </UFormField>
             </div>
-            <p class="text-xs text-neutral-400 -mt-2 flex items-start gap-1">
+            <p class="text-xs text-dimmed -mt-2 flex items-start gap-1">
               <UIcon name="i-lucide-info" class="w-3.5 h-3.5 shrink-0 mt-0.5" />
               <span>{{ $t('pages.asset.create.depreciationHint') }}</span>
             </p>
@@ -167,10 +167,10 @@
             <!-- Labels -->
             <div>
               <div class="flex items-center justify-between mb-1.5">
-                <label class="text-sm font-medium text-neutral-700">{{ $t('pages.asset.create.labelsLabel') }}</label>
+                <label class="text-sm font-medium text-default">{{ $t('pages.asset.create.labelsLabel') }}</label>
                 <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addLabel">{{ $t('common.add') }}</UButton>
               </div>
-              <div v-if="labels.length === 0" class="text-sm text-neutral-400 py-3 text-center border border-dashed border-neutral-200 rounded-lg">
+              <div v-if="labels.length === 0" class="text-sm text-dimmed py-3 text-center border border-dashed border-default rounded-lg">
                 {{ $t('pages.asset.create.noLabels') }}
               </div>
               <div v-else class="space-y-2">
@@ -194,32 +194,32 @@
         </div>
 
         <!-- Feature Settings -->
-        <div class="mt-8 pt-6 border-t border-neutral-100 col-span-full">
-          <h3 class="text-md font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+        <div class="mt-8 pt-6 border-t border-muted col-span-full">
+          <h3 class="text-md font-semibold text-highlighted mb-4 flex items-center gap-2">
             <UIcon name="i-lucide-toggle-left" class="w-5 h-5 text-primary-500" />
             {{ $t('pages.asset.create.assetFeatures') }}
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
+            <div class="p-4 rounded-lg border border-muted bg-muted/50 flex items-center justify-between">
               <div>
-                <span class="font-medium text-sm text-neutral-850 block">{{ $t('pages.asset.create.featureHolder') }}</span>
-                <p class="text-xs text-neutral-500">{{ $t('pages.asset.create.featureHolderDesc') }}</p>
+                <span class="font-medium text-sm text-highlighted block">{{ $t('pages.asset.create.featureHolder') }}</span>
+                <p class="text-xs text-muted">{{ $t('pages.asset.create.featureHolderDesc') }}</p>
               </div>
               <USwitch v-model="form.hasHolder" />
             </div>
 
-            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
+            <div class="p-4 rounded-lg border border-muted bg-muted/50 flex items-center justify-between">
               <div>
-                <span class="font-medium text-sm text-neutral-850 block">{{ $t('pages.asset.create.featureLocation') }}</span>
-                <p class="text-xs text-neutral-500">{{ $t('pages.asset.create.featureLocationDesc') }}</p>
+                <span class="font-medium text-sm text-highlighted block">{{ $t('pages.asset.create.featureLocation') }}</span>
+                <p class="text-xs text-muted">{{ $t('pages.asset.create.featureLocationDesc') }}</p>
               </div>
               <USwitch v-model="form.hasLocation" />
             </div>
 
-            <div class="p-4 rounded-lg border border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
+            <div class="p-4 rounded-lg border border-muted bg-muted/50 flex items-center justify-between">
               <div>
-                <span class="font-medium text-sm text-neutral-850 block">{{ $t('pages.asset.create.featureMaintenance') }}</span>
-                <p class="text-xs text-neutral-500">{{ $t('pages.asset.create.featureMaintenanceDesc') }}</p>
+                <span class="font-medium text-sm text-highlighted block">{{ $t('pages.asset.create.featureMaintenance') }}</span>
+                <p class="text-xs text-muted">{{ $t('pages.asset.create.featureMaintenanceDesc') }}</p>
               </div>
               <USwitch v-model="form.hasMaintenance" />
             </div>
@@ -227,7 +227,7 @@
         </div>
 
         <!-- Footer Actions -->
-        <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-neutral-100">
+        <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-muted">
           <UButton :label="$t('common.cancel')" color="neutral" variant="outline" :disabled="isSubmitting" @click="goBack" />
           <UButton :label="$t('common.saveAndContinue')" color="primary" variant="outline" type="submit" :loading="isSubmitting && submitMode === 'continue'" :disabled="isUploading || codeStatus === 'exists' || hasDuplicateLabelKeys" @click="() => { submitMode = 'continue' }" />
           <UButton :label="$t('common.save')" type="submit" color="primary" :loading="isSubmitting && submitMode === 'save'" :disabled="isUploading || codeStatus === 'exists' || hasDuplicateLabelKeys" @click="() => { submitMode = 'save' }" />

@@ -16,7 +16,7 @@
       table-class="min-w-[1000px]"
     >
       <template #expanded="{ row }">
-        <div v-if="loadingVariants[row.original.id]" class="p-4 flex items-center gap-2 text-sm text-neutral-500">
+        <div v-if="loadingVariants[row.original.id]" class="p-4 flex items-center gap-2 text-sm text-muted">
           <UIcon name="i-lucide-loader-2" class="w-4 h-4 animate-spin" /> {{ $t('common.loading') }}
         </div>
         <UTable
@@ -25,15 +25,15 @@
           :expanded-options="{ getRowCanExpand: () => true }"
           :data="variantsCache[row.original.id] || []"
           :columns="variantColumns"
-          :ui="{ th: 'bg-neutral-50 py-2', td: 'py-2' }"
-          class="border border-neutral-200 rounded-md"
+          :ui="{ th: 'bg-muted py-2', td: 'py-2' }"
+          class="border border-default rounded-md"
         >
           <template #expanded="{ row: variantRow }">
             <UTable
               :data="variantRow.original.branches"
               :columns="branchColumns"
-              :ui="{ th: 'bg-neutral-50 py-2', td: 'py-2' }"
-              class="border border-neutral-200 rounded-md"
+              :ui="{ th: 'bg-muted py-2', td: 'py-2' }"
+              class="border border-default rounded-md"
             />
           </template>
         </UTable>
@@ -63,8 +63,8 @@
             <UButton color="neutral" variant="ghost" icon="i-lucide-table-properties" />
             <template #content>
               <div class="p-3 w-48 space-y-2 select-none">
-                <div class="text-sm font-semibold text-neutral-600 mb-1">{{ $t('pages.inventory.item.labels') }}</div>
-                <div v-if="availableLabelKeys.length === 0" class="text-xs text-neutral-400 italic">{{ $t('pages.inventory.item.noCustomLabels') }}</div>
+                <div class="text-sm font-semibold text-toned mb-1">{{ $t('pages.inventory.item.labels') }}</div>
+                <div v-if="availableLabelKeys.length === 0" class="text-xs text-dimmed italic">{{ $t('pages.inventory.item.noCustomLabels') }}</div>
                 <div v-else class="space-y-1.5 max-h-48 overflow-y-auto">
                   <div v-for="key in availableLabelKeys" :key="key" class="flex items-center gap-2">
                     <UCheckbox :model-value="activeLabelColumns.includes(key)" :label="key" @update:model-value="(v: boolean | 'indeterminate') => toggleLabelColumn(key, v === true)" />
@@ -183,7 +183,7 @@ const toggleVariantRow = async (row: Row<Inventory>) => {
 }
 
 const branchColumns: TableColumn<BranchStockRow>[] = [
-  { accessorKey: 'name', header: t('common.branch'), cell: ({ row }) => h('span', { class: 'text-neutral-800 text-sm' }, row.original.name) },
+  { accessorKey: 'name', header: t('common.branch'), cell: ({ row }) => h('span', { class: 'text-highlighted text-sm' }, row.original.name) },
   { accessorKey: 'newStock', header: t('pages.inventory.condition.new'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-emerald-600 text-sm font-medium' }, String(row.original.newStock)) },
   { accessorKey: 'usedStock', header: t('pages.inventory.condition.used'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-amber-600 text-sm font-medium' }, String(row.original.usedStock)) },
 ]
@@ -193,7 +193,7 @@ const variantColumns: TableColumn<VariantStockRow>[] = [
     if (!row.original.branches.length) return null
     return h('button', {
       type: 'button',
-      class: 'flex items-center justify-center text-neutral-500 hover:text-neutral-900 cursor-pointer',
+      class: 'flex items-center justify-center text-muted hover:text-highlighted cursor-pointer',
       onClick: (e: Event) => { e.stopPropagation(); row.toggleExpanded() }
     }, [
       h(UIcon, { name: row.getIsExpanded() ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right', class: 'w-4 h-4' })
@@ -202,17 +202,17 @@ const variantColumns: TableColumn<VariantStockRow>[] = [
   { accessorKey: 'name', header: t('common.name'), cell: ({ row }) => {
     const img = row.original.image
     const imageEl = img
-      ? h(NuxtImg, { src: img, alt: row.original.name, class: 'w-9 h-9 object-cover rounded-md border border-neutral-200 shrink-0' })
-      : h('div', { class: 'w-9 h-9 bg-neutral-100 rounded-md flex items-center justify-center border border-neutral-200 shrink-0' }, [
-          h('span', { class: 'text-neutral-400 text-xs' }, 'N/A')
+      ? h(NuxtImg, { src: img, alt: row.original.name, class: 'w-9 h-9 object-cover rounded-md border border-default shrink-0' })
+      : h('div', { class: 'w-9 h-9 bg-elevated rounded-md flex items-center justify-center border border-default shrink-0' }, [
+          h('span', { class: 'text-dimmed text-xs' }, 'N/A')
         ])
     const textEl = h('div', { class: 'flex flex-col min-w-0' }, [
-      h('span', { class: 'text-neutral-900 font-medium text-sm' }, row.original.name),
-      h('span', { class: 'text-xs text-neutral-500' }, row.original.code || '-')
+      h('span', { class: 'text-highlighted font-medium text-sm' }, row.original.name),
+      h('span', { class: 'text-xs text-muted' }, row.original.code || '-')
     ])
     return h('div', { class: 'flex items-center gap-3' }, [imageEl, textEl])
   } },
-  { accessorKey: 'description', header: t('common.description'), cell: ({ row }) => h('span', { class: 'text-neutral-600 text-sm' }, row.original.description || '-') },
+  { accessorKey: 'description', header: t('common.description'), cell: ({ row }) => h('span', { class: 'text-toned text-sm' }, row.original.description || '-') },
   { accessorKey: 'newStock', header: t('pages.inventory.condition.new'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-emerald-600 text-sm font-medium' }, String(row.original.newStock)) },
   { accessorKey: 'usedStock', header: t('pages.inventory.condition.used'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-amber-600 text-sm font-medium' }, String(row.original.usedStock)) },
 ]
@@ -277,7 +277,7 @@ const columns = computed<TableColumn<Inventory>[]>(() => {
         if (!row.original.variantCount) return null
         return h('button', {
           type: 'button',
-          class: 'flex items-center justify-center text-neutral-500 hover:text-neutral-900 cursor-pointer',
+          class: 'flex items-center justify-center text-muted hover:text-highlighted cursor-pointer',
           onClick: (e: Event) => { e.stopPropagation(); toggleVariantRow(row) }
         }, [
           h(UIcon, { name: row.getIsExpanded() ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right', class: 'w-4 h-4' })
@@ -287,8 +287,8 @@ const columns = computed<TableColumn<Inventory>[]>(() => {
     {
       id: 'no',
       header: t('pages.inventory.item.columnNo'),
-      meta: { class: { td: 'w-12 text-neutral-500', th: 'w-12' } },
-      cell: ({ row }) => h('span', { class: 'text-neutral-500' }, (page.value - 1) * perPage.value + row.index + 1)
+      meta: { class: { td: 'w-12 text-muted', th: 'w-12' } },
+      cell: ({ row }) => h('span', { class: 'text-muted' }, (page.value - 1) * perPage.value + row.index + 1)
     },
     {
     accessorKey: 'name',
@@ -299,14 +299,14 @@ const columns = computed<TableColumn<Inventory>[]>(() => {
         ? h(NuxtImg, {
             src: img,
             alt: row.original.name,
-            class: 'w-10 h-10 object-cover rounded-md border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0',
+            class: 'w-10 h-10 object-cover rounded-md border border-default cursor-pointer hover:border-accented transition-colors shadow-2xs shrink-0',
             onClick: (e: Event) => {
               e.stopPropagation()
               openLightbox(img)
             }
           })
-        : h('div', { class: 'w-10 h-10 bg-neutral-100 rounded-md flex items-center justify-center border border-neutral-200 shrink-0' }, [
-            h('span', { class: 'text-neutral-400 text-xs' }, 'N/A')
+        : h('div', { class: 'w-10 h-10 bg-elevated rounded-md flex items-center justify-center border border-default shrink-0' }, [
+            h('span', { class: 'text-dimmed text-xs' }, 'N/A')
           ])
 
       const textEl = h('div', { class: 'flex flex-col min-w-0' }, [
@@ -317,14 +317,14 @@ const columns = computed<TableColumn<Inventory>[]>(() => {
             navigateTo(`/inventory/${row.original.id}`)
           }
         }, row.original.name),
-        h('span', { class: 'text-xs text-neutral-500' }, row.original.code || '-')
+        h('span', { class: 'text-xs text-muted' }, row.original.code || '-')
       ])
 
       return h('div', { class: 'flex items-center gap-3' }, [imageEl, textEl])
     }
   },
-    { accessorKey: 'category', header: sortHeader(t('common.category'), 'category'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.category?.name || '-') },
-    { accessorKey: 'subCategory', header: sortHeader(t('common.subCategory'), 'subCategory'), cell: ({ row }) => h('span', { class: 'text-neutral-700' }, row.original.subCategory?.name || '-') },
+    { accessorKey: 'category', header: sortHeader(t('common.category'), 'category'), cell: ({ row }) => h('span', { class: 'text-default' }, row.original.category?.name || '-') },
+    { accessorKey: 'subCategory', header: sortHeader(t('common.subCategory'), 'subCategory'), cell: ({ row }) => h('span', { class: 'text-default' }, row.original.subCategory?.name || '-') },
     { accessorKey: 'unit', header: sortHeader(t('pages.inventory.unit.label'), 'unit', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h(UBadge, { color: 'neutral', variant: 'subtle' }, () => row.original.unit || '-') },
     { accessorKey: 'newCount', header: sortHeader(t('pages.inventory.condition.new'), 'newCount', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-emerald-600 text-sm font-medium' }, String(row.original.newCount ?? 0)) },
     { accessorKey: 'usedCount', header: sortHeader(t('pages.inventory.condition.used'), 'usedCount', 'center'), meta: { class: { td: 'text-center', th: 'text-center' } }, cell: ({ row }) => h('span', { class: 'text-amber-600 text-sm font-medium' }, String(row.original.usedCount ?? 0)) },
@@ -334,7 +334,7 @@ const columns = computed<TableColumn<Inventory>[]>(() => {
     list.push({
       id: `label:${key}`,
       header: key,
-      cell: ({ row }) => h('span', { class: 'text-neutral-600' }, row.original.labels?.find(l => l.key === key)?.value || '-')
+      cell: ({ row }) => h('span', { class: 'text-toned' }, row.original.labels?.find(l => l.key === key)?.value || '-')
     })
   }
 

@@ -2,11 +2,11 @@
   <!-- Tab Content: Information -->
   <div class="p-6 space-y-6">
     <!-- Photo Upload Section -->
-    <div class="flex items-center gap-5 pb-4 border-b border-neutral-100">
+    <div class="flex items-center gap-5 pb-4 border-b border-muted">
       <div class="relative group cursor-pointer shrink-0" @click="triggerFileInput">
-        <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-neutral-200 hover:border-primary/50 transition-colors duration-200 flex items-center justify-center bg-neutral-50 relative">
+        <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-default hover:border-primary/50 transition-colors duration-200 flex items-center justify-center bg-muted relative">
           <NuxtImg v-if="previewUrl" :src="previewUrl" class="w-full h-full object-cover" />
-          <UIcon v-else name="i-lucide-user" class="w-10 h-10 text-neutral-400" />
+          <UIcon v-else name="i-lucide-user" class="w-10 h-10 text-dimmed" />
           <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <UIcon name="i-lucide-camera" class="w-5 h-5 text-white" />
           </div>
@@ -16,8 +16,8 @@
         </div>
       </div>
       <div class="flex flex-col">
-        <span class="text-sm font-semibold text-neutral-900">{{ $t('common.photo') }}</span>
-        <p class="text-xs text-neutral-400">{{ $t('common.photoHint') }}</p>
+        <span class="text-sm font-semibold text-highlighted">{{ $t('common.photo') }}</span>
+        <p class="text-xs text-dimmed">{{ $t('common.photoHint') }}</p>
         <div class="flex gap-2 mt-2">
           <UButton size="xs" color="neutral" variant="outline" @click="triggerFileInput" icon="i-lucide-upload">{{ $t('common.choosePhoto') }}</UButton>
           <UButton v-if="previewUrl || formInfo.photo" size="xs" color="error" variant="outline" @click="removePhoto" icon="i-lucide-trash">{{ $t('common.remove') }}</UButton>

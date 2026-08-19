@@ -12,7 +12,7 @@
     </UFormField>
 
     <!-- Uploading indicator -->
-    <div v-if="isUploading" class="text-xs text-neutral-500 flex items-center gap-2 mt-1">
+    <div v-if="isUploading" class="text-xs text-muted flex items-center gap-2 mt-1">
       <UIcon name="i-lucide-loader-2" class="w-3.5 h-3.5 animate-spin text-primary" />
       <span>{{ $t('component.attachment.uploading') }}</span>
     </div>

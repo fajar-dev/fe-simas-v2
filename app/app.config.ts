@@ -4,7 +4,7 @@ export default defineAppConfig({
       primary: 'green',
       error: 'red',
       warning: 'yellow',
-      neutral: 'slate'
+      neutral: 'neutral'
     },
     button: {
       defaultVariants: {

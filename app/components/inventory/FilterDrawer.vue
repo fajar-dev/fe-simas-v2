@@ -11,7 +11,7 @@
         <!-- Category -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('common.category') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('common.category') }}</label>
             <UButton v-if="filters.categoryIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('categoryIds')">{{ $t('component.inventory.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
@@ -28,7 +28,7 @@
         <!-- Sub Category -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('common.subCategory') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('common.subCategory') }}</label>
             <UButton v-if="filters.subCategoryIds?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('subCategoryIds')">{{ $t('component.inventory.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
@@ -45,7 +45,7 @@
         <!-- Unit -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('pages.inventory.unit.label') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('pages.inventory.unit.label') }}</label>
             <UButton v-if="filters.units?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('units')">{{ $t('component.inventory.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
@@ -63,7 +63,7 @@
         <!-- Status -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.inventory.filterDrawer.status') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.inventory.filterDrawer.status') }}</label>
             <UButton v-if="filters.isActive" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('isActive')">{{ $t('component.inventory.filterDrawer.clear') }}</UButton>
           </div>
           <URadioGroup
@@ -76,7 +76,7 @@
         <!-- Variant Status -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.inventory.filterDrawer.variantStatus') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.inventory.filterDrawer.variantStatus') }}</label>
             <UButton v-if="filters.variantStatus" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('variantStatus')">{{ $t('component.inventory.filterDrawer.clear') }}</UButton>
           </div>
           <URadioGroup
@@ -91,12 +91,12 @@
         <!-- New Stock Range -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.inventory.filterDrawer.newStockRange') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.inventory.filterDrawer.newStockRange') }}</label>
             <UButton v-if="filters.newStockMin || filters.newStockMax" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('newStockMin'); clearField('newStockMax')">{{ $t('component.inventory.filterDrawer.clear') }}</UButton>
           </div>
           <div class="flex flex-col sm:flex-row sm:items-center gap-2">
             <UInput v-model.number="filters.newStockMin" type="number" min="0" :placeholder="$t('component.inventory.filterDrawer.min')" class="w-full sm:flex-1" />
-            <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
+            <span class="text-dimmed text-sm hidden sm:inline">—</span>
             <UInput v-model.number="filters.newStockMax" type="number" min="0" :placeholder="$t('component.inventory.filterDrawer.max')" class="w-full sm:flex-1" />
           </div>
         </div>
@@ -104,12 +104,12 @@
         <!-- Used Stock Range -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.inventory.filterDrawer.usedStockRange') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.inventory.filterDrawer.usedStockRange') }}</label>
             <UButton v-if="filters.usedStockMin || filters.usedStockMax" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('usedStockMin'); clearField('usedStockMax')">{{ $t('component.inventory.filterDrawer.clear') }}</UButton>
           </div>
           <div class="flex flex-col sm:flex-row sm:items-center gap-2">
             <UInput v-model.number="filters.usedStockMin" type="number" min="0" :placeholder="$t('component.inventory.filterDrawer.min')" class="w-full sm:flex-1" />
-            <span class="text-neutral-400 text-sm hidden sm:inline">—</span>
+            <span class="text-dimmed text-sm hidden sm:inline">—</span>
             <UInput v-model.number="filters.usedStockMax" type="number" min="0" :placeholder="$t('component.inventory.filterDrawer.max')" class="w-full sm:flex-1" />
           </div>
         </div>
@@ -119,7 +119,7 @@
         <!-- Data Quality -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.inventory.filterDrawer.dataQuality') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.inventory.filterDrawer.dataQuality') }}</label>
             <UButton v-if="filters.missingFields?.length" icon="i-lucide-x" size="xs" color="error" variant="ghost" @click="clearField('missingFields')">{{ $t('component.inventory.filterDrawer.clear') }}</UButton>
           </div>
           <USelectMenu
@@ -137,10 +137,10 @@
         <!-- Labels -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('component.inventory.filterDrawer.labels') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('component.inventory.filterDrawer.labels') }}</label>
             <UButton icon="i-lucide-plus" size="xs" color="primary" variant="soft" @click="addLabelFilter">{{ $t('common.add') }}</UButton>
           </div>
-          <div v-if="!labelFilters.length" class="text-sm text-neutral-400 py-3 text-center border border-dashed border-neutral-200 rounded-lg">
+          <div v-if="!labelFilters.length" class="text-sm text-dimmed py-3 text-center border border-dashed border-default rounded-lg">
             {{ $t('component.inventory.filterDrawer.noLabels') }}
           </div>
           <div v-else class="space-y-2">

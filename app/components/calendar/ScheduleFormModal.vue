@@ -67,7 +67,7 @@
         <AttachmentManager v-model="uploadedAttachments" @change="onAttachmentsChanged" />
 
         <!-- Recurrence (below attachments) -->
-        <div class="rounded-lg border border-neutral-200 p-3 space-y-3">
+        <div class="rounded-lg border border-default p-3 space-y-3">
           <UFormField :label="$t('pages.calendar.recurrence.label')" name="recurrence">
             <USelectMenu v-model="selectedRecurrence" :items="recurrenceOptions" class="w-full" />
           </UFormField>

@@ -51,23 +51,23 @@
         <div class="grid grid-cols-12 gap-x-8 gap-y-6">
           <!-- Document No -->
           <div class="col-span-12 sm:col-span-6 md:col-span-4">
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.handover.columnDocNo') }}</span>
-            <div class="text-sm text-neutral-900 font-semibold">
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('pages.handover.columnDocNo') }}</span>
+            <div class="text-sm text-highlighted font-semibold">
               #{{ handover.id }}
             </div>
           </div>
 
           <!-- Type -->
           <div class="col-span-12 sm:col-span-6 md:col-span-4">
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.handover.form.transactionType') }}</span>
-            <div class="text-sm text-neutral-900 font-medium">
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('pages.handover.form.transactionType') }}</span>
+            <div class="text-sm text-highlighted font-medium">
               {{ $t(`pages.handover.types.${handover.transactionType}`) }}
             </div>
           </div>
 
           <!-- Status -->
           <div class="col-span-12 sm:col-span-6 md:col-span-4">
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.handover.columnStatus') }}</span>
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('pages.handover.columnStatus') }}</span>
             <UBadge
               :color="handoverStatusColor"
               variant="subtle"
@@ -79,8 +79,8 @@
 
           <!-- Date -->
           <div class="col-span-12 sm:col-span-6 md:col-span-4">
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.handover.form.date') }}</span>
-            <div class="text-sm text-neutral-900 font-medium">
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('pages.handover.form.date') }}</span>
+            <div class="text-sm text-highlighted font-medium">
               {{ formatDateTime(handover.createdAt) }}
             </div>
           </div>
@@ -90,7 +90,7 @@
             v-if="handover.parentHandover"
             class="col-span-12 sm:col-span-6 md:col-span-4"
           >
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.handover.parentHandover') }}</span>
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('pages.handover.parentHandover') }}</span>
             <NuxtLink
               :to="`/handover/${handover.parentHandover.id}`"
               class="text-sm font-semibold text-primary hover:underline"
@@ -99,7 +99,7 @@
 
           <!-- Handed Over By -->
           <div class="col-span-12 sm:col-span-6 md:col-span-4">
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.handover.form.handedOverBy') }}</span>
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('pages.handover.form.handedOverBy') }}</span>
             <div
               v-if="handover.handedOver"
               class="flex items-center gap-2 min-w-0"
@@ -112,21 +112,21 @@
               />
               <div class="flex flex-col min-w-0">
                 <span
-                  class="text-sm text-neutral-900 font-medium leading-tight truncate"
+                  class="text-sm text-highlighted font-medium leading-tight truncate"
                   :title="handover.handedOver.name"
                 >{{ handover.handedOver.name }}</span>
-                <span class="text-xs text-neutral-500 leading-tight truncate">{{ handover.handedOver.jobPosition || handover.handedOver.employeeId }}</span>
+                <span class="text-xs text-muted leading-tight truncate">{{ handover.handedOver.jobPosition || handover.handedOver.employeeId }}</span>
               </div>
             </div>
             <span
               v-else
-              class="text-sm text-neutral-500"
+              class="text-sm text-muted"
             >-</span>
           </div>
 
           <!-- Received By -->
           <div class="col-span-12 sm:col-span-6 md:col-span-4">
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.handover.form.receivedBy') }}</span>
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('pages.handover.form.receivedBy') }}</span>
             <div
               v-if="handover.received"
               class="flex items-center gap-2 min-w-0"
@@ -139,21 +139,21 @@
               />
               <div class="flex flex-col min-w-0">
                 <span
-                  class="text-sm text-neutral-900 font-medium leading-tight truncate"
+                  class="text-sm text-highlighted font-medium leading-tight truncate"
                   :title="handover.received.name"
                 >{{ handover.received.name }}</span>
-                <span class="text-xs text-neutral-500 leading-tight truncate">{{ handover.received.jobPosition || handover.received.employeeId }}</span>
+                <span class="text-xs text-muted leading-tight truncate">{{ handover.received.jobPosition || handover.received.employeeId }}</span>
               </div>
             </div>
             <span
               v-else
-              class="text-sm text-neutral-500"
+              class="text-sm text-muted"
             >-</span>
           </div>
 
           <!-- Created By -->
           <div class="col-span-12 sm:col-span-6 md:col-span-4">
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.handover.columnCreatedBy') }}</span>
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('pages.handover.columnCreatedBy') }}</span>
             <div class="flex items-center gap-2 min-w-0">
               <UAvatar
                 :src="handover.createdBy?.photo || undefined"
@@ -162,16 +162,16 @@
                 loading="lazy"
               />
               <span
-                class="text-sm text-neutral-900 font-medium truncate"
+                class="text-sm text-highlighted font-medium truncate"
                 :title="handover.createdBy?.name || $t('common.system')"
               >{{ handover.createdBy?.name || $t('common.system') }}</span>
             </div>
           </div>
 
           <!-- Note (full width) -->
-          <div class="col-span-12 pt-4 border-t border-neutral-100">
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.handover.form.note') }}</span>
-            <div class="text-sm text-neutral-700 whitespace-pre-line">
+          <div class="col-span-12 pt-4 border-t border-muted">
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('pages.handover.form.note') }}</span>
+            <div class="text-sm text-default whitespace-pre-line">
               {{ handover.note || '-' }}
             </div>
           </div>
@@ -182,8 +182,8 @@
             :key="field.key"
             class="col-span-12 sm:col-span-6 md:col-span-4"
           >
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ field.label }}</span>
-            <div class="text-sm text-neutral-900 font-medium">
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ field.label }}</span>
+            <div class="text-sm text-highlighted font-medium">
               {{ field.value || '-' }}
             </div>
           </div>
@@ -191,23 +191,23 @@
           <!-- Attachments (full width) -->
           <div
             v-if="handover.attachments?.length"
-            class="col-span-12 pt-4 border-t border-neutral-100"
+            class="col-span-12 pt-4 border-t border-muted"
           >
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-2">{{ $t('pages.handover.attachments') }}</span>
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-2">{{ $t('pages.handover.attachments') }}</span>
             <div class="flex flex-wrap gap-2">
               <a
                 v-for="att in handover.attachments"
                 :key="att.id"
                 :href="att.url"
                 target="_blank"
-                class="flex items-center gap-2 px-3 py-2 rounded-lg border border-neutral-200 bg-neutral-50 hover:bg-neutral-100 transition-colors text-sm text-neutral-700 hover:text-neutral-900 no-underline"
+                class="flex items-center gap-2 px-3 py-2 rounded-lg border border-default bg-muted hover:bg-elevated transition-colors text-sm text-default hover:text-highlighted no-underline"
               >
                 <UIcon
                   :name="getAttachmentTheme(att.mimeType).icon"
                   class="w-4 h-4 text-primary shrink-0"
                 />
                 <span class="truncate max-w-48">{{ att.originalName }}</span>
-                <span class="text-xs text-neutral-400 shrink-0">{{ formatFileSize(att.size) }}</span>
+                <span class="text-xs text-dimmed shrink-0">{{ formatFileSize(att.size) }}</span>
               </a>
             </div>
           </div>
@@ -217,19 +217,19 @@
       <!-- Items card -->
       <UCard class="w-full">
         <div class="w-full mb-4">
-          <h4 class="text-xs font-semibold text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
+          <h4 class="text-xs font-semibold text-dimmed uppercase tracking-wider flex items-center gap-1.5">
             <UIcon
               name="i-lucide-boxes"
               class="w-3.5 h-3.5"
             />
             {{ $t('pages.handover.itemInfo') }}
-            <span class="text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full font-medium normal-case tracking-normal">{{ handover.items.length + handover.stockItems.length }}</span>
+            <span class="text-xs text-muted bg-elevated px-2 py-0.5 rounded-full font-medium normal-case tracking-normal">{{ handover.items.length + handover.stockItems.length }}</span>
           </h4>
         </div>
 
         <div
           v-if="!handover.items.length && !handover.stockItems.length"
-          class="text-center text-sm text-neutral-400 py-8"
+          class="text-center text-sm text-dimmed py-8"
         >
           {{ $t('common.noData') }}
         </div>
@@ -239,21 +239,21 @@
           v-if="handover.items.length"
           class="space-y-3"
         >
-          <h5 class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+          <h5 class="text-xs font-semibold text-dimmed uppercase tracking-wider">
             {{ $t('pages.handover.form.assetItems') }}
           </h5>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div
               v-for="item in handover.items"
               :key="item.id"
-              class="border border-neutral-200 rounded-lg p-3 flex flex-col gap-2.5"
+              class="border border-default rounded-lg p-3 flex flex-col gap-2.5"
             >
               <div class="flex items-start gap-3">
                 <NuxtImg
                   v-if="item.asset?.image"
                   :src="item.asset.image"
                   :alt="item.asset?.name"
-                  class="w-11 h-11 object-cover rounded-lg border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shrink-0"
+                  class="w-11 h-11 object-cover rounded-lg border border-default cursor-pointer hover:border-accented transition-colors shrink-0"
                   @click="item.asset && openLightbox(item.asset.image)"
                 />
                 <div
@@ -268,17 +268,17 @@
                 <div class="min-w-0 flex-1">
                   <NuxtLink
                     :to="`/asset/${item.asset?.id}`"
-                    class="text-sm font-semibold text-neutral-900 hover:text-primary hover:underline block truncate"
+                    class="text-sm font-semibold text-highlighted hover:text-primary hover:underline block truncate"
                   >
                     {{ item.asset?.name || '-' }}
                   </NuxtLink>
-                  <span class="text-xs text-neutral-500 mt-0.5 block truncate">{{ item.asset?.code || '-' }}</span>
+                  <span class="text-xs text-muted mt-0.5 block truncate">{{ item.asset?.code || '-' }}</span>
                 </div>
               </div>
 
               <div
                 v-if="item.note"
-                class="text-xs text-neutral-600 bg-neutral-50 border border-neutral-100 rounded-lg p-2 whitespace-pre-line"
+                class="text-xs text-toned bg-muted border border-muted rounded-lg p-2 whitespace-pre-line"
               >
                 {{ item.note }}
               </div>
@@ -290,16 +290,16 @@
         <div
           v-if="handover.stockItems.length"
           class="space-y-3"
-          :class="{ 'mt-6 pt-6 border-t border-neutral-100': handover.items.length }"
+          :class="{ 'mt-6 pt-6 border-t border-muted': handover.items.length }"
         >
-          <h5 class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+          <h5 class="text-xs font-semibold text-dimmed uppercase tracking-wider">
             {{ $t('pages.handover.form.stockItems') }}
           </h5>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div
               v-for="item in handover.stockItems"
               :key="item.id"
-              class="border border-neutral-200 rounded-lg p-3 flex flex-col gap-2.5"
+              class="border border-default rounded-lg p-3 flex flex-col gap-2.5"
             >
               <div class="flex items-start gap-3">
                 <div class="w-11 h-11 bg-primary/10 text-primary rounded-lg flex items-center justify-center shrink-0">
@@ -309,8 +309,8 @@
                   />
                 </div>
                 <div class="min-w-0 flex-1">
-                  <span class="text-sm font-semibold text-neutral-900 block truncate">{{ item.variant?.inventory?.name || '-' }} — {{ item.variant?.name || '-' }}</span>
-                  <span class="text-xs text-neutral-500 mt-0.5 block truncate">
+                  <span class="text-sm font-semibold text-highlighted block truncate">{{ item.variant?.inventory?.name || '-' }} — {{ item.variant?.name || '-' }}</span>
+                  <span class="text-xs text-muted mt-0.5 block truncate">
                     {{ item.branch?.name || '-' }} ·
                     <UBadge
                       :color="item.condition === 'new' ? 'success' : 'warning'"
@@ -326,7 +326,7 @@
 
               <div
                 v-if="item.note"
-                class="text-xs text-neutral-600 bg-neutral-50 border border-neutral-100 rounded-lg p-2 whitespace-pre-line"
+                class="text-xs text-toned bg-muted border border-muted rounded-lg p-2 whitespace-pre-line"
               >
                 {{ item.note }}
               </div>

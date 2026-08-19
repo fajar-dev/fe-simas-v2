@@ -5,10 +5,10 @@
       <!-- Logo -->
       <BrandLogo />
       <div class="space-y-1">
-        <h1 class="text-3xl font-bold text-neutral-900 ">
+        <h1 class="text-3xl font-bold text-highlighted ">
           {{ $t('pages.auth.signIn.title') }}
         </h1>
-        <p class="text-neutral-600">
+        <p class="text-toned">
           {{ $t('pages.auth.signIn.subtitle') }}
         </p>
       </div>
@@ -18,7 +18,7 @@
     <UForm :state="state" :schema="loginSchema" @submit="handleLogin" class="space-y-4">
       
       <!-- ID Karyawan Input Container -->
-      <UFormField :label="$t('pages.auth.signIn.emailLabel')" name="email" class="w-full font-medium text-neutral-800" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
+      <UFormField :label="$t('pages.auth.signIn.emailLabel')" name="email" class="w-full font-medium text-highlighted" :ui="{ label: 'text-sm font-medium text-highlighted' }">
         <UInput
           id="email"
           v-model="state.email"
@@ -30,7 +30,7 @@
       </UFormField>
 
       <!-- Password Input Container -->
-      <UFormField :label="$t('pages.auth.signIn.passwordLabel')" name="password" class="w-full" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
+      <UFormField :label="$t('pages.auth.signIn.passwordLabel')" name="password" class="w-full" :ui="{ label: 'text-sm font-medium text-highlighted' }">
         <!-- <template #hint>
           <NuxtLink
             to="/auth/forgot-password"
@@ -52,7 +52,7 @@
               color="neutral"
               variant="ghost"
               :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
-              class="text-neutral-400 hover:text-neutral-600 p-1 hover:bg-transparent cursor-pointer"
+              class="text-dimmed hover:text-toned p-1 hover:bg-transparent cursor-pointer"
               @click="() => { showPassword = !showPassword }"
               aria-label="Toggle Password Visibility"
             />

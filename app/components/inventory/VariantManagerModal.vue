@@ -12,26 +12,26 @@
 
       <UForm v-else id="variant-form" :schema="schema" :state="state" class="space-y-3" @submit="save">
         <div class="flex items-center justify-between">
-          <label class="text-sm font-medium text-neutral-700">{{ $t('pages.inventory.variant.title') }}</label>
+          <label class="text-sm font-medium text-default">{{ $t('pages.inventory.variant.title') }}</label>
           <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addRow">{{ $t('pages.inventory.variant.add') }}</UButton>
         </div>
 
-        <div v-if="state.rows.length === 0" class="text-sm text-neutral-400 py-6 text-center border-2 border-dashed border-neutral-200 rounded-lg">
+        <div v-if="state.rows.length === 0" class="text-sm text-dimmed py-6 text-center border-2 border-dashed border-default rounded-lg">
           {{ $t('pages.inventory.create.noVariants') }}
         </div>
 
         <div v-else class="space-y-3">
-          <div v-for="(v, vi) in state.rows" :key="v.key" class="p-3 rounded-lg border border-neutral-200 space-y-2.5">
+          <div v-for="(v, vi) in state.rows" :key="v.key" class="p-3 rounded-lg border border-default space-y-2.5">
             <div class="flex items-start gap-2">
               <!-- Image -->
               <div class="shrink-0">
                 <div v-if="v.imagePreview || v.image" class="relative w-32 h-32">
-                  <NuxtImg :src="v.imagePreview || v.image || ''" class="w-full h-full rounded-md object-cover border border-neutral-200" />
+                  <NuxtImg :src="v.imagePreview || v.image || ''" class="w-full h-full rounded-md object-cover border border-default" />
                   <UButton icon="i-lucide-x" color="error" variant="solid" size="xs" class="absolute -top-1.5 -right-1.5 rounded-full" @click="() => removeImage(vi)" />
                 </div>
-                <label v-else class="w-32 h-32 flex flex-col items-center justify-center border-2 border-dashed border-neutral-200 rounded-md cursor-pointer hover:border-primary transition-colors">
-                  <UIcon v-if="!v.uploading" name="i-lucide-image-plus" class="w-5 h-5 text-neutral-400" />
-                  <UIcon v-else name="i-lucide-loader-2" class="w-5 h-5 text-neutral-400 animate-spin" />
+                <label v-else class="w-32 h-32 flex flex-col items-center justify-center border-2 border-dashed border-default rounded-md cursor-pointer hover:border-primary transition-colors">
+                  <UIcon v-if="!v.uploading" name="i-lucide-image-plus" class="w-5 h-5 text-dimmed" />
+                  <UIcon v-else name="i-lucide-loader-2" class="w-5 h-5 text-dimmed animate-spin" />
                   <input type="file" class="hidden" accept="image/*" @change="(e) => onFile(vi, e)">
                 </label>
               </div>

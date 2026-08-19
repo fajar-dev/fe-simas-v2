@@ -8,20 +8,20 @@
       <div v-if="item" class="space-y-4">
         <div class="grid grid-cols-2 gap-3 text-sm">
           <div>
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.employee') }}</span>
-            <span class="text-neutral-900 font-medium">{{ employee?.name || '-' }}</span>
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('common.employee') }}</span>
+            <span class="text-highlighted font-medium">{{ employee?.name || '-' }}</span>
           </div>
           <div>
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.inventory.variant.title') }}</span>
-            <span class="text-neutral-900 font-medium">{{ item.variant?.name || '-' }}</span>
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('pages.inventory.variant.title') }}</span>
+            <span class="text-highlighted font-medium">{{ item.variant?.name || '-' }}</span>
           </div>
           <div>
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('common.branch') }}</span>
-            <span class="text-neutral-900 font-medium">{{ item.branch?.name || '-' }}</span>
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('common.branch') }}</span>
+            <span class="text-highlighted font-medium">{{ item.branch?.name || '-' }}</span>
           </div>
           <div>
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider block mb-1">{{ $t('pages.inventory.stockOut.remaining') }}</span>
-            <span class="text-neutral-900 font-medium">{{ item.quantityRemaining }} {{ item.variant?.unit || '' }}</span>
+            <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('pages.inventory.stockOut.remaining') }}</span>
+            <span class="text-highlighted font-medium">{{ item.quantityRemaining }} {{ item.variant?.unit || '' }}</span>
           </div>
         </div>
 

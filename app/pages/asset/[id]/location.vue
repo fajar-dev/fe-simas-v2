@@ -122,7 +122,7 @@ const columns: TableColumn<AssetLocation>[] = [
     accessorKey: 'date',
     header: sortHeader(t('pages.asset.location.columnRelocationDate'), 'date'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-900 font-medium' }, formatDate(row.original.date || ''))
+      return h('span', { class: 'text-highlighted font-medium' }, formatDate(row.original.date || ''))
     }
   },
   {
@@ -143,13 +143,13 @@ const columns: TableColumn<AssetLocation>[] = [
     cell: ({ row }) => {
       const location = row.original.location
       if (!location) {
-        return h('span', { class: 'text-neutral-900 font-medium' }, '-')
+        return h('span', { class: 'text-highlighted font-medium' }, '-')
       }
       const locName = location.name
       const branchName = location.branch?.name
       return h('div', { class: 'flex flex-col min-w-0' }, [
-        h('span', { class: 'text-neutral-900 font-semibold' }, locName),
-        branchName ? h('span', { class: 'text-xs text-neutral-500' }, branchName) : null
+        h('span', { class: 'text-highlighted font-semibold' }, locName),
+        branchName ? h('span', { class: 'text-xs text-muted' }, branchName) : null
       ])
     }
   },
@@ -157,7 +157,7 @@ const columns: TableColumn<AssetLocation>[] = [
     accessorKey: 'note',
     header: sortHeader(t('pages.asset.location.columnNotes'), 'note'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600 truncate max-w-md block' }, row.original.note || '-')
+      return h('span', { class: 'text-toned truncate max-w-md block' }, row.original.note || '-')
     }
   },
   {
@@ -165,7 +165,7 @@ const columns: TableColumn<AssetLocation>[] = [
     header: t('pages.asset.location.columnAttachments'),
     cell: ({ row }) => {
       const attachments = row.original.attachments || []
-      if (attachments.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+      if (attachments.length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
 
       // Render clickable mini badges for each attachment
       return h(
@@ -208,10 +208,10 @@ const columns: TableColumn<AssetLocation>[] = [
             class: 'bg-primary-50 text-primary-700',
             loading: 'lazy'
           }),
-          h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
+          h('span', { class: 'text-default font-medium text-sm' }, creator.name)
         ])
       } else {
-        return h('span', { class: 'text-neutral-500 italic text-sm' }, t('pages.asset.location.system'))
+        return h('span', { class: 'text-muted italic text-sm' }, t('pages.asset.location.system'))
       }
     }
   }

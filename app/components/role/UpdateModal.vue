@@ -21,7 +21,7 @@
         </UFormField>
 
         <div class="space-y-3">
-          <label class="text-sm font-medium text-neutral-700">{{ $t('common.permissions') }}</label>
+          <label class="text-sm font-medium text-default">{{ $t('common.permissions') }}</label>
 
           <!-- Super Admin notice -->
           <div v-if="role?.isSuperAdmin" class="bg-warning-50 border border-warning-200 rounded-lg p-3">
@@ -33,7 +33,7 @@
 
           <template v-else>
             <!-- Select All -->
-            <div class="border border-neutral-200 rounded-lg p-3">
+            <div class="border border-default rounded-lg p-3">
               <UCheckbox
                 :model-value="isAllSelected"
                 :indeterminate="isSomeSelected && !isAllSelected"
@@ -44,8 +44,8 @@
 
             <!-- Loading state -->
             <div v-if="isLoadingPermissions" class="flex items-center justify-center py-8">
-              <UIcon name="i-lucide-loader-2" class="w-5 h-5 animate-spin text-neutral-400" />
-              <span class="ml-2 text-sm text-neutral-500">{{ $t('component.role.updateModal.loadingPermissions') }}</span>
+              <UIcon name="i-lucide-loader-2" class="w-5 h-5 animate-spin text-dimmed" />
+              <span class="ml-2 text-sm text-muted">{{ $t('component.role.updateModal.loadingPermissions') }}</span>
             </div>
 
             <!-- Permission Groups by Module -->
@@ -53,16 +53,16 @@
               <div 
                 v-for="(perms, moduleName) in groupedPermissions" 
                 :key="moduleName"
-                class="border border-neutral-200 rounded-lg p-3 space-y-2"
+                class="border border-default rounded-lg p-3 space-y-2"
               >
                 <!-- Module Header with Select All for module -->
-                <div class="flex items-center gap-2 border-b border-neutral-100 pb-2">
+                <div class="flex items-center gap-2 border-b border-muted pb-2">
                   <UCheckbox
                     :model-value="isModuleAllSelected(moduleName)"
                     :indeterminate="isModuleSomeSelected(moduleName) && !isModuleAllSelected(moduleName)"
                     :label="formatModuleName(moduleName)"
                     @update:model-value="toggleModule(moduleName)"
-                    :ui="{ label: 'font-semibold text-neutral-900 capitalize' }"
+                    :ui="{ label: 'font-semibold text-highlighted capitalize' }"
                   />
                 </div>
 
