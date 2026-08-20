@@ -141,6 +141,24 @@ export interface InventoryStockIn {
   attachments: Attachment[]
 }
 
+/** A stock opname (physical count) document — header + line items, like a stock-in document. Only variants/conditions whose count differed from the recorded balance appear as items. */
+export interface InventoryStockOpname {
+  id: number
+  branch: { id: number; name: string } | null
+  note: string | null
+  createdAt: string
+  createdBy: { id: number; name: string; photo: string | null } | null
+  items: {
+    id: number
+    condition: StockCondition
+    systemQuantity: number
+    countedQuantity: number
+    quantity: number
+    variant: { id: number; name: string; code: string | null; inventory: { id: number; name: string } | null } | null
+  }[]
+  attachments: Attachment[]
+}
+
 export interface InventoryStockOutLineItem {
   id: number
   conditionAssigned: StockCondition

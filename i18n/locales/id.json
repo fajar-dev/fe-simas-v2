@@ -1317,7 +1317,8 @@
       "tabs": {
         "stockIn": "Stok Masuk",
         "transfer": "Transfer",
-        "holder": "Stok Keluar"
+        "holder": "Stok Keluar",
+        "opname": "Stock Opname"
       },
       "stock": {
         "overviewTitle": "Varian & Stok"
@@ -1378,6 +1379,16 @@
         "items": "Item",
         "addRow": "Tambah Baris",
         "noRows": "Belum ada baris. Tambah cabang & varian."
+      },
+      "opname": {
+        "button": "Stock Opname",
+        "title": "Stock Opname",
+        "description": "Catat hasil hitung fisik dan sesuaikan stok cabang mengikuti hasilnya",
+        "system": "Sistem",
+        "counted": "Hasil Hitung",
+        "difference": "Selisih",
+        "pickBranchFirst": "Pilih cabang terlebih dahulu.",
+        "success": "Stock opname berhasil disimpan!"
       }
     },
     "calendar": {

@@ -1317,7 +1317,8 @@
       "tabs": {
         "stockIn": "Stock In",
         "transfer": "Transfer",
-        "holder": "Stock Out"
+        "holder": "Stock Out",
+        "opname": "Stock Opname"
       },
       "stock": {
         "overviewTitle": "Variants & Stock"
@@ -1378,6 +1379,16 @@
         "items": "Items",
         "addRow": "Add Row",
         "noRows": "No rows yet. Add a branch and variant."
+      },
+      "opname": {
+        "button": "Stock Opname",
+        "title": "Stock Opname",
+        "description": "Record a physical count and reconcile a branch's on-hand to it",
+        "system": "System",
+        "counted": "Counted",
+        "difference": "Difference",
+        "pickBranchFirst": "Select a branch first.",
+        "success": "Stock opname saved!"
       }
     },
     "calendar": {
