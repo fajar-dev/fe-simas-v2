@@ -17,7 +17,7 @@
             v-model="selectedAsset"
             :items="assetOptions"
             searchable
-            :searchable-placeholder="$t('component.assetMaintenance.updateModal.searchAssets')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.assetMaintenance.updateModal.selectAsset')"
             :loading="isLoadingAssets"
             class="w-full"
@@ -47,7 +47,7 @@
         <UFormField :label="$t('common.cost')" name="cost">
           <UInput v-model.number="form.cost" type="number" :placeholder="$t('component.assetMaintenance.updateModal.costPlaceholder')" class="w-full" min="0" step="1">
             <template #leading>
-              <span class="text-neutral-400 text-sm">Rp</span>
+              <span class="text-dimmed text-sm">Rp</span>
             </template>
           </UInput>
         </UFormField>
@@ -55,17 +55,17 @@
         <!-- Labels -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-sm font-medium text-neutral-700">{{ $t('common.labels') }}</label>
+            <label class="text-sm font-medium text-default">{{ $t('common.labels') }}</label>
             <UButton icon="i-lucide-plus" color="primary" variant="soft" size="xs" @click="addLabel">{{ $t('common.add') }}</UButton>
           </div>
-          <div v-if="formLabels.length === 0" class="text-sm text-neutral-400 py-3 text-center border border-dashed border-neutral-200 rounded-lg">
+          <div v-if="formLabels.length === 0" class="text-sm text-dimmed py-3 text-center border border-dashed border-default rounded-lg">
             {{ $t('pages.asset.create.noLabels') }}
           </div>
           <div v-else class="space-y-2">
             <div v-for="(label, index) in formLabels" :key="index" class="flex items-center gap-2">
               <UInput v-model="label.key" placeholder="Key" class="w-full" />
               <UInput v-model="label.value" placeholder="Value" class="w-full" />
-              <UButton icon="i-lucide-trash" color="error" variant="soft" size="sm" square @click="formLabels.splice(index, 1)" />
+              <UButton icon="i-lucide-trash" color="error" variant="soft" size="sm" square @click="() => { formLabels.splice(index, 1) }" />
             </div>
           </div>
         </div>
@@ -80,14 +80,7 @@
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
         <UButton :label="$t('common.cancel')" @click="() => { open = false }" color="neutral" variant="outline" />
-        <UButton
-          type="submit"
-          form="update-maintenance-form"
-          color="primary"
-          :loading="isSubmitting"
-        >
-          {{ $t('component.assetMaintenance.updateModal.submit') }}
-        </UButton>
+        <UButton :label="$t('common.save')" type="submit" form="update-maintenance-form" color="primary" :loading="isSubmitting" />
       </div>
     </template>
   </UModal>
@@ -119,7 +112,7 @@ const assetOptions = ref<{ label: string; value: number }[]>([])
 const selectedAsset = ref<{ label: string; value: number } | undefined>(undefined)
 const uploadedAttachments = ref<Attachment[]>([])
 const formLabels = ref<{ key: string; value: string }[]>([])
-const addLabel = () => formLabels.value.push({ key: '', value: '' })
+const addLabel = () => { formLabels.value.push({ key: '', value: '' }) }
 
 const schema = z.object({
   assetId: z.number(),
@@ -166,7 +159,7 @@ const loadAssets = async () => {
       
       // Populate selectedAsset from props.maintenance after assets are loaded
       if (props.maintenance) {
-        const matched = assetOptions.value.find(o => o.value === props.maintenance?.assetId)
+        const matched = assetOptions.value.find(o => o.value === props.maintenance?.asset?.id)
         if (matched) selectedAsset.value = matched
       }
     }
@@ -178,7 +171,7 @@ const loadAssets = async () => {
 const populateForm = () => {
   if (!props.maintenance) return
 
-  form.assetId = props.maintenance.assetId
+  form.assetId = props.maintenance.asset?.id ?? 0
   form.date = props.maintenance.date
   form.note = props.maintenance.note || ''
   form.cost = props.maintenance.cost ?? 0
@@ -187,7 +180,7 @@ const populateForm = () => {
   formLabels.value = (props.maintenance.labels || []).map(l => ({ key: l.key, value: l.value }))
 
   if (!props.lockAssetId) {
-    const matched = assetOptions.value.find(o => o.value === props.maintenance?.assetId)
+    const matched = assetOptions.value.find(o => o.value === props.maintenance?.asset?.id)
     selectedAsset.value = matched || undefined
   }
 }

@@ -12,12 +12,9 @@
     <template #body>
       <UAlert
         v-if="activeHolder"
-        :avatar="{
-          src: activeHolder.employee?.photo || undefined,
-          alt: activeHolder.employee?.name,
-        }"
-        :title="activeHolder.employee?.name"
-        :description="activeHolder.employee?.employeeId"
+        :avatar="activeHolder.organization ? undefined : { src: activeHolder.employee?.photo || undefined, alt: activeHolder.employee?.name }"
+        :title="activeHolder.employee?.name || activeHolder.organization?.name"
+        :description="activeHolder.employee?.employeeId || activeHolder.organization?.type"
         color="neutral"
         variant="subtle"
         class="mb-4"
@@ -44,14 +41,7 @@
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
         <UButton :label="$t('common.cancel')" @click="() => { open = false }" color="neutral" variant="outline" />
-        <UButton
-          type="submit"
-          form="return-asset-form"
-          color="success"
-          :loading="isSubmitting"
-        >
-          {{ $t('component.assetHolder.returnModal.submit') }}
-        </UButton>
+        <UButton :label="$t('common.save')" type="submit" form="return-asset-form" color="success" :loading="isSubmitting" />
       </div>
     </template>
   </UModal>
@@ -81,10 +71,6 @@ const schema = z.object({
   returnedDate: z.string().min(1, t('component.assetHolder.returnModal.dateRequired')),
   returnNote: z.string().optional().or(z.literal('')),
 })
-
-const getLocalDatetimeString = () => {
-  return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
-}
 
 const form = reactive({
   returnedDate: getLocalDatetimeString(), // Default to current date & time

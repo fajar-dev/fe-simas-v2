@@ -9,10 +9,10 @@
             <UIcon name="i-lucide-triangle-alert" class="w-6 h-6 text-error" />
           </div>
           <div class="space-y-1.5">
-            <h3 class="text-base font-medium text-neutral-900">
+            <h3 class="text-base font-medium text-highlighted">
               {{ title }}
             </h3>
-            <p class="text-sm text-neutral-600">
+            <p class="text-sm text-toned">
               <slot name="description">
                 {{ $t('component.deleteModal.description', { name: itemName }) }} <br>{{ $t('component.deleteModal.undone') }}
               </slot>

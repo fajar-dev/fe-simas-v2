@@ -17,7 +17,6 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      :search-placeholder="$t('pages.asset.index.searchPlaceholder')"
       table-class="min-w-[1200px]"
     >
       <template #actions>
@@ -86,10 +85,10 @@
             
             <template #content>
               <div class="p-3 w-48 space-y-2 select-none">
-                <div class="text-sm font-semibold text-neutral-600 mb-1">
+                <div class="text-sm font-semibold text-toned mb-1">
                   {{ $t('pages.asset.index.customLabels') }}
                 </div>
-                <div v-if="availableLabelKeys.length === 0" class="text-xs text-neutral-400 italic">
+                <div v-if="availableLabelKeys.length === 0" class="text-xs text-dimmed italic">
                   {{ $t('pages.asset.index.noCustomLabels') }}
                 </div>
                 <div v-else class="space-y-1.5 max-h-48 overflow-y-auto">
@@ -114,9 +113,9 @@
     <Transition name="">
       <div
         v-if="selectedIds.length > 0"
-        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-white/90  backdrop-blur-md border border-neutral-200 shadow-lg rounded-lg px-5 py-3"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-default/90  backdrop-blur-md border border-default shadow-lg rounded-lg px-5 py-3"
       >
-        <span class="text-sm font-medium text-neutral-900 whitespace-nowrap">
+        <span class="text-sm font-medium text-highlighted whitespace-nowrap">
           {{ $t('pages.asset.index.selectedItems', { count: selectedIds.length }) }}
         </span>
         <UButton
@@ -331,8 +330,6 @@ const fetchAssets = async () => {
 
 const onApplyFilters = (filters: Record<string, any>) => {
   activeFilters.value = filters
-  page.value = 1
-  fetchAssets()
 }
 
 const handleExport = async () => {
@@ -393,7 +390,7 @@ const baseColumns: TableColumn<Asset>[] = [
     header: t('pages.asset.index.columnNo'),
     cell: ({ row }) => {
       const rowNumber = (page.value - 1) * perPage.value + row.index + 1
-      return h('span', { class: 'text-neutral-500' }, rowNumber)
+      return h('span', { class: 'text-muted' }, rowNumber)
     }
   },
   {
@@ -405,28 +402,35 @@ const baseColumns: TableColumn<Asset>[] = [
         ? h(NuxtImg, {
             src: img,
             alt: row.original.name,
-            class: 'w-10 h-10 object-cover rounded-md border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0',
+            class: 'w-10 h-10 object-cover rounded-md border border-default cursor-pointer hover:border-accented transition-colors shadow-2xs shrink-0',
             onClick: (e: Event) => {
               e.stopPropagation()
               openLightbox(img)
             }
           })
-        : h('div', { class: 'w-10 h-10 bg-neutral-100 rounded-md flex items-center justify-center border border-neutral-200 shrink-0' }, [
-            h('span', { class: 'text-neutral-400 text-xs' }, 'N/A')
+        : h('div', { class: 'w-10 h-10 bg-elevated rounded-md flex items-center justify-center border border-default shrink-0' }, [
+            h('span', { class: 'text-dimmed text-xs' }, 'N/A')
           ])
 
       const textEl = h('div', { class: 'flex flex-col min-w-0' }, [
-        h('span', { 
-          class: 'font-semibold cursor-pointer hover:underline truncate',
+        h('span', {
+          class: 'font-semibold cursor-pointer hover:underline truncate block',
+          title: row.original.name,
           onClick: (e: Event) => {
             e.stopPropagation()
             navigateTo(`/asset/${row.original.id}`)
           }
         }, row.original.name),
-        h('span', { class: 'text-xs text-neutral-500' }, row.original.code)
+        h('span', { class: 'text-xs text-muted truncate block', title: row.original.code }, row.original.code)
       ])
 
-      return h('div', { class: 'flex items-center gap-3' }, [imageEl, textEl])
+      return h('div', { class: 'flex items-center gap-3 min-w-0' }, [imageEl, textEl])
+    },
+    meta: {
+      class: {
+        td: 'max-w-[280px]',
+        th: 'max-w-[280px]'
+      }
     }
   },
   {
@@ -434,7 +438,7 @@ const baseColumns: TableColumn<Asset>[] = [
     header: sortHeader(t('pages.asset.index.columnStatus'), 'lastStatus'),
     cell: ({ row }) => {
       const status = row.original.lastStatus
-      if (!status) return h('span', { class: 'text-neutral-500 italic' }, '-')
+      if (!status) return h('span', { class: 'text-muted italic' }, '-')
       return h(AssetStatusBadge, {
         status: status.status,
         note: status.note,
@@ -448,7 +452,7 @@ const baseColumns: TableColumn<Asset>[] = [
     header: sortHeader(t('pages.asset.index.columnCategory'), 'category'),
     cell: ({ row }) => {
       const cat = row.original.subCategory?.category
-      return h('span', { class: 'text-neutral-900' }, cat?.name || '-')
+      return h('span', { class: 'text-highlighted' }, cat?.name || '-')
     }
   },
   {
@@ -456,21 +460,21 @@ const baseColumns: TableColumn<Asset>[] = [
     header: sortHeader(t('pages.asset.index.columnSubCategory'), 'subCategory'),
     cell: ({ row }) => {
       const sub = row.original.subCategory
-      return h('span', { class: 'text-neutral-900' }, sub?.name || '-')
+      return h('span', { class: 'text-highlighted' }, sub?.name || '-')
     }
   },
   {
     accessorKey: 'brand',
     header: sortHeader(t('pages.asset.index.columnBrand'), 'brand'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600' }, row.original.brand || '-')
+      return h('span', { class: 'text-toned' }, row.original.brand || '-')
     }
   },
   {
     accessorKey: 'model',
     header: sortHeader(t('pages.asset.index.columnModel'), 'model'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600' }, row.original.model || '-')
+      return h('span', { class: 'text-toned' }, row.original.model || '-')
     }
   },
   {
@@ -478,10 +482,10 @@ const baseColumns: TableColumn<Asset>[] = [
     header: t('pages.asset.index.columnBleTagMac'),
     cell: ({ row }) => {
       const mac = row.original.bleTagMac
-      if (!mac) return h('span', { class: 'text-neutral-500' }, '-')
+      if (!mac) return h('span', { class: 'text-muted' }, '-')
       return h('div', { class: 'flex items-center gap-1.5' }, [
         h(UIcon, { name: 'i-lucide-bluetooth', class: 'w-3.5 h-3.5 text-primary shrink-0' }),
-        h('span', { class: 'text-neutral-900' }, mac)
+        h('span', { class: 'text-highlighted' }, mac)
       ])
     }
   },
@@ -490,12 +494,12 @@ const baseColumns: TableColumn<Asset>[] = [
     header: sortHeader(t('pages.asset.index.columnLastLocation'), 'lastLocation'),
     cell: ({ row }) => {
       const lastLoc = row.original.lastLocation
-      if (!lastLoc || !lastLoc.location) return h('span', { class: 'text-neutral-500 italic' }, '-')
+      if (!lastLoc || !lastLoc.location) return h('span', { class: 'text-muted italic' }, '-')
       const locName = lastLoc.location.name
       const branchName = lastLoc.location.branch?.name
       return h('div', { class: 'flex flex-col min-w-0' }, [
-        h('span', { class: 'text-neutral-900 font-semibold' }, locName),
-        branchName ? h('span', { class: 'text-xs text-neutral-500' }, branchName) : null
+        h('span', { class: 'text-highlighted font-semibold' }, locName),
+        branchName ? h('span', { class: 'text-xs text-muted' }, branchName) : null
       ])
     }
   },
@@ -504,8 +508,15 @@ const baseColumns: TableColumn<Asset>[] = [
     header: sortHeader(t('pages.asset.index.columnActiveHolder'), 'activeHolder'),
     cell: ({ row }) => {
       const holder = row.original.activeHolder
-      if (!holder || !holder.employee) return h('span', { class: 'text-neutral-500 italic' }, '-')
-      const emp = holder.employee
+      if (!holder || (!holder.employee && !holder.organization)) return h('span', { class: 'text-muted italic' }, '-')
+      if (holder.organization) {
+        const org = holder.organization
+        return h('div', { class: 'flex flex-col min-w-0' }, [
+          h('span', { class: 'text-highlighted font-semibold truncate' }, org.name),
+          h('span', { class: 'text-xs text-muted' }, org.type)
+        ])
+      }
+      const emp = holder.employee!
       return h('div', { class: 'flex items-center gap-2 min-w-0' }, [
         h(UAvatar, {
           src: emp.photo || undefined,
@@ -514,8 +525,8 @@ const baseColumns: TableColumn<Asset>[] = [
           loading: 'lazy'
         }),
         h('div', { class: 'flex flex-col min-w-0' }, [
-          h('span', { class: 'text-neutral-900 font-semibold truncate' }, emp.name),
-          h('span', { class: 'text-xs text-neutral-500' }, emp.employeeId)
+          h('span', { class: 'text-highlighted font-semibold truncate' }, emp.name),
+          h('span', { class: 'text-xs text-muted' }, emp.employeeId)
         ])
       ])
     }
@@ -524,7 +535,7 @@ const baseColumns: TableColumn<Asset>[] = [
     accessorKey: 'price',
     header: sortHeader(t('pages.asset.index.columnPrice'), 'price'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-600' }, formatCurrency(row.original.price))
+      return h('span', { class: 'text-toned' }, formatCurrency(row.original.price))
     }
   },
   {
@@ -533,10 +544,10 @@ const baseColumns: TableColumn<Asset>[] = [
     cell: ({ row }) => {
       const date = row.original.purchaseDate
       const age = row.original.age
-      if (!date) return h('span', { class: 'text-neutral-600' }, '-')
+      if (!date) return h('span', { class: 'text-toned' }, '-')
       return h('div', { class: 'flex flex-col min-w-0' }, [
-        age ? h('span', { class: 'font-medium text-neutral-900' }, age) : null,
-        h('span', { class: 'text-xs text-neutral-500' }, date)
+        age ? h('span', { class: 'font-medium text-highlighted' }, age) : null,
+        h('span', { class: 'text-xs text-muted' }, date)
       ])
     }
   },
@@ -545,10 +556,10 @@ const baseColumns: TableColumn<Asset>[] = [
     header: sortHeader(t('pages.asset.index.columnDepreciation'), 'bookValue'),
     cell: ({ row }) => {
       const dep = row.original.depreciation
-      if (!dep) return h('span', { class: 'text-neutral-500' }, '-')
+      if (!dep) return h('span', { class: 'text-muted' }, '-')
       return h('div', { class: 'flex flex-col min-w-0' }, [
-        h('span', { class: 'font-medium text-neutral-900' }, formatCurrency(dep.bookValue)),
-        h('span', { class: 'text-xs text-neutral-500' }, formatCurrency(dep.monthlyDepreciation) + t('pages.asset.index.perMonth'))
+        h('span', { class: 'font-medium text-highlighted' }, formatCurrency(dep.bookValue)),
+        h('span', { class: 'text-xs text-muted' }, formatCurrency(dep.monthlyDepreciation) + t('pages.asset.index.perMonth'))
       ])
     }
   }
@@ -566,7 +577,7 @@ const trailingColumns: TableColumn<Asset>[] = [
     },
     cell: ({ row }) => {
       const items = getRowItems(row)
-      if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+      if (items.flat().length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
       return h(
         UDropdownMenu,
         {
@@ -596,7 +607,7 @@ const columns = computed(() => {
       header: sortHeader(key, `label:${key}`),
       cell: ({ row }) => {
         const label = row.original.labels?.find(l => l.key === key)
-        return h('span', { class: 'text-neutral-600' }, label ? label.value : '-')
+        return h('span', { class: 'text-toned' }, label ? label.value : '-')
       }
     })
   })

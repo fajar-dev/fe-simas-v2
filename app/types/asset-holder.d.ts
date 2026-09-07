@@ -2,8 +2,7 @@ import type { Attachment } from "./attachment"
 
 export interface AssetHolder {
   id: number
-  assetId: number
-  employeeId: number
+  holderKind: 'employee' | 'organization'
   assignedDate: string
   returnedDate: string | null
   assignNote: string | null
@@ -14,6 +13,7 @@ export interface AssetHolder {
     id: number
     name: string
     code: string
+    image?: string | null
   } | null
   employee: {
     id: number
@@ -23,6 +23,11 @@ export interface AssetHolder {
     email: string
     phone: string
     photo: string | null
+  } | null
+  organization: {
+    id: number
+    name: string
+    type: string
   } | null
   createdBy: {
     id: number
@@ -34,12 +39,28 @@ export interface AssetHolder {
     name: string
     photo: string | null
   } | null
+  assignHandover: {
+    id: number
+    status: string
+    transactionType: string
+    note: string | null
+    createdAt: string
+  } | null
+  returnHandover: {
+    id: number
+    status: string
+    transactionType: string
+    note: string | null
+    createdAt: string
+  } | null
   attachments: Attachment[]
 }
 
 export interface AssignAssetPayload {
   assetId: number
-  employeeId: number
+  holderKind: 'employee' | 'organization'
+  employeeId?: number
+  organizationId?: number
   assignedDate: string
   assignNote?: string
   attachmentIds?: number[]
@@ -48,5 +69,16 @@ export interface AssignAssetPayload {
 export interface ReturnAssetPayload {
   returnedDate: string
   returnNote?: string
+  attachmentIds?: number[]
+}
+
+export interface UpdateAssetHolderPayload {
+  holderKind?: 'employee' | 'organization'
+  employeeId?: number | null
+  organizationId?: number | null
+  assignedDate?: string
+  assignNote?: string | null
+  returnedDate?: string
+  returnNote?: string | null
   attachmentIds?: number[]
 }

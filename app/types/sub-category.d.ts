@@ -9,6 +9,7 @@ export interface SubCategory {
         name: string
     } | null
     assetCount: number
+    inventoryCount: number
     createdAt: string
     updatedAt: string
 }

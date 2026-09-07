@@ -2,7 +2,6 @@ import type { Attachment } from "./attachment"
 
 export interface AssetNote {
   id: number
-  assetId: number
   date: string
   note: string | null
   createdAt: string

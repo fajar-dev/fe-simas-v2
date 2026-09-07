@@ -7,6 +7,8 @@ export interface Employee {
   phone: string
   photo: string | null
   isActive: boolean
+  organizationId: number | null
+  organization: { id: number; name: string } | null
   assetCount: number
   createdAt: string
 }
@@ -19,4 +21,5 @@ export interface EmployeePayload {
   phone: string
   photo?: string | null
   isActive?: boolean
+  organizationId?: number | null
 }

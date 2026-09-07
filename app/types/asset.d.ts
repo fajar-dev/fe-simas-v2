@@ -53,14 +53,20 @@ export interface Asset {
   hasLocation: boolean
   activeHolder?: {
     id: number
-    employeeId: number
+    holderKind: 'employee' | 'organization'
     assignedDate: string
+    assignHandoverId: number | null
     employee: {
       id: number
       name: string
       employeeId: string
       jobPosition: string
       photo: string | null
+    } | null
+    organization: {
+      id: number
+      name: string
+      type: string
     } | null
   } | null
   lastLocation?: {
@@ -118,6 +124,7 @@ export interface AssetPayload {
   usefulLife?: number
 
   employeeId?: number | null
+  organizationId?: number | null
   assignedDate?: string | null
   assignNote?: string | null
   assignAttachmentIds?: number[] | null
@@ -128,4 +135,12 @@ export interface AssetPayload {
   attachmentIds?: number[] | null
   status?: string | null
   statusNote?: string | null
+}
+
+/** Minimal shape from GET /asset/options — for search-as-you-type pickers, not the full list. */
+export interface AssetOption {
+  id: number
+  code: string
+  name: string
+  image: string | null
 }

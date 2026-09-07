@@ -32,9 +32,9 @@ export function useTableQuery(onQueryChange: () => void, options: TableQueryOpti
     const parsedFilters: Record<string, any> = {}
     
     const arrayNumberFields = ['categoryIds', 'subCategoryIds', 'branchIds', 'locationIds']
-    const arrayStringFields = ['status', 'missingFields']
-    const numberFields = ['holderId', 'priceMin', 'priceMax', 'usefulLifeYears', 'monthlyDepMin', 'monthlyDepMax', 'accumulatedDepMin', 'accumulatedDepMax', 'bookValueMin', 'bookValueMax']
-    const stringFields = ['holderStatus', 'holderType', 'purchaseDateFrom', 'purchaseDateTo', 'depreciationStatus', 'bleTagStatus', 'usefulLifeOp']
+    const arrayStringFields = ['status', 'missingFields', 'units']
+    const numberFields = ['holderId', 'priceMin', 'priceMax', 'usefulLifeYears', 'monthlyDepMin', 'monthlyDepMax', 'accumulatedDepMin', 'accumulatedDepMax', 'bookValueMin', 'bookValueMax', 'newStockMin', 'newStockMax', 'usedStockMin', 'usedStockMax']
+    const stringFields = ['holderStatus', 'holderType', 'purchaseDateFrom', 'purchaseDateTo', 'depreciationStatus', 'bleTagStatus', 'usefulLifeOp', 'handoverStatus', 'transactionType', 'variantStatus', 'isActive']
     
     arrayNumberFields.forEach(field => {
       if (query[field] !== undefined && query[field] !== '') {
@@ -112,16 +112,25 @@ export function useTableQuery(onQueryChange: () => void, options: TableQueryOpti
     }
   }
 
-  // Watch for pagination, sorting and filter changes
-  const watchSources = [page, perPage, sortBy, order] as any[]
-  if (filters) {
-    watchSources.push(filters)
-  }
+  // Watch for pagination and sorting changes
+  const watchSources = [page, perPage, sortBy, order]
 
   watch(watchSources, () => {
     syncToUrl()
     onQueryChange()
-  }, { deep: true })
+  })
+
+  // Watch for filter changes with deep reactive checking
+  if (filters) {
+    watch(filters, () => {
+      if (page.value !== 1) {
+        page.value = 1 // This will trigger the watch(watchSources) since page is in watchSources
+      } else {
+        syncToUrl()
+        onQueryChange()
+      }
+    }, { deep: true })
+  }
 
   // Watch search with debounce
   let searchTimeout: ReturnType<typeof setTimeout>
@@ -134,13 +143,14 @@ export function useTableQuery(onQueryChange: () => void, options: TableQueryOpti
     }, 300)
   })
 
-  const sortHeader = (label: string, column: string) => {
+  const sortHeader = (label: string, column: string, align: 'start' | 'center' | 'end' = 'start') => {
     return () => {
       const isActive = sortBy.value === column
       const upColor = isActive && order.value === 'ASC' ? 'text-primary' : 'text-neutral-300'
       const downColor = isActive && order.value === 'DESC' ? 'text-primary' : 'text-neutral-300'
+      const justifyClass = align === 'center' ? 'justify-center' : align === 'end' ? 'justify-end' : ''
       return h('div', {
-        class: 'flex items-center gap-1 cursor-pointer select-none hover:text-primary transition-colors',
+        class: `flex items-center gap-1 cursor-pointer select-none hover:text-primary transition-colors ${justifyClass}`.trim(),
         onClick: () => toggleSort(column)
       }, [
         h('span', label),

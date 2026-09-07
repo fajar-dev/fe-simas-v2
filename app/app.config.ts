@@ -4,7 +4,7 @@ export default defineAppConfig({
       primary: 'green',
       error: 'red',
       warning: 'yellow',
-      neutral: 'slate'
+      neutral: 'neutral'
     },
     button: {
       defaultVariants: {
@@ -16,5 +16,20 @@ export default defineAppConfig({
         size: 'lg'
       }
     },
+    selectMenu: {
+      defaultVariants: {
+        size: 'lg'
+      }
+    },
+    select: {
+      defaultVariants: {
+        size: 'lg'
+      }
+    },
+    textarea: {
+      defaultVariants: {
+        size: 'lg'
+      }
+    }
   }
 })

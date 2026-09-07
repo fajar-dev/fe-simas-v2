@@ -16,7 +16,6 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      :search-placeholder="$t('pages.feedback.searchPlaceholder')"
     />
 
     <!-- Lightbox Modal -->
@@ -106,7 +105,7 @@ const columns: TableColumn<FeedbackItem>[] = [
     meta: { class: { td: 'w-[140px]' } },
     cell: ({ row }) => {
       const dateStr = formatDate(row.original.timestamp)
-      return h('span', { class: 'font-medium text-neutral-600' }, dateStr)
+      return h('span', { class: 'font-medium text-toned' }, dateStr)
     }
   },
   {
@@ -114,7 +113,7 @@ const columns: TableColumn<FeedbackItem>[] = [
     header: t('pages.feedback.columnUrl'),
     meta: { class: { td: 'w-[180px] max-w-[180px]' } },
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900 truncate block', title: row.original.url }, row.original.url)
+      return h('span', { class: 'font-medium text-highlighted truncate block', title: row.original.url }, row.original.url)
     }
   },
   {
@@ -124,7 +123,7 @@ const columns: TableColumn<FeedbackItem>[] = [
     cell: ({ row }) => {
       return h('div', { class: 'flex flex-col py-1' }, [
         h('div', { class: 'text-md font-semibold text-primary-900' }, row.original.category),
-        h('span', { class: 'text-neutral-600 whitespace-pre-wrap' }, row.original.message)
+        h('span', { class: 'text-toned whitespace-pre-wrap' }, row.original.message)
       ])
     }
   },
@@ -134,7 +133,7 @@ const columns: TableColumn<FeedbackItem>[] = [
     meta: { class: { td: 'w-[150px]' } },
     cell: ({ row }) => {
       const imgs = row.original.images
-      if (!imgs || !imgs.length) return h('span', { class: 'text-neutral-400 text-sm' }, '-')
+      if (!imgs || !imgs.length) return h('span', { class: 'text-dimmed text-sm' }, '-')
       
       return h(
         'div',
@@ -143,7 +142,7 @@ const columns: TableColumn<FeedbackItem>[] = [
           h(NuxtImg, {
             src: img,
             alt: 'Screenshot',
-            class: 'w-16 h-10 object-cover rounded border border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors shadow-2xs shrink-0',
+            class: 'w-16 h-10 object-cover rounded border border-default cursor-pointer hover:border-accented transition-colors shadow-2xs shrink-0',
             onClick: (e: Event) => {
               e.stopPropagation()
               openLightbox(img)
@@ -160,7 +159,7 @@ const columns: TableColumn<FeedbackItem>[] = [
     cell: ({ row }) => {
       return h('div', { class: 'flex flex-col py-1' }, [
         h('div', { class: 'text-md font-semibold text-primary-900' }, row.original.type || '-'),
-        h('span', { class: 'text-neutral-600 whitespace-pre-wrap' }, row.original.reply || '-')
+        h('span', { class: 'text-toned whitespace-pre-wrap' }, row.original.reply || '-')
       ])
     }
   }

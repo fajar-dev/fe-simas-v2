@@ -16,7 +16,7 @@
             v-model="selectedBranch"
             :items="branchOptions"
             searchable
-            :searchable-placeholder="$t('component.location.addModal.searchBranch')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.location.addModal.selectBranch')"
             class="w-full"
           />
@@ -35,14 +35,7 @@
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
         <UButton :label="$t('common.cancel')" @click="() => { open = false }" color="neutral" variant="outline" />
-        <UButton
-          type="submit"
-          form="add-location-form"
-          color="primary"
-          :loading="isSubmitting"
-        >
-          {{ $t('component.location.addModal.submit') }}
-        </UButton>
+        <UButton :label="$t('common.save')" type="submit" form="add-location-form" color="primary" :loading="isSubmitting" />
       </div>
     </template>
   </UModal>

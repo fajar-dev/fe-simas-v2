@@ -5,13 +5,13 @@
       <div class="flex flex-col sm:flex-row sm:items-center gap-2">
         <div class="flex flex-row items-center gap-2">
           <!-- Search -->
-          <UInput 
-            v-model="search" 
-            icon="i-lucide-search" 
-            size="md" 
-            variant="outline" 
-            :placeholder="searchPlaceholder" 
-            class="w-full sm:w-64" 
+          <UInput
+            v-model="search"
+            icon="i-lucide-search"
+            size="md"
+            variant="outline"
+            :placeholder="searchPlaceholder ?? $t('common.search')"
+            class="w-full sm:w-64"
           />
 
           <!-- Items per page -->
@@ -36,21 +36,27 @@
 
     <!-- Table -->
     <div class="overflow-x-auto">
-      <UTable 
-        :data="data" 
+      <UTable
+        v-model:expanded="expanded"
+        :expanded-options="{ getRowCanExpand: () => true }"
+        :data="data"
         :columns="columns"
         :loading="loading"
-        :ui="{ 
-          th: 'bg-neutral-50 py-2.5', 
-          td: 'text-neutral-900 py-3' 
+        :ui="{
+          th: 'bg-muted py-2.5',
+          td: 'text-highlighted py-3'
         }"
-        :class="['border border-neutral-200 rounded-md', tableClass]" 
-      />
+        :class="['border border-default rounded-md', tableClass]"
+      >
+        <template #expanded="{ row }">
+          <slot name="expanded" :row="row" />
+        </template>
+      </UTable>
     </div>
 
     <!-- Pagination -->
     <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-      <span class="text-sm text-neutral-500">
+      <span class="text-sm text-muted">
         {{ $t('component.dataTable.showing', { from: from || 0, to: to || 0, total }) }}
       </span>
       <UPagination v-slot="{ page: activePage }" v-model:page="page" size="md" :total="total" :items-per-page="perPage">
@@ -66,6 +72,7 @@ import type { TableColumn } from '@nuxt/ui'
 const search = defineModel<string>('search', { default: '' })
 const page = defineModel<number>('page', { default: 1 })
 const perPage = defineModel<number>('perPage', { default: 10 })
+const expanded = defineModel<Record<string, boolean>>('expanded', { default: () => ({}) })
 
 withDefaults(defineProps<{
   columns: TableColumn<any>[]
@@ -82,7 +89,6 @@ withDefaults(defineProps<{
   total: 0,
   from: 0,
   to: 0,
-  searchPlaceholder: 'Search...',
   limitOptions: () => [10, 25, 50, 100],
   tableClass: ''
 })

@@ -17,7 +17,6 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      :search-placeholder="$t('pages.role.searchPlaceholder')"
       table-class="min-w-[768px]"
     >
       <template #actions v-if="hasPermission('role:create')">
@@ -117,7 +116,7 @@ const baseColumns: TableColumn<Role>[] = [
     header: t('pages.role.columnNo'),
     cell: ({ row }) => {
       const index = row.index + 1 + ((page.value - 1) * perPage.value)
-      return h('span', { class: 'text-neutral-500' }, index)
+      return h('span', { class: 'text-muted' }, index)
     }
   },
   {
@@ -127,7 +126,7 @@ const baseColumns: TableColumn<Role>[] = [
       const name = row.original.name
       const isSuperAdmin = row.original.isSuperAdmin
       return h('div', { class: 'flex items-center gap-2' }, [
-        h('span', { class: 'font-medium text-neutral-900' }, name),
+        h('span', { class: 'font-medium text-highlighted' }, name),
         ...(isSuperAdmin
           ? [h(UBadge, { color: 'warning', variant: 'subtle', size: 'sm' }, () => t('pages.role.superAdmin'))]
           : [])
@@ -151,7 +150,7 @@ const baseColumns: TableColumn<Role>[] = [
     header: sortHeader(t('pages.role.columnCreatedAt'), 'createdAt'),
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt)
-      return h('span', { class: 'text-neutral-500' }, date.toLocaleDateString('id-ID', {
+      return h('span', { class: 'text-muted' }, date.toLocaleDateString('id-ID', {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
@@ -174,7 +173,7 @@ const columns = computed(() => {
       },
       cell: ({ row }) => {
         const items = getRowItems(row)
-        if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+        if (items.flat().length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
         return h(
           UDropdownMenu,
           {

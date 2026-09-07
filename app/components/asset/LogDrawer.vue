@@ -30,13 +30,11 @@
           </template>
           <template #title="{ item }">
             <div class="flex flex-wrap items-center gap-2">
-              <UBadge :color="item.color || 'neutral'" variant="subtle" size="sm">
-                {{ item.title }}
-              </UBadge>
+              <span :class="titleClass(item.color)">{{ item.title }}</span>
             </div>
           </template>
           <template #description="{ item }">
-            <p class="text-neutral-700 whitespace-pre-wrap">{{ item.description }}</p>
+            <p class="text-default whitespace-pre-wrap">{{ item.description }}</p>
             <UUser
               v-if="item.user"
               :name="item.user.name"
@@ -45,8 +43,8 @@
               class="mt-1"
             />
             <div v-else class="flex items-center gap-2 mt-1">
-              <UIcon name="i-lucide-monitor" class="w-4 h-4 text-neutral-400" />
-              <span class="text-xs text-neutral-400 italic">{{ $t('component.asset.logDrawer.system') }}</span>
+              <UIcon name="i-lucide-monitor" class="w-4 h-4 text-dimmed" />
+              <span class="text-xs text-dimmed italic">{{ $t('component.asset.logDrawer.system') }}</span>
             </div>
           </template>
         </UTimeline>
@@ -71,7 +69,7 @@
         </div>
 
         <!-- End of List -->
-        <p v-if="!isLoading && logs.length > 0 && logs.length >= meta.total" class="text-center py-4 text-xs text-neutral-400">
+        <p v-if="!isLoading && logs.length > 0 && logs.length >= meta.total" class="text-center py-4 text-xs text-dimmed">
           {{ $t('component.asset.logDrawer.endOfHistory') }}
         </p>
       </div>
@@ -85,6 +83,18 @@ import { assetLogService } from '~/services/asset-log-service'
 
 const open = defineModel<boolean>('open', { default: false })
 const props = defineProps<{ assetId: number }>()
+
+// Plain colored title text (no badge) per action theme color.
+const titleClass = (color?: string) => {
+  const map: Record<string, string> = {
+    success: 'text-emerald-600',
+    error: 'text-red-600',
+    warning: 'text-amber-600',
+    info: 'text-sky-600',
+    primary: 'text-primary',
+  }
+  return `font-medium ${map[color || ''] || 'text-default'}`
+}
 
 const logs = ref<AssetLog[]>([])
 const isLoading = ref(false)

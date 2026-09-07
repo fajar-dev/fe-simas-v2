@@ -16,7 +16,7 @@
             v-model="selectedCategory"
             :items="categoryOptions"
             searchable
-            :searchable-placeholder="$t('component.subCategory.updateModal.searchCategory')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.subCategory.updateModal.selectCategory')"
             class="w-full"
           />
@@ -35,14 +35,7 @@
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
         <UButton :label="$t('common.cancel')" @click="() => { open = false }" color="neutral" variant="outline" />
-        <UButton
-          type="submit"
-          form="update-sub-category-form"
-          color="primary"
-          :loading="isSubmitting"
-        >
-          {{ $t('common.saveChanges') }}
-        </UButton>
+        <UButton :label="$t('common.save')" type="submit" form="update-sub-category-form" color="primary" :loading="isSubmitting" />
       </div>
     </template>
   </UModal>

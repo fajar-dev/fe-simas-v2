@@ -5,8 +5,8 @@
       <UFormField v-if="authState.user?.hasPassword" name="oldPassword" required>
         <template #label>
           <div class="flex flex-col gap-0.5">
-            <span class="font-medium text-sm text-neutral-900">{{ $t('pages.profile.passwordPage.currentPassword') }}</span>
-            <span class="text-[10px] text-neutral-400 font-normal">{{ $t('pages.profile.passwordPage.currentPasswordHelper') }}</span>
+            <span class="font-medium text-sm text-highlighted">{{ $t('pages.profile.passwordPage.currentPassword') }}</span>
+            <span class="text-[10px] text-dimmed font-normal">{{ $t('pages.profile.passwordPage.currentPasswordHelper') }}</span>
           </div>
         </template>
         <UInput v-model="formPassword.oldPassword" type="password" :placeholder="$t('pages.profile.passwordPage.currentPasswordPlaceholder')" class="w-full" />

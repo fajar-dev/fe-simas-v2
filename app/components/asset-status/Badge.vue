@@ -7,7 +7,7 @@
       :text="tooltipText"
       :content="{ side: 'right', sideOffset: 4 }"
     >
-      <UIcon name="i-lucide-info" class="w-4 h-4 text-neutral-400 cursor-help" />
+      <UIcon name="i-lucide-info" class="w-4 h-4 text-dimmed cursor-help" />
     </UTooltip>
   </div>
 </template>

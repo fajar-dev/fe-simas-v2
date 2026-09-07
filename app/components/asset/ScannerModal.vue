@@ -10,14 +10,14 @@
   >
     <template #body>
       <!-- Tabs -->
-      <div class="flex border-b border-neutral-200 mb-4">
+      <div class="flex border-b border-default mb-4">
         <button
           v-for="tab in tabs"
           :key="tab.key"
           class="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px cursor-pointer"
           :class="activeTab === tab.key
             ? 'border-primary text-primary'
-            : 'border-transparent text-neutral-500 hover:text-neutral-700'"
+            : 'border-transparent text-muted hover:text-toned'"
           @click="switchTab(tab.key)"
         >
           <UIcon :name="tab.icon" class="w-4 h-4" />
@@ -28,14 +28,14 @@
       <!-- Barcode Tab -->
       <div v-if="activeTab === 'barcode'">
         <!-- Scan Mode Toggle -->
-        <div class="flex items-center gap-1 mb-3 p-1 bg-neutral-100 rounded-lg">
+        <div class="flex items-center gap-1 mb-3 p-1 bg-elevated rounded-lg">
           <button
             v-for="mode in scanModes"
             :key="mode.key"
             class="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 text-xs font-medium rounded-md transition-all cursor-pointer"
             :class="scanMode === mode.key
-              ? 'bg-white text-primary shadow-sm'
-              : 'text-neutral-500 hover:text-neutral-700'"
+              ? 'bg-default text-primary shadow-sm'
+              : 'text-muted hover:text-toned'"
             @click="() => { scanMode = mode.key }"
           >
             <UIcon :name="mode.icon" class="w-3.5 h-3.5" />

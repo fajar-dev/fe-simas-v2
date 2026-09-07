@@ -1,14 +1,14 @@
 <template>
   <div class="relative h-full shrink-0">
     <aside
-      class="flex flex-col h-full bg-white border-r border-neutral-200 shrink-0 justify-between select-none transition-all duration-300"
+      class="flex flex-col h-full bg-default border-r border-default shrink-0 justify-between select-none transition-all duration-300"
       :class="[isCollapsed ? 'w-20 p-3' : 'w-68 p-4']"
     >
       <!-- Top Section -->
       <div class="space-y-4">
         <!-- App/Brand Logo Header -->
         <div 
-          class="flex border-b border-neutral-200 pb-4" 
+          class="flex border-b border-default pb-4" 
           :class="[isCollapsed ? 'justify-center' : 'items-center justify-between']"
         >
           <BrandLogo :is-collapsed="isCollapsed" />
@@ -19,7 +19,7 @@
             color="neutral"
             variant="ghost"
             icon="i-lucide-panel-left-close"
-            class="hidden lg:inline-flex text-neutral-400 hover:text-neutral-700"
+            class="hidden lg:inline-flex text-dimmed hover:text-default"
             @click="() => { isCollapsed = true }"
             aria-label="Collapse sidebar"
           />
@@ -49,7 +49,7 @@
           <!-- Group Title -->
           <h3
             v-if="!isCollapsed"
-            class="px-1 text-sm font-medium text-neutral-600"
+            class="px-1 text-sm font-medium text-toned"
           >
             {{ group.title }}
           </h3>
@@ -70,7 +70,7 @@
                     isCollapsed ? 'w-10 h-10 mx-auto justify-center rounded-md' : 'w-full gap-3 px-3 py-2 text-sm rounded-md font-medium',
                     isItemActive(item)
                       ? 'bg-primary text-white'
-                      : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                      : 'text-toned hover:bg-muted hover:text-highlighted'
                   ]"
                 >
                   <UIcon
@@ -79,7 +79,7 @@
                     :class="[
                       isItemActive(item)
                         ? 'text-white'
-                        : 'text-neutral-600 group-hover:text-neutral-900'
+                        : 'text-toned group-hover:text-highlighted'
                     ]"
                   />
                   <span v-if="!isCollapsed" class="truncate">{{ item.label }}</span>
@@ -108,7 +108,7 @@
                 isCollapsed ? 'w-10 h-10 mx-auto justify-center rounded-md' : 'w-full gap-3 px-3 py-2 text-sm rounded-md font-medium',
                 isItemActive(item)
                   ? 'bg-primary text-white'
-                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                  : 'text-toned hover:bg-muted hover:text-highlighted'
               ]"
             >
               <UIcon
@@ -117,7 +117,7 @@
                 :class="[
                   isItemActive(item)
                     ? 'text-white'
-                    : 'text-neutral-600 group-hover:text-neutral-900'
+                    : 'text-toned group-hover:text-highlighted'
                 ]"
               />
               <span v-if="!isCollapsed" class="truncate">{{ item.label }}</span>
@@ -136,7 +136,7 @@
             class="flex items-center transition-colors group cursor-pointer text-left w-full focus:outline-none"
             :class="[
               isCollapsed ? 'w-10 h-10 mx-auto justify-center rounded-md' : 'w-full gap-3 px-3 py-2 text-sm rounded-md font-medium',
-              'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900',
+              'text-toned hover:bg-muted hover:text-highlighted',
               isCapturing ? 'opacity-60 cursor-not-allowed' : ''
             ]"
             :disabled="isCapturing"
@@ -154,10 +154,10 @@
       </div>
 
       <!-- User Profile with Popover -->
-      <div class="pt-2 border-t border-neutral-200">
+      <div class="hidden lg:block pt-2 border-t border-default">
       <UserPopover :popover-props="{ content: { side: 'right', sideOffset: 12, align: 'end' } }">
         <button
-          class="flex w-full items-center cursor-pointer rounded-md transition-colors hover:bg-neutral-50"
+          class="flex w-full items-center cursor-pointer rounded-md transition-colors hover:bg-muted"
           :class="[isCollapsed ? 'justify-center p-2' : 'gap-3 px-2 py-2']"
         >
           <UAvatar
@@ -168,17 +168,17 @@
             loading="lazy"
           />
           <div v-if="!isCollapsed" class="min-w-0 flex-1 text-left">
-            <h2 class="text-sm font-medium truncate text-neutral-900">
+            <h2 class="text-sm font-medium truncate text-highlighted">
               {{ authState.user?.name }}
             </h2>
-            <p class="text-xs text-neutral-500 truncate">
+            <p class="text-xs text-muted truncate">
               {{ authState.user?.email }}
             </p>
           </div>
           <UIcon
             v-if="!isCollapsed"
             name="i-lucide-chevrons-up-down"
-            class="w-4 h-4 text-neutral-400 shrink-0"
+            class="w-4 h-4 text-dimmed shrink-0"
           />
         </button>
       </UserPopover>
@@ -189,7 +189,7 @@
     <!-- Floating Toggle Sidebar Button on the Border (visible only when collapsed) -->
     <button
       v-if="isCollapsed"
-      class="hidden lg:flex absolute top-4.5 -right-3 z-30 w-7 h-7 rounded-full border border-neutral-200 bg-white shadow-sm items-center justify-center text-neutral-500 hover:text-neutral-800 hover:bg-neutral-50 transition-all cursor-pointer focus:outline-none"
+      class="hidden lg:flex absolute top-4.5 -right-3 z-30 w-7 h-7 rounded-full border border-default bg-default shadow-sm items-center justify-center text-muted hover:text-highlighted hover:bg-muted transition-all cursor-pointer focus:outline-none"
       @click="() => { isCollapsed = false }"
       aria-label="Expand sidebar"
     >

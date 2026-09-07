@@ -25,14 +25,7 @@
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
         <UButton :label="$t('common.cancel')" @click="() => { open = false }" color="neutral" variant="outline" />
-        <UButton
-          type="submit"
-          form="add-category-form"
-          color="primary"
-          :loading="isSubmitting"
-        >
-          {{ $t('component.category.addModal.submit') }}
-        </UButton>
+        <UButton :label="$t('common.save')" type="submit" form="add-category-form" color="primary" :loading="isSubmitting" />
       </div>
     </template>
   </UModal>

@@ -17,7 +17,6 @@
       :from="meta.from"
       :to="meta.to"
       :total="meta.total"
-      :search-placeholder="$t('pages.category.searchPlaceholder')"
     >
       <template #actions v-if="hasPermission('category:create')">
         <UButton
@@ -116,14 +115,14 @@ const baseColumns: TableColumn<Category>[] = [
     accessorKey: 'code',
     header: sortHeader(t('pages.category.columnCode'), 'code'),
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, row.original.code)
+      return h('span', { class: 'font-medium text-highlighted' }, row.original.code)
     }
   },
   {
     accessorKey: 'name',
     header: sortHeader(t('pages.category.columnName'), 'name'),
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, row.original.name)
+      return h('span', { class: 'font-medium text-highlighted' }, row.original.name)
     }
   },
   {
@@ -131,14 +130,21 @@ const baseColumns: TableColumn<Category>[] = [
     header: sortHeader(t('pages.category.columnDescription'), 'description'),
     cell: ({ row }) => {
       const desc = row.original.description
-      return h('span', { class: 'text-neutral-600' }, desc || '-')
+      return h('span', { class: 'text-toned' }, desc || '-')
     }
   },
   {
     accessorKey: 'assetCount',
     header: sortHeader(t('pages.category.columnAssetCount'), 'assetCount'),
     cell: ({ row }) => {
-      return h('span', { class: 'font-medium text-neutral-900' }, String(row.original.assetCount ?? 0))
+      return h('span', { class: 'font-medium text-highlighted' }, String(row.original.assetCount ?? 0))
+    }
+  },
+  {
+    accessorKey: 'inventoryCount',
+    header: sortHeader(t('pages.category.columnInventoryCount'), 'inventoryCount'),
+    cell: ({ row }) => {
+      return h('span', { class: 'font-medium text-highlighted' }, String(row.original.inventoryCount ?? 0))
     }
   }
 ]
@@ -157,7 +163,7 @@ const columns = computed(() => {
       },
       cell: ({ row }) => {
         const items = getRowItems(row)
-        if (items.flat().length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
+        if (items.flat().length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
         return h(
           UDropdownMenu,
           {

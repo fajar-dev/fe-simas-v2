@@ -4,10 +4,10 @@
     <div class="flex flex-col gap-5 mb-6">
       <BrandLogo />
       <div class="space-y-1">
-        <h1 class="text-3xl font-bold text-neutral-900">
+        <h1 class="text-3xl font-bold text-highlighted">
           {{ $t('pages.auth.forgotPassword.title') }}
         </h1>
-        <p class="text-neutral-600">
+        <p class="text-toned">
           {{ $t('pages.auth.forgotPassword.subtitle') }}
         </p>
       </div>
@@ -35,7 +35,7 @@
 
         <NuxtLink
           to="/auth/sign-in"
-          class="flex items-center justify-center gap-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
+          class="flex items-center justify-center gap-2 text-sm font-medium text-toned hover:text-highlighted transition-colors"
         >
           <UIcon name="i-lucide-arrow-left" class="w-4 h-4" />
           {{ $t('pages.auth.forgotPassword.backToLogin') }}
@@ -45,7 +45,7 @@
 
     <!-- Form State -->
     <UForm v-else :state="state" :schema="forgotSchema" @submit="handleSubmit" class="space-y-4">
-      <UFormField :label="$t('pages.auth.forgotPassword.emailLabel')" name="email" class="w-full font-medium text-neutral-800" :ui="{ label: 'text-sm font-medium text-neutral-800' }">
+      <UFormField :label="$t('pages.auth.forgotPassword.emailLabel')" name="email" class="w-full font-medium text-highlighted" :ui="{ label: 'text-sm font-medium text-highlighted' }">
         <UInput
           id="forgot-email"
           v-model="state.email"
@@ -69,7 +69,7 @@
 
         <NuxtLink
           to="/auth/sign-in"
-          class="flex items-center justify-center gap-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
+          class="flex items-center justify-center gap-2 text-sm font-medium text-toned hover:text-highlighted transition-colors"
         >
           <UIcon name="i-lucide-arrow-left" class="w-4 h-4" />
           {{ $t('pages.auth.forgotPassword.backToLogin') }}

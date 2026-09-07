@@ -1,6 +1,6 @@
 import { apiService } from "./api-service"
 import { handleServiceError } from "../composables/error-helper"
-import type { AssetHolder, AssignAssetPayload, ReturnAssetPayload } from "../types/asset-holder"
+import type { AssetHolder, AssignAssetPayload, ReturnAssetPayload, UpdateAssetHolderPayload } from "../types/asset-holder"
 import type { ApiResponse } from "../types/api"
 
 export class AssetHolderService {
@@ -76,6 +76,31 @@ export class AssetHolderService {
             const response = await apiService.client.post<ApiResponse<AssetHolder>>(
                 `/asset-holder/${id}/return`,
                 payload,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
+    async update(id: number, payload: UpdateAssetHolderPayload): Promise<ApiResponse<AssetHolder>> {
+        try {
+            const response = await apiService.client.put<ApiResponse<AssetHolder>>(
+                `/asset-holder/${id}`,
+                payload,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
+    async delete(id: number): Promise<ApiResponse<null>> {
+        try {
+            const response = await apiService.client.delete<ApiResponse<null>>(
+                `/asset-holder/${id}`,
                 this.authHeaders
             )
             return response.data

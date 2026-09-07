@@ -13,13 +13,13 @@
       <div class="space-y-4">
 
         <!-- Download Template -->
-        <div class="bg-neutral-50 border border-neutral-200 rounded-lg p-3">
+        <div class="bg-muted border border-default rounded-lg p-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <UIcon name="i-lucide-file-spreadsheet" class="w-8 h-8 text-emerald-600" />
               <div>
-                <p class="text-sm font-medium text-neutral-700">{{ $t('component.asset.importModal.downloadTemplate') }}</p>
-                <p class="text-xs text-neutral-500">{{ $t('component.asset.importModal.useTemplate') }}</p>
+                <p class="text-sm font-medium text-default">{{ $t('component.asset.importModal.downloadTemplate') }}</p>
+                <p class="text-xs text-muted">{{ $t('component.asset.importModal.useTemplate') }}</p>
               </div>
             </div>
             <UButton
@@ -36,25 +36,25 @@
 
         <!-- File Upload Area (same pattern as Create Asset image upload) -->
         <div>
-          <label class="text-sm font-medium text-neutral-700 mb-1.5 block">{{ $t('component.asset.importModal.file') }}</label>
-          <div v-if="selectedFile" class="relative p-3 border border-neutral-200 rounded-lg">
+          <label class="text-sm font-medium text-default mb-1.5 block">{{ $t('component.asset.importModal.file') }}</label>
+          <div v-if="selectedFile" class="relative p-3 border border-default rounded-lg">
             <div class="flex items-center gap-3">
               <UIcon name="i-lucide-file-check-2" class="w-8 h-8 text-emerald-600 shrink-0" />
               <div class="min-w-0 flex-1">
-                <p class="text-sm font-medium text-neutral-700 truncate">{{ selectedFile.name }}</p>
-                <p class="text-xs text-neutral-500">{{ formatFileSize(selectedFile.size) }}</p>
+                <p class="text-sm font-medium text-default truncate">{{ selectedFile.name }}</p>
+                <p class="text-xs text-muted">{{ formatFileSize(selectedFile.size) }}</p>
               </div>
             </div>
             <UButton icon="i-lucide-x" color="error" variant="solid" size="xs" class="absolute top-1 right-1 rounded-full" @click="clearFile" />
           </div>
           <div 
             v-else 
-            class="flex flex-col items-center justify-center w-full py-8 border-2 border-dashed border-neutral-200 rounded-lg cursor-pointer hover:border-primary transition-colors"
+            class="flex flex-col items-center justify-center w-full py-8 border-2 border-dashed border-default rounded-lg cursor-pointer hover:border-primary transition-colors"
             @click="triggerFileInput"
           >
-            <UIcon name="i-lucide-upload" class="w-8 h-8 text-neutral-400 mb-2" />
-            <span class="text-sm text-neutral-500">{{ $t('component.asset.importModal.dropExcel') }}</span>
-            <span class="text-xs text-neutral-400 mt-1">{{ $t('component.asset.importModal.fileTypes') }}</span>
+            <UIcon name="i-lucide-upload" class="w-8 h-8 text-dimmed mb-2" />
+            <span class="text-sm text-muted">{{ $t('component.asset.importModal.dropExcel') }}</span>
+            <span class="text-xs text-dimmed mt-1">{{ $t('component.asset.importModal.fileTypes') }}</span>
           </div>
           <input ref="fileInputRef" type="file" class="hidden" accept=".xlsx,.xls" @change="onFileChange" />
         </div>
@@ -82,21 +82,21 @@
 
           <!-- Error detail table -->
           <div v-if="importResult.errors.length > 0">
-            <div class="border border-neutral-200 rounded-lg overflow-hidden">
+            <div class="border border-default rounded-lg overflow-hidden">
               <table class="w-full text-sm">
                 <thead>
-                  <tr class="bg-neutral-100">
-                    <th class="text-left px-3 py-2 font-semibold text-neutral-600 w-16">{{ $t('component.asset.importModal.row') }}</th>
-                    <th class="text-left px-3 py-2 font-semibold text-neutral-600">{{ $t('component.asset.importModal.error') }}</th>
+                  <tr class="bg-elevated">
+                    <th class="text-left px-3 py-2 font-semibold text-toned w-16">{{ $t('component.asset.importModal.row') }}</th>
+                    <th class="text-left px-3 py-2 font-semibold text-toned">{{ $t('component.asset.importModal.error') }}</th>
                   </tr>
                 </thead>
               </table>
               <div class="max-h-48 overflow-y-auto">
                 <table class="w-full text-sm">
                   <tbody>
-                    <tr v-for="err in importResult.errors" :key="err.row" class="border-t border-neutral-100">
-                      <td class="px-3 py-2 font-semibold text-neutral-500 w-16">{{ err.row }}</td>
-                      <td class="px-3 py-2 text-neutral-700">{{ err.message }}</td>
+                    <tr v-for="err in importResult.errors" :key="err.row" class="border-t border-muted">
+                      <td class="px-3 py-2 font-semibold text-muted w-16">{{ err.row }}</td>
+                      <td class="px-3 py-2 text-default">{{ err.message }}</td>
                     </tr>
                   </tbody>
                 </table>

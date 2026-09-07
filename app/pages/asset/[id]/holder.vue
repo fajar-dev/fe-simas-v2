@@ -4,30 +4,29 @@
       <DataTable
         v-model:search="search"
         v-model:page="page"
-        v-model:perPage="perPage"
+        v-model:per-page="perPage"
         :data="historyData"
         :columns="columns"
         :loading="isLoadingHistory || isLoadingActive"
         :from="meta.from"
         :to="meta.to"
         :total="meta.total"
-        :search-placeholder="$t('pages.asset.holder.searchPlaceholder')"
         table-class="min-w-[800px]"
       >
         <template #actions>
           <!-- Context-sensitive action button: Assign if available, Return if assigned -->
           <UTooltip
             v-if="!activeHolder && hasPermission('asset-holder:create')"
-            :text="isAssetNotActive ? $t('component.assetStatus.notActiveWarning.assignHolder') : ''"
-            :prevent="!isAssetNotActive"
+            :text="assignDisabledReason"
+            :prevent="!isAssignDisabled"
           >
             <UButton
               class="w-full lg:w-auto justify-center"
               color="primary"
               variant="solid"
               icon="i-lucide-user-plus"
-              :loading="isLoadingActive"
-              :disabled="isAssetNotActive"
+              :loading="isLoadingActive || isLoadingPendingHandover"
+              :disabled="isAssignDisabled"
               @click="() => { showAssignModal = true }"
             >
               {{ $t('pages.asset.holder.assignAsset') }}
@@ -59,13 +58,29 @@
         :active-holder="activeHolder"
         @returned="handleReload"
       />
+
+      <AssetHolderUpdateModal
+        v-model="showUpdateModal"
+        :holder="selectedHolder"
+        @updated="handleReload"
+      />
+
+      <DeleteModal
+        v-model="showDeleteModal"
+        :title="$t('pages.asset.holder.deleteTitle')"
+        :item-name="selectedHolder ? `holder record #${selectedHolder.id}` : ''"
+        :loading="isDeleting"
+        @confirm="handleDelete"
+      />
     </div>
   </AssetDetailWrapper>
 </template>
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
+import type { Row } from '@tanstack/vue-table'
 import { assetHolderService } from '~/services/asset-holder-service'
+import { handoverService } from '~/services/handover-service'
 import type { AssetHolder } from '~/types/asset-holder'
 import AssignModal from '~/components/asset-holder/AssignModal.vue'
 import ReturnModal from '~/components/asset-holder/ReturnModal.vue'
@@ -87,8 +102,22 @@ const isAssetNotActive = computed(() => {
   return !!status && status !== 'active'
 })
 
+// Assets tied to a pending handover cannot be assigned a holder (also enforced by the backend).
+const isInPendingHandover = ref(false)
+const isLoadingPendingHandover = ref(false)
+
+const isAssignDisabled = computed(() => isAssetNotActive.value || isInPendingHandover.value)
+const assignDisabledReason = computed(() => {
+  if (isAssetNotActive.value) return t('component.assetStatus.notActiveWarning.assignHolder')
+  if (isInPendingHandover.value) return t('component.assetStatus.pendingHandoverWarning.assignHolder')
+  return ''
+})
+
 const UAvatar = resolveComponent('UAvatar')
 const UBadge = resolveComponent('UBadge')
+const NuxtLink = resolveComponent('NuxtLink')
+const UButton = resolveComponent('UButton')
+const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 // State
 const activeHolder = ref<AssetHolder | null>(null)
@@ -98,6 +127,10 @@ const isLoadingHistory = ref(false)
 
 const showAssignModal = ref(false)
 const showReturnModal = ref(false)
+const showUpdateModal = ref(false)
+const showDeleteModal = ref(false)
+const selectedHolder = ref<AssetHolder | null>(null)
+const isDeleting = ref(false)
 
 const {
   search,
@@ -125,6 +158,19 @@ const fetchActiveHolder = async () => {
     }
   } finally {
     isLoadingActive.value = false
+  }
+}
+
+// Check whether this asset is part of a pending handover (blocks holder assignment)
+const fetchPendingHandover = async () => {
+  isLoadingPendingHandover.value = true
+  try {
+    const res = await handoverService.getPendingAssetIds()
+    if (res.success && res.data) {
+      isInPendingHandover.value = res.data.assetIds.includes(assetId)
+    }
+  } finally {
+    isLoadingPendingHandover.value = false
   }
 }
 
@@ -156,42 +202,75 @@ const fetchHistory = async () => {
 const handleReload = () => {
   fetchActiveHolder()
   fetchHistory()
+  fetchPendingHandover()
 }
 
 // Table columns
-const columns: TableColumn<AssetHolder>[] = [
+const baseColumns: TableColumn<AssetHolder>[] = [
   {
     accessorKey: 'employee',
     header: sortHeader(t('pages.asset.holder.columnEmployee'), 'employee'),
     cell: ({ row }) => {
       const employee = row.original.employee
-      if (!employee) return h('span', { class: 'text-neutral-500 italic' }, '-')
+      const organization = row.original.organization
+      if (!employee && !organization) return h('span', { class: 'text-muted italic' }, '-')
+      if (organization) {
+        return h('div', { class: 'flex flex-col' }, [
+          h('span', { class: 'text-highlighted font-semibold text-sm' }, organization.name),
+          h('span', { class: 'text-muted text-xs' }, organization.type)
+        ])
+      }
       return h('div', { class: 'flex items-center gap-2' }, [
         h(UAvatar, {
-          src: employee.photo || undefined,
-          alt: employee.name,
+          src: employee!.photo || undefined,
+          alt: employee!.name,
           class: 'bg-primary-50 text-primary-700',
           loading: 'lazy'
         }),
         h('div', { class: 'flex flex-col' }, [
-          h('span', { class: 'text-neutral-900 font-semibold text-sm' }, employee.name),
-          h('span', { class: 'text-neutral-500 text-xs' }, employee.employeeId)
+          h('span', { class: 'text-highlighted font-semibold text-sm' }, employee!.name),
+          h('span', { class: 'text-muted text-xs' }, employee!.employeeId)
         ])
       ])
+    }
+  },
+  {
+    id: 'source',
+    header: t('pages.asset.holder.columnSource'),
+    cell: ({ row }) => {
+      const handover = row.original.assignHandover
+      if (handover) {
+        return h(
+          NuxtLink,
+          { to: `/handover/${handover.id}` },
+          () => h(UBadge, {
+            color: 'primary',
+            variant: 'subtle',
+            icon: 'i-lucide-arrow-left-right',
+            label: t('pages.asset.holder.handoverSource'),
+            class: 'cursor-pointer'
+          })
+        )
+      }
+      return h(UBadge, {
+        color: 'neutral',
+        variant: 'subtle',
+        label: t('pages.asset.holder.manualSource')
+      })
     }
   },
   {
     accessorKey: 'assignedDate',
     header: sortHeader(t('pages.asset.holder.columnAssignedDate'), 'assignedDate'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-900 font-medium' }, formatDate(row.original.assignedDate || ''))
+      return h('span', { class: 'text-highlighted font-medium' }, formatDate(row.original.assignedDate || ''))
     }
   },
   {
     accessorKey: 'returnedDate',
     header: sortHeader(t('pages.asset.holder.columnReturnDate'), 'returnedDate'),
     cell: ({ row }) => {
-      return h('span', { class: 'text-neutral-900 font-medium' }, formatDate(row.original.returnedDate || ''))
+      return h('span', { class: 'text-highlighted font-medium' }, formatDate(row.original.returnedDate || ''))
     }
   },
   {
@@ -202,7 +281,7 @@ const columns: TableColumn<AssetHolder>[] = [
         row.original.assignNote ? `${t('pages.asset.holder.assignPrefix')}${row.original.assignNote}` : null,
         row.original.returnNote ? `${t('pages.asset.holder.returnPrefix')}${row.original.returnNote}` : null
       ].filter(Boolean).join(' | ')
-      return h('span', { class: 'text-neutral-600 truncate max-w-md block' }, notes || '-')
+      return h('span', { class: 'text-toned truncate max-w-md block' }, notes || '-')
     }
   },
   {
@@ -210,23 +289,13 @@ const columns: TableColumn<AssetHolder>[] = [
     header: t('pages.asset.holder.columnAttachments'),
     cell: ({ row }) => {
       const attachments = row.original.attachments || []
-      if (attachments.length === 0) return h('span', { class: 'text-neutral-400 text-xs' }, '-')
-
-      const getAttachmentTheme = (mimeType: string) => {
-        if (!mimeType) return { icon: 'i-lucide-file', color: 'neutral' as const }
-        const type = mimeType.toLowerCase()
-        if (type.startsWith('image/')) return { icon: 'i-lucide-image', color: 'success' as const }
-        if (type.includes('pdf')) return { icon: 'i-lucide-file-text', color: 'error' as const }
-        if (type.includes('word') || type.includes('officedocument') || type.includes('excel') || type.includes('sheet') || type.includes('powerpoint') || type.includes('presentation')) return { icon: 'i-lucide-file-text', color: 'primary' as const }
-        if (type.includes('zip') || type.includes('rar') || type.includes('compressed') || type.includes('tar') || type.includes('gzip')) return { icon: 'i-lucide-archive', color: 'warning' as const }
-        return { icon: 'i-lucide-file', color: 'neutral' as const }
-      }
+      if (attachments.length === 0) return h('span', { class: 'text-dimmed text-xs' }, '-')
 
       return h(
         'div',
         { class: 'flex flex-wrap gap-2 max-w-sm' },
-        attachments.map(att => {
-          const theme = getAttachmentTheme(att.mimeType)
+        attachments.map((att) => {
+          const theme = getAttachmentBadgeTheme(att.mimeType)
           return h(
             'a',
             {
@@ -262,10 +331,10 @@ const columns: TableColumn<AssetHolder>[] = [
             class: 'bg-primary-50 text-primary-700',
             loading: 'lazy'
           }),
-          h('span', { class: 'text-neutral-700 font-medium text-sm' }, creator.name)
+          h('span', { class: 'text-default font-medium text-sm' }, creator.name)
         ])
       } else {
-        return h('span', { class: 'text-neutral-500 italic text-sm' }, t('pages.asset.holder.system'))
+        return h('span', { class: 'text-muted italic text-sm' }, t('pages.asset.holder.system'))
       }
     }
   },
@@ -283,17 +352,98 @@ const columns: TableColumn<AssetHolder>[] = [
             class: 'bg-primary-50 text-primary-700',
             loading: 'lazy'
           }),
-          h('span', { class: 'text-neutral-700 font-medium text-sm' }, returner.name)
+          h('span', { class: 'text-default font-medium text-sm' }, returner.name)
         ])
       } else {
-        return h('span', { class: 'text-neutral-400 text-sm' }, '-')
+        return h('span', { class: 'text-dimmed text-sm' }, '-')
       }
     }
   }
 ]
 
+const columns = computed(() => {
+  const list = [...baseColumns]
+  if (hasPermission('asset-holder:update', 'asset-holder:delete')) {
+    list.push({
+      id: 'actions',
+      header: t('pages.asset.holder.columnAction'),
+      meta: {
+        class: {
+          td: 'text-right',
+          th: 'text-right'
+        }
+      },
+      cell: ({ row }) => {
+        return h(
+          UDropdownMenu,
+          {
+            content: { align: 'end' },
+            items: getRowItems(row),
+            'aria-label': 'Actions dropdown'
+          },
+          () =>
+            h(UButton, {
+              icon: 'i-lucide-ellipsis-vertical',
+              color: 'neutral',
+              variant: 'ghost',
+              'aria-label': 'Actions dropdown'
+            })
+        )
+      }
+    })
+  }
+  return list
+})
+
+function getRowItems(row: Row<AssetHolder>) {
+  const actions = []
+  if (hasPermission('asset-holder:update')) {
+    actions.push({
+      label: t('pages.asset.holder.editRecord'),
+      icon: 'i-lucide-edit',
+      onSelect() {
+        selectedHolder.value = row.original
+        showUpdateModal.value = true
+      }
+    })
+  }
+  if (hasPermission('asset-holder:delete')) {
+    actions.push({
+      label: t('pages.asset.holder.deleteRecord'),
+      color: 'error' as const,
+      icon: 'i-lucide-trash',
+      onSelect() {
+        selectedHolder.value = row.original
+        showDeleteModal.value = true
+      }
+    })
+  }
+  return actions
+}
+
+const toast = useToast()
+const handleDelete = async () => {
+  if (!selectedHolder.value) return
+  isDeleting.value = true
+  try {
+    const response = await assetHolderService.delete(selectedHolder.value.id)
+    if (response.success) {
+      toast.add({
+        title: t('pages.asset.holder.deleteSuccess'),
+        color: 'success',
+        icon: 'i-lucide-circle-check'
+      })
+    }
+    showDeleteModal.value = false
+    handleReload()
+  } finally {
+    isDeleting.value = false
+  }
+}
+
 onMounted(() => {
   fetchActiveHolder()
   fetchHistory()
+  fetchPendingHandover()
 })
 </script>

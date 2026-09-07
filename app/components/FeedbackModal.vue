@@ -12,7 +12,7 @@
     <template #body>
       <!-- Top Note -->
       <div class="mb-4 space-y-1">
-        <p class="text-sm text-neutral-600 leading-relaxed">
+        <p class="text-sm text-toned leading-relaxed">
           {{ $t('component.feedbackModal.infoNote') }}
         </p>
         <div>
@@ -112,7 +112,7 @@
             @click="() => { open = false }"
           />
           <UButton
-            :label="$t('component.feedbackModal.send')"
+            :label="$t('common.save')"
             color="primary"
             variant="solid"
             type="submit"

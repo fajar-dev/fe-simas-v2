@@ -17,23 +17,41 @@
             v-model="selectedAsset"
             :items="assetOptions"
             searchable
-            :searchable-placeholder="$t('component.assetHolder.assignModal.searchAssets')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.assetHolder.assignModal.selectAsset')"
             :loading="isLoadingAssets"
             class="w-full"
           />
         </UFormField>
 
+        <!-- Holder Kind Field -->
+        <UFormField :label="$t('component.assetHolder.assignModal.holderKind')" name="holderKind" required>
+          <URadioGroup v-model="form.holderKind" :items="holderKindOptions" orientation="horizontal" />
+        </UFormField>
+
         <!-- Employee Field -->
-        <UFormField :label="$t('common.employee')" name="employeeId" required>
+        <UFormField v-if="form.holderKind === 'employee'" :label="$t('common.employee')" name="employeeId" required>
           <USelectMenu
             v-model="selectedEmployee"
             :items="employeeOptions"
             :avatar="selectedEmployee?.avatar"
             searchable
-            :searchable-placeholder="$t('component.assetHolder.assignModal.searchEmployees')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.assetHolder.assignModal.selectEmployee')"
             :loading="isLoadingEmployees"
+            class="w-full"
+          />
+        </UFormField>
+
+        <!-- Organization Field -->
+        <UFormField v-else :label="$t('common.organization')" name="organizationId" required>
+          <USelectMenu
+            v-model="selectedOrganization"
+            :items="organizationOptions"
+            searchable
+            :searchable-placeholder="$t('common.search')"
+            :placeholder="$t('component.assetHolder.assignModal.selectOrganization')"
+            :loading="isLoadingOrganizations"
             class="w-full"
           />
         </UFormField>
@@ -58,14 +76,7 @@
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
         <UButton :label="$t('common.cancel')" @click="() => { open = false }" color="neutral" variant="outline" />
-        <UButton
-          type="submit"
-          form="assign-asset-form"
-          color="primary"
-          :loading="isSubmitting"
-        >
-          {{ $t('component.assetHolder.assignModal.submit') }}
-        </UButton>
+        <UButton :label="$t('common.save')" type="submit" form="assign-asset-form" color="primary" :loading="isSubmitting" />
       </div>
     </template>
   </UModal>
@@ -75,6 +86,7 @@
 import { z } from 'zod'
 import { assetHolderService } from '~/services/asset-holder-service'
 import { employeeService } from '~/services/employee-service'
+import { organizationService } from '~/services/organization-service'
 import { assetService } from '~/services/asset-service'
 import type { Attachment } from '~/types/attachment'
 
@@ -92,6 +104,7 @@ const toast = useToast()
 const isSubmitting = ref(false)
 const isLoadingAssets = ref(false)
 const isLoadingEmployees = ref(false)
+const isLoadingOrganizations = ref(false)
 
 const assetOptions = ref<{ label: string; value: number }[]>([])
 const employeeOptions = ref<{
@@ -100,25 +113,39 @@ const employeeOptions = ref<{
   avatar?: { src: string; alt: string; loading?: 'lazy' | 'eager' }
   photo?: { src: string; alt: string; loading?: 'lazy' | 'eager' }
 }[]>([])
+const organizationOptions = ref<{ label: string; value: number }[]>([])
 
 const selectedAsset = ref<{ label: string; value: number } | undefined>(undefined)
 const selectedEmployee = ref<{ label: string; value: number; avatar?: any; photo?: any } | undefined>(undefined)
+const selectedOrganization = ref<{ label: string; value: number } | undefined>(undefined)
 const uploadedAttachments = ref<Attachment[]>([])
+
+const holderKindOptions = computed(() => [
+  { label: t('common.employee'), value: 'employee' as const },
+  { label: t('common.organization'), value: 'organization' as const },
+])
 
 const schema = z.object({
   assetId: z.number().int().positive(t('component.assetHolder.assignModal.assetRequired')),
-  employeeId: z.number().int().positive(t('component.assetHolder.assignModal.employeeRequired')),
+  holderKind: z.enum(['employee', 'organization']),
+  employeeId: z.number().int().positive().optional(),
+  organizationId: z.number().int().positive().optional(),
   assignedDate: z.string().min(1, t('component.assetHolder.assignModal.dateRequired')),
   assignNote: z.string().optional().or(z.literal('')),
+}).superRefine((data, ctx) => {
+  if (data.holderKind === 'employee' && !data.employeeId) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: t('component.assetHolder.assignModal.employeeRequired'), path: ['employeeId'] })
+  }
+  if (data.holderKind === 'organization' && !data.organizationId) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: t('component.assetHolder.assignModal.organizationRequired'), path: ['organizationId'] })
+  }
 })
-
-const getLocalDatetimeString = () => {
-  return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
-}
 
 const form = reactive({
   assetId: undefined as unknown as number,
-  employeeId: undefined as unknown as number,
+  holderKind: 'employee' as 'employee' | 'organization',
+  employeeId: undefined as number | undefined,
+  organizationId: undefined as number | undefined,
   assignedDate: getLocalDatetimeString(), // Default to current date & time
   assignNote: '',
   attachmentIds: [] as number[],
@@ -131,6 +158,21 @@ watch(selectedAsset, (val) => {
 
 watch(selectedEmployee, (val) => {
   if (val) form.employeeId = val.value
+})
+
+watch(selectedOrganization, (val) => {
+  if (val) form.organizationId = val.value
+})
+
+// Keep employeeId/organizationId mutually exclusive.
+watch(() => form.holderKind, (kind) => {
+  if (kind === 'employee') {
+    form.organizationId = undefined
+    selectedOrganization.value = undefined
+  } else {
+    form.employeeId = undefined
+    selectedEmployee.value = undefined
+  }
 })
 
 const onAttachmentsChanged = (ids: number[]) => {
@@ -177,14 +219,31 @@ const loadEmployees = async () => {
   }
 }
 
+const loadOrganizations = async () => {
+  isLoadingOrganizations.value = true
+  try {
+    const res = await organizationService.getList()
+    if (res.success && res.data) {
+      organizationOptions.value = res.data
+        .filter(o => o.isActive)
+        .map(o => ({ label: o.name, value: o.id }))
+    }
+  } finally {
+    isLoadingOrganizations.value = false
+  }
+}
+
 const resetForm = () => {
   form.assetId = props.lockAssetId ? props.lockAssetId : (undefined as unknown as number)
-  form.employeeId = undefined as unknown as number
+  form.holderKind = 'employee'
+  form.employeeId = undefined
+  form.organizationId = undefined
   form.assignedDate = getLocalDatetimeString()
   form.assignNote = ''
   form.attachmentIds = []
   selectedAsset.value = undefined
   selectedEmployee.value = undefined
+  selectedOrganization.value = undefined
   uploadedAttachments.value = []
 }
 
@@ -193,7 +252,9 @@ const handleSubmit = async () => {
   try {
     const response = await assetHolderService.create({
       assetId: form.assetId,
-      employeeId: form.employeeId,
+      holderKind: form.holderKind,
+      employeeId: form.holderKind === 'employee' ? form.employeeId : undefined,
+      organizationId: form.holderKind === 'organization' ? form.organizationId : undefined,
       assignedDate: form.assignedDate,
       assignNote: form.assignNote,
       attachmentIds: form.attachmentIds,
@@ -217,6 +278,7 @@ watch(open, (val) => {
   if (val) {
     resetForm()
     loadEmployees()
+    loadOrganizations()
     if (props.lockAssetId) {
       form.assetId = props.lockAssetId
     } else {

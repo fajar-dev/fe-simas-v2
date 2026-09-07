@@ -6,9 +6,7 @@ export interface User {
   email: string
   photo: string | null
   isActive: boolean
-  roleId?: number
   role?: { id: number; name: string } | null
-  employeeId?: number | null
   employee?: {
     id: number
     name: string
@@ -27,5 +25,13 @@ export interface UserPayload {
   isActive: boolean
   roleId?: number | null
   employeeId?: number | null
+}
+
+/** Minimal shape from GET /user/options — for search-as-you-type pickers, not the full list. */
+export interface UserOption {
+  id: number
+  name: string
+  email: string
+  photo: string | null
 }
 

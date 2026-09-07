@@ -17,7 +17,7 @@
             v-model="selectedAsset"
             :items="assetOptions"
             searchable
-            :searchable-placeholder="$t('component.assetLocation.addModal.searchAssets')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.assetLocation.addModal.selectAsset')"
             :loading="isLoadingAssets"
             class="w-full"
@@ -30,7 +30,7 @@
             v-model="selectedBranch"
             :items="branchOptions"
             searchable
-            :searchable-placeholder="$t('component.assetLocation.addModal.searchBranches')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="$t('component.assetLocation.addModal.selectBranch')"
             :loading="isLoadingBranches"
             class="w-full"
@@ -43,7 +43,7 @@
             v-model="selectedLocation"
             :items="filteredLocationOptions"
             searchable
-            :searchable-placeholder="$t('component.assetLocation.addModal.searchLocations')"
+            :searchable-placeholder="$t('common.search')"
             :placeholder="selectedBranch ? $t('component.assetLocation.addModal.selectLocation') : $t('component.assetLocation.addModal.selectBranchFirst')"
             :disabled="!selectedBranch"
             :loading="isLoadingLocations"
@@ -71,14 +71,7 @@
     <template #footer>
       <div class="flex justify-end items-center gap-2 w-full">
         <UButton :label="$t('common.cancel')" @click="() => { open = false }" color="neutral" variant="outline" />
-        <UButton
-          type="submit"
-          form="add-location-history-form"
-          color="primary"
-          :loading="isSubmitting"
-        >
-          {{ $t('component.assetLocation.addModal.submit') }}
-        </UButton>
+        <UButton :label="$t('common.save')" type="submit" form="add-location-history-form" color="primary" :loading="isSubmitting" />
       </div>
     </template>
   </UModal>
@@ -125,10 +118,6 @@ const schema = z.object({
   date: z.string().min(1, t('component.assetLocation.addModal.dateRequired')),
   note: z.string().optional().or(z.literal('')),
 })
-
-const getLocalDatetimeString = () => {
-  return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)
-}
 
 const form = reactive({
   assetId: undefined as unknown as number,

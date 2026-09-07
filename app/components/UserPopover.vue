@@ -22,17 +22,27 @@
             loading="lazy"
           />
           <div class="min-w-0 flex-1">
-            <h2 class="text-sm font-medium truncate text-neutral-900">
+            <h2 class="text-sm font-medium truncate text-highlighted">
               {{ authState.user?.name }}
             </h2>
-            <p class="text-xs text-neutral-500 truncate">
+            <p class="text-xs text-muted truncate">
               {{ authState.user?.email }}
             </p>
           </div>
         </div>
 
         <!-- Actions -->
-        <div class="pt-2 border-t border-neutral-200 space-y-0.5">
+        <div class="pt-2 border-t border-default space-y-0.5">
+
+          <!-- Dark Mode / Theme Toggle -->
+          <div class="flex items-center justify-between px-2.5 py-1.5 rounded-md">
+            <span class="flex items-center gap-2 text-sm text-default font-medium">
+              <UIcon name="i-lucide-sun-moon" class="size-4 shrink-0" />
+              {{ $t('component.userPopover.theme') }}
+            </span>
+            <UColorModeSwitch />
+          </div>
+
           <!-- Language Selector -->
           <UDropdownMenu :items="langMenuItems">
             <UButton
@@ -52,6 +62,7 @@
               />
             </template>
           </UDropdownMenu>
+
           <UButton
             color="neutral"
             variant="ghost"

@@ -1,0 +1,198 @@
+<template>
+  <div class="space-y-6">
+    <Header :title="item?.name || ''" :description="item?.code || ''" />
+
+  <UCard v-if="isLoading" class="w-full">
+      <div class="w-full mb-4">
+        <USkeleton class="h-8 w-20" />
+      </div>
+      <!-- Loading Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-8 items-start">
+        <USkeleton class="w-full aspect-[8/5] rounded-lg sm:col-span-4" />
+        <div class="min-w-0 w-full grid grid-cols-12 gap-6 sm:col-span-8">
+          <div v-for="i in 9" :key="i" class="col-span-12 sm:col-span-6 md:col-span-4 space-y-2">
+            <USkeleton class="h-3 w-1/4" />
+            <USkeleton class="h-5 w-3/4" />
+          </div>
+          <!-- Loading Description -->
+          <div class="col-span-12 pt-4 border-t border-muted space-y-2">
+            <USkeleton class="h-3 w-24" />
+            <USkeleton class="h-12 w-full" />
+          </div>
+        </div>
+      </div>
+    </UCard>
+
+    <UCard v-else-if="item" class="w-full">
+      <div class="w-full mb-4 flex items-center justify-between">
+        <UButton :label="$t('common.back')" color="neutral" icon="i-lucide-arrow-left" variant="link" @click="goBack" />
+        <div class="flex items-center gap-2">
+          <UButton
+            color="neutral"
+            variant="outline"
+            icon="i-lucide-history"
+            @click="() => { showLogDrawer = true }"
+          >
+            <span class="hidden sm:inline">{{ $t('component.inventory.detailWrapper.activityLog') }}</span>
+          </UButton>
+          <UButton
+            v-if="hasPermission('inventory:update')"
+            color="primary"
+            icon="i-lucide-edit"
+            @click="() => { navigateTo(`/inventory/${item!.id}/edit`) }"
+          >
+            <span class="hidden sm:inline">{{ $t('pages.inventory.item.editTitle') }}</span>
+          </UButton>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-8 items-start">
+        <!-- Photo -->
+        <div v-if="item.image" class="relative w-full aspect-[8/7] cursor-pointer overflow-hidden rounded-lg border border-default group sm:col-span-4" @click="openLightbox(item.image)">
+          <NuxtImg :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+        </div>
+        <div v-else class="w-full aspect-[8/7] flex flex-col items-center justify-center bg-muted border border-default rounded-lg text-dimmed sm:col-span-4">
+          <UIcon name="i-lucide-package" class="w-8 h-8 text-dimmed mb-1" />
+          <span class="text-xs text-muted font-medium">{{ $t('component.asset.detailWrapper.noImage') }}</span>
+        </div>
+
+        <!-- Info -->
+        <div class="min-w-0 w-full sm:col-span-8">
+          <div class="grid grid-cols-12 gap-x-8 gap-y-6">
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('common.code') }}</span>
+              <div class="text-sm text-highlighted font-medium truncate">{{ item.code || '-' }}</div>
+            </div>
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('pages.inventory.unit.label') }}</span>
+              <div class="text-sm text-highlighted font-medium">{{ item.unit || '-' }}</div>
+            </div>
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('common.status') }}</span>
+              <UBadge :color="item.isActive ? 'success' : 'neutral'" variant="subtle">
+                {{ item.isActive ? $t('common.active') : $t('common.inactive') }}
+              </UBadge>
+            </div>
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('common.category') }}</span>
+              <div class="text-sm text-highlighted font-medium truncate">{{ item.category?.name || '-' }}</div>
+            </div>
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('common.subCategory') }}</span>
+              <div class="text-sm text-highlighted font-medium truncate">{{ item.subCategory?.name || '-' }}</div>
+            </div>
+
+            <!-- Created by -->
+            <div class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('common.createdBy') }}</span>
+              <div v-if="item.createdBy" class="flex items-center gap-2 min-w-0">
+                <UAvatar :src="item.createdBy.photo || undefined" :alt="item.createdBy.name" size="xs" class="bg-primary-50 text-primary-700 shrink-0" />
+                <span class="text-sm text-highlighted font-medium truncate">{{ item.createdBy.name }}</span>
+              </div>
+              <span v-else class="text-sm text-muted">-</span>
+            </div>
+
+            <!-- Labels -->
+            <div v-for="label in item.labels" :key="label.id || label.key" class="col-span-12 sm:col-span-6 md:col-span-4">
+              <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1 truncate">{{ label.key }}</span>
+              <div class="text-sm text-highlighted font-medium truncate">{{ label.value }}</div>
+            </div>
+
+            <div class="col-span-12 pt-4 border-t border-muted">
+              <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-1">{{ $t('common.description') }}</span>
+              <div class="text-sm text-default">{{ item.description || '-' }}</div>
+            </div>
+
+            <!-- Attachments -->
+            <div v-if="item.attachments && item.attachments.length" class="col-span-12 pt-4 border-t border-muted">
+              <span class="text-xs font-semibold text-dimmed uppercase tracking-wider block mb-2">{{ $t('component.attachment.title') }}</span>
+              <div class="flex flex-wrap gap-2">
+                <a
+                  v-for="att in item.attachments"
+                  :key="att.id"
+                  :href="att.url"
+                  target="_blank"
+                  rel="noopener"
+                  class="flex items-center gap-2 px-3 py-2 rounded-lg border border-default bg-muted hover:bg-elevated transition-colors text-sm text-default hover:text-highlighted no-underline"
+                >
+                  <UIcon name="i-lucide-paperclip" class="w-4 h-4 text-primary shrink-0" />
+                  <span class="truncate max-w-48">{{ att.originalName }}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </UCard>
+
+    <UTabs v-model="activeTab" :items="tabItems" variant="link" class="gap-4" />
+
+    <!-- Lightbox Modal -->
+    <Lightbox />
+
+    <div class="w-full mt-4">
+      <slot />
+    </div>
+
+    <InventoryLogDrawer v-model:open="showLogDrawer" :inventory-id="inventoryId" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import type { TabsItem } from '@nuxt/ui'
+import type { Inventory } from '~/types/inventory'
+
+const { t } = useI18n()
+const route = useRoute()
+const { hasPermission } = useAuth()
+const { openLightbox } = useLightbox()
+const inventoryId = Number(route.params.id)
+
+const { item, isLoading } = inject('inventoryState') as { item: Ref<Inventory | null>; isLoading: Ref<boolean> }
+
+const showLogDrawer = ref(false)
+
+const goBack = () => {
+  const lastQuery = localStorage.getItem('last_inventory_query')
+  if (lastQuery) {
+    navigateTo(`/inventory?${lastQuery}`)
+  } else {
+    navigateTo('/inventory')
+  }
+}
+
+const tabItems = computed(() => {
+  const tabs: TabsItem[] = []
+  if (hasPermission('inventory-stock:read')) {
+    tabs.push({ value: 'variants', label: t('pages.inventory.stock.overviewTitle'), icon: 'i-lucide-layers', to: `/inventory/${inventoryId}/variants` })
+  }
+  if (hasPermission('inventory-stock:read')) {
+    tabs.push({ value: 'stock-in', label: t('pages.inventory.tabs.stockIn'), icon: 'i-lucide-package-plus', to: `/inventory/${inventoryId}/stock-in` })
+  }
+  if (hasPermission('inventory-stock:transfer')) {
+    tabs.push({ value: 'transfer', label: t('pages.inventory.tabs.transfer'), icon: 'i-lucide-arrow-left-right', to: `/inventory/${inventoryId}/transfer` })
+  }
+  if (hasPermission('inventory-stock:read')) {
+    tabs.push({ value: 'stock-out', label: t('pages.inventory.tabs.holder'), icon: 'i-lucide-package-minus', to: `/inventory/${inventoryId}/stock-out` })
+  }
+  if (hasPermission('inventory-stock:opname')) {
+    tabs.push({ value: 'opname', label: t('pages.inventory.tabs.opname'), icon: 'i-lucide-clipboard-check', to: `/inventory/${inventoryId}/opname` })
+  }
+  return tabs
+})
+
+const activeTab = computed({
+  get() {
+    let current = 'variants'
+    if (route.path.endsWith('/stock-in')) current = 'stock-in'
+    else if (route.path.endsWith('/transfer')) current = 'transfer'
+    else if (route.path.endsWith('/stock-out')) current = 'stock-out'
+    else if (route.path.endsWith('/opname')) current = 'opname'
+    return current
+  },
+  set(val) {
+    const target = tabItems.value.find(i => i.value === val)?.to
+    if (typeof target === 'string' && route.path !== target) navigateTo(target)
+  }
+})
+</script>

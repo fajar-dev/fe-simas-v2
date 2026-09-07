@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen w-full font-sans text-neutral-900 overflow-hidden bg-white">
+  <div class="flex h-screen w-full font-sans text-highlighted overflow-hidden bg-default">
     
     <!-- 1. Sidebar Left (Desktop) -->
     <div class="hidden lg:block h-full">
@@ -34,14 +34,14 @@
         leave-to-class="-translate-x-full"
         appear
       >
-        <div class="fixed inset-y-0 left-0 w-68 z-50 bg-white h-full shadow-xl">
+        <div class="fixed inset-y-0 left-0 w-68 z-50 bg-default h-full shadow-xl">
           <!-- Close overlay button inside sidebar header -->
           <div class="absolute top-4 right-2 z-50">
             <UButton
               icon="i-lucide-x"
               color="neutral"
               variant="ghost"
-              class="text-neutral-600 hover:text-neutral-800"
+              class="text-toned hover:text-highlighted"
               @click="() => { isMobileMenuOpen = false }"
               aria-label="Close sidebar"
             />

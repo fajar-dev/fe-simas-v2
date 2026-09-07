@@ -35,6 +35,24 @@ export const useNavigation = () => {
           icon: 'i-lucide-box',
           permission: 'asset:read'
         },
+        {
+          label: t('nav.handover'),
+          to: '/handover',
+          icon: 'i-lucide-file-box',
+          permission: 'handover:read'
+        },
+        {
+          label: t('nav.inventory'),
+          to: '/inventory',
+          icon: 'i-lucide-layers',
+          permission: 'inventory:read'
+        },
+        {
+          label: t('nav.calendar'),
+          to: '/calendar',
+          icon: 'i-lucide-calendar',
+          permission: 'asset-schedule:read'
+        },
       ]
     },
     {
@@ -63,6 +81,12 @@ export const useNavigation = () => {
           to: '/branch',
           icon: 'i-lucide-git-branch',
           permission: 'branch:read'
+        },
+        {
+          label: t('nav.organization'),
+          to: '/organization',
+          icon: 'i-lucide-network',
+          permission: 'organization:read'
         },
         {
           label: t('nav.employees'),

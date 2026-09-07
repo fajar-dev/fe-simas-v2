@@ -1,6 +1,6 @@
 import { apiService } from "./api-service"
 import { handleServiceError } from "../composables/error-helper"
-import type { Asset, AssetPayload } from "../types/asset"
+import type { Asset, AssetOption, AssetPayload } from "../types/asset"
 import type { ApiResponse } from "../types/api"
 
 export class AssetService {
@@ -31,6 +31,19 @@ export class AssetService {
             }
             const response = await apiService.client.get<ApiResponse<Asset[]>>(
                 url,
+                this.authHeaders
+            )
+            return response.data
+        } catch (error: any) {
+            return handleServiceError(error)
+        }
+    }
+
+    /** Lightweight search-as-you-type lookup for pickers/selects — not the full paginated list. */
+    async searchOptions(q = '', limit = 20): Promise<ApiResponse<AssetOption[]>> {
+        try {
+            const response = await apiService.client.get<ApiResponse<AssetOption[]>>(
+                `/asset/options?q=${encodeURIComponent(q)}&limit=${limit}`,
                 this.authHeaders
             )
             return response.data
