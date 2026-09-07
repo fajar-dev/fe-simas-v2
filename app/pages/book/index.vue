@@ -67,7 +67,7 @@
           </UFormField>
 
           <UFormField :label="$t('pages.book.category')" required>
-            <UInput :model-value="foundAsset.subCategory?.category?.name || '-'" :placeholder="$t('pages.book.categoryPlaceholder')" class="w-full" disabled>
+            <UInput :model-value="foundAsset.subCategory?.name || '-'" :placeholder="$t('pages.book.categoryPlaceholder')" class="w-full" disabled>
               <template #leading>
                 <UIcon name="i-lucide-tag" class="w-4 h-4 text-dimmed" />
               </template>
