@@ -40,6 +40,8 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import { inventoryStockOutService } from '~/services/inventory-stock-out-service'
+import AssignModal from '~/components/inventory-stock-out/AssignModal.vue'
+import ReturnModal from '~/components/inventory-stock-out/ReturnModal.vue'
 import type { InventoryStockOut, InventoryStockOutLineItem } from '~/types/inventory'
 
 definePageMeta({ layout: 'dashboard' })
