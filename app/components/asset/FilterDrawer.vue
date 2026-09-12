@@ -1,11 +1,21 @@
 <template>
-  <USlideover
-    v-model:open="open"
-    :title="$t('component.asset.filterDrawer.title')"
-    :description="$t('component.asset.filterDrawer.description')"
-    :ui="{ overlay: 'bg-black/40' }"
+  <aside
+    v-if="open"
+    class="fixed inset-y-0 right-0 z-30 flex flex-col w-full overflow-hidden border-t lg:border-t-0 lg:border-l lg:w-80 xl:w-96 border-default bg-default"
   >
-    <template #body>
+    <div class="flex items-start justify-between gap-2 p-4 border-b border-default">
+      <div>
+        <h3 class="font-semibold text-highlighted">
+          {{ $t('component.asset.filterDrawer.title') }}
+        </h3>
+        <p class="text-xs text-muted mt-0.5">
+          {{ $t('component.asset.filterDrawer.description') }}
+        </p>
+      </div>
+      <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="sm" square  @click="() => { open = false }" />
+    </div>
+
+    <div class="flex-1 p-4 overflow-y-auto">
       <div class="space-y-5">
 
         <!-- Category -->
@@ -392,28 +402,26 @@
         </div>
 
       </div>
-    </template>
+    </div>
 
-    <template #footer>
-      <div class="flex items-center justify-between w-full">
-        <UButton
-          color="error"
-          variant="soft"
-          icon="i-lucide-rotate-ccw"
-          @click="resetAll"
-        >
-          {{ $t('common.clearAll') }}
-        </UButton>
-        <UButton
-          color="primary"
-          icon="i-lucide-check"
-          @click="applyFilters"
-        >
-          {{ $t('component.asset.filterDrawer.applyFilters') }}
-        </UButton>
-      </div>
-    </template>
-  </USlideover>
+    <div class="flex items-center justify-between w-full p-4 border-t border-default">
+      <UButton
+        color="error"
+        variant="soft"
+        icon="i-lucide-rotate-ccw"
+        @click="resetAll"
+      >
+        {{ $t('common.clearAll') }}
+      </UButton>
+      <UButton
+        color="primary"
+        icon="i-lucide-check"
+        @click="applyFilters"
+      >
+        {{ $t('component.asset.filterDrawer.applyFilters') }}
+      </UButton>
+    </div>
+  </aside>
 </template>
 
 <script setup lang="ts">
@@ -716,7 +724,6 @@ const applyFilters = () => {
     cleanFilters.labels = validLabels.map(l => ({ key: l.key.trim(), value: l.value.trim() }))
   }
   emit('apply', cleanFilters)
-  open.value = false
 }
 
 // Fetch options

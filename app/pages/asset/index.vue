@@ -7,107 +7,117 @@
     >
     </Header>
 
-    <DataTable
-      v-model:search="search"
-      v-model:page="page"
-      v-model:perPage="perPage"
-      :data="data"
-      :columns="columns"
-      :loading="isLoading"
-      :from="meta.from"
-      :to="meta.to"
-      :total="meta.total"
-      table-class="min-w-[1200px]"
-    >
-      <template #actions>
-        <div class="flex flex-wrap items-center justify-center sm:justify-end gap-2">
-          <!-- Import & Export -->
-          <div v-if="hasPermission('asset:import', 'asset:export')" class="flex items-center gap-2 w-full sm:w-auto">
-            <UButton
-              v-if="hasPermission('asset:import')"
-              color="primary"
-              variant="outline"
-              icon="i-lucide-upload"
-              class="flex-1 sm:flex-none justify-center"
-              @click="() => { showImportModal = true }"
-            >
-              {{ $t('pages.asset.index.importAsset') }}
-            </UButton>
-            <UButton
-              v-if="hasPermission('asset:export')"
-              color="primary"
-              variant="soft"
-              icon="i-lucide-download"
-              :loading="isExporting"
-              class="flex-1 sm:flex-none justify-center"
-              @click="handleExport"
-            >
-              {{ $t('pages.asset.index.exportAsset') }}
-            </UButton>
-          </div>
-
-          <!-- Main Actions -->
-          <div class="flex items-center gap-2 w-full sm:w-auto">
-            <UButton
-              v-if="hasPermission('asset:create')"
-              color="primary"
-              variant="solid"
-              icon="i-lucide-plus"
-              to="/asset/create"
-              class="flex-1 sm:flex-none justify-center"
-            >
-              {{ $t('pages.asset.index.addAsset') }}
-            </UButton>
-            <UButton
-              color="neutral"
-              variant="soft"
-              icon="i-lucide-filter"
-              class="relative flex-1 sm:flex-none justify-center"
-              @click="() => { showFilterDrawer = true }"
-            >
-              {{ $t('pages.asset.index.filter') }}
-              <UBadge
-                v-if="activeFilterCount > 0"
-                :label="String(activeFilterCount)"
+    <!-- Filter Sidebar is fixed to the right edge; this transitions padding to make room for it instead of overlaying it -->
+    <div class="transition-[padding] duration-200" :class="showFilterDrawer ? 'lg:pr-80 xl:pr-96' : ''">
+      <DataTable
+        v-model:search="search"
+        v-model:page="page"
+        v-model:perPage="perPage"
+        :data="data"
+        :columns="columns"
+        :loading="isLoading"
+        :from="meta.from"
+        :to="meta.to"
+        :total="meta.total"
+        table-class="min-w-[1200px]"
+      >
+        <template #actions>
+          <div class="flex flex-wrap items-center justify-center sm:justify-end gap-2">
+            <!-- Import & Export -->
+            <div v-if="hasPermission('asset:import', 'asset:export')" class="flex items-center gap-2 w-full sm:w-auto">
+              <UButton
+                v-if="hasPermission('asset:import')"
                 color="primary"
-                size="sm"
+                variant="outline"
+                icon="i-lucide-upload"
+                class="flex-1 sm:flex-none justify-center"
+                @click="() => { showImportModal = true }"
+              >
+                {{ $t('pages.asset.index.importAsset') }}
+              </UButton>
+              <UButton
+                v-if="hasPermission('asset:export')"
+                color="primary"
+                variant="soft"
+                icon="i-lucide-download"
+                :loading="isExporting"
+                class="flex-1 sm:flex-none justify-center"
+                @click="handleExport"
+              >
+                {{ $t('pages.asset.index.exportAsset') }}
+              </UButton>
+            </div>
+
+            <!-- Main Actions -->
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <UButton
+                v-if="hasPermission('asset:create')"
+                color="primary"
                 variant="solid"
-              />
-            </UButton>
+                icon="i-lucide-plus"
+                to="/asset/create"
+                class="flex-1 sm:flex-none justify-center"
+              >
+                {{ $t('pages.asset.index.addAsset') }}
+              </UButton>
+              <UButton
+                color="neutral"
+                variant="soft"
+                :icon="showFilterDrawer ? 'i-lucide-x' : 'i-lucide-filter'"
+                class="relative flex-1 sm:flex-none justify-center"
+                @click="() => { showFilterDrawer = !showFilterDrawer }"
+              >
+                {{ showFilterDrawer ? $t('common.close') : $t('pages.asset.index.filter') }}
+                <UBadge
+                  v-if="!showFilterDrawer && activeFilterCount > 0"
+                  :label="String(activeFilterCount)"
+                  color="primary"
+                  size="sm"
+                  variant="solid"
+                />
+              </UButton>
           
-            <!-- Column Checklist Dropdown/Popover -->
-            <UPopover>
-            <UButton
-              color="neutral"
-              variant="ghost"
-              icon="i-lucide-table-properties"
-            />
+              <!-- Column Checklist Dropdown/Popover -->
+              <UPopover>
+              <UButton
+                color="neutral"
+                variant="ghost"
+                icon="i-lucide-table-properties"
+              />
             
-            <template #content>
-              <div class="p-3 w-48 space-y-2 select-none">
-                <div class="text-sm font-semibold text-toned mb-1">
-                  {{ $t('pages.asset.index.customLabels') }}
-                </div>
-                <div v-if="availableLabelKeys.length === 0" class="text-xs text-dimmed italic">
-                  {{ $t('pages.asset.index.noCustomLabels') }}
-                </div>
-                <div v-else class="space-y-1.5 max-h-48 overflow-y-auto">
-                  <div v-for="key in availableLabelKeys" :key="key" class="flex items-center gap-2">
-                    <UCheckbox
-                      :id="`col-${key}`"
-                      :model-value="activeLabelColumns.includes(key)"
-                      :label="key"
-                      @update:model-value="(val: boolean) => toggleLabelColumn(key, val)"
-                    />
+              <template #content>
+                <div class="p-3 w-48 space-y-2 select-none">
+                  <div class="text-sm font-semibold text-toned mb-1">
+                    {{ $t('pages.asset.index.customLabels') }}
+                  </div>
+                  <div v-if="availableLabelKeys.length === 0" class="text-xs text-dimmed italic">
+                    {{ $t('pages.asset.index.noCustomLabels') }}
+                  </div>
+                  <div v-else class="space-y-1.5 max-h-48 overflow-y-auto">
+                    <div v-for="key in availableLabelKeys" :key="key" class="flex items-center gap-2">
+                      <UCheckbox
+                        :id="`col-${key}`"
+                        :model-value="activeLabelColumns.includes(key)"
+                        :label="key"
+                        @update:model-value="(val: boolean) => toggleLabelColumn(key, val)"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </template>
-          </UPopover>
+              </template>
+            </UPopover>
+            </div>
           </div>
-        </div>
-      </template>
-    </DataTable>
+        </template>
+      </DataTable>
+    </div>
+
+    <!-- Filter Sidebar -->
+    <AssetFilterDrawer
+      v-model:open="showFilterDrawer"
+      :initial-filters="activeFilters"
+      @apply="onApplyFilters"
+    />
 
     <!-- Bulk Action Bar -->
     <Transition name="">
@@ -202,13 +212,6 @@
 
     <!-- Lightbox Modal -->
     <Lightbox />
-
-    <!-- Filter Drawer -->
-    <AssetFilterDrawer
-      v-model:open="showFilterDrawer"
-      :initial-filters="activeFilters"
-      @apply="onApplyFilters"
-    />
 
     <!-- Import Modal -->
     <AssetImportModal
