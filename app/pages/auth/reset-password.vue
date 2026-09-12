@@ -8,7 +8,7 @@
 
     <!-- Success State -->
     <div v-else-if="isSuccess" class="flex flex-col gap-5 mb-6">
-      <BrandLogo />
+      <BrandLogo class="lg:hidden" />
       <div class="space-y-4">
         <h1 class="text-3xl font-bold text-highlighted">
           {{ $t('pages.auth.resetPassword.title') }}
@@ -34,7 +34,7 @@
     <!-- Reset Form -->
     <template v-else>
       <div class="flex flex-col gap-5 mb-6">
-        <BrandLogo />
+        <BrandLogo class="lg:hidden" />
         <div class="space-y-1">
           <h1 class="text-3xl font-bold text-highlighted">
             {{ $t('pages.auth.resetPassword.title') }}

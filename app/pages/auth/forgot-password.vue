@@ -2,7 +2,7 @@
   <div class="w-full max-w-[420px] mx-auto">
     <!-- Logo and Header -->
     <div class="flex flex-col gap-5 mb-6">
-      <BrandLogo />
+      <BrandLogo class="lg:hidden" />
       <div class="space-y-1">
         <h1 class="text-3xl font-bold text-highlighted">
           {{ $t('pages.auth.forgotPassword.title') }}

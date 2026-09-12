@@ -679,6 +679,18 @@
   },
   "pages": {
     "auth": {
+      "leftPanel": {
+        "badge": "Portal Admin",
+        "title": "Kelola aset perusahaan secara real-time",
+        "subtitle": "Satu platform untuk penugasan, inventaris, dan riwayat aset perusahaan.",
+        "feature1Title": "Kelola aset & inventaris",
+        "feature1Description": "Atur data aset, kategori, lokasi, dan persediaan.",
+        "feature2Title": "Pantau riwayat & laporan",
+        "feature2Description": "Lihat penugasan, pengembalian, dan laporan aset secara real-time.",
+        "feature3Title": "Jadwal & pengingat",
+        "feature3Description": "Atur jadwal maintenance aset dan dapatkan pengingat otomatis.",
+        "footer": "Hak cipta dilindungi."
+      },
       "signIn": {
         "title": "Masuk",
         "subtitle": "Masukkan kredensial Anda untuk masuk",
